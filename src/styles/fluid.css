@@ -1,0 +1,335 @@
+@media (max-width: 2125px) {
+    .main {
+        grid-template-columns: 3fr 1.5fr 0.5fr !important;
+   }
+    .main .hero h1 {
+        font-size: 2.5em !important;
+   }
+    .main .hero .hi {
+        font-size: 2.2em !important;
+   }
+    .main .hero .services {
+        font-size: 25px !important;
+   }
+}
+@media (max-width: 1840px) {
+    .main .children h2 {
+        font-size: 1.5em !important;
+   }
+    .projects .project .meta h1 {
+        font-size: 3em;
+   }
+}
+@media (max-width: 1540px) {
+    .contact .meta {
+        max-width: 80vw !important;
+   }
+    .projects.site-cont {
+        display: block;
+   }
+    .projects.site-cont article {
+        margin-bottom: 100px;
+   }
+    .projects.site-cont article img {
+        display: block !important;
+   }
+    .projects.site-cont article .container {
+        height: auto;
+   }
+}
+@media (max-width: 1435px) {
+    .page-services ul {
+        grid-template-columns: 1fr 1fr !important;
+        grid-auto-flow: unset !important;
+   }
+    .single-project.site-cont h1 {
+        font-size: 2.5em !important;
+   }
+    .single-project.site-cont p {
+        font-size: 25px !important;
+        line-height: 33px !important;
+   }
+    .single-project.site-cont .view {
+        font-size: 20px !important;
+        line-height: 25px !important;
+   }
+}
+@media (max-width: 1320px) {
+    .main {
+        grid-template-columns: 3fr 1.5fr !important;
+   }
+    .contact .meta {
+        max-width: 100vw !important;
+   }
+    .fof .four {
+        font-size: 3.5em;
+        text-align: center;
+   }
+    .fof a {
+        font-size: 20px !important;
+   }
+}
+@media (max-width: 1165px) {
+    .main .hero {
+        padding: 30px !important;
+   }
+    .main .hero h1 {
+        font-size: 2em !important;
+   }
+    .main .hero .hi {
+        font-size: 1.7em !important;
+   }
+    .main .hero .services {
+        font-size: 20px !important;
+   }
+    .main .children div {
+        padding: 30px !important;
+   }
+    .main .children h2 {
+        font-size: 1.2em !important;
+   }
+    .fof .four {
+        font-size: 3em;
+   }
+    .fof a {
+        font-size: 17px !important;
+   }
+}
+@media (max-width: 1156px) {
+    .contact .socials {
+        grid-auto-flow: row;
+        grid-template-columns: 1fr 1fr;
+   }
+    .contact .socials :nth-child(5n) {
+        display: none !important;
+   }
+    .main {
+        display: block !important;
+   }
+    .main .services {
+        position: relative !important;
+        bottom: initial !important;
+        display: block;
+   }
+    .main .children {
+        margin-top: 0px;
+   }
+    .main .children .socials {
+        padding-bottom: 50px !important;
+        align-content: space-between;
+   }
+}
+@media (hover: none) {
+    .projects article {
+        margin-bottom: 50px !important;
+   }
+    .projects .project .meta {
+        opacity: 1 !important;
+   }
+    .projects .project .overlay {
+        opacity: 0.65 !important;
+   }
+}
+@media (max-width: 850px) {
+    html body .prog {
+        flex-direction: column;
+   }
+    html body .proglogo {
+        align-items: center;
+        margin: 10px;
+   }
+    html body .projectgroup {
+        display: flex;
+        flex-direction: column;
+   }
+    .contact {
+        display: flex;
+   }
+    .site-cont {
+        padding: 50px !important;
+   }
+    .page-services ul {
+        grid-template-columns: 1fr !important;
+        grid-auto-flow: unset !important;
+   }
+    .page-services ul li {
+        padding: 30px !important;
+   }
+    .page-services ul h2 {
+        font-size: 1.5em !important;
+   }
+    .wrapper header {
+        padding-left: 50px !important;
+   }
+    .wrapper header h1 {
+        font-size: 30px !important;
+   }
+    .wrapper header .alt {
+        bottom: 20px !important;
+   }
+    .wrapper header span {
+        bottom: 8px !important;
+   }
+    .wrapper .main {
+        padding: 50px !important;
+   }
+    .wrapper .children {
+        margin-top: 50px !important;
+   }
+    .wrapper .children div {
+        margin-bottom: 50px !important;
+   }
+    .main .hero {
+        margin-bottom: 65px;
+   }
+    .main .hero h1 {
+        font-size: 1.5em !important;
+   }
+    .main .hero .hi {
+        font-size: 1.3em !important;
+        padding-bottom: 5px !important;
+   }
+    .main .hero h2 {
+        font-size: 1.2em !important;
+        line-height: 1.5em !important;
+   }
+    .main .hero .services {
+        font-size: 15px !important;
+   }
+    .main .children h2 {
+        font-size: 1em !important;
+   }
+    .main .children .socials {
+        padding: 0px !important;
+   }
+    .projects article .meta h1 {
+        font-size: 1.8em !important;
+   }
+    .single-project.site-cont h1 {
+        font-size: 2.2em !important;
+   }
+    .single-project.site-cont p {
+        font-size: 23px !important;
+        line-height: 30px !important;
+   }
+    .single-project.site-cont .view {
+        font-size: 18px !important;
+        line-height: 23px !important;
+   }
+    .single-project.site-cont .meta {
+        padding: 30px;
+   }
+    .contact .meta p, .contact .meta a {
+        font-size: 25px !important;
+        line-height: 40px !important;
+   }
+    .fof .four {
+        width: 80%;
+        font-size: 2em;
+        padding: 40px 20px;
+   }
+    .fof a {
+        font-size: 16px !important;
+   }
+}
+@media (max-width: 540px) {
+    .page-about .animControl {
+        display: block;
+        position: relative !important;
+        width: 85px;
+        margin-top: 10px;
+        animation: lastname 1s 0s forwards cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+   }
+    .page-about .hide {
+        display: none;
+   }
+    .contact .meta p, .contact .meta a {
+        font-size: 20px !important;
+        line-height: 35px !important;
+   }
+    .contact .meta p {
+        margin-bottom: 20px !important;
+   }
+    .contact .meta a {
+        margin-top: 5px !important;
+   }
+    .contact ul {
+        font-size: 20px !important;
+        line-height: 25px !important;
+   }
+    .site-cont .socials a {
+        font-size: 1em !important;
+   }
+    .single-project.site-cont h1 {
+        font-size: 1.5em !important;
+        padding: 0px !important;
+   }
+    .single-project.site-cont p {
+        font-size: 18px !important;
+        line-height: 26px !important;
+   }
+}
+@media (max-width: 430px) {
+    .site-cont {
+        padding: 30px 20px !important;
+   }
+    .wrapper header {
+        padding-left: 20px !important;
+   }
+    .wrapper .main {
+        padding: 30px 20px !important;
+   }
+    .wrapper .main .hero, .wrapper .main .card {
+        border-width: 6px !important;
+   }
+    .wrapper .main .card.services {
+        border-width: 2px !important;
+   }
+    .main .hero {
+        padding: 15px !important;
+   }
+    .main .hero h1 {
+        font-size: 20px !important;
+   }
+    .main .hero .hi {
+        font-size: 17px !important;
+   }
+    .main .children div {
+        padding: 15px !important;
+   }
+    .projects article .meta h1 {
+        font-size: 1.3em !important;
+   }
+}
+@media (max-width: 370px) {
+    .main .hero, .main .children div {
+        border: 0px !important;
+   }
+    .projects article .meta h1 {
+        font-size: 1.2em !important;
+   }
+}
+@media (max-width: 1366px) {
+    .background-overlay span {
+        width: 250px !important;
+        height: 250px !important;
+   }
+}
+@media (max-width: 1000px) {
+    .background-overlay span {
+        width: 220px !important;
+        height: 220px !important;
+   }
+}
+@media (max-width: 800px) {
+    .background-overlay span {
+        width: 200px !important;
+        height: 200px !important;
+   }
+}
+@media (max-width: 600px) {
+    .background-overlay span {
+        width: 150px !important;
+        height: 150px !important;
+   }
+}

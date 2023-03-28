@@ -1,0 +1,315 @@
+@keyframes stargazing {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+   }
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+   }
+}
+@keyframes ricky {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, calc(-50% + 20px));
+   }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+   }
+}
+@keyframes lastname {
+    0% {
+        opacity: 0;
+   }
+    100% {
+        opacity: 1;
+   }
+}
+@keyframes diff {
+    0% {
+        opacity: 1;
+   }
+    100% {
+        opacity: 0;
+   }
+}
+@keyframes sickomode {
+    0% {
+        right: -20px;
+        bottom: -80px;
+   }
+    100% {
+        right: 20px;
+        bottom: -30px;
+   }
+}
+@keyframes fallen {
+    0% {
+        right: -20px;
+        top: -20px;
+   }
+    100% {
+        right: 20px;
+        top: 0;
+   }
+}
+@keyframes boomtown {
+    0% {
+        left: -40;
+        bottom: -80px;
+   }
+    100% {
+        left: 0px;
+        bottom: -50px;
+   }
+}
+@keyframes pickupthephonebaby {
+    0% {
+        width: 0%;
+        opacity: 0;
+   }
+    100% {
+        width: 100%;
+        opacity: 1;
+   }
+}
+@keyframes sweetsweet {
+    0% {
+        transform: rotate(45deg);
+   }
+    50% {
+        transform: rotate(90deg);
+   }
+    100% {
+        transform: rotate(45deg);
+   }
+}
+@keyframes ultravio {
+    0% {
+        opacity: 0;
+   }
+    100% {
+        opacity: 1;
+   }
+}
+@keyframes chanel {
+    0% {
+        margin-left: -300px;
+   }
+    50% {
+        margin-left: 100px;
+   }
+    100% {
+        margin-left: 0px;
+   }
+}
+@keyframes spacecadet {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+   }
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+        box-shadow: 8px 12px 0px 0px;
+   }
+}
+@keyframes boasy {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+   }
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+        box-shadow: 25px 21px 0px 0px;
+   }
+}
+@keyframes lovestolay {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+        border: 5px solid transparent;
+   }
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+        border: 5px solid #2cb57c;
+   }
+}
+@media (max-width: 430px) {
+    @keyframes boasy {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+       }
+        100% {
+            opacity: 1;
+            transform: translateY(0px);
+            box-shadow: 8px 12px 0px 0px;
+       }
+   }
+}
+@keyframes wasted {
+    0% {
+        opacity: 1;
+   }
+    100% {
+        opacity: 0.3;
+   }
+}
+@keyframes stronger {
+    0% {
+        opacity: 0;
+        top: 45%;
+   }
+    100% {
+        opacity: 1;
+        top: 50%;
+   }
+}
+@keyframes bounceback {
+    0% {
+        transform: translateY(calc(-50% + 20px));
+   }
+    100% {
+        transform: translateY(-50%);
+   }
+}
+@keyframes hope {
+    0% {
+        opacity: 0;
+   }
+    100% {
+        opacity: 1;
+        box-shadow: 25px 21px 0px 0px;
+   }
+}
+@media (max-width: 430px) {
+    @keyframes hope {
+        0% {
+            opacity: 0;
+       }
+        100% {
+            opacity: 1;
+            box-shadow: 8px 12px 0px 0px;
+       }
+   }
+}
+@keyframes nightcrawler {
+    0% {
+        overflow: hidden;
+   }
+    100% {
+        overflow: auto;
+   }
+}
+@keyframes chevelle {
+    0% {
+        visibility: hidden;
+        height: 0px;
+        transform: translateY(40px);
+   }
+    100% {
+        visibility: visible;
+        height: 100%;
+        transform: translateY(0px);
+        margin-bottom: 10px;
+   }
+}
+@keyframes applepie {
+    0% {
+        opacity: 0.5;
+   }
+    100% {
+        opacity: 0;
+   }
+}
+@keyframes nightslikethis {
+    0% {
+        background-color: #b4f8ba;
+        opacity: 1;
+        height: 100%;
+        padding: 10px 20px;
+   }
+    100% {
+        visibility: hidden;
+        background-color: transparent;
+        opacity: 0;
+        height: 0px;
+        padding: 0px;
+   }
+}
+@keyframes iwishicould {
+    0% {
+        visibility: hidden;
+   }
+    100% {
+        visibility: visible;
+   }
+}
+@keyframes brackets {
+    0% {
+        opacity: 0;
+   }
+    100% {
+        opacity: 1;
+   }
+}
+@keyframes prettylittlefears {
+    0% {
+        transform: rotate(-10deg) translateY(60px);
+        opacity: 0;
+   }
+    100% {
+        opacity: 1;
+        transform: rotate(5deg) translateY(0px);
+   }
+}
+@keyframes perfecto {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+   }
+    100% {
+        opacity: 0.7;
+        transform: translateY(0px);
+   }
+}
+@keyframes sunday {
+    0% {
+        border: 1px solid #000;
+        box-shadow: none;
+   }
+    100% {
+        border: 1px solid #0f6f95;
+        box-shadow: 0px 3px 25px 11px rgba(15, 111, 149, 0.26);
+   }
+}
+@keyframes ofn {
+    0% {
+        opacity: 0;
+   }
+    100% {
+        opacity: 1;
+   }
+}
+@keyframes xnxx {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+   }
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+   }
+}
+@keyframes benz {
+    0% {
+        width: 0;
+   }
+    100% {
+        width: 100%;
+   }
+}
