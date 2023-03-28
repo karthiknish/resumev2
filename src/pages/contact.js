@@ -86,7 +86,7 @@ function Contact() {
               {/* <li>Languages: English, Bengali, Hindi (speaking), Urdu (speaking)</li> */}
             </ul>
 
-            <div class="socials">
+            <div className="socials">
               {/* <a target="_blank" href={pdf}>
                 Download CV
               </a> */}
@@ -106,7 +106,7 @@ function Contact() {
         </div>
 
         <div
-          className={"background-overlay anim " + resized}
+          className={"background-overlay anim "}
           style={{
             gridTemplateColumns: "repeat(" + elemProps.gridSizeX + ", 1fr",
           }}
