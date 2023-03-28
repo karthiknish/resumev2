@@ -80,8 +80,8 @@ function Index() {
         email,
         password,
       }).then((d) => {
-        setMessage([d.ok, d.error]);
-        setSuccess(d.ok);
+        setMessage([d?.ok, d?.error]);
+        setSuccess(d?.ok);
       });
     } else {
       const role = 1;
