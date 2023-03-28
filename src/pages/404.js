@@ -40,14 +40,12 @@ function FourOhFour() {
       <Head>
         <title>it`s a 404 // karthik nishanth.</title>
       </Head>
-
       <h1 className="four">
         it`s a 404
         <Link href="/">
           let`s go back home <span className="arrow"> &#8594;</span>
         </Link>
-      </h1>
-
+      </h1>{" "}
       <div
         className={"background-overlay anim "}
         style={{
