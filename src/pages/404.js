@@ -38,13 +38,13 @@ function FourOhFour() {
   return (
     <div className="app fof">
       <Head>
-        <title>it's a 404 // karthik nishanth.</title>
+        <title>it`s a 404 // karthik nishanth.</title>
       </Head>
 
       <h1 className="four">
-        it's a 404
+        it`s a 404
         <Link href="/">
-          let's go back home <span className="arrow"> &#8594;</span>
+          let`s go back home <span className="arrow"> &#8594;</span>
         </Link>
       </h1>
 

@@ -70,7 +70,7 @@ function Contact() {
               {/* <li>Achieved 86% in the first year of Computer Science BSc</li> */}
               <li>
                 Finalist in Bizzventure,a Annual Pitching Competition for our
-                Buisness Idea 'PABO'-a innovative solution to parking in busy
+                Buisness Idea `PABO`-a innovative solution to parking in busy
                 cities.
               </li>
               <li>
