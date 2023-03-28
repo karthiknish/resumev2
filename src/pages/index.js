@@ -188,7 +188,7 @@ const HomeScreen = () => {
         <div
           className={"background-overlay anim "}
           style={{
-            gridTemplateColumns: "repeat(" + elemProps.gridSizeX + ", 1fr",
+            gridTemplateColumns: `repeat(${elemProps.gridSizeX}, 1fr)`,
           }}
         >
           {[
