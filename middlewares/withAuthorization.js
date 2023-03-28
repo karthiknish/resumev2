@@ -10,7 +10,7 @@ export default function withAuthorization(middleware, requireAuth) {
         req: request,
         secret: process.env.NEXTAUTH_SECRET,
       });
-
+console.log(token);
       if (token?.name !== "admin" && pathname === "/admin") {
         const url = new URL(`/403`, request.url);
         return NextResponse.rewrite(url);

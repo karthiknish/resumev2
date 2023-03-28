@@ -24,8 +24,8 @@ const MenuBar = ({ editor }) => {
   }
 
   return (
-    <div className="flex gap-4">
-      <div className="group relative flex justify-center ">
+    <div className="flex gap-4  bg-white">
+      <div className="group relative flex justify-center">
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
           disabled={!editor.can().chain().focus().toggleBold().run()}
@@ -304,7 +304,7 @@ function Markdown({ content, setContent }) {
     <>
       {console.log(content)}
       <MenuBar editor={editor} />
-      <EditorContent editor={editor} />
+      <EditorContent className="bg-white min-h-screen" editor={editor} />
     </>
   );
 }

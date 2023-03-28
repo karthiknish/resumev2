@@ -63,10 +63,9 @@ function Index() {
   };
 
   useEffect(() => {
-    if (data?.user?.email === "info@dreamedconsultancy.com")
-      Router.push("/admin");
+ 
     if (data?.user) {
-      Router.push("/dashboard");
+      Router.push("/admin");
     }
     if (router.query.error) {
       setMessage(decodeURIComponent(router.query.error));
