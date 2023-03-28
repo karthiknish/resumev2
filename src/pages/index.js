@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { generateBG } from "../utils/bgAnim.js";
+
 import Head from "next/head";
 
 const HomeScreen = () => {
@@ -93,7 +94,6 @@ const HomeScreen = () => {
               pathname: "/",
               query: { comeThru: comeThru ? "true" : undefined },
             }}
-            query={comeThru == true}
           >
             <h1>karthik nishanth.</h1>
             <span></span>
