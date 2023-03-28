@@ -8,7 +8,7 @@ function Create() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(content);
-    const data = { title, author, imageUrl, content };
+    const data = { title, imageUrl, content };
     let res = await fetch("/api/blog", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

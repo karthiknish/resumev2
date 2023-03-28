@@ -304,7 +304,7 @@ function Markdown({ content, setContent }) {
     <>
       {console.log(content)}
       <MenuBar editor={editor} />
-      <EditorContent className="bg-white min-h-screen" editor={editor} />
+      <EditorContent className="bg-white min-h-screen p-4" editor={editor} />
     </>
   );
 }
