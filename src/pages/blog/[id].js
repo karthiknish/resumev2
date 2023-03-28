@@ -53,6 +53,31 @@ function Id() {
         <meta property="og:title" content={data?.title} />
         <meta property="og:description" content={data?.title} />
         <meta property="og:image" content={data?.imageUrl} />
+        <meta property="og:image:alt" content={data?.title} />
+        <meta
+          property="og:url"
+          content={`https://www.karthiknish.com/blog/${data?._id}`}
+        />{" "}
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Karthiknish" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={data?.title} />
+        <meta name="twitter:description" content={data?.title} />
+        <meta name="twitter:image" content={data?.imageUrl} />
+        <meta name="twitter:site" content="@karthiknish" />
+        <meta name="twitter:creator" content="@karthiknish" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="theme-color" content="#000000" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <meta name="apple-mobile-web-app-title" content="KArthiknish" />{" "}
+        <meta name="msapplication-TileColor" content="#000000" />{" "}
+        <meta name="google" content="notranslate" />{" "}
+        <link
+          rel="canonical"
+          href={`https://www.karthiknish.com/blog/${data?._id}`}
+        />
       </Head>
       <motion.div
         initial={{ opacity: 0, y: -10 }}

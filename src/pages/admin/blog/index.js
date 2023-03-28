@@ -5,17 +5,7 @@ import Link from "next/link";
 function Index() {
   const [data, setData] = useState([]);
   const [showModal, setshowModal] = useState(false);
-  const options = {
-    wordwrap: 10,
-    limits: {
-      // ellipsis: " ...",
-      maxInputLength: "20",
-    },
-    longWordSplit: {
-      forceWrapOnLimit: true,
-      wrapCharacters: ["-", "/"],
-    },
-  };
+
   useEffect(() => {
     getData();
   }, []);
