@@ -4,7 +4,7 @@ import limitCharacters from "limit-characters";
 import Router from "next/router";
 import Image from "next/image";
 import Link from "next/link";
-
+import { motion } from "framer-motion";
 function Index() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -44,8 +44,19 @@ function Index() {
     <>
       <Head>
         <title>My Blog</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="description"
+          content="A personal blog by Karthik Nishanth"
+        />
+        <meta name="keywords" content="blog, personal, karthik, nishanth" />
+        <meta name="author" content="Karthik Nishanth" />
       </Head>
-      <section className="bg-black">
+      <motion.section
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-black"
+      >
         <header>
           <Link
             href={{
@@ -112,7 +123,7 @@ function Index() {
               </>
             ))}
         </div>
-      </section>
+      </motion.section>
     </>
   );
 }

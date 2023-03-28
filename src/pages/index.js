@@ -92,7 +92,7 @@ const HomeScreen = () => {
           <Link
             href={{
               pathname: "/",
-              query: { comeThru: comeThru ? "true" : undefined },
+              // query: { comeThru: comeThru ? "true" : undefined },
             }}
           >
             <h1>karthik nishanth.</h1>
@@ -118,7 +118,7 @@ const HomeScreen = () => {
             <Link
               href={{
                 pathname: "/about",
-                query: { comeThru: comeThru ? "true" : undefined },
+                // query: { comeThru: comeThru ? "true" : undefined },
               }}
               className="services card"
             >
@@ -128,7 +128,7 @@ const HomeScreen = () => {
             <Link
               href={{
                 pathname: "/contact",
-                query: { comeThru: comeThru ? "true" : undefined },
+                // query: { comeThru: comeThru ? "true" : undefined },
               }}
               className="services card"
             >
@@ -156,7 +156,7 @@ const HomeScreen = () => {
             <Link
               href={{
                 pathname: "/blog",
-                query: { comeThru: comeThru ? "true" : undefined },
+                // query: { comeThru: comeThru ? "true" : undefined },
               }}
             >
               <div className="projects card">
@@ -166,7 +166,7 @@ const HomeScreen = () => {
             <Link
               href={{
                 pathname: "/projects",
-                query: { comeThru: comeThru ? "true" : undefined },
+                // query: { comeThru: comeThru ? "true" : undefined },
               }}
             >
               <div className="projects card">
@@ -176,7 +176,7 @@ const HomeScreen = () => {
             <Link
               href={{
                 pathname: "/skills",
-                query: { comeThru: comeThru ? "true" : undefined },
+                // query: { comeThru: comeThru ? "true" : undefined },
               }}
             >
               <div className="projects card">

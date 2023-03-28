@@ -3,8 +3,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 import Head from "next/head";
-import html2md from "html-to-md";
-import { render } from "preact-render-to-string";
+import { motion } from "framer-motion";
 function Id() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -49,11 +48,16 @@ function Id() {
       <Head>
         <title>{data?.title}</title>
         <meta name="description" content={data?.title} />
+        <meta name="keywords" content="blog, personal, karthik, nishanth" />
+        <meta name="author" content="Karthik Nishanth" />
         <meta property="og:title" content={data?.title} />
         <meta property="og:description" content={data?.title} />
         <meta property="og:image" content={data?.imageUrl} />
       </Head>
-      <div>
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
         <header>
           <Link
             href={{
@@ -92,7 +96,7 @@ function Id() {
             </div>
           </div>
         )}
-      </div>
+      </motion.div>
     </>
   );
 }
