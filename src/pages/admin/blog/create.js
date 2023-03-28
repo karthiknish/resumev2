@@ -18,7 +18,6 @@ function Create() {
       .then((d) => {
         if (d.success) {
           setTitle("");
-
           setImageUrl("");
           setContent("");
         }

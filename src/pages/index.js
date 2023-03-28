@@ -96,10 +96,13 @@ const HomeScreen = () => {
             }}
           >
             <h1>karthik nishanth.</h1>
+
             <span></span>
           </Link>
+
           <div>
             <span></span>
+
             <span className="alt"></span>
           </div>
         </header>
@@ -150,6 +153,16 @@ const HomeScreen = () => {
                 LinkedIn
               </a>
             </div>
+            <Link
+              href={{
+                pathname: "/blog",
+                query: { comeThru: comeThru ? "true" : undefined },
+              }}
+            >
+              <div className="projects card">
+                <h2>My Blog</h2>
+              </div>
+            </Link>
             <Link
               href={{
                 pathname: "/projects",
