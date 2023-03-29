@@ -6,7 +6,7 @@ function Id({ data }) {
   return (
     <>
       <Head>
-        <title>{data?.title} // karthik nishanth.</title>
+        <title>{data?.title}</title>
         <meta name="description" content={data?.title} />
         <meta name="keywords" content="blog, personal, karthik, nishanth" />
         <meta name="author" content="Karthik Nishanth" />
