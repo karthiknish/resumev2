@@ -63,7 +63,7 @@ function Index() {
   };
 
   useEffect(() => {
- 
+
     if (data?.user) {
       Router.push("/admin");
     }
