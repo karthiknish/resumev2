@@ -49,7 +49,6 @@ function Id({ data }) {
           <Link
             href={{
               pathname: "/",
-              //   query: { comeThru: comeThru ? "true" : undefined },
             }}
           >
             <h1>karthik nishanth.</h1>
