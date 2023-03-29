@@ -4,49 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import Head from "next/head";
 import { motion } from "framer-motion";
-function Id() {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const router = useRouter();
-  const query = router.query.id;
-
-  useEffect(() => {
-    if (query) {
-      const getBlog = async () => {
-        try {
-          const response = await fetch(`/api/blog?id=${query}`);
-          const blogData = await response.json();
-          setData(blogData.data);
-        } catch (err) {
-          setError(err.message);
-        } finally {
-          setLoading(false);
-        }
-      };
-      getBlog();
-    }
-  }, [query]);
-
-  const LoadingSkeleton = () => (
-    <div className="animate-pulse">
-      <div className="w-full h-40 bg-gray-200"></div>
-      <div className="p-2">
-        <div className="h-6 bg-gray-200 w-1/2 mt-4"></div>
-        <div className="h-4 bg-gray-200 w-full mt-2"></div>
-        <div className="h-4 bg-gray-200 w-full mt-2"></div>
-        <div className="h-4 bg-gray-200 w-3/4 mt-2"></div>
-      </div>
-    </div>
-  );
-
-  if (loading) return <LoadingSkeleton />;
-  if (error) return <div>Error: {error}</div>;
-
+function Id({ data }) {
   return (
     <>
       <Head>
-        <title>{data?.title}</title>
+        <title>{data?.title} // karthik nishanth.</title>
         <meta name="description" content={data?.title} />
         <meta name="keywords" content="blog, personal, karthik, nishanth" />
         <meta name="author" content="Karthik Nishanth" />
@@ -57,7 +19,7 @@ function Id() {
         <meta
           property="og:url"
           content={`https://www.karthiknish.com/blog/${data?._id}`}
-        />{" "}
+        />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Karthiknish" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -125,5 +87,22 @@ function Id() {
     </>
   );
 }
+export async function getServerSideProps(context) {
+  const { id } = context.query;
+  const response = await fetch(`${process.env.URL}/api/blog?id=${id}`);
+  const blogData = await response.json();
+  const data = blogData.data;
 
+  if (!data) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      data,
+    },
+  };
+}
 export default Id;

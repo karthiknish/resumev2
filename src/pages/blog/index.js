@@ -43,7 +43,7 @@ function Index() {
   return (
     <>
       <Head>
-        <title>My Blog</title>
+        <title>Blogs // karthik nishanth.</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta
           name="description"
