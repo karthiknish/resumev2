@@ -51,7 +51,7 @@ function Id({ data }) {
               pathname: "/",
             }}
           >
-            <h1>karthik nishanth.</h1>
+            <h1 className="w-1/2 lg:w-full">karthik nishanth.</h1>
             <span></span>
           </Link>
           <div>
