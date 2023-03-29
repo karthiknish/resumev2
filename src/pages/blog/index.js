@@ -80,48 +80,51 @@ function Index() {
           </h1>
 
           {data?.length !== 0 &&
-            data.map((d) => (
-              <>
-                <div
-                  style={{ cursor: "pointer" }}
-                  key={d?._id}
-                  onClick={() => Router.push(`/blog/${d?._id}`)}
-                  className="mt-8 lg:-mx-6 lg:flex lg:items-center "
-                >
-                  <Image
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                    className="object-cover w-full lg:mx-6 lg:w-1/2 rounded-xl h-72 lg:h-96"
-                    src={d?.imageUrl}
-                    alt="cover image"
-                  />
+            data
+              .slice()
+              .reverse()
+              .map((d) => (
+                <>
+                  <div
+                    style={{ cursor: "pointer" }}
+                    key={d?._id}
+                    onClick={() => Router.push(`/blog/${d?._id}`)}
+                    className="mt-8 lg:-mx-6 lg:flex lg:items-center "
+                  >
+                    <Image
+                      width={0}
+                      height={0}
+                      sizes="100vw"
+                      className="object-cover w-full lg:mx-6 lg:w-1/2 rounded-xl h-72 lg:h-96"
+                      src={d?.imageUrl}
+                      alt="cover image"
+                    />
 
-                  <div className="mt-6 lg:w-1/2 lg:mt-0 lg:mx-6 ">
-                    <p className="block mt-4 text-2xl font-semibold text-white ">
-                      {d?.title}
-                    </p>
+                    <div className="mt-6 lg:w-1/2 lg:mt-0 lg:mx-6 ">
+                      <p className="block mt-4 text-2xl font-semibold text-white ">
+                        {d?.title}
+                      </p>
 
-                    <p
-                      dangerouslySetInnerHTML={{
-                        __html: limitCharacters({
-                          text: d?.content,
-                          length: 250,
-                        }),
-                      }}
-                      className="mt-3 text-sm prose prose-strong:text-white text-gray-200 md:text-sm"
-                    ></p>
+                      <p
+                        dangerouslySetInnerHTML={{
+                          __html: limitCharacters({
+                            text: d?.content,
+                            length: 250,
+                          }),
+                        }}
+                        className="mt-3 text-sm prose prose-strong:text-white text-gray-200 md:text-sm"
+                      ></p>
 
-                    <a
-                      href="#"
-                      className="inline-block mt-2 text-blue-500 underline hover:text-blue-400"
-                    >
-                      Read more
-                    </a>
+                      <a
+                        href="#"
+                        className="inline-block mt-2 text-blue-500 underline hover:text-blue-400"
+                      >
+                        Read more
+                      </a>
+                    </div>
                   </div>
-                </div>
-              </>
-            ))}
+                </>
+              ))}
         </div>
       </motion.section>
     </>

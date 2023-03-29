@@ -10,7 +10,7 @@ export default function App({ Component, pageProps }) {
     const handleRouteChange = (url) => {
       gtag.pageview(url);
     };
-    router.events.on("routeChangeComplete", handleRouteChange);
+    router.events.on("routeChangeComplete", (url) => handleRouteChange(url));
     return () => {
       router.events.off("routeChangeComplete", handleRouteChange);
     };
