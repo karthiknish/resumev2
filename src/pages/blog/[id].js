@@ -33,9 +33,9 @@ function Id({ data }) {
         <meta name="theme-color" content="#000000" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-        <meta name="apple-mobile-web-app-title" content="KArthiknish" />{" "}
-        <meta name="msapplication-TileColor" content="#000000" />{" "}
-        <meta name="google" content="notranslate" />{" "}
+        <meta name="apple-mobile-web-app-title" content="Karthiknish" />
+        <meta name="msapplication-TileColor" content="#000000" />
+        <meta name="google" content="notranslate" />
         <link
           rel="canonical"
           href={`https://www.karthiknish.com/blog/${data?._id}`}
