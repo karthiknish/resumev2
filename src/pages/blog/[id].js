@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 import Head from "next/head";
@@ -45,11 +43,7 @@ function Id({ data }) {
         animate={{ opacity: 1, y: 0 }}
       >
         <header>
-          <Link
-            href={{
-              pathname: "/",
-            }}
-          >
+          <Link href="/">
             <h1 className="w-1/2 lg:w-full">karthik nishanth.</h1>
             <span></span>
           </Link>
