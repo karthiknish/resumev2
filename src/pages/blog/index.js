@@ -5,41 +5,16 @@ import Router from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-function Index() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
+function Index({ data = [] }) {
+  const [limitedContent, setLimitedContent] = useState([]);
   useEffect(() => {
-    getData();
-  }, []);
-
-  const getData = async () => {
-    try {
-      const response = await fetch("/api/blog", {
-        method: "GET",
-      });
-      const responseData = await response.json();
-      setData(responseData.data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-  const LoadingSkeleton = () => (
-    <div className="animate-pulse">
-      <div className="p-2">
-        <div className="h-6 bg-gray-200 w-full mt-4"></div>
-        <div className="h-4 bg-gray-200 w-full mt-2"></div>
-        <div className="h-4 bg-gray-200 w-full mt-2"></div>
-        <div className="h-4 bg-gray-200 w-3/4 mt-2"></div>
-      </div>
-    </div>
-  );
-
-  if (loading) return <LoadingSkeleton />;
-  if (error) return <div>Error: {error}</div>;
+    setLimitedContent(
+      data.map((d) => ({
+        ...d,
+        limitedContent: limitCharacters({ text: d?.content, length: 250 }),
+      }))
+    );
+  }, [data]);
   return (
     <>
       <Head>
@@ -79,56 +54,71 @@ function Index() {
             From the blog
           </h1>
 
-          {data?.length !== 0 &&
-            data
+          {limitedContent?.length !== 0 &&
+            limitedContent
               .slice()
               .reverse()
               .map((d) => (
-                <>
-                  <div
-                    style={{ cursor: "pointer" }}
-                    key={d?._id}
-                    onClick={() => Router.push(`/blog/${d?._id}`)}
-                    className="mt-8 lg:-mx-6 lg:flex lg:items-center "
-                  >
-                    <Image
-                      width={0}
-                      height={0}
-                      sizes="100vw"
-                      className="object-cover w-full lg:mx-6 lg:w-1/2 rounded-xl h-72 lg:h-96"
-                      src={d?.imageUrl}
-                      alt="cover image"
-                    />
+                <div
+                  style={{ cursor: "pointer" }}
+                  key={d?._id}
+                  onClick={() => Router.push(`/blog/${d?._id}`)}
+                  className="mt-8 lg:-mx-6 lg:flex lg:items-center "
+                >
+                  <Image
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                    className="object-cover w-full lg:mx-6 lg:w-1/2 rounded-xl h-72 lg:h-96"
+                    src={d?.imageUrl}
+                    alt="cover image"
+                  />
 
-                    <div className="mt-6 lg:w-1/2 lg:mt-0 lg:mx-6 ">
-                      <p className="block mt-4 text-2xl font-semibold text-white ">
-                        {d?.title}
-                      </p>
+                  <div className="mt-6 lg:w-1/2 lg:mt-0 lg:mx-6 ">
+                    <p className="block mt-4 text-2xl font-semibold text-white ">
+                      {d?.title}
+                    </p>
 
-                      <p
-                        dangerouslySetInnerHTML={{
-                          __html: limitCharacters({
-                            text: d?.content,
-                            length: 250,
-                          }),
-                        }}
-                        className="mt-3 text-sm prose prose-strong:text-white text-gray-200 md:text-sm"
-                      ></p>
+                    <p
+                      dangerouslySetInnerHTML={{
+                        __html: limitCharacters({
+                          text: d?.content,
+                          length: 250,
+                        }),
+                      }}
+                      className="mt-3 text-sm prose prose-strong:text-white text-gray-200 md:text-sm"
+                    ></p>
 
-                      <a
-                        href="#"
-                        className="inline-block mt-2 text-blue-500 underline hover:text-blue-400"
-                      >
-                        Read more
-                      </a>
-                    </div>
+                    <p className="inline-block mt-2 text-blue-500 underline hover:text-blue-400">
+                      Read more
+                    </p>
                   </div>
-                </>
+                </div>
               ))}
         </div>
       </motion.section>
     </>
   );
 }
+export async function getServerSideProps() {
+  try {
+    const response = await fetch(`${process.env.URL}/api/blog`, {
+      method: "GET",
+    });
+    const responseData = await response.json();
 
+    return {
+      props: {
+        data: responseData.data,
+      },
+    };
+  } catch (err) {
+    console.error(err);
+    return {
+      props: {
+        data: [],
+      },
+    };
+  }
+}
 export default Index;
