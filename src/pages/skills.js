@@ -55,7 +55,7 @@ function Skills() {
     { title: "MongoDB", Icon: SiMongodb, color: "#47A248" },
     { title: "Docker", Icon: DiDocker, color: "#2496ED" },
     { title: "SQL", Icon: DiDatabase, color: "#00648B" },
-    { title: "Next.js", Icon: TbBrandNextjs, color: "#000000" },
+    { title: "Next.js", Icon: TbBrandNextjs, color: "#ffff" },
     { title: "Angular", Icon: FaAngular, color: "#DD1B16" },
     { title: "Vite", Icon: SiVite, color: "#646CFF" },
   ];

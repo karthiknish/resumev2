@@ -8,6 +8,7 @@ function Footer() {
         rel="noopener noreferrer"
         href="https://github.com/karthiknish"
         className="text-2xl text-white hover:text-1536ba transition-all duration-300"
+        aria-label="View my GitHub profile"
       >
         <AiFillGithub className="text-4xl" />
       </Link>
@@ -16,6 +17,7 @@ function Footer() {
         rel="noopener noreferrer"
         href="https://www.linkedin.com/in/karthik-nishanth/"
         className="text-2xl text-white hover:text-1536ba transition-all duration-300"
+        aria-label="View my LinkedIn profile"
       >
         <AiFillLinkedin className="text-4xl" />
       </Link>
