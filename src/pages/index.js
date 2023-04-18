@@ -70,7 +70,7 @@ const HomeScreen = () => {
       </Head>
 
       <div className="md:max-h-screen bg-black text-white font-poppins overflow-hidden">
-        <main className="p-4 md:px-0 h-full">
+        <main className="p-4 md:px-0 h-full flex flex-col">
           <div className="text-white px-4 md:px-0 h-full font-poppins">
             <div className="flex flex-col md:flex-row">
               <div className="relative md:mx-10 w-full my-4">
@@ -120,23 +120,26 @@ const HomeScreen = () => {
                 transition={{ delay: 1, duration: 1 }}
               >
                 {cards.map((card) => (
-                  <>
-                    <div className="relative z-10">
-                      <Link href={card.href} key={card.title}>
-                        <div
-                          className={`text-white font-mono p-6 shadow-lg flex  items-center  justify-center ${card.bgColor} hover:bg-opacity-80 transition-all duration-300 cursor-pointer`}
-                        >
-                          {card.title} &rarr;
-                        </div>
-                      </Link>
+                  <div key={card.title} className="relative z-10">
+                    <Link href={card.href} key={card.title}>
                       <div
-                        className={`absolute w-full h-full top-2 left-2 -z-10 ${card.secondColor}`}
-                      ></div>
-                    </div>
-                  </>
+                        className={`text-white font-mono p-6 shadow-lg flex  items-center  justify-center ${card.bgColor} hover:bg-opacity-80 transition-all duration-300 cursor-pointer`}
+                      >
+                        {card.title} &rarr;
+                      </div>
+                    </Link>
+                    <div
+                      className={`absolute w-full h-full top-2 left-2 -z-10 ${card.secondColor}`}
+                    ></div>
+                  </div>
                 ))}
               </motion.div>
             </div>
+          </div>
+          <div className="text-gray-300 text-2xl font-mono mx-auto mt-8">
+            <Link href="/subscribe">
+              subscribe to my newsletter here! &rarr;
+            </Link>
           </div>
         </main>
       </div>
