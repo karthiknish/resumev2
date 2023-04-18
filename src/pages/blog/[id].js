@@ -42,17 +42,6 @@ function Id({ data }) {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <header>
-          <Link href="/">
-            <h1 className="w-1/2 lg:w-full">karthik nishanth.</h1>
-            <span></span>
-          </Link>
-          <div>
-            <Link href="/blog">Blog</Link>
-            <span></span>
-            <span className="alt"></span>
-          </div>
-        </header>
         {data && (
           <div className="flex flex-col">
             <Image

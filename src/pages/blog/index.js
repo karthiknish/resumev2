@@ -32,24 +32,7 @@ function Index({ data = [] }) {
         animate={{ opacity: 1, y: 0 }}
         className="bg-black"
       >
-        <header>
-          <Link
-            href={{
-              pathname: "/",
-            }}
-          >
-            <h1>karthik nishanth.</h1>
-
-            <span></span>
-          </Link>
-
-          <div>
-            <span></span>
-
-            <span className="alt"></span>
-          </div>
-        </header>
-        <div className="container px-6 py-10 mx-auto">
+        <div className="px-6 py-10 mx-auto">
           <h1 className="text-2xl font-semibold text-white capitalize lg:text-3x">
             From the blog
           </h1>
@@ -89,7 +72,7 @@ function Index({ data = [] }) {
                       className="mt-3 text-sm prose prose-strong:text-white text-gray-200 md:text-sm"
                     ></p>
 
-                    <p className="inline-block mt-2 text-blue-500 underline hover:text-blue-400">
+                    <p className="inline-block mt-2 text-blue-500 font-mono underline hover:text-blue-400">
                       Read more
                     </p>
                   </div>

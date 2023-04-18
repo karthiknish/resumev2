@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import * as gtag from "../lib/gtag";
 import Footer from "../components/Footer";
+import Nav from "../components/Nav";
 export default function App({ Component, pageProps }) {
   const router = useRouter();
   useEffect(() => {
@@ -30,6 +31,7 @@ export default function App({ Component, pageProps }) {
         }}
       />
       <SessionProvider>
+        <Nav />
         <Component {...pageProps} />
         <Footer />
       </SessionProvider>

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { AiFillGithub, AiFillLinkedin } from "react-icons/ai";
 function Footer() {
   return (
-    <div className="my-2 flex gap-4 w-full justify-center">
+    <div className="my-2  flex gap-4 w-full justify-center">
       <Link
         target="_blank"
         rel="noopener noreferrer"

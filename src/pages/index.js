@@ -1,24 +1,24 @@
 import Link from "next/link";
-import Nav from "../components/Nav";
-
 import { motion } from "framer-motion";
 import Head from "next/head";
-
 const HomeScreen = () => {
   const cards = [
     {
       title: "My Blog",
       bgColor: "bg-gradient-to-r from-purple-500 to-indigo-500",
+      secondColor: "bg-cyan-400",
       href: "/blog",
     },
     {
       title: "View My Projects",
       bgColor: "bg-gradient-to-r from-green-500 to-teal-500",
+      secondColor: "bg-indigo-300",
       href: "/projects",
     },
     {
       title: "Programming Skills and Tools",
       bgColor: "bg-gradient-to-r from-yellow-500 to-orange-500",
+      secondColor: "bg-slate-400",
       href: "/skills",
     },
   ];
@@ -68,8 +68,8 @@ const HomeScreen = () => {
           content="https://media.licdn.com/dms/image/C4E03AQEJdFeqoffB_g/profile-displayphoto-shrink_100_100/0/1603790440614?e=1685577600&v=beta&t=6kdvYfBvqFT-ItGt4UEWwjo6oFpAxpdhnmnDmnAdmsw"
         />
       </Head>
-      <Nav />
-      <div className="min-h-screen bg-black text-white font-poppins overflow-hidden">
+
+      <div className="md:max-h-screen bg-black text-white font-poppins overflow-hidden">
         <main className="p-4 md:px-0 h-full">
           <div className="text-white px-4 md:px-0 h-full font-poppins">
             <div className="flex flex-col md:flex-row">
@@ -114,19 +114,26 @@ const HomeScreen = () => {
                 ></motion.div>
               </div>
               <motion.div
-                className="flex flex-col w-full gap-4 m-4"
+                className="flex flex-col w-full gap-10 md:m-8 my-8 md:my-0 justify-center"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1, duration: 1 }}
               >
                 {cards.map((card) => (
-                  <Link href={card.href} key={card.title}>
-                    <div
-                      className={`text-white p-6 rounded-lg shadow-lg flex items-center justify-center ${card.bgColor} ${card.borderColor} hover:bg-opacity-80 transition-all duration-300 cursor-pointer`}
-                    >
-                      {card.title} &rarr;
+                  <>
+                    <div className="relative z-10">
+                      <Link href={card.href} key={card.title}>
+                        <div
+                          className={`text-white font-mono p-6 shadow-lg flex  items-center  justify-center ${card.bgColor} hover:bg-opacity-80 transition-all duration-300 cursor-pointer`}
+                        >
+                          {card.title} &rarr;
+                        </div>
+                      </Link>
+                      <div
+                        className={`absolute w-full h-full top-2 left-2 -z-10 ${card.secondColor}`}
+                      ></div>
                     </div>
-                  </Link>
+                  </>
                 ))}
               </motion.div>
             </div>
