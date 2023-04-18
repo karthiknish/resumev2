@@ -1,12 +1,43 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "./animations.css";
- @import "./fluid.css";
+/* @import "./animations.css"; */
+ /* @import "./fluid.css"; */
  * {
 	 box-sizing: border-box;
+
 }
- ::-webkit-scrollbar-track {
+html{
+	background-color: black;
+
+}
+.bg-1536ba {
+	background-color: #1536ba;
+}
+.bg-d82881{
+	background-color: #d82881;	
+}
+.bg-8d27da{
+	background-color: #8d27da;	
+}
+.bg-2cb57c{
+	background-color: #2cb57c;	
+}
+.bg-e7ff0e{
+	background-color: #e7ff0e;	
+}
+.box-3d {
+	box-shadow: 
+	  6px 6px 0px 6px rgba(255,255,0,0.8), 
+	  2px 2px 0px 2px rgba(255,255,0,0.4), 
+	  3px 3px 0px 3px rgba(255,255,0,0.2);
+  }
+.border-3d_blue {
+	border: 2px solid #0b3d91;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+ /* ::-webkit-scrollbar-track {
 	 background-color: rgba(255, 255, 255, 0.1);
 	 border-radius: 10px;
 }
@@ -980,4 +1011,4 @@
   animation-name: fadeIn;
   animation-duration: 1s;
   animation-fill-mode: both;
-}
+} */

@@ -1,60 +1,43 @@
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { generateBG } from "../utils/bgAnim.js";
+import Nav from "../components/Nav";
 
+import { motion } from "framer-motion";
 import Head from "next/head";
 
 const HomeScreen = () => {
-  const router = useRouter();
-
-  let { comeThru } = router.query;
-  const [elemProps, setElemProps] = useState({});
-
-  useEffect(() => {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    const initialElemProps = generateBG(width, height, false);
-    setElemProps(initialElemProps);
-
-    let resized = false;
-
-    const handleResize = () => {
-      if (!resized) {
-        resized = true;
-
-        if (width !== window.innerWidth || height !== window.innerHeight) {
-          const newElemProps = generateBG(
-            window.innerWidth,
-            window.innerHeight,
-            true
-          );
-          setElemProps(newElemProps);
-        }
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
+  const cards = [
+    {
+      title: "My Blog",
+      bgColor: "bg-gradient-to-r from-purple-500 to-indigo-500",
+      href: "/blog",
+    },
+    {
+      title: "View My Projects",
+      bgColor: "bg-gradient-to-r from-green-500 to-teal-500",
+      href: "/projects",
+    },
+    {
+      title: "Programming Skills and Tools",
+      bgColor: "bg-gradient-to-r from-yellow-500 to-orange-500",
+      href: "/skills",
+    },
+  ];
   return (
     <>
       <Head>
-        <title>karthik nishanth.</title>
-        <meta charset="utf-8" />
+        <title>Karthik Nishanth</title>
+        <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta
           name="description"
-          content="A creative designer and developer based in Liverpool."
+          content="A creative designer and developer based in Liverpool, passionate about building elegant products designed to solve problems."
         />
         <meta
           name="keywords"
           content="web development, design, Liverpool, freelance, business analyst"
         />
+        <meta name="author" content="Karthik Nishanth" />
+
         <meta name="author" content="Karthik Nishanth" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://karthiknish.com/" />
@@ -85,130 +68,70 @@ const HomeScreen = () => {
           content="https://media.licdn.com/dms/image/C4E03AQEJdFeqoffB_g/profile-displayphoto-shrink_100_100/0/1603790440614?e=1685577600&v=beta&t=6kdvYfBvqFT-ItGt4UEWwjo6oFpAxpdhnmnDmnAdmsw"
         />
       </Head>
-      <div
-        className={`relative min-h-screen ${comeThru ? "bg-transparent" : ""}`}
-      >
-        <header className="p-4 md:p-6 grid grid-cols-[max-content,1fr] pl-100">
-          <Link
-            href={{
-              pathname: "/",
-            }}
-          >
-            <h1>karthik nishanth.</h1>
+      <Nav />
+      <div className="min-h-screen bg-black text-white font-poppins overflow-hidden">
+        <main className="p-4 md:px-0 h-full">
+          <div className="text-white px-4 md:px-0 h-full font-poppins">
+            <div className="flex flex-col md:flex-row">
+              <div className="relative md:mx-10 w-full my-4">
+                <motion.div
+                  initial={{ opacity: 0, y: -50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="relative p-10 bg-green-300 border-8 z-20 border-yellow-300"
+                >
+                  <h1 className="text-6xl font-serif text-teal-900 font-bold">
+                    Hi! I m karthik.
+                  </h1>
+                  <h2 className="text-xl text-gray-700 font-mono">
+                    A talented Business Analyst graduate, freelance web
+                    developer, and designer based in Liverpool. I am passionate
+                    about creating cutting-edge, elegant products designed to
+                    solve problems and deliver exceptional user experiences.
+                  </h2>
+                  <br />
+                  <div className="flex flex-col gap-2">
+                    <Link
+                      className="font-mono text-xl text-indigo-400 font-bold underline"
+                      href="/about"
+                    >
+                      more about me &rarr;
+                    </Link>
 
-            <span></span>
-          </Link>
-
-          <div>
-            <span></span>
-
-            <span className="alt"></span>
-          </div>
-        </header>
-
-        <div className="main site-cont px-4 md:px-0">
-          <div className="hero text-center">
-            <h1 className="hi">hi! I m karthik.</h1>
-            <h1>a business analyst graduate,freelance webdev and designer.</h1>
-            <h2>
-              i am passionate about building cutting-edge and elegant products
-              designed to solve problems.
-            </h2>
-
-            <Link
-              href={{
-                pathname: "/about",
-                // query: { comeThru: comeThru ? "true" : undefined },
-              }}
-              className="services card"
-            >
-              more about me <span className="arrow">&rarr;</span>
-            </Link>
-            <br />
-            <Link
-              href={{
-                pathname: "/contact",
-                // query: { comeThru: comeThru ? "true" : undefined },
-              }}
-              className="services card"
-            >
-              contact <span className="arrow">&rarr;</span>
-            </Link>
-          </div>
-
-          <div className="children">
-            <div className="socials">
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://github.com/karthiknish"
+                    <Link
+                      className="font-mono text-xl text-indigo-400 font-bold underline"
+                      href="/contact"
+                    >
+                      contact &rarr;
+                    </Link>
+                  </div>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: -50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
+                  className="absolute top-5 left-5 w-full h-full bg-blue-500 z-10"
+                ></motion.div>
+              </div>
+              <motion.div
+                className="flex flex-col w-full gap-4 m-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1, duration: 1 }}
               >
-                GitHub
-              </a>
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://www.linkedin.com/in/karthik-nishanth/"
-              >
-                LinkedIn
-              </a>
+                {cards.map((card) => (
+                  <Link href={card.href} key={card.title}>
+                    <div
+                      className={`text-white p-6 rounded-lg shadow-lg flex items-center justify-center ${card.bgColor} ${card.borderColor} hover:bg-opacity-80 transition-all duration-300 cursor-pointer`}
+                    >
+                      {card.title} &rarr;
+                    </div>
+                  </Link>
+                ))}
+              </motion.div>
             </div>
-            <Link
-              href={{
-                pathname: "/blog",
-                // query: { comeThru: comeThru ? "true" : undefined },
-              }}
-            >
-              <div className="projects p-12 bg-ef4565 opacity-0 mb-24 text-7f5af0 animate-boasy duration-3000 delay-1900 ease-in-out shadow-none block transition-all card">
-                <h2>My Blog</h2>
-              </div>
-            </Link>
-            <Link
-              href={{
-                pathname: "/projects",
-                // query: { comeThru: comeThru ? "true" : undefined },
-              }}
-            >
-              <div className="projects p-12 bg-ef4565 opacity-0 mb-24 text-7f5af0 animate-boasy duration-3000 delay-1900 ease-in-out shadow-none block transition-all">
-                <h2>view my projects</h2>
-              </div>
-            </Link>
-            <Link
-              href={{
-                pathname: "/skills",
-                // query: { comeThru: comeThru ? "true" : undefined },
-              }}
-            >
-              <div className="projects p-12 bg-ef4565 opacity-0 mb-24 text-7f5af0 animate-boasy duration-3000 delay-1900 ease-in-out shadow-none block transition-all ">
-                <h2>Programming Skills and tools</h2>
-              </div>
-            </Link>
-
-            <Link
-              href={{
-                pathname: "/about",
-                query: { comeThru: comeThru ? "true" : undefined },
-              }}
-              query={(comeThru = true)}
-            >
-              <div className="contact card">
-                <h2>personal details</h2>
-              </div>
-            </Link>
           </div>
-        </div>
-        <div
-          className={"background-overlay anim "}
-          style={{
-            gridTemplateColumns: `repeat(${elemProps.gridSizeX}, 1fr)`,
-          }}
-        >
-          {[
-            ...Array((elemProps.gridSizeX || 0) * (elemProps.gridSizeY || 0)),
-          ].map((e, i) => (
-            <span key={i}></span>
-          ))}
-        </div>
+        </main>
       </div>
     </>
   );

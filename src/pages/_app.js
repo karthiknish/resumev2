@@ -4,6 +4,7 @@ import Script from "next/script";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import * as gtag from "../lib/gtag";
+import Footer from "../components/Footer";
 export default function App({ Component, pageProps }) {
   const router = useRouter();
   useEffect(() => {
@@ -18,18 +19,19 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       <Script
-        strategy="afterInteractive"
+        strategy="lazyOnload"
         src="https://www.googletagmanager.com/gtag/js?id=G-LSLF7F9MS0"
       />
       <Script
         id="google-analytics"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
         dangerouslySetInnerHTML={{
           __html: `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-LSLF7F9MS0', {page_path: window.location.pathname,});`,
         }}
       />
       <SessionProvider>
         <Component {...pageProps} />
+        <Footer />
       </SessionProvider>
     </>
   );
