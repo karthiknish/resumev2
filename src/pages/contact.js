@@ -25,7 +25,7 @@ function Contact() {
           <ul className="list-disc pl-6 mb-8">
             <li className="mb-2">
               Finalist in Bizzventure, an annual pitching competition for our
-              business idea "PABO" - an innovative approach to tackling parking
+              business idea PABO - an innovative approach to tackling parking
               issues in bustling cities.
             </li>
             <li className="mb-2">
