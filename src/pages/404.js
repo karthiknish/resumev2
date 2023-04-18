@@ -1,62 +1,21 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { generateBG } from "../utils/bgAnim.js";
+
 import Head from "next/head";
 function FourOhFour() {
   const [elemProps, setElemProps] = useState({});
 
-  useEffect(() => {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    const initialElemProps = generateBG(width, height, false);
-    setElemProps(initialElemProps);
-
-    let resized = false;
-
-    const handleResize = () => {
-      if (!resized) {
-        resized = true;
-
-        if (width !== window.innerWidth || height !== window.innerHeight) {
-          const newElemProps = generateBG(
-            window.innerWidth,
-            window.innerHeight,
-            true
-          );
-          setElemProps(newElemProps);
-        }
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
   return (
-    <div className="app fof">
+    <div className="min-h-screen  flex justify-center">
       <Head>
         <title>it`s a 404 // karthik nishanth.</title>
       </Head>
-      <h1 className="four">
-        it`s a 404
+      <div className="max-w-sm mx-auto p-8 relative text-center gap-4 my-auto z-30 bg-red-400 flex flex-col">
+        <h1 className="text-black text-4xl">it`s a 404</h1>
         <Link href="/">
-          let`s go back home <span className="arrow"> &#8594;</span>
+          let`s go back home <span> &#8594;</span>
         </Link>
-      </h1>{" "}
-      <div
-        className={"background-overlay anim "}
-        style={{
-          gridTemplateColumns: `repeat(${elemProps.gridSizeX}, 1fr)`,
-        }}
-      >
-        {[
-          ...Array((elemProps.gridSizeX || 0) * (elemProps.gridSizeY || 0)),
-        ].map((e, i) => (
-          <span key={i}></span>
-        ))}
+        <div className="absolute bg-white bottom-4 right-2 w-full h-full -z-10"></div>
       </div>
     </div>
   );
