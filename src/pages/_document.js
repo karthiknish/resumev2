@@ -11,6 +11,10 @@ export default function Document() {
           crossOrigin="true"
         />
         <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto+Mono"
+        ></link>
+        <link
           href="https://fonts.googleapis.com/css2?family=Inconsolata&display=swap"
           rel="stylesheet"
         />

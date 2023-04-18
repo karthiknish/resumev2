@@ -1,6 +1,7 @@
 import dbConnect from "../../lib/dbConnect";
 import Blog from "../../models/Blog";
-
+import sendNewsletter from "../../lib/mailer";
+import Subscriber from "../../models/Subscriber";
 function validateBlogData(data) {
   if (!data.title) {
     return { isValid: false, message: "Title is required" };
@@ -54,6 +55,23 @@ export default async function handler(req, res) {
         }
 
         const blog = await Blog.create(req.body);
+        const subscribers = await Subscriber.find({});
+        const emails = subscribers.map((subscriber) => subscriber.email);
+        const subject = `New blog post: ${blog.title}`;
+        const content = `
+          Hello,
+    
+          We have just published a new blog post on our website: ${blog.title}.
+    
+          Read the full post here: https://karthiknish.com/blog/${blog.slug}
+    
+          Thank you for subscribing to our newsletter.
+    
+          Best regards,
+          Karthik Nishanth
+        `;
+
+        await sendNewsletter(subject, content, emails);
         return res.status(201).json({ success: true, data: blog });
       } catch (error) {
         return res.status(400).json({ success: false, message: error.message });

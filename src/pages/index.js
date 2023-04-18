@@ -88,11 +88,10 @@ const HomeScreen = () => {
       <div
         className={`relative min-h-screen ${comeThru ? "bg-transparent" : ""}`}
       >
-        <header>
+        <header className="p-4 md:p-6 grid grid-cols-[max-content,1fr] pl-100">
           <Link
             href={{
               pathname: "/",
-              // query: { comeThru: comeThru ? "true" : undefined },
             }}
           >
             <h1>karthik nishanth.</h1>
@@ -107,14 +106,15 @@ const HomeScreen = () => {
           </div>
         </header>
 
-        <div className="main site-cont">
-          <div className="hero">
+        <div className="main site-cont px-4 md:px-0">
+          <div className="hero text-center">
             <h1 className="hi">hi! I m karthik.</h1>
             <h1>a business analyst graduate,freelance webdev and designer.</h1>
             <h2>
               i am passionate about building cutting-edge and elegant products
               designed to solve problems.
             </h2>
+
             <Link
               href={{
                 pathname: "/about",
@@ -159,7 +159,7 @@ const HomeScreen = () => {
                 // query: { comeThru: comeThru ? "true" : undefined },
               }}
             >
-              <div className="projects card">
+              <div className="projects p-12 bg-ef4565 opacity-0 mb-24 text-7f5af0 animate-boasy duration-3000 delay-1900 ease-in-out shadow-none block transition-all card">
                 <h2>My Blog</h2>
               </div>
             </Link>
@@ -169,7 +169,7 @@ const HomeScreen = () => {
                 // query: { comeThru: comeThru ? "true" : undefined },
               }}
             >
-              <div className="projects card">
+              <div className="projects p-12 bg-ef4565 opacity-0 mb-24 text-7f5af0 animate-boasy duration-3000 delay-1900 ease-in-out shadow-none block transition-all">
                 <h2>view my projects</h2>
               </div>
             </Link>
@@ -179,7 +179,7 @@ const HomeScreen = () => {
                 // query: { comeThru: comeThru ? "true" : undefined },
               }}
             >
-              <div className="projects card">
+              <div className="projects p-12 bg-ef4565 opacity-0 mb-24 text-7f5af0 animate-boasy duration-3000 delay-1900 ease-in-out shadow-none block transition-all ">
                 <h2>Programming Skills and tools</h2>
               </div>
             </Link>
@@ -197,7 +197,6 @@ const HomeScreen = () => {
             </Link>
           </div>
         </div>
-
         <div
           className={"background-overlay anim "}
           style={{

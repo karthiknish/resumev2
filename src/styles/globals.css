@@ -227,11 +227,7 @@
 	 height: 100%;
 	 overflow: hidden;
 }
- html body header {
-	 display: grid;
-	 grid-template-columns: max-content 1fr;
-	 padding-left: 100px;
-}
+
  html body header h1 {
 	 font-size: 50px;
 	 margin: 0px;

@@ -1,83 +1,42 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
-
+import Modal from "../../../components/Modal";
 function Index() {
   const [data, setData] = useState([]);
   const [showModal, setshowModal] = useState(false);
-
+  const [subscriberToDelete, setSubscriberToDelete] = useState(null);
   useEffect(() => {
     getData();
   }, []);
   const getData = async () => {
-    await fetch("/api/blog", {
+    await fetch("/api/subscribe", {
       method: "GET",
     })
       .then((res) => res.json())
       .then((d) => setData(d.data));
   };
+
   const deleteData = async (id) => {
-    await fetch(`/api/blog`, {
+    await fetch(`/api/subscribe`, {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ id }),
     })
       .then((res) => res.json())
-      .then((d) => console.log(d));
+      .then((d) => {
+        const updatedData = data.filter((subscriber) => subscriber._id !== id);
+        setData(updatedData);
+      });
     setshowModal(false);
   };
-  const Modal = ({ id }) => {
-    return (
-      <div
-        className="relative z-10"
-        aria-labelledby="modal-title"
-        role="dialog"
-        aria-modal="true"
-      >
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
 
-        <div className="fixed inset-0 z-10 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-            <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="sm:flex sm:items-start">
-                  <div className="mt-3 flex flex-col  w-full text-center sm:mt-0 sm:ml-4 sm:text-left">
-                    <h3
-                      className="text-base font-semibold leading-6 text-gray-900"
-                      id="modal-title"
-                    >
-                      Are you sure you want to delete?
-                    </h3>
-
-                    <div className="flex w-full lg:px-0 px-10"></div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                <button
-                  type="button"
-                  onClick={() => deleteData(id)}
-                  className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-800 sm:ml-3 sm:w-auto"
-                >
-                  Delete
-                </button>
-                <button
-                  onClick={() => setshowModal(false)}
-                  type="button"
-                  className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
   return (
     <>
       <Head>
-        <title>All Blogs</title>
+        <title>All Subscribers</title>
       </Head>
 
       <section className="container mt-4 px-4 mx-auto">
@@ -130,44 +89,37 @@ function Index() {
                         scope="col"
                         className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
                       >
-                        Author
+                        Email
                       </th>
                       <th
                         scope="col"
                         className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
                       >
-                        Content
+                        Action
                       </th>
                     </tr>
                   </thead>
+
                   <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
                     {data?.length !== 0 &&
                       data?.map((d) => (
                         <tr key={d._id}>
                           <td className="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
                             <div className="inline-flex items-center gap-x-3">
-                              {showModal && <Modal id={d?._id} />}
-                              {d?.title}
+                              {d?.name}
                             </div>
                           </td>
                           <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
-                            {d?.author}
+                            {d?.email}
                           </td>
 
-                          <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
-                            {d?.content}
-                          </td>
                           <td className="px-4 py-4 text-sm whitespace-nowrap">
                             <div className="flex items-center gap-x-6">
-                              <Link
-                                href={`/admin/blog/edit/${d?._id}`}
-                                className="text-yellow-900 transition-colors duration-200 dark:hover:text-indigo-500 dark:text-gray-300 hover:text-indigo-500 focus:outline-none"
-                              >
-                                Edit
-                              </Link>
-
                               <button
-                                onClick={() => setshowModal(true)}
+                                onClick={() => {
+                                  setSubscriberToDelete(d._id);
+                                  setshowModal(true);
+                                }}
                                 className="text-red-500 transition-colors duration-200 hover:text-indigo-500 focus:outline-none"
                               >
                                 Delete
@@ -178,6 +130,13 @@ function Index() {
                       ))}
                   </tbody>
                 </table>
+                {showModal && (
+                  <Modal
+                    id={subscriberToDelete}
+                    deleteData={deleteData}
+                    setshowModal={setshowModal}
+                  />
+                )}
               </div>
             </div>
           </div>
