@@ -4,7 +4,6 @@ import Head from "next/head";
 import Router, { useRouter } from "next/router";
 import { signIn, useSession } from "next-auth/react";
 
-import { generateBG } from "../../utils/bgAnim.js";
 function Index() {
   const { data } = useSession();
   const router = useRouter();
@@ -15,37 +14,6 @@ function Index() {
   const [conpassword, setConpassword] = useState("");
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
-  const [elemProps, setElemProps] = useState({});
-
-  useEffect(() => {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    const initialElemProps = generateBG(width, height, false);
-    setElemProps(initialElemProps);
-
-    let resized = false;
-
-    const handleResize = () => {
-      if (!resized) {
-        resized = true;
-
-        if (width !== window.innerWidth || height !== window.innerHeight) {
-          const newElemProps = generateBG(
-            window.innerWidth,
-            window.innerHeight,
-            true
-          );
-          setElemProps(newElemProps);
-        }
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   const handleResend = async (e) => {
     e.preventDefault();
@@ -63,7 +31,6 @@ function Index() {
   };
 
   useEffect(() => {
-
     if (data?.user) {
       Router.push("/admin");
     }
@@ -115,13 +82,7 @@ function Index() {
       <section>
         <div className="container flex items-center justify-center min-h-screen px-6 mx-auto">
           <form className="w-full bg-white p-10 rounded-lg shadow-2xl max-w-md">
-            <div className="flex justify-center mx-auto">
-              {/* <img
-                className="w-auto h-7 sm:h-8"
-                src="https://merakiui.com/images/logo.svg"
-                alt=""
-              /> */}
-            </div>
+            <div className="flex justify-center mx-auto"></div>
 
             <div className="flex items-center justify-center mt-6">
               <button
@@ -501,18 +462,6 @@ function Index() {
           </form>
         </div>
       </section>{" "}
-      <div
-        className={"background-overlay anim "}
-        style={{
-          gridTemplateColumns: `repeat(${elemProps.gridSizeX}, 1fr)`,
-        }}
-      >
-        {[
-          ...Array((elemProps.gridSizeX || 0) * (elemProps.gridSizeY || 0)),
-        ].map((e, i) => (
-          <span className="z-10" key={i}></span>
-        ))}
-      </div>
     </>
   );
 }
