@@ -92,14 +92,14 @@ const HomeScreen = () => {
                   <br />
                   <div className="flex flex-col gap-2">
                     <Link
-                      className="font-mono text-xl text-indigo-400 font-bold underline"
+                      className="font-mono text-xl text-indigo-500 font-bold underline"
                       href="/about"
                     >
                       more about me &rarr;
                     </Link>
 
                     <Link
-                      className="font-mono text-xl text-indigo-400 font-bold underline"
+                      className="font-mono text-xl text-indigo-500 font-bold underline"
                       href="/contact"
                     >
                       contact &rarr;
