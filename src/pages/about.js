@@ -31,7 +31,7 @@ function About() {
     if (animationEnd) {
       setCurrentMessageIndex(messages.length);
     }
-  }, [animationEnd]);
+  }, [animationEnd, messages.length]);
   const scrollToMessage = (index) => {
     if (messageRefs[index] && messageRefs[index].current) {
       messageRefs[index].current.scrollIntoView({
