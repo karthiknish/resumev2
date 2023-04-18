@@ -5,6 +5,7 @@ import {
   FaNode,
   FaBootstrap,
 } from "react-icons/fa";
+import Head from "next/head";
 import { DiJavascript1 } from "react-icons/di";
 import {
   SiTailwindcss,
@@ -44,33 +45,40 @@ function Skills() {
   ];
 
   return (
-    <div className="min-h-screen p-8">
-      <h2 className="mb-6 text-white text-3xl font-bold">
-        Programming languages
-      </h2>
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.1 }}
-        className="grid grid-cols-4 bg-gradient-to-t from-gray-800 to-black text-white p-4 gap-8"
-      >
-        {programmingSkills.map((skill) => (
-          <Skill key={skill.title} {...skill} />
-        ))}
-      </motion.div>
+    <>
+      <Head>
+        <title>Skills // karthik nishanth.</title>
+      </Head>
+      <div className="min-h-screen p-8">
+        <h2 className="mb-6 text-white text-3xl font-bold">
+          Programming languages
+        </h2>
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+          className="grid grid-cols-4 bg-gradient-to-t from-gray-800 to-black text-white p-4 gap-8"
+        >
+          {programmingSkills.map((skill) => (
+            <Skill key={skill.title} {...skill} />
+          ))}
+        </motion.div>
 
-      <h2 className="mt-12 text-white mb-6 text-3xl font-bold">Design Tools</h2>
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.3 }}
-        className="grid grid-cols-5 bg-gradient-to-b from-gray-800 to-black text-white p-4 gap-8"
-      >
-        {designTools.map((tool) => (
-          <Skill key={tool.title} {...tool} />
-        ))}
-      </motion.div>
-    </div>
+        <h2 className="mt-12 text-white mb-6 text-3xl font-bold">
+          Design Tools
+        </h2>
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.3 }}
+          className="grid grid-cols-5 bg-gradient-to-b from-gray-800 to-black text-white p-4 gap-8"
+        >
+          {designTools.map((tool) => (
+            <Skill key={tool.title} {...tool} />
+          ))}
+        </motion.div>
+      </div>
+    </>
   );
 }
 
