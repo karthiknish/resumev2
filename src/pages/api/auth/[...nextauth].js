@@ -16,6 +16,9 @@ export default NextAuth({
     signOut: "/",
     error: "/auth/error",
   },
+  jwt: {
+    secret: process.env.JWT_SECRET, // Add this line
+  },
   callbacks: {
     async signIn({ user, account, profile }) {
       await dbConnect();
