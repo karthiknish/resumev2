@@ -29,7 +29,7 @@ function Index() {
         <div className="flex flex-col items-center justify-center min-h-screen">
           <h1 className="text-4xl font-medium mb-8 text-white">Unauthorized</h1>
           <p className="text-lg text-white">
-            You don't have permission to access this page.
+            You don`t have permission to access this page.
           </p>
         </div>
       </>
