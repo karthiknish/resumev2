@@ -32,7 +32,7 @@ export default NextAuth({
       return true;
     },
     async redirect({ url, baseUrl }) {
-      return "/";
+      return "/covergenerator";
     },
     async session({ session, token }) {
       session.user.role = token.role;

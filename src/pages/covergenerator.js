@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { getDocument } from "pdfjs-dist";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 async function extractTextFromPDF(file) {
   try {
@@ -20,6 +22,14 @@ async function extractTextFromPDF(file) {
 }
 
 function Covergenerator() {
+  const { data: session, status } = useSession();
+  console.log(status);
+  const router = useRouter();
+  useEffect(() => {
+    if (status === "unauthenticated" && !session) {
+      router.push("/sign");
+    }
+  }, [status, session, router]);
   useEffect(() => {
     if (typeof window !== "undefined") {
       const pdfjs = require("pdfjs-dist");
