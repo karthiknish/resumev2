@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
 export default NextAuth({
@@ -12,7 +13,7 @@ export default NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/sign",
-    signOut: "/auth/signout",
+    signOut: "/",
     error: "/auth/error",
   },
   callbacks: {
