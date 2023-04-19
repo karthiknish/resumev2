@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -17,21 +16,10 @@ const UserSchema = new mongoose.Schema({
       "Please fill a valid email address",
     ],
   },
-  password: {
-    type: String,
-    required: [true, "Please provide your message."],
-  },
   role: {
     type: Number,
-    required: true,
+    default: 0,
   },
-  verificationToken: String,
-  isVerified: { type: Boolean, default: false },
 });
-UserSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
-    next();
-  }
-  this.password = await bcrypt.hash(this.password, 10);
-});
+
 export default mongoose.models.User || mongoose.model("User", UserSchema);

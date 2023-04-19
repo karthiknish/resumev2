@@ -4,4 +4,4 @@ const mainMiddleware = (request) => {
   const res = NextResponse.next();
   return res;
 };
-export default withAuthorization(mainMiddleware, ["/admin"]);
+export default withAuthorization(mainMiddleware, []);

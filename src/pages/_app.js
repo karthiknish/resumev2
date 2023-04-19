@@ -6,7 +6,10 @@ import { useEffect } from "react";
 import * as gtag from "../lib/gtag";
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
-export default function App({ Component, pageProps }) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}) {
   const router = useRouter();
   useEffect(() => {
     const handleRouteChange = (url) => {
@@ -30,7 +33,8 @@ export default function App({ Component, pageProps }) {
           __html: `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-LSLF7F9MS0', {page_path: window.location.pathname,});`,
         }}
       />
-      <SessionProvider>
+
+      <SessionProvider session={session}>
         <Nav />
         <Component {...pageProps} />
         <Footer />

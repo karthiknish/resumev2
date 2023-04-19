@@ -5,12 +5,12 @@ import Modal from "../../../components/Modal";
 function Index() {
   const [data, setData] = useState([]);
   const [showModal, setshowModal] = useState(false);
-  const [subscriberToDelete, setSubscriberToDelete] = useState(null);
+  const [userToDelete, setUserToDelete] = useState(null);
   useEffect(() => {
     getData();
   }, []);
   const getData = async () => {
-    await fetch("/api/subscribe", {
+    await fetch("/api/users", {
       method: "GET",
     })
       .then((res) => res.json())
@@ -18,7 +18,7 @@ function Index() {
   };
 
   const deleteData = async (id) => {
-    await fetch(`/api/subscribe`, {
+    await fetch(`/api/users`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -36,12 +36,12 @@ function Index() {
   return (
     <>
       <Head>
-        <title>All Subscribers</title>
+        <title>All Users</title>
       </Head>
 
       <section className="container mt-4 px-4 mx-auto">
         <div className="flex flex-col">
-          <h1 className="text-4xl my-4">All Subscribers</h1>
+          <h1 className="text-4xl my-4">All Users</h1>
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
               <div className="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
