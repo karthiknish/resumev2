@@ -1,25 +1,23 @@
-FROM node:16-alpine AS builder
+# Use the official Node.js image as a base image
+FROM node:14
+
+# Set the working directory
 WORKDIR /app
+
+# Copy package.json and package-lock.json into the working directory
+COPY package*.json ./
+
+# Install the dependencies
+RUN npm install
+
+# Copy the rest of the app source code into the working directory
 COPY . .
-RUN yarn install --frozen-lockfile
-RUN yarn build
 
-FROM node:16-alpine AS final
+# Install Chromium and its dependencies
+RUN apt-get update && apt-get install -y chromium-browser
 
-# --- START ---
+# Expose the port your app will run on
+EXPOSE 8080
 
-RUN apk add --no-cache chromium ca-certificates
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium-browser
-ENV PUPPETEER_CACHE_PATH /tmp/puppeteer-cache
-
-# --- END ---
-
-WORKDIR /app
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/yarn.lock ./
-RUN yarn install --frozen-lockfile --production
-EXPOSE 3000
-CMD ["yarn", "start"]
+# Start the app
+CMD ["npm", "start"]
