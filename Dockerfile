@@ -17,8 +17,8 @@ ARG PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
 
 WORKDIR /app
 COPY . .
-RUN yarn install --frozen-lockfile
-RUN yarn build
+RUN npm ci
+RUN npm run build
 
 FROM node:16-alpine AS final
 
@@ -50,7 +50,7 @@ WORKDIR /app
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/.env.example .
 COPY package.json .
-COPY yarn.lock .
-RUN yarn install --frozen-lockfile --production
+COPY package-lock.json .
+RUN npm ci --only=production
 EXPOSE 8080
-CMD ["yarn", "start"]
+CMD ["npm", "start"]
