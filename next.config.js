@@ -4,6 +4,7 @@ const withTM = require("next-transpile-modules")(["pdfjs-dist"]);
 
 const nextConfig = {
   reactStrictMode: true,
+  env: { PUPPETEER_CACHE: "/workspace/.cache/puppeteer" },
   images: {
     domains: ["images.unsplash.com"],
   },
