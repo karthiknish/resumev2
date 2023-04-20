@@ -28,6 +28,8 @@ import {
   SiPostgresql,
   SiMongodb,
   SiJupyter,
+  SiSvelte,
+  SiTypescript,
 } from "react-icons/si";
 import { motion } from "framer-motion";
 
@@ -43,6 +45,7 @@ function Skills() {
     { title: "CSS", Icon: FaCss3Alt, color: "#3594CF" },
     { title: "React", Icon: FaReact, color: "#5BD3F3" },
     { title: "Javascript", Icon: DiJavascript1, color: "#EFD81D" },
+    { title: "TypeScript", Icon: SiTypescript, color: "#3178C6" },
     { title: "NodeJs", Icon: FaNode, color: "#5B9853" },
     { title: "Bootstrap", Icon: FaBootstrap, color: "#700EED" },
     { title: "TailwindCSS", Icon: SiTailwindcss, color: "#700EED" },
@@ -58,6 +61,7 @@ function Skills() {
     { title: "Next.js", Icon: TbBrandNextjs, color: "#ffff" },
     { title: "Angular", Icon: FaAngular, color: "#DD1B16" },
     { title: "Vite", Icon: SiVite, color: "#646CFF" },
+    { title: "Svelte", Icon: SiSvelte, color: "#FF3E00" },
   ];
   const analyticalSkills = [
     { title: "Google Analytics", Icon: SiGoogleanalytics, color: "#F8981D" },
