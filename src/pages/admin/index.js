@@ -6,7 +6,6 @@ import {
   AiOutlineUserSwitch,
 } from "react-icons/ai";
 import { MdOutlineUnsubscribe } from "react-icons/md";
-
 import Head from "next/head";
 import { useSession } from "next-auth/react";
 import { getServerSession } from "next-auth/next";
