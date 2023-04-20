@@ -1,5 +1,5 @@
 import htmlPDF from "puppeteer-html-pdf";
-
+import chromium from "chrome-aws-lambda";
 export default async (req, res) => {
   if (req.method === "POST") {
     const { coverLetter, companyName, role } = req.body;
@@ -62,6 +62,9 @@ export default async (req, res) => {
 
       const options = {
         format: "A4",
+        headless: true,
+        args: chromium.args,
+        executablePath: await chromium.executablePath,
       };
 
       const pdfBuffer = await htmlPDF.create(coverLetterHTML, options);
