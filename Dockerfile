@@ -1,5 +1,13 @@
+# Install dependencies only when needed
+FROM node:16-alpine AS deps
+
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Rebuild the source code only when needed
 FROM node:16-alpine AS builder
-# Add ARG lines for environment variables
+
 ARG MONGODB_URI
 ARG NOREPLY_EMAIL
 ARG NOREPLY_PASS
@@ -17,40 +25,24 @@ ARG PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
 
 WORKDIR /app
 COPY . .
-RUN npm ci
+COPY --from=deps /app/node_modules ./node_modules
 RUN npm run build
 
-FROM node:16-alpine AS final
-
-# --- START ---
+# Production image, copy all the files and run the app
+FROM node:16-alpine AS runner
 
 RUN apk add --no-cache chromium ca-certificates
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium-browser
 
-# --- END ---
+WORKDIR /app
+ENV NODE_ENV=production
 
-# Add ENV lines to set environment variables for the runtime
-ENV MONGODB_URI=$MONGODB_URI
-ENV NOREPLY_EMAIL=$NOREPLY_EMAIL
-ENV NOREPLY_PASS=$NOREPLY_PASS
-ENV URL=$URL
-ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
-ENV GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
-ENV GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET
-ENV OPENAI_API_KEY=$OPENAI_API_KEY
-ENV GOOGLE_API_KEY=$GOOGLE_API_KEY
-ENV CUSTOM_SEARCH_ENGINE_ID=$CUSTOM_SEARCH_ENGINE_ID
-ENV NEXTAUTH_URL=$NEXTAUTH_URL
-ENV JWT_SECRET=$JWT_SECRET
-ENV PUPPETEER_EXECUTABLE_PATH=$PUPPETEER_EXECUTABLE_PATH
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=$PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
-
-WORKDIR /usr/src/app
-COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/.env.example .
-COPY package.json .
-COPY package-lock.json .
-RUN npm ci --only=production
+COPY --from=builder /app/package.json .
+COPY --from=builder /app/package-lock.json .
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+
 EXPOSE 8080
 CMD ["npm", "start"]
