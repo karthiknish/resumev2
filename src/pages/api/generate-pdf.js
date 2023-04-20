@@ -63,7 +63,7 @@ export default async (req, res) => {
       const options = {
         format: "A4",
         headless: true,
-        args: chromium.args,
+        args: [...chromium.args, "--use-gl=egl"],
         executablePath: await chromium.executablePath,
       };
 
