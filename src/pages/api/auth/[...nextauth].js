@@ -1,6 +1,5 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
 export default NextAuth({

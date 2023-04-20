@@ -6,7 +6,7 @@ import {
   AiOutlineUserSwitch,
 } from "react-icons/ai";
 import { MdOutlineUnsubscribe } from "react-icons/md";
-import { authOptions } from "../api/auth/[...nextauth]";
+
 import Head from "next/head";
 import { useSession } from "next-auth/react";
 import { getServerSession } from "next-auth/next";
@@ -78,7 +78,7 @@ function Index() {
   );
 }
 export async function getServerSideProps(context) {
-  const session = await getServerSession(context.req, context.res, authOptions);
+  const session = await getServerSession(context.req, context.res);
   return {
     props: {
       session,
