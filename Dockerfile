@@ -38,7 +38,7 @@ ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium-browser
 WORKDIR /app
 ENV NODE_ENV=production
 
-COPY --from=builder /app/.env.example .
+
 COPY --from=builder /app/package.json .
 COPY --from=builder /app/package-lock.json .
 COPY --from=builder /app/dist ./dist
