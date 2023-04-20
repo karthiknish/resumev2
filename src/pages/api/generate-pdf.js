@@ -63,7 +63,7 @@ export default async (req, res) => {
       const options = {
         format: "A4",
         headless: true,
-        args: [...chromium.args, "--use-gl=egl"],
+        args: ["--no-sandbox"],
         executablePath:
           process.env.PUPPETEER_CACHE || (await chromium.executablePath),
       };
