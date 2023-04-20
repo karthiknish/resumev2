@@ -1,6 +1,7 @@
 import htmlPDF from "puppeteer-html-pdf";
-import chromium from "chrome-aws-lambda";
 export default async (req, res) => {
+  process.env.PUPPETEER_CACHE_PATH =
+    process.env.PUPPETEER_CACHE_PATH || "/workspace/.cache/puppeteer";
   if (req.method === "POST") {
     const { coverLetter, companyName, role } = req.body;
     const lines = coverLetter.split("\n");
@@ -64,9 +65,7 @@ export default async (req, res) => {
         format: "A4",
         headless: true,
         args: ["--no-sandbox"],
-        executablePath:
-          process.env.PUPPETEER_EXECUTABLE_PATH ||
-          (await chromium.executablePath),
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
       };
 
       const pdfBuffer = await htmlPDF.create(coverLetterHTML, options);
