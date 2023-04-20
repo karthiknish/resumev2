@@ -65,7 +65,8 @@ export default async (req, res) => {
         headless: true,
         args: ["--no-sandbox"],
         executablePath:
-          process.env.PUPPETEER_CACHE || (await chromium.executablePath),
+          process.env.PUPPETEER_EXECUTABLE_PATH ||
+          (await chromium.executablePath),
       };
 
       const pdfBuffer = await htmlPDF.create(coverLetterHTML, options);
