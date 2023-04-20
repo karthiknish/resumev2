@@ -64,7 +64,8 @@ export default async (req, res) => {
         format: "A4",
         headless: true,
         args: [...chromium.args, "--use-gl=egl"],
-        executablePath: await chromium.executablePath,
+        executablePath:
+          process.env.PUPPETEER_CACHE || (await chromium.executablePath),
       };
 
       const pdfBuffer = await htmlPDF.create(coverLetterHTML, options);
