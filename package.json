@@ -23,6 +23,7 @@
     "bcryptjs": "^2.4.3",
     "chrome-aws-lambda": "^10.1.0",
     "compromise": "^14.8.2",
+    "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dom-to-image": "^2.6.0",
     "dotenv": "^16.0.3",

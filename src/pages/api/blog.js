@@ -2,6 +2,7 @@ import dbConnect from "../../lib/dbConnect";
 import Blog from "../../models/Blog";
 import sendNewsletter from "../../lib/mailer";
 import Subscriber from "../../models/Subscriber";
+import cors from "./middlewares/cors";
 function validateBlogData(data) {
   if (!data.title) {
     return { isValid: false, message: "Title is required" };
@@ -17,6 +18,7 @@ function validateBlogData(data) {
 
 export default async function handler(req, res) {
   const { method } = req;
+  await cors(req, res);
   await dbConnect();
 
   switch (method) {

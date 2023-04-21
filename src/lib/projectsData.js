@@ -4,6 +4,7 @@ import InitioSol from "../../public/initiosol.png";
 import Acaa from "../../public/acaa.png";
 import Dreamedcons from "../../public/dreamedcons.png";
 import Medblocks from "../../public/medblocks.png";
+import CredCard from "../../public/credcard.png";
 import {
   FaCss3Alt,
   FaHtml5,
@@ -19,12 +20,14 @@ import { DiJavascript1, DiDatabase, DiDocker } from "react-icons/di";
 import { TbBrandNextjs } from "react-icons/tb";
 import {
   SiTailwindcss,
+  SiPandas,
   SiOpenai,
   SiAdobeillustrator,
   SiWebcomponentsdotorg,
   SiAdobephotoshop,
   SiAdobexd,
   SiAdobedreamweaver,
+  SiScikitlearn,
   SiWordpress,
   SiTestinglibrary,
   SiMysql,
@@ -36,6 +39,7 @@ import {
   SiRedux,
   SiVite,
   SiPostgresql,
+  SiNumpy,
   SiMongodb,
   SiJupyter,
   SiSvelte,
@@ -161,9 +165,21 @@ export const projectsData = [
     ],
   },
   {
-    title: "Analytics Project 1",
-    shortdescription: "A short description of Analytics Project 1.",
+    id: "creditcard",
+    title: "Credit Card Fraud Detection",
+    shortdescription:
+      "The Credit Card Fraud Detection dataset contains anonymized credit card transactions made by European cardholders in September 2013, labeled as fraudulent or genuine. It contains only numerical input variables resulting from PCA transformation, and the original features and background information about the data cannot be provided due to confidentiality issues. ",
+    description:
+      "The project aims to identify fraudulent transactions in credit card data using oversampling with SMOTE to balance the data. The data used in the project was obtained from Kaggle and contains only numerical input variables that are the result of a PCA transformation. The features V1, V2,...V28 are the principal components obtained with PCA, and the features Time and Amount are the only features that have not been transformed with PCA. The Class feature is the response variable that takes value 1 in case of fraud and 0 otherwise.The project evaluates the model based on Recall and Precision scores. Recall is defined as the ratio of true positives to the sum of true positives and false negatives, while Precision is the ratio of true positives to the sum of true positives and false positives. The Logistic Regression model has the highest recall score (0.955) but poor precision score (0.078), while the Random Forest model performs better with a recall score of 0.87 and precision score of 0.73, making it better suited for maintaining a balance between recall and precision in detecting fraudulent transactions. The conclusion drawn from this project is that the Random Forest model is better suited for detecting fraudulent transactions in credit card data.",
     category: "analytics",
-    link: "/projects/analytics/1",
+    image: CredCard,
+    extlink: "https://github.com/karthiknish/creditcardfraud-python",
+    link: "/projects/creditcard",
+    techStack: [
+      { icon: FaPython, name: "Python" },
+      { icon: SiPandas, name: "Pandas" },
+      { icon: SiScikitlearn, name: "Sci Kit Learn" },
+      { icon: SiNumpy, name: "Numpy" },
+    ],
   },
 ];
