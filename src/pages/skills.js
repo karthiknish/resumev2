@@ -81,7 +81,7 @@ function Skills() {
   return (
     <>
       <Head>
-        <title>Skills // karthik nishanth.</title>
+        <title>skills // karthik nishanth.</title>
       </Head>
       <div className="min-h-screen p-8 md:p-8">
         <h2 className="mb-6 text-white text-3xl font-bold">

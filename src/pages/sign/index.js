@@ -5,7 +5,7 @@ export default function SignIn() {
   return (
     <>
       <Head>
-        <title>Sign in</title>
+        <title>sign in // karthik nishanth.</title>
       </Head>
       <div className="flex min-h-screen max-w-sm flex-col justify-center text-center mx-auto">
         <h1 className="text-2xl my-4">Sign in to continue to use the app</h1>

@@ -18,7 +18,7 @@ function Index({ data = [] }) {
   return (
     <>
       <Head>
-        <title>Blogs // karthik nishanth.</title>
+        <title>blogs // karthik nishanth.</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta
           name="description"

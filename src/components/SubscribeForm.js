@@ -20,7 +20,7 @@ const SubscribeForm = () => {
   return (
     <>
       <Head>
-        <title>Subscribe</title>
+        <title>subscribe // karthik nishanth.</title>
       </Head>
       <div className="w-full max-w-md mx-auto mt-10">
         <form

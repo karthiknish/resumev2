@@ -25,7 +25,7 @@ const HomeScreen = () => {
   return (
     <>
       <Head>
-        <title>Karthik Nishanth</title>
+        <title>karthik nishanth.</title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta
