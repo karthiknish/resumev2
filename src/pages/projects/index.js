@@ -35,7 +35,7 @@ const Index = () => {
         "The cover letter generator is a software tool that takes in the role and company information provided by the user and generates a personalized cover letter in PDF format using openAI and Google. The generator is designed to create a professional cover letter that highlights the user's skills and experience, helping them to stand out in the job market.",
       image: Covergenerator,
       category: "fullstack",
-      link: "/projects/initiosolutions",
+      link: "/projects/covergenerator",
     },
     {
       title: "Initio Solutions",
