@@ -60,11 +60,12 @@ const Index = () => {
               transition={{ duration: 0.5 }}
               onClick={() => Router.push(project.link)}
             >
-              <Image
-                className="md:h-48 h-full object-contain mb-4 mr-4"
-                src={project.image}
-                alt={project.title}
+              <img
+                src={imageUrl}
+                alt={title}
+                style={{ maxWidth: "100%", height: "auto" }}
               />
+
               <div className="flex flex-col w-full">
                 <h3 className="text-lg font-semibold mb-2">{project.title}</h3>
                 <p className="text-gray-600">{project.shortdescription}</p>
