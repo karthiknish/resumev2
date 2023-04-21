@@ -6,7 +6,7 @@ import Cors from "cors";
 import runMiddleware from "./middlewares/cors";
 const cors = Cors({
   methods: ["GET", "HEAD", "POST", "OPTIONS"], // Allowed methods
-  origin: "*", // Allowed origin(s), set your own domain or specific domains here
+  origin: /https:\/\/(www\.)?karthiknish\.com/, // Allow requests from your domain
 });
 
 function validateBlogData(data) {
