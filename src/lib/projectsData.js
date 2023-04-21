@@ -163,7 +163,6 @@ export const projectsData = [
   {
     title: "Analytics Project 1",
     shortdescription: "A short description of Analytics Project 1.",
-
     category: "analytics",
     link: "/projects/analytics/1",
   },

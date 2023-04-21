@@ -36,7 +36,7 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium-browser
 
 WORKDIR /app
-ENV NODE_ENV=production
+
 
 
 COPY --from=builder /app/package.json .
