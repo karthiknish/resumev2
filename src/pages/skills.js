@@ -23,6 +23,7 @@ import {
   SiMicrosoftexcel,
   SiFigma,
   SiGatsby,
+  SiWordpress,
   SiRedux,
   SiVite,
   SiPostgresql,
@@ -62,6 +63,7 @@ function Skills() {
     { title: "Angular", Icon: FaAngular, color: "#DD1B16" },
     { title: "Vite", Icon: SiVite, color: "#646CFF" },
     { title: "Svelte", Icon: SiSvelte, color: "#FF3E00" },
+    { title: "Wordpress", Icon: SiWordpress, color: "#1F6E92" },
   ];
   const analyticalSkills = [
     { title: "Google Analytics", Icon: SiGoogleanalytics, color: "#F8981D" },
