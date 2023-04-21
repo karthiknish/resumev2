@@ -2,7 +2,13 @@ import dbConnect from "../../lib/dbConnect";
 import Blog from "../../models/Blog";
 import sendNewsletter from "../../lib/mailer";
 import Subscriber from "../../models/Subscriber";
-import cors from "./middlewares/cors";
+import Cors from "cors";
+import runMiddleware from "./middlewares/cors";
+const cors = Cors({
+  methods: ["GET", "HEAD", "POST", "OPTIONS"], // Allowed methods
+  origin: "*", // Allowed origin(s), set your own domain or specific domains here
+});
+
 function validateBlogData(data) {
   if (!data.title) {
     return { isValid: false, message: "Title is required" };
@@ -18,7 +24,7 @@ function validateBlogData(data) {
 
 export default async function handler(req, res) {
   const { method } = req;
-  await cors(req, res);
+  await runMiddleware(req, res, cors);
   await dbConnect();
 
   switch (method) {
