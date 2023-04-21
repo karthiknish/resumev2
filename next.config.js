@@ -6,7 +6,7 @@ const nextConfig = {
   reactStrictMode: true,
   env: { PUPPETEER_CACHE: "/workspace/.cache/puppeteer" },
   images: {
-    domains: ["images.unsplash.com"],
+    domains: ["images.unsplash.com",'karthiknish.com'],
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
