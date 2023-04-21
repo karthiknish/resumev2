@@ -44,15 +44,12 @@ function Id({ data }) {
       >
         {data && (
           <div className="flex flex-col">
-            <Image
-              className="w-full h-40 object-cover"
-              width="0"
-              height="0"
-              sizes="100vw"
-              alt="headimage"
+            <img
               src={data.imageUrl}
+              alt="headimage"
+              className="w-full h-40 object-cover"
+              style={{ maxWidth: "100%", height: "auto" }}
             />
-
             <div className="flex flex-col p-2">
               <h1 className="text-4xl p-2 text-white">{data?.title}</h1>
               {data && data.content && (

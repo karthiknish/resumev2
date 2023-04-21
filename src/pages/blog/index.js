@@ -48,13 +48,11 @@ function Index({ data = [] }) {
                   onClick={() => Router.push(`/blog/${d?._id}`)}
                   className="mt-8 lg:-mx-6 lg:flex lg:items-center "
                 >
-                  <Image
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                    className="object-cover w-full lg:mx-6 lg:w-1/2 rounded-xl h-72 lg:h-96"
+                  <img
                     src={d?.imageUrl}
                     alt="cover image"
+                    className="object-cover w-full lg:mx-6 lg:w-1/2 rounded-xl h-72 lg:h-96"
+                    style={{ maxWidth: "100%", height: "auto" }}
                   />
 
                   <div className="mt-6 lg:w-1/2 lg:mt-0 lg:mx-6 ">
