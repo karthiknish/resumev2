@@ -24,17 +24,6 @@ BlogSchema.pre("save", function (next) {
   this.slug = this.title.split(" ").join("-");
   next();
 });
-BlogSchema.pre("findByIdAndUpdate", function (next) {
-  console.log(this.title);
-  const title = this.getUpdate().title;
-  if (title) {
-    this.findOneAndUpdate(
-      {},
-      { slug: title.split(" ").join("-") },
-      { new: true }
-    );
-  }
-  next();
-});
+
 
 export default mongoose.models.Blog || mongoose.model("Blog", BlogSchema);

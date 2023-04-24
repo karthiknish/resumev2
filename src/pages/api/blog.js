@@ -23,6 +23,16 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
+        if (req.query.slug) {
+          const blog = await Blog.findOne({ slug: req.query.slug });
+
+          if (!blog) {
+            return res
+              .status(404)
+              .json({ success: false, message: "Blog not found" });
+          }
+          return res.status(200).json({ success: true, data: blog });
+        }
         if (req.query.id) {
           const blog = await Blog.findById(req.query.id);
           if (!blog) {
@@ -91,9 +101,17 @@ export default async function handler(req, res) {
             .status(400)
             .json({ success: false, message: validationResult.message });
         }
-        const blog = await Blog.findByIdAndUpdate(req.body.id, req.body, {
-          new: true,
-        });
+        if (req.body.title) {
+          req.body.slug = req.body.title.split(" ").join("-");
+        }
+        const blog = await Blog.findOneAndUpdate(
+          { _id: req.body.id },
+          req.body,
+          {
+            new: true,
+            runValidators: true,
+          }
+        );
         if (!blog) {
           return res
             .status(404)

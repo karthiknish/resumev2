@@ -47,8 +47,7 @@ function Id({ data }) {
             <img
               src={data.imageUrl}
               alt="headimage"
-              className="w-full h-40 object-cover"
-              style={{ maxWidth: "100%", height: "auto" }}
+              className="w-full max-h-40 object-cover"
             />
             <div className="flex flex-col p-2">
               <h1 className="text-4xl p-2 text-white">{data?.title}</h1>
@@ -67,7 +66,7 @@ function Id({ data }) {
 }
 export async function getServerSideProps(context) {
   const { id } = context.query;
-  const response = await fetch(`${process.env.URL}/api/blog?id=${id}`);
+  const response = await fetch(`${process.env.URL}/api/blog?slug=${id}`);
   const blogData = await response.json();
   const data = blogData.data;
 

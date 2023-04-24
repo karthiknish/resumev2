@@ -45,14 +45,13 @@ function Index({ data = [] }) {
                 <div
                   style={{ cursor: "pointer" }}
                   key={d?._id}
-                  onClick={() => Router.push(`/blog/${d?._id}`)}
+                  onClick={() => Router.push(`/blog/${d?.slug}`)}
                   className="mt-8 lg:-mx-6 lg:flex lg:items-center "
                 >
                   <img
                     src={d?.imageUrl}
                     alt="cover image"
-                    className="object-cover w-full lg:mx-6 lg:w-1/2 rounded-xl h-72 lg:h-96"
-                    style={{ maxWidth: "100%", height: "auto" }}
+                    className="object-cover w-full lg:mx-6 lg:w-1/2 rounded-xl max-h-72 lg:h-96"
                   />
 
                   <div className="mt-6 lg:w-1/2 lg:mt-0 lg:mx-6 ">
