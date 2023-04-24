@@ -2,12 +2,6 @@ import dbConnect from "../../lib/dbConnect";
 import Blog from "../../models/Blog";
 import sendNewsletter from "../../lib/mailer";
 import Subscriber from "../../models/Subscriber";
-import Cors from "cors";
-import runMiddleware from "./middlewares/cors";
-const cors = Cors({
-  methods: ["GET", "HEAD", "POST", "OPTIONS"], // Allowed methods
-  origin: /https:\/\/(www\.)?karthiknish\.com/, // Allow requests from your domain
-});
 
 function validateBlogData(data) {
   if (!data.title) {
@@ -24,7 +18,6 @@ function validateBlogData(data) {
 
 export default async function handler(req, res) {
   const { method } = req;
-  await runMiddleware(req, res, cors);
   await dbConnect();
 
   switch (method) {
@@ -101,7 +94,6 @@ export default async function handler(req, res) {
         const blog = await Blog.findByIdAndUpdate(req.body.id, req.body, {
           new: true,
         });
-        console.log(blog);
         if (!blog) {
           return res
             .status(404)

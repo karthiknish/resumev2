@@ -12,7 +12,7 @@ const sendNewsletter = async (subject, htmlContent, recipients) => {
   });
 
   const mailOptions = {
-    from: process.env.EMAIL_USER,
+    from: process.env.NOREPLY_EMAIL,
     to: recipients.join(","),
     subject: subject,
     html: htmlContent,

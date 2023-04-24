@@ -12,9 +12,10 @@ import { getServerSession } from "next-auth/next";
 function Index() {
   const { data: session } = useSession();
   const [isClient, setIsClient] = useState(false);
-
+  console.log(session);
   useEffect(() => {
     setIsClient(true);
+    console.log(session);
   }, []);
 
   if (!isClient) return null;
@@ -26,6 +27,7 @@ function Index() {
           <title>Unauthorized</title>
         </Head>
         <div className="flex flex-col items-center justify-center min-h-screen">
+          {console.log(session)}
           <h1 className="text-4xl font-medium mb-8 text-white">Unauthorized</h1>
           <p className="text-lg text-white">
             You don`t have permission to access this page.

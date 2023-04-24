@@ -68,6 +68,7 @@ function Covergenerator() {
     }
   };
   useEffect(() => {
+    console.log(session);
     if (fetchedText) {
       setExtractedText(fetchedText);
     } else if (resume) {

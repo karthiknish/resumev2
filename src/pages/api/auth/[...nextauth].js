@@ -9,15 +9,18 @@ export default NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
+  // session: {
+  //   strategy: "jwt",
+  // },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/sign",
     signOut: "/",
     error: "/auth/error",
   },
-  jwt: {
-    secret: process.env.JWT_SECRET, // Add this line
-  },
+  // jwt: {
+  //   secret: process.env.JWT_SECRET,
+  // },
   callbacks: {
     async signIn({ user, account, profile }) {
       await dbConnect();
