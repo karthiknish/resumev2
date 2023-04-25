@@ -66,7 +66,7 @@ function Index({ data = [] }) {
                           length: 250,
                         }),
                       }}
-                      className="mt-3 text-sm prose prose-strong:text-white text-gray-200 md:text-sm"
+                      className="mt-3 text-sm prose prose-strong:text-white font-mono text-gray-200 md:text-sm"
                     ></p>
 
                     <p className="inline-block mt-2 text-blue-500 font-mono underline hover:text-blue-400">

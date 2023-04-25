@@ -53,7 +53,7 @@ function Id({ data }) {
               <h1 className="text-4xl p-2 text-white">{data?.title}</h1>
               {data && data.content && (
                 <div
-                  className="p-3 prose-strong:text-2xl prose-p:m-2 text-gray-200"
+                  className="p-3 font-mono prose-strong:text-2xl prose-p:m-2 text-gray-200"
                   dangerouslySetInnerHTML={{ __html: data.content }}
                 ></div>
               )}
