@@ -41,7 +41,6 @@ function About() {
       });
     }
   };
-
   return (
     <>
       <Head>

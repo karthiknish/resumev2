@@ -1,6 +1,3 @@
-import { useEffect, useState } from "react";
-import Link from "next/link";
-
 import Head from "next/head";
 function Contact() {
   return (
@@ -41,13 +38,6 @@ function Contact() {
           </ul>
 
           <div className="flex space-x-4">
-            {/* <a
-              target="_blank"
-              href={pdf}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded"
-            >
-              Download CV
-            </a> */}
             <a
               href="mailto:karthik.nishanth06@gmail.com"
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded"
