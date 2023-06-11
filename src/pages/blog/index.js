@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 import limitCharacters from "limit-characters";
 import Router from "next/router";
-import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
 function Index({ data = [] }) {
   const [limitedContent, setLimitedContent] = useState([]);
