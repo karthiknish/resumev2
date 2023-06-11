@@ -27,7 +27,7 @@ const SubscribeForm = () => {
           onSubmit={handleSubmit}
           className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
         >
-          <h2 className="mb-6 text-2xl font-semibold text-center">
+          <h2 className="mb-6 text-2xl text-black font-semibold text-center">
             Subscribe to my newsletter
           </h2>
           <div className="my-4 gap-4 flex flex-col">
