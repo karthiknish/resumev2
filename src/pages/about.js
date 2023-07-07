@@ -53,13 +53,13 @@ function About() {
       <div className="min-h-screen flex flex-col justify-center">
         <h1 className="text-white mx-auto py-3 text-4xl font-mono">About me</h1>
         <div className="w-full p-4">
-          <ul className="p-2 flex flex-col mx-auto space-y-4">
+          <ul className="p-2 flex flex-col mx-auto max-w-5xl space-y-1">
             {messages.map((message, i) => (
               <AnimatePresence key={i}>
                 {i <= currentMessageIndex && (
                   <motion.li
                     ref={messageRefs[i]}
-                    className={` max-w-lg font-display text-xl px-4 py-2 rounded-lg text-white ${
+                    className={`max-w-md mx-10 font-display text-xl px-4 py-2 rounded-lg text-white ${
                       i % 2 === 0
                         ? "self-start bg-purple-800"
                         : "self-end bg-green-500"
@@ -75,7 +75,7 @@ function About() {
                     }}
                   >
                     {i === messages.length - 1 ? (
-                      <Link className="text-rose-800" href="/contact">
+                      <Link className="text-yellow-700" href="/contact">
                         {message}
                       </Link>
                     ) : (
