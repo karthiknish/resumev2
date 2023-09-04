@@ -26,47 +26,52 @@ const HomeScreen = () => {
   return (
     <>
       <Head>
-        <title>karthik nishanth.</title>
+        <title>
+          Karthik Nishanth - Freelance Web Developer in Liverpool, UK
+        </title>
+
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta
           name="description"
-          content="A creative designer and developer based in Liverpool, passionate about building elegant products designed to solve problems."
+          content="Karthik Nishanth: A Liverpool-based freelance web developer and designer, crafting elegant web solutions for businesses in the UK."
         />
         <meta
           name="keywords"
-          content="web development, design, Liverpool, freelance, business analyst"
+          content="freelance web developer, Liverpool, UK, web design, Karthik Nishanth"
         />
         <meta name="author" content="Karthik Nishanth" />
 
-        <meta name="author" content="Karthik Nishanth" />
+        <link rel="canonical" href="https://karthiknish.com/" />
+
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://karthiknish.com/" />
         <meta
           property="og:title"
-          content="Karthik Nishanth - Web Developer and Designer"
+          content="Karthik Nishanth - Freelance Web Developer in Liverpool, UK"
         />
         <meta
           property="og:description"
-          content="A creative designer and developer based in Liverpool."
+          content="Karthik Nishanth: A Liverpool-based freelance web developer and designer, crafting elegant web solutions for businesses in the UK."
         />
         <meta
           property="og:image"
-          content="https://yourwebsite.com/path/to/your-image.jpg"
+          content="https://media.licdn.com/dms/image/C4E03AQEJdFeqoffB_g/profile-displayphoto-shrink_800_800/0/1603790440614?e=1699488000&v=beta&t=dwg4dZ4yoUI53_8YL4ivkY0YhTSTpvhhzzRZMtKrVOQ"
         />
+
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content="https://karthiknish.com/" />
         <meta
           property="twitter:title"
-          content="Karthik Nishanth - Web Developer and Designer"
+          content="Karthik Nishanth - Freelance Web Developer in Liverpool, UK"
         />
         <meta
           property="twitter:description"
-          content="A creative designer and developer based in Liverpool."
+          content="Karthik Nishanth: A Liverpool-based freelance web developer and designer, crafting elegant web solutions for businesses in the UK."
         />
         <meta
           property="twitter:image"
-          content="https://media.licdn.com/dms/image/C4E03AQEJdFeqoffB_g/profile-displayphoto-shrink_100_100/0/1603790440614?e=1685577600&v=beta&t=6kdvYfBvqFT-ItGt4UEWwjo6oFpAxpdhnmnDmnAdmsw"
+          content="https://media.licdn.com/dms/image/C4E03AQEJdFeqoffB_g/profile-displayphoto-shrink_800_800/0/1603790440614?e=1699488000&v=beta&t=dwg4dZ4yoUI53_8YL4ivkY0YhTSTpvhhzzRZMtKrVOQ"
         />
       </Head>
 
