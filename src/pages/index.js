@@ -90,10 +90,10 @@ const HomeScreen = () => {
                     Hi! I m karthik.
                   </h1>
                   <h2 className="text-xl text-gray-700 font-mono">
-                    A talented Business Analyst graduate, freelance web
-                    developer, and designer based in Liverpool. I am passionate
-                    about creating cutting-edge, elegant products designed to
-                    solve problems and deliver exceptional user experiences.
+                    A talented Freelance web developer, and designer based in
+                    Liverpool. I am passionate about creating cutting-edge,
+                    elegant products designed to solve problems and deliver
+                    exceptional user experiences.
                   </h2>
                   <br />
                   <div className="flex flex-col gap-2">
