@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Head from "next/head";
+import Chatbot from "../components/Chatbot";
 const HomeScreen = () => {
   const cards = [
     {
@@ -136,6 +137,9 @@ const HomeScreen = () => {
               </motion.div>
             </div>
           </div>
+
+          <Chatbot />
+
           <div className="text-gray-300 text-2xl font-mono mx-auto mt-8">
             <Link href="/subscribe">
               subscribe to my newsletter here! &rarr;
