@@ -143,7 +143,7 @@ const HomeScreen = () => {
             </div>
           </div>
 
-          <Chatbot />
+          {/* <Chatbot /> */}
 
           <div className="text-gray-300 text-2xl font-mono mx-auto mt-8">
             <Link href="/subscribe">
