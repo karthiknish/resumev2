@@ -12,6 +12,7 @@ import {
   FaLightbulb,
   FaChartLine,
   FaAd,
+  FaStar,
 } from "react-icons/fa";
 import { useState } from "react";
 
