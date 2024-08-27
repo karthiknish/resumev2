@@ -80,8 +80,18 @@ const HomeScreen = () => {
     },
     {
       icon: FaAd,
-      title: "$1M+ Ad Spend Managed",
+      title: "£10000+ Ad Spend Managed",
       description: "Expertise in performance marketing across major platforms",
+    },
+    {
+      icon: FaStar,
+      title: "100% Client Satisfaction",
+      description: "Consistently delivering high-quality results",
+    },
+    {
+      icon: FaGraduationCap,
+      title: "Continuous Learning",
+      description: "Always staying updated with the latest technologies",
     },
   ];
 
@@ -513,7 +523,7 @@ const HomeScreen = () => {
 
         <footer className="bg-gray-800 text-white py-8">
           <div className="container mx-auto px-6 text-center">
-            <p>&copy; 2023 Karthik Nishanth. Crafting digital excellence.</p>
+            <p>&copy; 2024 Karthik Nishanth. Crafting digital excellence.</p>
           </div>
         </footer>
       </div>
