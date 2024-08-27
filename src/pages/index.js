@@ -96,11 +96,10 @@ const HomeScreen = () => {
     setError(null);
     setInsights(null);
     try {
-      let processedUrl = url;
       if (!url.startsWith("http://") && !url.startsWith("https://")) {
-        processedUrl = `http://${url}`;
+        throw new Error("URL must start with http:// or https://");
       }
-      const result = await getPageInsights(processedUrl);
+      const result = await getPageInsights(url);
       if (
         result &&
         result.lighthouseResult &&
@@ -391,7 +390,7 @@ const HomeScreen = () => {
                       insights.categories.seo &&
                       insights.categories.seo.score !== undefined ? (
                         <>
-                          Your website's performance is{" "}
+                          Your website"s performance is{" "}
                           {getScoreInterpretation(
                             insights.categories.performance.score * 100
                           ).toLowerCase()}
@@ -499,7 +498,7 @@ const HomeScreen = () => {
               Ready to Elevate Your Web Presence?
             </h2>
             <p className="text-xl text-gray-600 mb-8">
-              Let's collaborate to turn your vision into a digital masterpiece.
+              Let"s collaborate to turn your vision into a digital masterpiece.
             </p>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
