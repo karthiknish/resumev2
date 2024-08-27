@@ -3,100 +3,84 @@ import Head from "next/head";
 import limitCharacters from "limit-characters";
 import Router from "next/router";
 import { motion } from "framer-motion";
+
 function Index({ data = [] }) {
   const [limitedContent, setLimitedContent] = useState([]);
+
   useEffect(() => {
     setLimitedContent(
-      data.map((d) => ({
-        ...d,
-        limitedContent: limitCharacters({ text: d?.content, length: 250 }),
+      data.map((post) => ({
+        ...post,
+        limitedContent: limitCharacters({ text: post.content, length: 250 }),
       }))
     );
   }, [data]);
+
   return (
     <>
       <Head>
-        <title>blogs // karthik nishanth.</title>
+        <title>Blog // Karthik Nishanth</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta
-          name="description"
-          content="A personal blog by Karthik Nishanth"
-        />
+        <meta name="description" content="Personal blog by Karthik Nishanth" />
         <meta name="keywords" content="blog, personal, karthik, nishanth" />
         <meta name="author" content="Karthik Nishanth" />
       </Head>
       <motion.section
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-black"
+        className="bg-white min-h-screen"
       >
-        <div className="px-6 py-10 mx-auto">
-          <h1 className="text-2xl font-semibold text-white capitalize lg:text-3x">
-            From the blog
-          </h1>
+        <div className="container mx-auto px-4 py-12">
+          <h1 className="text-3xl font-bold text-black mb-8">From the Blog</h1>
 
-          {limitedContent?.length !== 0 &&
-            limitedContent
-              .slice()
-              .reverse()
-              .map((d) => (
+          {limitedContent.length > 0 && (
+            <div className="space-y-12">
+              {limitedContent.reverse().map((post) => (
                 <div
-                  style={{ cursor: "pointer" }}
-                  key={d?._id}
-                  onClick={() => Router.push(`/blog/${d?.slug}`)}
-                  className="mt-8 lg:-mx-6 lg:flex lg:items-center "
+                  key={post._id}
+                  onClick={() => Router.push(`/blog/${post.slug}`)}
+                  className="cursor-pointer group"
                 >
-                  <img
-                    src={d?.imageUrl}
-                    alt="cover image"
-                    className="object-cover w-full lg:mx-6 lg:w-1/2 rounded-xl max-h-72 lg:h-96"
-                  />
-
-                  <div className="mt-6 lg:w-1/2 lg:mt-0 lg:mx-6 ">
-                    <p className="block mt-4 text-2xl font-semibold text-white ">
-                      {d?.title}
-                    </p>
-
-                    <p
-                      dangerouslySetInnerHTML={{
-                        __html: limitCharacters({
-                          text: d?.content,
-                          length: 250,
-                        }),
-                      }}
-                      className="mt-3 text-sm prose prose-strong:text-white font-mono text-gray-200 md:text-sm"
-                    ></p>
-
-                    <p className="inline-block mt-2 text-blue-500 font-mono underline hover:text-blue-400">
-                      Read more
-                    </p>
+                  <div className="flex flex-col lg:flex-row items-center gap-8">
+                    <img
+                      src={post.imageUrl}
+                      alt={post.title}
+                      className="w-full lg:w-1/2 h-64 lg:h-96 object-cover rounded-lg"
+                    />
+                    <div className="lg:w-1/2">
+                      <h2 className="text-2xl font-semibold text-black mb-4 group-hover:text-blue-600 transition-colors">
+                        {post.title}
+                      </h2>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: post.limitedContent,
+                        }}
+                        className="text-gray-700 mb-4 font-mono"
+                      />
+                      <p className="text-blue-600 font-mono underline group-hover:text-blue-800 transition-colors">
+                        Read more
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}
+            </div>
+          )}
         </div>
       </motion.section>
     </>
   );
 }
+
 export async function getServerSideProps() {
   try {
-    const response = await fetch(`${process.env.URL}/api/blog`, {
-      method: "GET",
-    });
-    const responseData = await response.json();
-
-    return {
-      props: {
-        data: responseData.data,
-      },
-    };
+    const response = await fetch(`${process.env.URL}/api/blog`);
+    const { data } = await response.json();
+    return { props: { data } };
   } catch (err) {
     console.error(err);
-    return {
-      props: {
-        data: [],
-      },
-    };
+    return { props: { data: [] } };
   }
 }
+
 export default Index;

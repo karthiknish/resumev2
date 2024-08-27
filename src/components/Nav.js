@@ -1,39 +1,69 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
-function Nav() {
-  return (
-    <header className="p-4 bg-black flex md:p-6">
-      <Link href="/">
-        <motion.h1
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.2 }}
-          className="flex-grow font-extrabold text-transparent text-4xl bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 cursor-pointer"
-        >
-          Karthik Nishanth
-        </motion.h1>
-      </Link>
+import { useState } from "react";
+import { FaBars, FaTimes } from "react-icons/fa";
 
-      <div className="w-full my-auto overflow-hidden">
-        <motion.div
-          initial={{ x: "-100%" }}
-          animate={{ x: "0%" }}
-          transition={{ duration: 0.5 }}
-          className="h-1 w-full my-1 bg-red-500 transform skew-x-12"
-        />
-        <motion.div
-          initial={{ x: "-100%" }}
-          animate={{ x: "25%" }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="h-1 w-full my-1 bg-green-500 transform skew-x-12"
-        />
-        <motion.div
-          initial={{ x: "-100%" }}
-          animate={{ x: "50%" }}
-          transition={{ duration: 0.7, delay: 0.4 }}
-          className="h-1 w-full bg-blue-500 transform skew-x-12"
-        />
-      </div>
+function Nav() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
+  return (
+    <header className="bg-white shadow-md">
+      <nav className="container mx-auto px-6 py-4">
+        <div className="flex justify-between items-center">
+          <Link href="/">
+            <motion.span
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.2 }}
+              className="text-2xl font-bold text-gray-800 cursor-pointer"
+            >
+              KN
+            </motion.span>
+          </Link>
+          <div className="md:hidden">
+            <button
+              onClick={toggleMenu}
+              className="text-gray-600 hover:text-gray-800"
+            >
+              {isOpen ? <FaTimes /> : <FaBars />}
+            </button>
+          </div>
+          <div
+            className={`md:flex md:space-x-4 ${
+              isOpen ? "block" : "hidden"
+            } absolute md:relative top-16 md:top-0 left-0 md:left-auto w-full md:w-auto bg-white md:bg-transparent shadow-md md:shadow-none`}
+          >
+            <Link
+              href="/projects"
+              className="block md:inline-block py-2 px-4 text-gray-600 hover:text-gray-800"
+            >
+              Projects
+            </Link>
+            <Link
+              href="/skills"
+              className="block md:inline-block py-2 px-4 text-gray-600 hover:text-gray-800"
+            >
+              Skills
+            </Link>
+            <Link
+              href="/blog"
+              className="block md:inline-block py-2 px-4 text-gray-600 hover:text-gray-800"
+            >
+              Blog
+            </Link>
+            <Link
+              href="/contact"
+              className="block md:inline-block py-2 px-4 text-gray-600 hover:text-gray-800"
+            >
+              Contact
+            </Link>
+          </div>
+        </div>
+      </nav>
     </header>
   );
 }

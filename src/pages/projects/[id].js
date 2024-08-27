@@ -4,6 +4,7 @@ import Image from "next/image";
 import Head from "next/head";
 import { motion } from "framer-motion";
 import { projectsData } from "../../lib/projectsData";
+
 function Id() {
   const router = useRouter();
   const { id } = router.query;
@@ -49,8 +50,8 @@ function Id() {
               className="w-full max-h-96 object-contain cursor-pointer"
               layout="responsive"
             />
-            <p className="font-display p-4">{project.description}</p>
-            <h3 className="text-2xl">Tech Stack:</h3>
+            <p className="font-mono p-4 text-black">{project.description}</p>
+            <h3 className="text-2xl text-black">Tech Stack:</h3>
             <ul className="flex flex-wrap gap-4 mt-2">
               {project.techStack.map((tech, index) => (
                 <motion.li
@@ -62,7 +63,10 @@ function Id() {
                   whileHover={{ scale: 1.2 }}
                   variants={techStackVariants}
                 >
-                  <tech.icon className="text-2xl" title={tech.name} />
+                  <tech.icon
+                    className="text-2xl text-black"
+                    title={tech.name}
+                  />
                   <motion.span
                     className="absolute bg-white text-black text-xs rounded p-1 -bottom-8 left-1/2 transform -translate-x-1/2 transition-opacity pointer-events-none"
                     initial="hidden"

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Router from "next/router";
 import { projectsData } from "../../lib/projectsData";
 import Image from "next/image";
+
 const Index = () => {
   const [selectedTab, setSelectedTab] = useState("fullstack");
   const filteredProjects = projectsData.filter(
@@ -20,7 +21,7 @@ const Index = () => {
       <Head>
         <title>projects // karthik nishanth.</title>
       </Head>
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 bg-white">
         <div className="flex justify-center my-4">
           <motion.button
             initial={{ x: 10 }}
@@ -28,7 +29,7 @@ const Index = () => {
             whileTap={{ y: 10 }}
             className={`${
               selectedTab === "fullstack"
-                ? "bg-gradient-to-r from-yellow-400 to-pink-700 text-white font-semibold font-display"
+                ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold font-display"
                 : "bg-gray-200 text-gray-600 font-display"
             } py-2 px-4 rounded-l`}
             onClick={() => setSelectedTab("fullstack")}
@@ -41,7 +42,7 @@ const Index = () => {
             whileTap={{ y: 10 }}
             className={`${
               selectedTab === "analytics"
-                ? "bg-gradient-to-r from-yellow-400 to-pink-700 text-white font-semibold font-display"
+                ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold font-display"
                 : "bg-gray-200 text-gray-600 font-display"
             } py-2 px-4 rounded-r`}
             onClick={() => setSelectedTab("analytics")}
@@ -53,7 +54,7 @@ const Index = () => {
           {filteredProjects.map((project, index) => (
             <motion.div
               key={index}
-              className="bg-gray-900 gap-4 shadow-md cursor-pointer rounded p-4 hover:shadow-lg transition-shadow grid md:grid-flow-col items-center w-full duration-300"
+              className="bg-white border border-gray-200 gap-4 shadow-md cursor-pointer rounded p-4 hover:shadow-lg transition-shadow grid md:grid-flow-col items-center w-full duration-300"
               initial="hidden"
               animate="visible"
               variants={cardVariants}
@@ -66,8 +67,12 @@ const Index = () => {
                 alt={project.title}
               />
               <div className="flex flex-col w-full">
-                <h3 className="text-lg font-semibold mb-2">{project.title}</h3>
-                <p className="text-gray-600">{project.shortdescription}</p>
+                <h3 className="text-lg font-semibold mb-2 text-gray-800">
+                  {project.title}
+                </h3>
+                <p className="text-gray-600 font-mono">
+                  {project.shortdescription}
+                </p>
               </div>
             </motion.div>
           ))}

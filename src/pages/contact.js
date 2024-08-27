@@ -1,7 +1,10 @@
 import Head from "next/head";
 import { useState } from "react";
-function Contact() {
+import { motion } from "framer-motion";
+
+const Contact = () => {
   const [feedback, setFeedback] = useState({ message: "", isError: false });
+
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -27,101 +30,110 @@ function Contact() {
       });
     }
   }
+
   return (
     <>
       <Head>
-        <title>contact // karthik nishanth.</title>
+        <title>Contact - Karthik Nishanth</title>
+        <meta
+          name="description"
+          content="Get in touch with Karthik Nishanth, Full Stack Developer based in Liverpool, UK."
+        />
       </Head>
-      <div className="min-h-screen p-4 md:p-8 flex flex-col font-display text-white">
-        <h2 className="mb-6 text-3xl font-bold mx-auto">Get in touch</h2>
-        <div className="max-w-5xl mx-auto">
-          <div className="mb-8">
-            <p className="text-lg">
-              From a passionate production undergraduate with a keen interest in
-              exploring cutting-edge technologies and building visually
-              appealing software solutions. As a quick learner with excellent
-              problem-solving and teamwork abilities, I enjoy designing and
-              creating intuitive user interfaces and products that streamline
-              workflows for not only myself but thousands of developers
-              worldwide. Check out some of my achievements below.
-            </p>
-          </div>
-          <ul className="list-disc pl-6 mb-8">
-            <li className="mb-2">
-              Finalist in Bizzventure, an annual pitching competition for our
-              business idea PABO - an innovative approach to tackling parking
-              issues in bustling cities.
-            </li>
-            <li className="mb-2">
-              Completed an internship at Talent Logistics, Egypt, where I
-              provided them with competitive digital solutions to expand their
-              reach to other countries.
-            </li>
-            <li className="mb-2">
-              Acquired years of experience working with JavaScript (ES6),
-              Python, PHP, HTML, CSS (SASS/SCSS), Node.js, React, GitHub/Git,
-              Firebase, SQL, WordPress, and Adobe XD.
-            </li>
-          </ul>
-
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <label htmlFor="name" className="block mb-2">
-                Name:
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                className="w-full p-2 text-black"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="email" className="block mb-2">
-                Email:
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                className="w-full p-2 text-black"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="message" className="block mb-2">
-                Message:
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                className="w-full p-2 text-black"
-                required
-              ></textarea>
-            </div>
-            <div className="mb-4">
-              <button
-                type="submit"
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded"
+      <div className="bg-gray-100 min-h-screen font-sans">
+        <main className="container mx-auto px-6 py-8">
+          <motion.section
+            className="mb-16"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h1 className="text-4xl font-bold text-gray-800 mb-6 text-center">
+              Get in Touch
+            </h1>
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <motion.p
+                className="text-gray-600 mb-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
               >
-                Submit
-              </button>
-              {feedback.message && (
-                <p
-                  className={`mt-4 ${
-                    feedback.isError ? "text-red-500" : "text-green-500"
-                  }`}
-                >
-                  {feedback.message}
-                </p>
-              )}
+                I'm always open to new opportunities and exciting projects.
+                Whether you have a question or just want to say hi, I'll try my
+                best to get back to you!
+              </motion.p>
+              <form onSubmit={handleSubmit}>
+                <div className="mb-4">
+                  <label
+                    htmlFor="name"
+                    className="block text-gray-700 font-semibold mb-2"
+                  >
+                    Name:
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    className="w-full p-2 border border-gray-300 rounded"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label
+                    htmlFor="email"
+                    className="block text-gray-700 font-semibold mb-2"
+                  >
+                    Email:
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    className="w-full p-2 border border-gray-300 rounded"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label
+                    htmlFor="message"
+                    className="block text-gray-700 font-semibold mb-2"
+                  >
+                    Message:
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    className="w-full p-2 border border-gray-300 rounded"
+                    rows="4"
+                    required
+                  ></textarea>
+                </div>
+                <div className="mb-4">
+                  <motion.button
+                    type="submit"
+                    className="bg-blue-600 text-white px-6 py-2 rounded-full text-lg font-semibold hover:bg-blue-700 transition duration-300"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Send Message
+                  </motion.button>
+                  {feedback.message && (
+                    <p
+                      className={`mt-4 ${
+                        feedback.isError ? "text-red-500" : "text-green-500"
+                      }`}
+                    >
+                      {feedback.message}
+                    </p>
+                  )}
+                </div>
+              </form>
             </div>
-          </form>
-        </div>
+          </motion.section>
+        </main>
       </div>
     </>
   );
-}
+};
 
 export default Contact;

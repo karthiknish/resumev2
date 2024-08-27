@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Head from "next/head";
 import { motion } from "framer-motion";
+
 function Id({ data }) {
   return (
     <>
@@ -41,6 +42,7 @@ function Id({ data }) {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
+        className="bg-white"
       >
         {data && (
           <div className="flex flex-col">
@@ -50,10 +52,10 @@ function Id({ data }) {
               className="w-full max-h-40 object-cover"
             />
             <div className="flex flex-col p-2">
-              <h1 className="text-4xl p-2 text-white">{data?.title}</h1>
+              <h1 className="text-4xl p-2 text-black">{data?.title}</h1>
               {data && data.content && (
                 <div
-                  className="p-3 font-mono prose-strong:text-2xl prose-p:m-2 text-gray-200"
+                  className="p-3 font-mono prose-strong:text-2xl prose-p:m-2 text-gray-800"
                   dangerouslySetInnerHTML={{ __html: data.content }}
                 ></div>
               )}
@@ -64,6 +66,7 @@ function Id({ data }) {
     </>
   );
 }
+
 export async function getServerSideProps(context) {
   const { id } = context.query;
   const response = await fetch(`${process.env.URL}/api/blog?slug=${id}`);
@@ -82,4 +85,5 @@ export async function getServerSideProps(context) {
     },
   };
 }
+
 export default Id;
