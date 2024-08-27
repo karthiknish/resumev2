@@ -1,12 +1,10 @@
 /** @type {import('next').NextConfig} */
-const withPlugins = require("next-compose-plugins");
-const withTM = require("next-transpile-modules")(["pdfjs-dist"]);
-
 const nextConfig = {
   reactStrictMode: true,
+  transpilePackages: ["package-name-to-transpile"],
   env: { PUPPETEER_CACHE: "/workspace/.cache/puppeteer" },
   images: {
-    domains: ["images.unsplash.com",'karthiknish.com'],
+    domains: ["images.unsplash.com", "karthiknish.com"],
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
@@ -16,4 +14,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig
+module.exports = nextConfig;
