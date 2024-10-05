@@ -1,53 +1,216 @@
-import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
-export default NextAuth({
-  providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
-  ],
-  // session: {
-  //   strategy: "jwt",
-  // },
-  secret: process.env.NEXTAUTH_SECRET,
-  pages: {
-    signIn: "/sign",
-    signOut: "/",
-    error: "/auth/error",
-  },
-  // jwt: {
-  //   secret: process.env.JWT_SECRET,
-  // },
-  callbacks: {
-    async signIn({ user, account, profile }) {
-      await dbConnect();
-      const existingUser = await User.findOne({ email: user.email });
-      if (!existingUser) {
-        const newUser = new User({
-          name: user.name,
-          email: user.email,
-        });
-        await newUser.save();
-      } else {
-        user.role = existingUser.role;
-      }
-      return true;
-    },
-    async redirect({ url, baseUrl }) {
-      return "/covergenerator";
-    },
-    async session({ session, token }) {
-      session.user.role = token.role;
-      return session;
-    },
-    async jwt({ token, user, account, profile, isNewUser }) {
-      if (user) {
-        token.role = user.role;
-      }
-      return token;
-    },
+import bcrypt from "bcryptjs";
+import crypto from "crypto";
+import nodemailer from "nodemailer";
+import jwt from "jsonwebtoken";
+
+// Create a transporter using SMTP
+const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_SERVER_HOST,
+  port: process.env.EMAIL_SERVER_PORT,
+  secure: false, // Use TLS
+  auth: {
+    user: process.env.EMAIL_SERVER_USER,
+    pass: process.env.EMAIL_SERVER_PASSWORD,
   },
 });
+
+export default async function handler(req, res) {
+  const { method } = req;
+
+  await dbConnect();
+
+  switch (method) {
+    case "POST":
+      if (req.body.action === "login") {
+        return handleLogin(req, res);
+      } else if (req.body.action === "forgotPassword") {
+        return handleForgotPassword(req, res);
+      } else if (req.body.action === "signup") {
+        return handleSignup(req, res);
+      } else if (req.body.action === "resetPassword") {
+        return handleResetPassword(req, res);
+      }
+      break;
+    default:
+      res.setHeader("Allow", ["POST"]);
+      res.status(405).end(`Method ${method} Not Allowed`);
+  }
+}
+
+async function handleLogin(req, res) {
+  const { email, password } = req.body;
+  console.log(email, password);
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res
+        .status(401)
+        .json({ success: false, message: "User not found" });
+    }
+
+    if (!user.password) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Password not set for this user" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid credentials" });
+    }
+
+    const token = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+    res.status(200).json({ success: true, token });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+}
+
+async function handleForgotPassword(req, res) {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    const resetTokenExpiry = Date.now() + 3600000; // 1 hour from now
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = resetTokenExpiry;
+    await user.save();
+
+    const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password?token=${resetToken}&email=${email}`;
+
+    const emailBody = `
+      You are receiving this email because you (or someone else) have requested to reset the password for your account.
+      Please click on the following link, or paste this into your browser to complete the process:
+      ${resetUrl}
+      If you did not request this, please ignore this email and your password will remain unchanged.
+    `;
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_FROM,
+      to: user.email,
+      subject: "Password Reset Request",
+      text: emailBody,
+    });
+
+    res
+      .status(200)
+      .json({ success: true, message: "Password reset email sent" });
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+}
+
+async function handleSignup(req, res) {
+  const { email, password, name } = req.body;
+
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Email already in use" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({
+      email,
+      password: hashedPassword,
+      name,
+    });
+
+    await newUser.save();
+
+    const token = jwt.sign(
+      { id: newUser._id, email: newUser.email, role: newUser.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res
+      .status(201)
+      .json({ success: true, message: "User created successfully", token });
+  } catch (error) {
+    console.error("Signup error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+}
+
+async function handleResetPassword(req, res) {
+  const { token, password, email } = req.body;
+  try {
+    if (!token || !password || !email) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields",
+      });
+    }
+
+    const user = await User.findOne({
+      email: email,
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Password reset token is invalid or has expired. Please request a new password reset.",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    user.password = hashedPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    await user.save();
+
+    res
+      .status(200)
+      .json({ success: true, message: "Password reset successful" });
+  } catch (error) {
+    console.error("Reset password error:", error);
+
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Invalid input data. Please check your information and try again.",
+      });
+    }
+
+    if (error.name === "MongoError" && error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: "Database error. Please try again later.",
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message:
+        "An error occurred while resetting the password. Please try again.",
+    });
+  }
+}

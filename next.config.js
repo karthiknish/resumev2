@@ -6,10 +6,12 @@ const nextConfig = {
   images: {
     domains: ["images.unsplash.com", "karthiknish.com"],
   },
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.alias["pdfjs-dist"] = "pdfjs-dist/build/pdf";
-    }
+  webpack: (config) => {
+    // Ignore the child_process module
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      child_process: false,
+    };
     return config;
   },
 };

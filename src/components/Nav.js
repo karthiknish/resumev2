@@ -1,13 +1,27 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
+import { useRouter } from "next/router";
 
 function Nav() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleSignOut = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    router.push("/signin");
   };
 
   return (
@@ -61,6 +75,14 @@ function Nav() {
             >
               Contact
             </Link>
+            {isLoggedIn && (
+              <button
+                onClick={handleSignOut}
+                className="block md:inline-block py-2 px-4 text-gray-600 hover:text-gray-800"
+              >
+                Sign Out
+              </button>
+            )}
           </div>
         </div>
       </nav>

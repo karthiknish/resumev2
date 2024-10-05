@@ -7,41 +7,54 @@ import {
 } from "react-icons/ai";
 import { MdOutlineUnsubscribe } from "react-icons/md";
 import Head from "next/head";
-import { useSession } from "next-auth/react";
-import { getServerSession } from "next-auth/next";
+import { useRouter } from "next/router";
+
 function Index() {
-  const { data: session } = useSession();
   const [isClient, setIsClient] = useState(false);
-  console.log(session);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const router = useRouter();
+
   useEffect(() => {
     setIsClient(true);
-    console.log(session);
+    const token = localStorage.getItem("token");
+    if (token) {
+      // Here you would typically decode the token and check the user's role
+      // For this example, we'll assume the token contains the user's role
+      const decodedToken = JSON.parse(atob(token.split(".")[1]));
+      if (decodedToken.role === 1) {
+        setIsAdmin(true);
+      } else {
+        router.push("/");
+      }
+    } else {
+      router.push("/signin");
+    }
   }, []);
 
   if (!isClient) return null;
 
-  if (!session || session?.user?.role !== 1) {
+  if (!isAdmin) {
     return (
       <>
         <Head>
           <title>Unauthorized</title>
         </Head>
         <div className="flex flex-col items-center justify-center min-h-screen">
-          {console.log(session)}
           <h1 className="text-4xl font-medium mb-8 text-white">Unauthorized</h1>
           <p className="text-lg text-white">
-            You don`t have permission to access this page.
+            You don't have permission to access this page.
           </p>
         </div>
       </>
     );
   }
+
   return (
     <>
       <Head>
         <title>Admin</title>
       </Head>
-      <div className="flex flex-col items-center justify-center min-h-screen  ">
+      <div className="flex flex-col items-center justify-center min-h-screen">
         <h1 className="text-4xl font-medium mb-8 text-white">Admin Panel</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <Link
@@ -78,12 +91,5 @@ function Index() {
     </>
   );
 }
-export async function getServerSideProps(context) {
-  const session = await getServerSession(context.req, context.res);
-  return {
-    props: {
-      session,
-    },
-  };
-}
+
 export default Index;
