@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useMutation } from "react-query";
 import axios from "axios";
+import Link from "next/link";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
