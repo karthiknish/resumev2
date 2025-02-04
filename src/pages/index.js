@@ -17,7 +17,16 @@ import { BentoGrid } from "@/components/ui/bento-grid";
 import { SplineScene } from "@/components/ui/splite";
 import { Card } from "@/components/ui/card";
 import { Spotlight } from "@/components/ui/spotlight";
-import { TrendingUp, CheckCircle, Video, Globe } from "lucide-react";
+import {
+  TrendingUp,
+  CheckCircle,
+  Video,
+  Globe,
+  Code,
+  Database,
+  Cloud,
+  Lock,
+} from "lucide-react";
 
 const HomeScreen = () => {
   const exampleImages = [
@@ -99,6 +108,33 @@ const HomeScreen = () => {
       title: "How do you ensure project success?",
       content:
         "Project success is ensured through clear communication, detailed planning, regular progress updates, and quality control measures. I implement automated testing, continuous integration, and monitoring to maintain high standards. Additionally, I provide comprehensive documentation and knowledge transfer to support long-term success.",
+    },
+  ];
+
+  const techStack = [
+    {
+      icon: <Code className="w-8 h-8" />,
+      title: "Frontend Development",
+      description: "React, Next.js, TypeScript",
+      color: "text-blue-500",
+    },
+    {
+      icon: <Database className="w-8 h-8" />,
+      title: "Backend Development",
+      description: "Node.js, Express, MongoDB",
+      color: "text-green-500",
+    },
+    {
+      icon: <Cloud className="w-8 h-8" />,
+      title: "Cloud Services",
+      description: "AWS, Azure, Google Cloud",
+      color: "text-purple-500",
+    },
+    {
+      icon: <Lock className="w-8 h-8" />,
+      title: "Security",
+      description: "OAuth, JWT, HTTPS",
+      color: "text-red-500",
     },
   ];
 
@@ -287,38 +323,32 @@ const HomeScreen = () => {
 
               <div className="flex flex-row justify-center space-x-4 items-center mt-10 sm:mt-16 md:mt-20 lg:mt-20 text-xs">
                 <motion.button
-                  className="sm:text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-blue-500 px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-2xl"
+                  className="sm:text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-blue-500 px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-2xl hover:bg-blue-600 transition-colors"
                   animate={{ opacity: 1, y: 0 }}
                   initial={{ opacity: 0, y: 20 }}
                   transition={{
                     duration: 0.2,
                     ease: "easeOut",
                     delay: 0.7,
-                    scale: { duration: 0.2 },
                   }}
-                  whileHover={{
-                    scale: 1.05,
-                    transition: { type: "spring", damping: 30, stiffness: 400 },
-                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   <Link className="text-white font-calendas" href="/contact">
                     Get in Touch <span className="font-calendas ml-1">→</span>
                   </Link>
                 </motion.button>
                 <motion.button
-                  className="sm:text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-blue-500 px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-2xl"
+                  className="sm:text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-blue-500 px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-2xl hover:bg-blue-600 transition-colors"
                   animate={{ opacity: 1, y: 0 }}
                   initial={{ opacity: 0, y: 20 }}
                   transition={{
                     duration: 0.2,
                     ease: "easeOut",
                     delay: 0.7,
-                    scale: { duration: 0.2 },
                   }}
-                  whileHover={{
-                    scale: 1.05,
-                    transition: { type: "spring", damping: 30, stiffness: 400 },
-                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   <Link
                     href="https://github.com/karthiknish"
@@ -379,6 +409,47 @@ const HomeScreen = () => {
               </div>
             </Card>
           </motion.div>
+
+          {/* New Tech Stack Section */}
+          <motion.section
+            initial={{ y: 100, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="bg-black py-16"
+          >
+            <div className="container mx-auto px-4">
+              <motion.h2
+                initial={{ y: 20, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                viewport={{ once: true }}
+                className="text-3xl text-center font-bold sm:text-4xl mb-12 text-white font-calendas"
+              >
+                Technical Expertise
+              </motion.h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {techStack.map((tech, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ y: 20, opacity: 0 }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 * index }}
+                    viewport={{ once: true }}
+                    className="bg-black/50 p-6 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors"
+                  >
+                    <div className={`${tech.color} mb-4`}>{tech.icon}</div>
+                    <h3 className="text-xl font-bold text-white mb-2 font-calendas">
+                      {tech.title}
+                    </h3>
+                    <p className="text-gray-400 font-calendas">
+                      {tech.description}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.section>
 
           <motion.section
             initial={{ y: 100, opacity: 0 }}
@@ -567,7 +638,7 @@ const HomeScreen = () => {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       type="submit"
-                      className="bg-blue-500 text-white px-4 py-2 rounded font-calendas"
+                      className="sm:text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-blue-500 px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-2xl hover:bg-blue-600 transition-colors"
                     >
                       Subscribe
                     </motion.button>
@@ -576,33 +647,6 @@ const HomeScreen = () => {
               </div>
             </section>
           </motion.main>
-
-          <motion.footer
-            initial={{ y: 50, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
-            className="py-4 text-center"
-          >
-            <p className="text-xs text-gray-400 font-calendas">
-              © {new Date().getFullYear()} Karthik Nishanth. All rights
-              reserved.
-            </p>
-            <nav className="flex justify-center gap-4 sm:gap-6 mt-2">
-              <Link
-                className="text-xs hover:underline underline-offset-4 text-gray-400 font-calendas"
-                href="#"
-              >
-                Terms of Service
-              </Link>
-              <Link
-                className="text-xs hover:underline underline-offset-4 text-gray-400 font-calendas"
-                href="#"
-              >
-                Privacy
-              </Link>
-            </nav>
-          </motion.footer>
         </motion.div>
       </motion.div>
     </Suspense>
@@ -610,3 +654,5 @@ const HomeScreen = () => {
 };
 
 export default HomeScreen;
+            
+

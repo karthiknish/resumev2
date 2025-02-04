@@ -58,10 +58,10 @@ function Nav() {
               Projects
             </Link>
             <Link
-              href="/skills"
+              href="/about"
               className="block md:inline-block py-2 px-4 text-white hover:text-gray-300"
             >
-              Skills
+              About
             </Link>
             <Link
               href="/blog"

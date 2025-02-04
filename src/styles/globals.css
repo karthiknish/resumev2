@@ -3,9 +3,20 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    font-family: 'Calendas', system-ui, -apple-system, sans-serif;
+  }
+  
   body {
     background-color: black;
     color: white;
+    font-family: 'Calendas', system-ui, -apple-system, sans-serif;
+  }
+}
+
+@layer components {
+  .font-calendas {
+    font-family: 'Calendas', system-ui, -apple-system, sans-serif;
   }
 }
 

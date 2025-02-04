@@ -2,12 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import Head from "next/head";
 import { motion } from "framer-motion";
+import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
+import { Card } from "@/components/ui/card";
 
 function Id({ data }) {
   return (
     <>
       <Head>
-        <title>{data?.title}</title>
+        <title>{data?.title} - Karthik Nishanth | Full Stack Developer</title>
         <meta name="description" content={data?.title} />
         <meta name="keywords" content="blog, personal, karthik, nishanth" />
         <meta name="author" content="Karthik Nishanth" />
@@ -39,30 +41,39 @@ function Id({ data }) {
           href={`https://www.karthiknish.com/blog/${data?._id}`}
         />
       </Head>
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-white"
-      >
-        {data && (
-          <div className="flex flex-col">
-            <img
-              src={data.imageUrl}
-              alt="headimage"
-              className="w-full max-h-40 object-cover"
-            />
-            <div className="flex flex-col p-2">
-              <h1 className="text-4xl p-2 text-black">{data?.title}</h1>
-              {data && data.content && (
-                <div
-                  className="p-3 font-mono prose-strong:text-2xl prose-p:m-2 text-gray-800"
-                  dangerouslySetInnerHTML={{ __html: data.content }}
-                ></div>
+      <div className="min-h-screen bg-black/95 p-8 relative font-calendas">
+        <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
+        <div className="max-w-6xl mx-auto space-y-8">
+          <Card className="border-none bg-black/60 backdrop-blur-sm p-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              {data && (
+                <div className="flex flex-col">
+                  <img
+                    src={data.imageUrl}
+                    alt={data.title}
+                    className="w-full h-[400px] object-cover rounded-lg mb-8"
+                  />
+                  <div className="flex flex-col">
+                    <h1 className="text-4xl font-bold text-white mb-8 font-calendas">
+                      {data?.title}
+                    </h1>
+                    {data && data.content && (
+                      <div
+                        className="prose prose-invert max-w-none font-calendas"
+                        dangerouslySetInnerHTML={{ __html: data.content }}
+                      />
+                    )}
+                  </div>
+                </div>
               )}
-            </div>
-          </div>
-        )}
-      </motion.div>
+            </motion.div>
+          </Card>
+        </div>
+      </div>
     </>
   );
 }
