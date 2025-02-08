@@ -141,7 +141,7 @@ function Nav() {
             </motion.div>
 
             {/* Conditional Rendering for Admin/Sign In */}
-            {session ? (
+            {session && (
               <>
                 <motion.div variants={itemVariants}>
                   <Link
@@ -162,16 +162,6 @@ function Nav() {
                   Sign Out
                 </motion.button>
               </>
-            ) : (
-              <motion.div variants={itemVariants}>
-                <Link
-                  href="/signin"
-                  className="block md:inline-block py-2 px-4 text-white hover:text-gray-300 text-xl md:text-base"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Sign In
-                </Link>
-              </motion.div>
             )}
           </motion.div>
         </div>
