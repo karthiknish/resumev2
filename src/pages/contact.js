@@ -152,7 +152,7 @@ const Contact = () => {
                   />
                   <motion.button
                     type="submit"
-                    className={`bg-blue-600 text-white px-6 py-2 rounded text-lg font-semibold transition duration-300 ${
+                    className={`bg-blue-600 text-white px-6 py-2 rounded text-lg font-semibold transition duration-300 flex items-center justify-center ${
                       isSubmitting
                         ? "opacity-50 cursor-not-allowed"
                         : "hover:bg-blue-700"
@@ -161,7 +161,22 @@ const Contact = () => {
                     whileTap={{ scale: isSubmitting ? 1 : 0.95 }}
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Sending..." : "Send Message"}
+                    {isSubmitting ? (
+                      <>
+                        <motion.div
+                          className="w-5 h-5 border-t-2 border-r-2 border-white rounded-full mr-2"
+                          animate={{ rotate: 360 }}
+                          transition={{
+                            duration: 1,
+                            repeat: Infinity,
+                            ease: "linear",
+                          }}
+                        />
+                        Sending...
+                      </>
+                    ) : (
+                      "Send Message"
+                    )}
                   </motion.button>
                   {feedback.message && (
                     <p
