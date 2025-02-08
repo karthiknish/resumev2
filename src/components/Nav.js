@@ -7,9 +7,24 @@ import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 
 function Nav() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const { data: session, status } = useSession();
   const router = useRouter();
+  const isHome = router.pathname === "/";
+
+  useEffect(() => {
+    if (window.innerWidth < 768) {
+      setIsOpen(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [isOpen]);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -38,7 +53,7 @@ function Nav() {
   };
 
   return (
-    <header className="bg-black shadow-md">
+    <header className={`${isHome ? "" : "bg-black"} shadow-md`}>
       <nav className="container mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
           <Link href="/">
@@ -62,7 +77,7 @@ function Nav() {
           <div className="md:hidden">
             <button
               onClick={toggleMenu}
-              className="text-white hover:text-gray-300"
+              className="text-white hover:text-gray-300 z-50"
             >
               {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
             </button>
@@ -73,8 +88,8 @@ function Nav() {
             variants={menuVariants}
             initial="hidden"
             animate={isOpen ? "visible" : "hidden"}
-            className={`md:flex md:items-center md:space-x-4 fixed md:relative inset-0 md:inset-auto h-screen md:h-auto w-full md:w-auto bg-black md:bg-transparent z-50 flex flex-col md:flex-row justify-center space-y-8 md:space-y-0 ${
-              isOpen ? "" : "hidden"
+            className={`md:flex md:items-center md:space-x-4 fixed md:relative inset-0 md:inset-auto h-screen md:h-auto w-full md:w-auto bg-black md:bg-transparent z-40 flex flex-col md:flex-row justify-center space-y-8 md:space-y-0 ${
+              isOpen ? "" : "hidden md:flex"
             }`}
           >
             {/* Close Button for Mobile */}
