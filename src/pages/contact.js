@@ -3,33 +3,60 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { Card } from "@/components/ui/card";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const Contact = () => {
   const [feedback, setFeedback] = useState({ message: "", isError: false });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [captchaValue, setCaptchaValue] = useState(null);
 
   async function handleSubmit(e) {
     e.preventDefault();
+
+    if (!captchaValue) {
+      setFeedback({
+        message: "Please complete the CAPTCHA verification",
+        isError: true,
+      });
+      return;
+    }
+
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
 
     const formData = {
       name: e.target.name.value,
       email: e.target.email.value,
       message: e.target.message.value,
+      captchaToken: captchaValue,
     };
 
-    const response = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    if (response.ok) {
-      setFeedback({ message: "Thank you for contacting!", isError: false });
-      e.target.reset();
-    } else {
+      if (response.ok) {
+        setFeedback({ message: "Thank you for contacting!", isError: false });
+        e.target.reset();
+        setCaptchaValue(null);
+      } else {
+        const data = await response.json();
+        setFeedback({
+          message: data.error || "There was a problem submitting your form.",
+          isError: true,
+        });
+      }
+    } catch (error) {
       setFeedback({
-        message: "There was a problem submitting your form.",
+        message: "There was a problem connecting to the server.",
         isError: true,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -79,6 +106,9 @@ const Contact = () => {
                     name="name"
                     className="w-full p-2 bg-gray-800/50 border border-gray-700 rounded text-white"
                     required
+                    maxLength={100}
+                    pattern="[A-Za-z\s]+"
+                    title="Please enter a valid name (letters and spaces only)"
                   />
                 </div>
                 <div className="mb-4">
@@ -94,6 +124,7 @@ const Contact = () => {
                     name="email"
                     className="w-full p-2 bg-gray-800/50 border border-gray-700 rounded text-white"
                     required
+                    maxLength={254}
                   />
                 </div>
                 <div className="mb-4">
@@ -109,16 +140,28 @@ const Contact = () => {
                     className="w-full p-2 bg-gray-800/50 border border-gray-700 rounded text-white"
                     rows="4"
                     required
+                    maxLength={1000}
                   ></textarea>
                 </div>
                 <div className="mb-4">
+                  <ReCAPTCHA
+                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                    onChange={setCaptchaValue}
+                    theme="dark"
+                    className="mb-4"
+                  />
                   <motion.button
                     type="submit"
-                    className="bg-blue-600 text-white px-6 py-2 rounded text-lg font-semibold hover:bg-blue-700 transition duration-300"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    className={`bg-blue-600 text-white px-6 py-2 rounded text-lg font-semibold transition duration-300 ${
+                      isSubmitting
+                        ? "opacity-50 cursor-not-allowed"
+                        : "hover:bg-blue-700"
+                    }`}
+                    whileHover={{ scale: isSubmitting ? 1 : 1.05 }}
+                    whileTap={{ scale: isSubmitting ? 1 : 0.95 }}
+                    disabled={isSubmitting}
                   >
-                    Send Message
+                    {isSubmitting ? "Sending..." : "Send Message"}
                   </motion.button>
                   {feedback.message && (
                     <p
