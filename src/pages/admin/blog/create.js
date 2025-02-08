@@ -22,6 +22,7 @@ function Create() {
   const [pexelsPhotos, setPexelsPhotos] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [showPexelsModal, setShowPexelsModal] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -36,7 +37,9 @@ function Create() {
       reader.onloadend = () => {
         setPreview(reader.result);
       };
-      reader.readAsDataURL(file);
+      if (file) {
+        reader.readAsDataURL(file);
+      }
     } else if (type === "checkbox") {
       setFormData((prev) => ({
         ...prev,
@@ -51,19 +54,38 @@ function Create() {
   };
 
   const searchPexels = async (query) => {
+    if (!query.trim()) return;
+
+    setIsSearching(true);
     try {
-      const response = await axios.get(`/api/pexels?query=${query}`);
-      setPexelsPhotos(response.data.photos);
+      const response = await axios.get(
+        `/api/pexels?query=${encodeURIComponent(query)}`
+      );
+      if (response.data && response.data.photos) {
+        setPexelsPhotos(response.data.photos);
+      } else {
+        setError("No images found");
+        setPexelsPhotos([]);
+      }
     } catch (error) {
       console.error("Error fetching Pexels images:", error);
+      setError("Failed to fetch images from Pexels");
+      setPexelsPhotos([]);
+    } finally {
+      setIsSearching(false);
     }
   };
 
   const selectPexelsImage = async (imageUrl) => {
     try {
+      setIsLoading(true);
       const response = await fetch(imageUrl);
+      if (!response.ok) throw new Error("Failed to fetch image");
+
       const blob = await response.blob();
-      const file = new File([blob], "cover-image.jpg", { type: "image/jpeg" });
+      const file = new File([blob], `pexels-image-${Date.now()}.jpg`, {
+        type: "image/jpeg",
+      });
 
       setFormData((prev) => ({
         ...prev,
@@ -73,6 +95,9 @@ function Create() {
       setShowPexelsModal(false);
     } catch (error) {
       console.error("Error selecting Pexels image:", error);
+      setError("Failed to select image");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -220,21 +245,28 @@ function Create() {
                           type="text"
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
+                          onKeyPress={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              searchPexels(searchQuery);
+                            }
+                          }}
                           placeholder="Search images..."
                           className="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white mr-2"
                         />
                         <button
                           onClick={() => searchPexels(searchQuery)}
-                          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                          disabled={isSearching}
+                          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed"
                         >
-                          Search
+                          {isSearching ? "Searching..." : "Search"}
                         </button>
                       </div>
                       <div className="grid grid-cols-3 gap-4">
                         {pexelsPhotos.map((photo) => (
                           <div
                             key={photo.id}
-                            className="cursor-pointer hover:opacity-80"
+                            className="cursor-pointer hover:opacity-80 relative group"
                             onClick={() => selectPexelsImage(photo.src.large)}
                           >
                             <img
@@ -242,6 +274,11 @@ function Create() {
                               alt={photo.photographer}
                               className="w-full h-40 object-cover rounded-lg"
                             />
+                            <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                              <span className="text-white">
+                                Click to select
+                              </span>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -262,6 +299,16 @@ function Create() {
                       alt="Cover preview"
                       className="w-full h-full object-cover rounded-lg"
                     />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPreview(null);
+                        setFormData((prev) => ({ ...prev, coverImage: null }));
+                      }}
+                      className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600"
+                    >
+                      ✕
+                    </button>
                   </div>
                 )}
 
