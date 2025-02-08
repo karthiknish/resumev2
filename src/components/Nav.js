@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 function Nav() {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,7 +36,13 @@ function Nav() {
               transition={{ duration: 0.2 }}
               className="text-2xl font-bold text-white cursor-pointer"
             >
-              KN
+              <Image
+                src="/logo.png"
+                alt="Logo"
+                width={100}
+                height={100}
+                className="object-contain"
+              />
             </motion.span>
           </Link>
           <div className="md:hidden">
