@@ -27,6 +27,7 @@ import {
   Cloud,
   Lock,
 } from "lucide-react";
+import { useRouter } from "next/router";
 
 const HomeScreen = () => {
   const [formData, setFormData] = useState({
@@ -38,6 +39,8 @@ const HomeScreen = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState(null);
+
+  const router = useRouter();
 
   // Basic validation function
   const validateForm = () => {
@@ -92,7 +95,9 @@ const HomeScreen = () => {
 
       if (response.ok) {
         setSubmitSuccess(true);
-        setFormData({ name: "", email: "", message: "" }); // Clear form
+        setFormData({ name: "", email: "", message: "" });
+        // Redirect to success page
+        router.push("/success");
       } else {
         const errorData = await response.json();
         setSubmitError(errorData.message || "Failed to send message.");
