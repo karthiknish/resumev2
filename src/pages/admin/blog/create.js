@@ -19,6 +19,9 @@ function Create() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [preview, setPreview] = useState(null);
+  const [pexelsPhotos, setPexelsPhotos] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showPexelsModal, setShowPexelsModal] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -44,6 +47,32 @@ function Create() {
         ...prev,
         [name]: value,
       }));
+    }
+  };
+
+  const searchPexels = async (query) => {
+    try {
+      const response = await axios.get(`/api/pexels?query=${query}`);
+      setPexelsPhotos(response.data.photos);
+    } catch (error) {
+      console.error("Error fetching Pexels images:", error);
+    }
+  };
+
+  const selectPexelsImage = async (imageUrl) => {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const file = new File([blob], "cover-image.jpg", { type: "image/jpeg" });
+
+      setFormData((prev) => ({
+        ...prev,
+        coverImage: file,
+      }));
+      setPreview(imageUrl);
+      setShowPexelsModal(false);
+    } catch (error) {
+      console.error("Error selecting Pexels image:", error);
     }
   };
 
@@ -153,23 +182,78 @@ function Create() {
                     <span>Publish immediately</span>
                   </label>
 
-                  <label className="flex items-center space-x-2 text-white font-calendas">
-                    <input
-                      type="file"
-                      name="coverImage"
-                      onChange={handleChange}
-                      accept="image/*"
-                      className="hidden"
-                    />
-                    <motion.span
+                  <div className="flex space-x-2">
+                    <label className="flex items-center space-x-2 text-white font-calendas">
+                      <input
+                        type="file"
+                        name="coverImage"
+                        onChange={handleChange}
+                        accept="image/*"
+                        className="hidden"
+                      />
+                      <motion.span
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg cursor-pointer hover:bg-gray-700"
+                      >
+                        Upload Cover Image
+                      </motion.span>
+                    </label>
+
+                    <motion.button
+                      type="button"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg cursor-pointer hover:bg-gray-700"
+                      onClick={() => setShowPexelsModal(true)}
+                      className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg cursor-pointer hover:bg-gray-700 text-white font-calendas"
                     >
-                      Upload Cover Image
-                    </motion.span>
-                  </label>
+                      Search Pexels
+                    </motion.button>
+                  </div>
                 </div>
+
+                {showPexelsModal && (
+                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-gray-900 p-6 rounded-lg w-[800px] max-h-[80vh] overflow-y-auto">
+                      <div className="flex mb-4">
+                        <input
+                          type="text"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          placeholder="Search images..."
+                          className="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white mr-2"
+                        />
+                        <button
+                          onClick={() => searchPexels(searchQuery)}
+                          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                        >
+                          Search
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-3 gap-4">
+                        {pexelsPhotos.map((photo) => (
+                          <div
+                            key={photo.id}
+                            className="cursor-pointer hover:opacity-80"
+                            onClick={() => selectPexelsImage(photo.src.large)}
+                          >
+                            <img
+                              src={photo.src.medium}
+                              alt={photo.photographer}
+                              className="w-full h-40 object-cover rounded-lg"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                      <button
+                        onClick={() => setShowPexelsModal(false)}
+                        className="mt-4 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 {preview && (
                   <div className="relative w-full h-48">
