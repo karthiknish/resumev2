@@ -1,110 +1,152 @@
-import { useState } from "react";
-import Head from "next/head";
+"use client";
+import { useState, useEffect } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import axios from "axios";
-import jwt from "jsonwebtoken";
+import Head from "next/head";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (session) {
+      router.push("/admin");
+    }
+  }, [session, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
     try {
-      const response = await axios.post("/api/auth/[...nextauth]", {
-        action: "login",
+      const result = await signIn("credentials", {
+        redirect: false,
         email,
         password,
       });
-      if (response.data.success) {
-        // Store the token in localStorage or a secure cookie
-        localStorage.setItem("token", response.data.token);
 
-        // Decode the token to check the user's role
-        const decodedToken = jwt.decode(response.data.token);
-
-        if (decodedToken && decodedToken.role === 1) {
-          router.push("/admin");
-        } else {
-          router.push("/");
-        }
-      } else {
-        console.error("Login failed");
+      if (result?.error) {
+        setError("Invalid email or password");
       }
+      // Don't redirect here - let the useEffect handle it
     } catch (error) {
-      console.error(
-        "Login error:",
-        error.response?.data?.message || error.message
-      );
+      setError("An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  // If still checking auth status, show loading
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
       <Head>
-        <title>Sign In // Your App Name</title>
+        <title>Sign In - Karthik Nishanth</title>
+        <meta name="description" content="Sign in to your account" />
       </Head>
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-100 to-orange-100">
-        <div className="bg-white p-8 rounded-lg shadow-2xl w-96">
-          <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
-            Sign In to Your Account
+      <div className="min-h-screen bg-black relative flex items-center justify-center">
+        <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-md p-8 relative z-10"
+        >
+          <h1 className="text-3xl font-bold mb-6 text-center text-white font-calendas">
+            Sign In
           </h1>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="relative">
+          {error && (
+            <div className="mb-4 p-3 bg-red-500/10 border border-red-500 text-red-500 rounded-md text-sm font-calendas">
+              {error}
+            </div>
+          )}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-300 mb-1 font-calendas"
+              >
+                Email
+              </label>
               <input
                 type="email"
+                id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
-                className="w-full px-4 py-3 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full p-2 rounded-md bg-gray-800 border border-gray-700 text-white font-calendas"
                 required
               />
-              <span className="absolute inset-y-0 right-0 flex items-center pr-3">
-                <svg
-                  className="h-5 w-5 text-gray-400"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                </svg>
-              </span>
             </div>
-            <div className="relative">
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                className="w-full px-4 py-3 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                required
-              />
-              <span className="absolute inset-y-0 right-0 flex items-center pr-3">
-                <svg
-                  className="h-5 w-5 text-gray-400"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-300 mb-1 font-calendas"
+              >
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full p-2 rounded-md bg-gray-800 border border-gray-700 text-white font-calendas"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
                 >
-                  <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </span>
+                  {showPassword ? (
+                    <AiOutlineEyeInvisible size={20} />
+                  ) : (
+                    <AiOutlineEye size={20} />
+                  )}
+                </button>
+              </div>
             </div>
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               type="submit"
-              className="w-full bg-gradient-to-r from-teal-400 to-orange-400 text-white font-bold py-3 px-4 rounded-md hover:from-teal-500 hover:to-orange-500 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105"
+              disabled={isLoading}
+              className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors font-calendas disabled:opacity-50"
             >
-              Sign In
-            </button>
+              {isLoading ? "Signing in..." : "Sign In"}
+            </motion.button>
+            <div className="text-center mt-2">
+              <Link
+                href="/forgot-password"
+                className="text-sm text-blue-500 hover:text-blue-400 font-calendas"
+              >
+                Forgot Password?
+              </Link>
+            </div>
           </form>
-        </div>
+          <p className="mt-4 text-center text-gray-400 text-sm font-calendas">
+            Don't have an account?{" "}
+            <Link
+              href="/signup"
+              className="text-blue-500 hover:text-blue-400 font-calendas"
+            >
+              Sign up
+            </Link>
+          </p>
+        </motion.div>
       </div>
     </>
   );

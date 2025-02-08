@@ -1,30 +1,37 @@
 import mongoose from "mongoose";
-const UserSchema = new mongoose.Schema({
+
+const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "Please provide your name."],
-    maxlength: [60, "Name cannot be more than 60 characters"],
+    required: [true, "Please provide a name"],
   },
   email: {
     type: String,
-    trim: true,
-    lowercase: true,
+    required: [true, "Please provide an email"],
     unique: true,
-    required: [true, "Email address is required"],
-    match: [
-      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-      "Please fill a valid email address",
-    ],
+    match: [/^\S+@\S+\.\S+$/, "Please provide a valid email"],
   },
   password: {
     type: String,
-    required: [true, "Password is required"],
-    minlength: [6, "Password must be at least 6 characters long"],
+    required: [true, "Please provide a password"],
+    minlength: [6, "Password should be at least 6 characters long"],
   },
-  role: {
-    type: Number,
-    default: 0,
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
 });
 
-export default mongoose.models.User || mongoose.model("User", UserSchema);
+// Add this to make password not required during updates
+userSchema.pre("save", function (next) {
+  if (!this.isModified("password")) {
+    this.password = this._previousSaved
+      ? this._previousSaved.password
+      : this.password;
+  }
+  next();
+});
+
+export default mongoose.models.User || mongoose.model("User", userSchema);

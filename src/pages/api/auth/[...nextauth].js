@@ -1,3 +1,5 @@
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
@@ -16,28 +18,67 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export default async function handler(req, res) {
-  const { method } = req;
+export const authOptions = {
+  providers: [
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        try {
+          await dbConnect();
 
-  await dbConnect();
+          const user = await User.findOne({ email: credentials.email });
+          if (!user) {
+            throw new Error("No user found with this email");
+          }
 
-  switch (method) {
-    case "POST":
-      if (req.body.action === "login") {
-        return handleLogin(req, res);
-      } else if (req.body.action === "forgotPassword") {
-        return handleForgotPassword(req, res);
-      } else if (req.body.action === "signup") {
-        return handleSignup(req, res);
-      } else if (req.body.action === "resetPassword") {
-        return handleResetPassword(req, res);
+          const isValid = await bcrypt.compare(
+            credentials.password,
+            user.password
+          );
+          if (!isValid) {
+            throw new Error("Invalid password");
+          }
+
+          return {
+            id: user._id,
+            email: user.email,
+            name: user.name,
+          };
+        } catch (error) {
+          return null;
+        }
+      },
+    }),
+  ],
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
       }
-      break;
-    default:
-      res.setHeader("Allow", ["POST"]);
-      res.status(405).end(`Method ${method} Not Allowed`);
-  }
-}
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id;
+      }
+      return session;
+    },
+  },
+  pages: {
+    signIn: "/signin",
+    error: "/auth/error",
+  },
+};
+
+export default NextAuth(authOptions);
 
 async function handleLogin(req, res) {
   const { email, password } = req.body;

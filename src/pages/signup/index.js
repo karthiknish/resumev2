@@ -1,160 +1,174 @@
+"use client";
 import { useState } from "react";
-import Head from "next/head";
 import { useRouter } from "next/router";
-import { useMutation } from "react-query";
-import axios from "axios";
+import Head from "next/head";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 
 export default function SignUp() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const mutation = useMutation(async () => {
-    try {
-      const response = await axios.post("/api/auth/[...nextauth]", {
-        action: "signup",
-        email,
-        password,
-        name,
-      });
-      if (response.data.success) {
-        // After successful signup, attempt to log in the user
-        const loginResponse = await axios.post("/api/auth/[...nextauth]", {
-          action: "login",
-          email,
-          password,
-        });
-        if (loginResponse.data.success) {
-          // Store the token in localStorage
-          localStorage.setItem("token", loginResponse.data.token);
-          router.push("/");
-        } else {
-          setError(
-            "Login after signup failed. Please try signing in manually."
-          );
-          setTimeout(() => router.push("/signin"), 3000);
-        }
-      }
-    } catch (error) {
-      console.error(
-        "Signup error:",
-        error.response?.data?.message || error.message
-      );
-      setError(
-        error.response?.data?.message ||
-          "An error occurred during signup. Please try again."
-      );
-    }
-  });
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     setError("");
-    mutation.mutate();
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Something went wrong");
+      }
+
+      router.push("/signin");
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
   };
 
   return (
     <>
       <Head>
-        <title>Sign Up // Karthik Nishanth</title>
+        <title>Sign Up - Karthik Nishanth</title>
+        <meta name="description" content="Create a new account" />
       </Head>
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-100 to-orange-100">
-        <div className="bg-white p-8 rounded-lg shadow-2xl w-96">
-          <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
-            Create Your Account
+      <div className="min-h-screen bg-black relative flex items-center justify-center">
+        <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-md p-8 relative z-10"
+        >
+          <h1 className="text-3xl font-bold mb-6 text-center text-white font-calendas">
+            Create Account
           </h1>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="relative">
+          {error && (
+            <div className="mb-4 p-3 bg-red-500/10 border border-red-500 text-red-500 rounded-md text-sm font-calendas">
+              {error}
+            </div>
+          )}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-300 mb-1 font-calendas"
+              >
+                Name
+              </label>
               <input
                 type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Full Name"
-                className="w-full text-black px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                id="name"
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full p-2 rounded-md bg-gray-800 border border-gray-700 text-white font-calendas"
                 required
               />
-              <span className="absolute inset-y-0 right-0 flex items-center pr-3">
-                <svg
-                  className="h-5 w-5 text-gray-400"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </span>
             </div>
-            <div className="relative">
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-300 mb-1 font-calendas"
+              >
+                Email
+              </label>
               <input
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
-                className="w-full text-black px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                id="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full p-2 rounded-md bg-gray-800 border border-gray-700 text-white font-calendas"
                 required
               />
-              <span className="absolute inset-y-0 right-0 flex items-center pr-3">
-                <svg
-                  className="h-5 w-5 text-gray-400"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                </svg>
-              </span>
             </div>
-            <div className="relative">
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-300 mb-1 font-calendas"
+              >
+                Password
+              </label>
               <input
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                className="w-full px-4 text-black py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                id="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full p-2 rounded-md bg-gray-800 border border-gray-700 text-white font-calendas"
                 required
               />
-              <span className="absolute inset-y-0 right-0 flex items-center pr-3">
-                <svg
-                  className="h-5 w-5 text-gray-400"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </span>
             </div>
-            {error && <p className="text-red-500 text-sm">{error}</p>}
-            <button
+            <div>
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-gray-300 mb-1 font-calendas"
+              >
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                id="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className="w-full p-2 rounded-md bg-gray-800 border border-gray-700 text-white font-calendas"
+                required
+              />
+            </div>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               type="submit"
-              className="w-full bg-gradient-to-r from-teal-400 to-orange-400 text-white font-bold py-3 px-4 rounded-md hover:from-teal-500 hover:to-orange-500 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105"
-              disabled={mutation.isLoading}
+              disabled={isLoading}
+              className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors font-calendas disabled:opacity-50"
             >
-              {mutation.isLoading ? "Signing Up..." : "Sign Up"}
-            </button>
+              {isLoading ? "Creating account..." : "Sign Up"}
+            </motion.button>
           </form>
-          <p className="mt-6 text-center text-sm text-gray-600">
+          <p className="mt-4 text-center text-gray-400 text-sm font-calendas">
             Already have an account?{" "}
             <Link
               href="/signin"
-              className="font-medium text-teal-600 hover:text-teal-500"
+              className="text-blue-500 hover:text-blue-400 font-calendas"
             >
               Sign in
             </Link>
           </p>
-        </div>
+        </motion.div>
       </div>
     </>
   );

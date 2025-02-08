@@ -2,46 +2,87 @@ import { useState } from "react";
 import Head from "next/head";
 import Markdown from "../../../components/Markdown";
 import axios from "axios";
+import { useRouter } from "next/router";
+import { motion } from "framer-motion";
+import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 
 function Create() {
-  const [title, setTitle] = useState("");
-  const [context, setContext] = useState("");
-  const [content, setContent] = useState("");
-  const [isGenerating, setIsGenerating] = useState(false);
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    title: "",
+    content: "",
+    excerpt: "",
+    tags: [],
+    coverImage: null,
+    isPublished: false,
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [preview, setPreview] = useState(null);
 
-  const generateBlogPost = async () => {
-    setIsGenerating(true);
-    try {
-      const response = await axios.post("/api/generate-blog", {
-        title,
-        context,
-      });
-      const {
-        content: generatedContent,
-        featuredImage,
-        relatedImages,
-      } = response.data;
-      setContent(generatedContent);
-      // You might want to handle featuredImage and relatedImages here
-      // For example, you could insert them into the content at appropriate positions
-    } catch (error) {
-      console.error("Error generating blog post:", error);
+  const handleChange = (e) => {
+    const { name, value, type, checked, files } = e.target;
+    if (type === "file") {
+      const file = files[0];
+      setFormData((prev) => ({
+        ...prev,
+        coverImage: file,
+      }));
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else if (type === "checkbox") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: checked,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
-    setIsGenerating(false);
+  };
+
+  const handleTagsChange = (e) => {
+    const tags = e.target.value.split(",").map((tag) => tag.trim());
+    setFormData((prev) => ({
+      ...prev,
+      tags,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = { title, content };
+    setIsLoading(true);
+    setError("");
+
+    const formDataToSend = new FormData();
+    Object.keys(formData).forEach((key) => {
+      if (key === "tags") {
+        formDataToSend.append(key, JSON.stringify(formData[key]));
+      } else {
+        formDataToSend.append(key, formData[key]);
+      }
+    });
+
     try {
-      const response = await axios.post("/api/blog", data);
+      const response = await axios.post("/api/blog", formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
       if (response.data.success) {
-        setTitle("");
-        setContext("");
-        setContent("");
+        router.push("/admin/blog/edit");
       }
     } catch (error) {
-      console.error("Error submitting blog post:", error);
+      setError(error.response?.data?.message || "Error creating blog post");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -50,37 +91,118 @@ function Create() {
       <Head>
         <title>Create Blog</title>
       </Head>
-      <div className="flex flex-col p-4 gap-4 mx-10">
-        <h1 className="text-center text-4xl font-bold">Create Blog</h1>
-        <input
-          value={title}
-          type="text"
-          onChange={(e) => setTitle(e.target.value)}
-          className="block w-full px-10 py-3 text-gray-700 bg-white border rounded-lg focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-          placeholder="Title"
-        />
-        <textarea
-          value={context}
-          onChange={(e) => setContext(e.target.value)}
-          className="block w-full px-10 py-3 text-gray-700 bg-white border rounded-lg focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-          placeholder="Enter a few lines of context for the blog post"
-          rows={4}
-        />
-        <button
-          className="bg-green-500 p-4 text-white rounded-lg shadow-lg hover:bg-green-700 disabled:bg-gray-400"
-          onClick={generateBlogPost}
-          disabled={isGenerating || !title || !context}
-        >
-          {isGenerating ? "Generating..." : "Generate Blog Post"}
-        </button>
-        <Markdown content={content} setContent={setContent} />
-        <button
-          className="bg-blue-500 p-4 text-white rounded-lg shadow-lg hover:bg-blue-700 disabled:bg-gray-400"
-          onClick={handleSubmit}
-          disabled={!title || !content}
-        >
-          Submit
-        </button>
+      <div className="min-h-screen bg-black relative">
+        <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
+        <div className="max-w-4xl mx-auto p-8 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="space-y-8"
+          >
+            <h1 className="text-4xl font-medium text-white font-calendas text-center">
+              Create Blog Post
+            </h1>
+
+            {error && (
+              <div className="p-3 bg-red-500/10 border border-red-500 text-red-500 rounded-md">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-4">
+                <input
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  type="text"
+                  className="w-full px-4 py-3 text-white bg-gray-800 border border-gray-700 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none font-calendas"
+                  placeholder="Title"
+                  required
+                />
+
+                <textarea
+                  name="excerpt"
+                  value={formData.excerpt}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 text-white bg-gray-800 border border-gray-700 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none font-calendas"
+                  placeholder="Brief excerpt (shown in blog list)"
+                  rows={3}
+                  required
+                />
+
+                <input
+                  name="tags"
+                  value={formData.tags.join(", ")}
+                  onChange={handleTagsChange}
+                  type="text"
+                  className="w-full px-4 py-3 text-white bg-gray-800 border border-gray-700 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none font-calendas"
+                  placeholder="Tags (comma-separated)"
+                />
+
+                <div className="flex items-center space-x-4">
+                  <label className="flex items-center space-x-2 text-white font-calendas">
+                    <input
+                      type="checkbox"
+                      name="isPublished"
+                      checked={formData.isPublished}
+                      onChange={handleChange}
+                      className="form-checkbox h-5 w-5 text-blue-500"
+                    />
+                    <span>Publish immediately</span>
+                  </label>
+
+                  <label className="flex items-center space-x-2 text-white font-calendas">
+                    <input
+                      type="file"
+                      name="coverImage"
+                      onChange={handleChange}
+                      accept="image/*"
+                      className="hidden"
+                    />
+                    <motion.span
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg cursor-pointer hover:bg-gray-700"
+                    >
+                      Upload Cover Image
+                    </motion.span>
+                  </label>
+                </div>
+
+                {preview && (
+                  <div className="relative w-full h-48">
+                    <img
+                      src={preview}
+                      alt="Cover preview"
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                  </div>
+                )}
+
+                <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
+                  <Markdown
+                    content={formData.content}
+                    setContent={(content) =>
+                      setFormData((prev) => ({ ...prev, content }))
+                    }
+                  />
+                </div>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  disabled={isLoading || !formData.title || !formData.content}
+                  className="w-full bg-blue-600 py-3 text-white rounded-lg font-calendas hover:bg-blue-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
+                >
+                  {isLoading ? "Creating..." : "Create Post"}
+                </motion.button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
       </div>
     </>
   );

@@ -4,25 +4,37 @@ import { useState, useEffect } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { useSession, signOut } from "next-auth/react";
 
 function Nav() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { data: session, status } = useSession();
   const router = useRouter();
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
-  }, []);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleSignOut = () => {
-    localStorage.removeItem("token");
-    setIsLoggedIn(false);
-    router.push("/signin");
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: "/" });
+  };
+
+  const menuVariants = {
+    hidden: { opacity: 0, x: "100%" },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: 0.5,
+        ease: "easeInOut",
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
   };
 
   return (
@@ -45,52 +57,108 @@ function Nav() {
               />
             </motion.span>
           </Link>
+
+          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
               onClick={toggleMenu}
               className="text-white hover:text-gray-300"
             >
-              {isOpen ? <FaTimes /> : <FaBars />}
+              {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
             </button>
           </div>
-          <div
-            className={`md:flex md:space-x-4 ${
-              isOpen ? "block" : "hidden"
-            } absolute md:relative top-16 md:top-0 left-0 md:left-auto w-full md:w-auto bg-black md:bg-transparent shadow-md md:shadow-none`}
+
+          {/* Desktop Menu & Mobile Menu Content */}
+          <motion.div
+            variants={menuVariants}
+            initial="hidden"
+            animate={isOpen ? "visible" : "hidden"}
+            className={`md:flex md:items-center md:space-x-4 fixed md:relative inset-0 md:inset-auto h-screen md:h-auto w-full md:w-auto bg-black md:bg-transparent z-50 flex flex-col md:flex-row justify-center space-y-8 md:space-y-0 ${
+              isOpen ? "" : "hidden"
+            }`}
           >
-            <Link
-              href="/projects"
-              className="block md:inline-block py-2 px-4 text-white hover:text-gray-300"
-            >
-              Projects
-            </Link>
-            <Link
-              href="/about"
-              className="block md:inline-block py-2 px-4 text-white hover:text-gray-300"
-            >
-              About
-            </Link>
-            <Link
-              href="/blog"
-              className="block md:inline-block py-2 px-4 text-white hover:text-gray-300"
-            >
-              Blog
-            </Link>
-            <Link
-              href="/contact"
-              className="block md:inline-block py-2 px-4 text-white hover:text-gray-300"
-            >
-              Contact
-            </Link>
-            {isLoggedIn && (
+            {/* Close Button for Mobile */}
+            <div className="absolute top-6 right-6 md:hidden">
               <button
-                onClick={handleSignOut}
-                className="block md:inline-block py-2 px-4 text-white hover:text-gray-300"
+                onClick={toggleMenu}
+                className="text-white hover:text-gray-300"
               >
-                Sign Out
+                <FaTimes size={24} />
               </button>
+            </div>
+
+            {/* Navigation Links */}
+            <motion.div variants={itemVariants}>
+              <Link
+                href="/projects"
+                className="block md:inline-block py-2 px-4 text-white hover:text-gray-300 text-xl md:text-base"
+                onClick={() => setIsOpen(false)}
+              >
+                Projects
+              </Link>
+            </motion.div>
+            <motion.div variants={itemVariants}>
+              <Link
+                href="/about"
+                className="block md:inline-block py-2 px-4 text-white hover:text-gray-300 text-xl md:text-base"
+                onClick={() => setIsOpen(false)}
+              >
+                About
+              </Link>
+            </motion.div>
+            <motion.div variants={itemVariants}>
+              <Link
+                href="/blog"
+                className="block md:inline-block py-2 px-4 text-white hover:text-gray-300 text-xl md:text-base"
+                onClick={() => setIsOpen(false)}
+              >
+                Blog
+              </Link>
+            </motion.div>
+            <motion.div variants={itemVariants}>
+              <Link
+                href="/contact"
+                className="block md:inline-block py-2 px-4 text-white hover:text-gray-300 text-xl md:text-base"
+                onClick={() => setIsOpen(false)}
+              >
+                Contact
+              </Link>
+            </motion.div>
+
+            {/* Conditional Rendering for Admin/Sign In */}
+            {session ? (
+              <>
+                <motion.div variants={itemVariants}>
+                  <Link
+                    href="/admin"
+                    className="block md:inline-block py-2 px-4 text-white hover:text-gray-300 text-xl md:text-base"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Admin
+                  </Link>
+                </motion.div>
+                <motion.button
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleSignOut}
+                  className="block md:inline-block py-2 px-4 text-white hover:text-gray-300 text-xl md:text-base"
+                >
+                  Sign Out
+                </motion.button>
+              </>
+            ) : (
+              <motion.div variants={itemVariants}>
+                <Link
+                  href="/signin"
+                  className="block md:inline-block py-2 px-4 text-white hover:text-gray-300 text-xl md:text-base"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Sign In
+                </Link>
+              </motion.div>
             )}
-          </div>
+          </motion.div>
         </div>
       </nav>
     </header>
