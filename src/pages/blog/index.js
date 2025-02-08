@@ -11,8 +11,13 @@ function Index({ data = [] }) {
   const [limitedContent, setLimitedContent] = useState([]);
 
   useEffect(() => {
+    // Sort posts by createdAt date in descending order
+    const sortedData = [...data].sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+
     setLimitedContent(
-      data.map((post) => ({
+      sortedData.map((post) => ({
         ...post,
         limitedContent: limitCharacters({ text: post.content, length: 250 }),
       }))
@@ -37,13 +42,13 @@ function Index({ data = [] }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="text-3xl font-bold text-white mb-8">
+              <h1 className="text-3xl font-bold text-white mb-8 font-calendas">
                 From the Blog
               </h1>
 
               {limitedContent.length > 0 && (
                 <div className="space-y-12">
-                  {limitedContent.reverse().map((post) => (
+                  {limitedContent.map((post) => (
                     <div
                       key={post._id}
                       onClick={() => Router.push(`/blog/${post.slug}`)}
@@ -56,16 +61,16 @@ function Index({ data = [] }) {
                           className="w-full lg:w-1/2 h-64 lg:h-96 object-cover rounded-lg"
                         />
                         <div className="lg:w-1/2">
-                          <h2 className="text-2xl font-semibold text-white mb-4 group-hover:text-blue-500 transition-colors">
+                          <h2 className="text-2xl font-semibold text-white mb-4 group-hover:text-blue-500 transition-colors font-calendas">
                             {post.title}
                           </h2>
                           <div
                             dangerouslySetInnerHTML={{
                               __html: post.limitedContent,
                             }}
-                            className="text-gray-300 mb-4 font-mono"
+                            className="text-gray-300 mb-4 font-calendas"
                           />
-                          <p className="text-blue-500 font-mono underline group-hover:text-blue-400 transition-colors">
+                          <p className="text-blue-500 font-calendas underline group-hover:text-blue-400 transition-colors">
                             Read more
                           </p>
                         </div>

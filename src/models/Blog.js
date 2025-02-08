@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
-const URLSlug = require("mongoose-slug-generator");
-mongoose.plugin(URLSlug);
+
 const BlogSchema = new mongoose.Schema(
   {
     title: {
@@ -8,41 +7,55 @@ const BlogSchema = new mongoose.Schema(
       required: [true, "Please provide a title"],
       maxlength: [200, "Title cannot be more than 200 characters"],
     },
-    slug: {
-      type: String,
-      unique: true,
-      required: true,
-    },
     content: {
       type: String,
       required: [true, "Please provide content"],
-    },
-    imageUrl: {
-      type: String,
-      required: [true, "Please provide an image URL"],
     },
     description: {
       type: String,
       required: [true, "Please provide a description"],
       maxlength: [500, "Description cannot be more than 500 characters"],
     },
+    imageUrl: {
+      type: String,
+      required: [true, "Please provide an image URL"],
+    },
+    tags: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+    slug: {
+      type: String,
+      unique: true,
+      required: true,
+    },
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    updatedAt: {
-      type: Date,
+    isPublished: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }
 );
+
+// Ensure unique slugs
+BlogSchema.index({ slug: 1 }, { unique: true });
+
+// Create slug from title
 BlogSchema.pre("save", function (next) {
-  this.slug = this.title.split(" ").join("-");
+  if (this.isModified("title")) {
+    this.slug = this.title
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-zA-Z0-9\s]/g, "")
+      .replace(/\s+/g, "-");
+  }
   next();
 });
 
