@@ -37,7 +37,7 @@ function Nav() {
               className="text-2xl font-bold text-white cursor-pointer"
             >
               <Image
-                src="/logo.png"
+                src="/Logo.png"
                 alt="Logo"
                 width={100}
                 height={100}
