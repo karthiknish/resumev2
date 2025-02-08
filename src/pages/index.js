@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import Head from "next/head";
-import React, { Suspense } from "react";
+import React, { Suspense, useState } from "react";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { HeroGeometric } from "@/components/ui/shape-landing-hero";
 import { TextRotate } from "@/components/ui/text-rotate";
@@ -29,6 +29,81 @@ import {
 } from "lucide-react";
 
 const HomeScreen = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
+
+  // Basic validation function
+  const validateForm = () => {
+    if (!formData.name.trim()) {
+      setSubmitError("Name is required.");
+      return false;
+    }
+    if (
+      !formData.email.trim() ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+    ) {
+      setSubmitError("Valid email is required.");
+      return false;
+    }
+    if (!formData.message.trim()) {
+      setSubmitError("Message is required.");
+      return false;
+    }
+    return true;
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+    // Clear error when user starts typing again
+    if (submitError) {
+      setSubmitError(null);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitError(null);
+    setSubmitSuccess(false);
+
+    if (!validateForm()) {
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setSubmitSuccess(true);
+        setFormData({ name: "", email: "", message: "" }); // Clear form
+      } else {
+        const errorData = await response.json();
+        setSubmitError(errorData.message || "Failed to send message.");
+      }
+    } catch (error) {
+      setSubmitError("An unexpected error occurred.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const exampleImages = [
     {
       url: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=3270&auto=format&fit=crop",
@@ -148,18 +223,17 @@ const HomeScreen = () => {
       >
         <Head>
           <title>
-            Karthik Nishanth - Elite Full Stack Developer & Business Problem
-            Solver | Liverpool, UK
+            Karthik Nishanth - Freelance Full Stack Developer | Liverpool, UK
           </title>
           <meta charSet="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <meta
             name="description"
-            content="Karthik Nishanth: An elite Full Stack Developer and Business Problem Solver based in Liverpool, UK. Transforming complex business challenges into innovative digital solutions."
+            content="Karthik Nishanth: A freelance Full Stack Developer based in Liverpool, UK. Specializing in creating bespoke web solutions for businesses and individuals."
           />
           <meta
             name="keywords"
-            content="Business Problem Solver, Full Stack Developer, Web Development Expert, React, Node.js, JavaScript, TypeScript, GraphQL, Performance Marketing, Google Ads, Meta Ads, TikTok Ads, Liverpool, UK"
+            content="Freelance Web Developer, Full Stack Developer, Web Development, React, Node.js, JavaScript, TypeScript,  Liverpool, UK"
           />
           <meta name="author" content="Karthik Nishanth" />
           <link rel="canonical" href="https://karthiknish.com/" />
@@ -173,9 +247,9 @@ const HomeScreen = () => {
           className="relative z-10"
         >
           <HeroGeometric
-            badge="Experienced Full Stack Developer"
-            title1="Transform Your"
-            title2="Business Vision"
+            badge="Freelance Full Stack Developer"
+            title1="Crafting Digital"
+            title2="Experiences"
           />
           <motion.section
             initial={{ y: 100, opacity: 0 }}
@@ -267,7 +341,7 @@ const HomeScreen = () => {
                 initial={{ opacity: 0, y: 20 }}
                 transition={{ duration: 0.2, ease: "easeOut", delay: 0.3 }}
               >
-                <span>I Make </span>
+                <span>I Build </span>
                 <LayoutGroup>
                   <motion.span layout className="flex whitespace-pre">
                     <motion.span
@@ -279,14 +353,14 @@ const HomeScreen = () => {
                         stiffness: 400,
                       }}
                     >
-                      Solutions{" "}
+                      Websites{" "}
                     </motion.span>
                     <TextRotate
                       texts={[
-                        "scalable",
-                        "reliable",
-                        "innovative",
-                        "powerful",
+                        "that scale",
+                        "that perform",
+                        "with precision",
+                        "with passion",
                         "⚡ fast",
                         "secure 🔒",
                         "elegant",
@@ -316,9 +390,8 @@ const HomeScreen = () => {
                 initial={{ opacity: 0, y: 20 }}
                 transition={{ duration: 0.2, ease: "easeOut", delay: 0.5 }}
               >
-                Transforming complex business challenges into innovative digital
-                solutions with expertise in full-stack development and strategic
-                problem-solving.
+                Freelance web developer creating custom, scalable, and
+                high-performance web solutions for businesses and individuals.
               </motion.p>
 
               <div className="flex flex-row justify-center space-x-4 items-center mt-10 sm:mt-16 md:mt-20 lg:mt-20 text-xs">
@@ -391,10 +464,10 @@ const HomeScreen = () => {
                     viewport={{ once: true }}
                     className="mt-4 text-neutral-300 max-w-lg font-calendas"
                   >
-                    I'm a full-stack developer passionate about building
-                    innovative web solutions. With expertise in React, Node.js,
-                    and cloud technologies, I create scalable applications that
-                    drive business growth.
+                    I'm a freelance full-stack developer passionate about
+                    building innovative web solutions. With expertise in React,
+                    Node.js, and cloud technologies, I create scalable
+                    applications tailored to your needs.
                   </motion.p>
                 </div>
 
@@ -466,7 +539,7 @@ const HomeScreen = () => {
                 viewport={{ once: true }}
                 className="text-3xl text-center font-bold sm:text-4xl mb-8 text-white font-calendas"
               >
-                Featured Solutions
+                Featured Projects
               </motion.h2>
               {(() => {
                 const itemsSample = [
@@ -555,8 +628,8 @@ const HomeScreen = () => {
                     How do you approach new projects?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-300 font-calendas">
-                    I begin with a thorough analysis of business requirements
-                    and objectives. Then, I develop a strategic roadmap that
+                    I begin with a thorough analysis of your requirements and
+                    objectives. Then, I develop a strategic roadmap that
                     outlines technical solutions, timelines, and deliverables.
                     Throughout the project, I maintain clear communication and
                     adapt to changing needs while ensuring high-quality code and
@@ -569,11 +642,11 @@ const HomeScreen = () => {
                     What sets you apart from other developers?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-300 font-calendas">
-                    My unique combination of technical expertise and business
-                    acumen allows me to not just code solutions, but to truly
-                    understand and solve complex business challenges. I focus on
-                    delivering scalable, maintainable code while keeping
-                    business objectives at the forefront.
+                    My unique combination of technical expertise and focus on
+                    client needs allows me to not just code solutions, but to
+                    truly understand and solve your challenges. I focus on
+                    delivering scalable, maintainable code while keeping your
+                    objectives at the forefront.
                   </AccordionContent>
                 </AccordionItem>
 
@@ -610,7 +683,7 @@ const HomeScreen = () => {
                     viewport={{ once: true }}
                     className="text-3xl font-bold sm:text-4xl text-white font-calendas"
                   >
-                    Get in Touch
+                    Contact Me
                   </motion.h2>
                   <motion.p
                     initial={{ y: 20, opacity: 0 }}
@@ -619,28 +692,91 @@ const HomeScreen = () => {
                     viewport={{ once: true }}
                     className="text-gray-300 max-w-[700px] mx-auto font-calendas"
                   >
-                    Ready to elevate your web presence? Let's collaborate to
-                    turn your vision into a digital masterpiece.
+                    Ready to start your next project? Let's discuss how I can
+                    help bring your vision to life.
                   </motion.p>
+
+                  {/* Display success message */}
+                  {submitSuccess && (
+                    <div className="bg-green-500 text-white p-4 rounded-md text-center">
+                      Message sent successfully! I'll be in touch soon.
+                    </div>
+                  )}
+
+                  {/* Display error message */}
+                  {submitError && (
+                    <div className="bg-red-500 text-white p-4 rounded-md text-center">
+                      {submitError}
+                    </div>
+                  )}
+
                   <motion.form
+                    onSubmit={handleSubmit}
                     initial={{ y: 20, opacity: 0 }}
                     whileInView={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.6 }}
                     viewport={{ once: true }}
-                    className="flex space-x-2 max-w-sm mx-auto"
+                    className="max-w-md mx-auto space-y-4"
                   >
-                    <input
-                      type="email"
-                      placeholder="Enter your email"
-                      className="flex-1 p-2 border rounded bg-gray-700 text-white font-calendas"
-                    />
+                    <div>
+                      <label
+                        htmlFor="name"
+                        className="block text-sm font-medium text-gray-300 font-calendas"
+                      >
+                        Name
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        placeholder="Your Name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        className="mt-1 p-2 w-full border rounded bg-gray-700 text-white font-calendas"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-gray-300 font-calendas"
+                      >
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        placeholder="Your Email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className="mt-1 p-2 w-full border rounded bg-gray-700 text-white font-calendas"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="message"
+                        className="block text-sm font-medium text-gray-300 font-calendas"
+                      >
+                        Message
+                      </label>
+                      <textarea
+                        id="message"
+                        placeholder="Your Message"
+                        value={formData.message}
+                        onChange={handleChange}
+                        rows="4"
+                        className="mt-1 p-2 w-full border rounded bg-gray-700 text-white font-calendas"
+                        required
+                      ></textarea>
+                    </div>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       type="submit"
-                      className="sm:text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-blue-500 px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-2xl hover:bg-blue-600 transition-colors"
+                      disabled={isSubmitting}
+                      className="w-full sm:text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-blue-500 px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-2xl hover:bg-blue-600 transition-colors"
                     >
-                      Subscribe
+                      Send Message
                     </motion.button>
                   </motion.form>
                 </div>
@@ -654,5 +790,4 @@ const HomeScreen = () => {
 };
 
 export default HomeScreen;
-            
 
