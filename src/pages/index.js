@@ -28,6 +28,7 @@ import {
   Lock,
 } from "lucide-react";
 import { useRouter } from "next/router";
+import Services from "@/components/Services";
 
 const HomeScreen = () => {
   const [formData, setFormData] = useState({
@@ -670,7 +671,15 @@ const HomeScreen = () => {
               </Accordion>
             </div>
           </motion.section>
-
+          <div className="max-w-4xl mx-auto px-8 py-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <Services />
+            </motion.div>
+          </div>
           <motion.main
             initial={{ x: 100, opacity: 0 }}
             whileInView={{ x: 0, opacity: 1 }}

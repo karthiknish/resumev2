@@ -3,6 +3,7 @@ import Head from "next/head";
 import { motion } from "framer-motion";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { useRouter } from "next/router";
+import Services from "@/components/Services";
 
 export default function Contact() {
   const router = useRouter();
@@ -74,61 +75,67 @@ export default function Contact() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="space-y-8"
+            className="space-y-16"
           >
-            <h1 className="text-4xl font-medium text-white font-calendas text-center">
-              Get in Touch
-            </h1>
+            {/* Services Section */}
+            <Services />
 
-            {error && (
-              <div className="p-3 bg-red-500/10 border border-red-500 text-red-500 rounded-md">
-                {error}
-              </div>
-            )}
+            {/* Contact Form Section */}
+            <section className="space-y-8">
+              <h2 className="text-3xl font-medium text-white font-calendas text-center">
+                Get in Touch
+              </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-4">
-                <input
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  type="text"
-                  className="w-full px-4 py-3 text-white bg-gray-800 border border-gray-700 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none font-calendas"
-                  placeholder="Your Name"
-                  required
-                />
+              {error && (
+                <div className="p-3 bg-red-500/10 border border-red-500 text-red-500 rounded-md">
+                  {error}
+                </div>
+              )}
 
-                <input
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  type="email"
-                  className="w-full px-4 py-3 text-white bg-gray-800 border border-gray-700 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none font-calendas"
-                  placeholder="Your Email"
-                  required
-                />
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-4">
+                  <input
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    type="text"
+                    className="w-full px-4 py-3 text-white bg-gray-800 border border-gray-700 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none font-calendas"
+                    placeholder="Your Name"
+                    required
+                  />
 
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 text-white bg-gray-800 border border-gray-700 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none font-calendas"
-                  placeholder="Your Message"
-                  rows={5}
-                  required
-                />
+                  <input
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    type="email"
+                    className="w-full px-4 py-3 text-white bg-gray-800 border border-gray-700 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none font-calendas"
+                    placeholder="Your Email"
+                    required
+                  />
 
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full bg-blue-600 py-3 text-white rounded-lg font-calendas hover:bg-blue-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
-                >
-                  {isLoading ? "Sending..." : "Send Message"}
-                </motion.button>
-              </div>
-            </form>
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 text-white bg-gray-800 border border-gray-700 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none font-calendas"
+                    placeholder="Your Message"
+                    rows={5}
+                    required
+                  />
+
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full bg-blue-600 py-3 text-white rounded-lg font-calendas hover:bg-blue-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
+                  >
+                    {isLoading ? "Sending..." : "Send Message"}
+                  </motion.button>
+                </div>
+              </form>
+            </section>
           </motion.div>
         </div>
       </div>
