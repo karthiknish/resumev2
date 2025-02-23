@@ -58,7 +58,9 @@ export default function App({ Component, pageProps }) {
           </Script>
 
           <Nav />
-          <Component {...pageProps} session={session} />
+          <div className="pt-24">
+            <Component {...pageProps} session={session} />
+          </div>
           <Footer />
         </>
       </SessionProvider>
