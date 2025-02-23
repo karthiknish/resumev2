@@ -57,7 +57,10 @@ export default function Nav() {
     <header
       className={`${isHome ? "" : "bg-black"} shadow-md fixed w-full z-50`}
     >
-      <nav className="container mx-auto px-6 py-4" id="mobile-nav">
+      <nav
+        className="max-w-[90rem] w-full mx-auto px-4 sm:px-6 py-4"
+        id="mobile-nav"
+      >
         <div className="flex justify-between items-center">
           <Link href="/">
             <motion.span
