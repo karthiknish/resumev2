@@ -161,6 +161,186 @@ export default function Resources() {
       tags: ["database", "mongodb", "cloud"],
       featured: false,
     },
+    {
+      title: "TypeScript Handbook",
+      description:
+        "The official TypeScript documentation and guide for learning the language from basics to advanced concepts.",
+      link: "https://www.typescriptlang.org/docs/handbook/intro.html",
+      category: "tutorials",
+      tags: ["typescript", "javascript", "documentation"],
+      featured: true,
+    },
+    {
+      title: "Storybook",
+      description:
+        "A frontend workshop for building UI components and pages in isolation. It streamlines UI development, testing, and documentation.",
+      link: "https://storybook.js.org/",
+      category: "tools",
+      tags: ["ui", "components", "documentation", "testing"],
+      featured: false,
+    },
+    {
+      title: "Web.dev by Google",
+      description:
+        "Guidance and analysis to help developers build modern web experiences that are fast, reliable, and accessible.",
+      link: "https://web.dev/",
+      category: "tutorials",
+      tags: ["performance", "accessibility", "best practices", "pwa"],
+      featured: true,
+    },
+    {
+      title: "Framer Motion Documentation",
+      description:
+        "Comprehensive guide to using Framer Motion for adding animations to React applications.",
+      link: "https://www.framer.com/motion/",
+      category: "tutorials",
+      tags: ["react", "animation", "ui", "framer"],
+      featured: false,
+    },
+    {
+      title: "Vercel",
+      description:
+        "Platform for frontend frameworks and static sites, built to integrate with your headless content, commerce, or database.",
+      link: "https://vercel.com/",
+      category: "tools",
+      tags: ["deployment", "hosting", "serverless", "nextjs"],
+      featured: true,
+    },
+    {
+      title: "CSS Flexbox Guide",
+      description:
+        "A complete guide to CSS flexbox layout with visual examples and code snippets.",
+      link: "https://css-tricks.com/snippets/css/a-guide-to-flexbox/",
+      category: "tutorials",
+      tags: ["css", "flexbox", "layout"],
+      featured: false,
+    },
+    {
+      title: "GitHub Copilot",
+      description:
+        "AI pair programmer that helps you write code faster with less work.",
+      link: "https://github.com/features/copilot",
+      category: "tools",
+      tags: ["ai", "productivity", "coding", "pair programming"],
+      featured: true,
+    },
+    {
+      title: "Responsive Image Gallery",
+      description:
+        "A responsive image gallery implementation with CSS Grid and JavaScript.",
+      link: "/code-snippets/responsive-gallery",
+      category: "code",
+      tags: ["css", "javascript", "responsive", "gallery"],
+      featured: false,
+    },
+    {
+      title: "Docker for Beginners",
+      description:
+        "A comprehensive guide to getting started with Docker containerization.",
+      link: "https://docker-curriculum.com/",
+      category: "tutorials",
+      tags: ["docker", "containers", "devops", "deployment"],
+      featured: false,
+    },
+    {
+      title: "Postman",
+      description:
+        "API platform for building and using APIs. Simplifies each step of the API lifecycle and streamlines collaboration.",
+      link: "https://www.postman.com/",
+      category: "tools",
+      tags: ["api", "testing", "development", "collaboration"],
+      featured: false,
+    },
+    {
+      title: "The Net Ninja - Full React Tutorial",
+      description:
+        "Complete React tutorial series covering all the fundamentals and advanced concepts.",
+      link: "https://www.youtube.com/playlist?list=PL4cUxeGkcC9gZD-Tvwfod2gaISzfRiP9d",
+      category: "videos",
+      tags: ["react", "javascript", "frontend", "tutorial"],
+      featured: false,
+    },
+    {
+      title: "Dark Mode Toggle",
+      description:
+        "Implementation of a dark mode toggle with CSS variables and JavaScript.",
+      link: "/code-snippets/dark-mode-toggle",
+      category: "code",
+      tags: ["css", "javascript", "dark mode", "accessibility"],
+      featured: false,
+    },
+    {
+      title: "GraphQL Documentation",
+      description:
+        "Learn about GraphQL, a query language for APIs and a runtime for fulfilling those queries with your existing data.",
+      link: "https://graphql.org/learn/",
+      category: "tutorials",
+      tags: ["graphql", "api", "query language", "data fetching"],
+      featured: false,
+    },
+    {
+      title: "Cypress",
+      description:
+        "Fast, easy and reliable testing for anything that runs in a browser.",
+      link: "https://www.cypress.io/",
+      category: "tools",
+      tags: ["testing", "automation", "e2e", "integration"],
+      featured: false,
+    },
+    {
+      title: "Traversy Media - MERN Stack Front To Back",
+      description:
+        "Full stack development with MongoDB, Express, React, and Node.js.",
+      link: "https://www.youtube.com/watch?v=PBTYxXADG_k&list=PLillGF-RfqbbiTGgA77tGO426V3hRF9iE",
+      category: "videos",
+      tags: ["mern", "mongodb", "express", "react", "nodejs"],
+      featured: true,
+    },
+    {
+      title: "Custom React Hooks Collection",
+      description:
+        "A collection of useful custom React hooks for common functionalities.",
+      link: "/code-snippets/custom-react-hooks",
+      category: "code",
+      tags: ["react", "hooks", "reusable", "javascript"],
+      featured: true,
+    },
+    {
+      title: "MDN Web Docs",
+      description:
+        "Resources for developers, by developers. Comprehensive documentation for web technologies.",
+      link: "https://developer.mozilla.org/",
+      category: "tutorials",
+      tags: ["documentation", "web", "html", "css", "javascript"],
+      featured: true,
+    },
+    {
+      title: "Netlify",
+      description:
+        "Platform that automates your code to create high-performant, easily maintainable sites and web apps.",
+      link: "https://www.netlify.com/",
+      category: "tools",
+      tags: ["deployment", "hosting", "serverless", "jamstack"],
+      featured: false,
+    },
+    {
+      title: "Fireship - 100 Seconds of Code",
+      description:
+        "Learn various programming concepts and technologies in just 100 seconds each.",
+      link: "https://www.youtube.com/playlist?list=PL0vfts4VzfNiI1BsIq5fA8ESY4Td7oAwL",
+      category: "videos",
+      tags: ["quick learning", "programming", "concepts", "technologies"],
+      featured: false,
+    },
+    {
+      title: "Responsive CSS Grid Dashboard",
+      description:
+        "A responsive dashboard layout implementation using CSS Grid.",
+      link: "/code-snippets/grid-dashboard",
+      category: "code",
+      tags: ["css", "grid", "dashboard", "responsive"],
+      featured: false,
+    },
   ];
 
   // Filter resources based on search term and active category
