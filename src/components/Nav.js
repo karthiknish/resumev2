@@ -112,6 +112,30 @@ export default function Nav() {
             </Link>
 
             <Link
+              href="/services"
+              className="text-white hover:text-gray-300 text-xl md:text-base font-calendas"
+              onClick={handleLinkClick}
+            >
+              Services
+            </Link>
+
+            <Link
+              href="/testimonials"
+              className="text-white hover:text-gray-300 text-xl md:text-base font-calendas"
+              onClick={handleLinkClick}
+            >
+              Testimonials
+            </Link>
+
+            <Link
+              href="/resources"
+              className="text-white hover:text-gray-300 text-xl md:text-base font-calendas"
+              onClick={handleLinkClick}
+            >
+              Resources
+            </Link>
+
+            <Link
               href="/blog"
               className="text-white hover:text-gray-300 text-xl md:text-base font-calendas"
               onClick={handleLinkClick}
