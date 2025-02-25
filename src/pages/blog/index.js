@@ -6,6 +6,7 @@ import Router from "next/router";
 import { motion } from "framer-motion";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { Card } from "@/components/ui/card";
+import ReactMarkdown from "react-markdown";
 
 function Index({ data = [] }) {
   const [limitedContent, setLimitedContent] = useState([]);
@@ -64,12 +65,9 @@ function Index({ data = [] }) {
                           <h2 className="text-2xl font-semibold text-white mb-4 group-hover:text-blue-500 transition-colors font-calendas">
                             {post.title}
                           </h2>
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: post.limitedContent,
-                            }}
-                            className="text-gray-300 mb-4 font-calendas"
-                          />
+                          <div className="text-gray-300 mb-4 font-calendas prose prose-invert max-w-none prose-p:text-gray-300 prose-a:text-blue-400">
+                            <ReactMarkdown>{post.limitedContent}</ReactMarkdown>
+                          </div>
                           <p className="text-blue-500 font-calendas underline group-hover:text-blue-400 transition-colors">
                             Read more
                           </p>

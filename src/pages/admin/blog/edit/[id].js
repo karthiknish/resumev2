@@ -2,6 +2,14 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 import Markdown from "../../../../components/Markdown";
 import { useRouter } from "next/router";
+import {
+  AiOutlineFormatPainter,
+  AiOutlineLoading3Quarters,
+  AiOutlineEye,
+  AiOutlineEdit,
+  AiOutlineClose,
+} from "react-icons/ai";
+import ReactMarkdown from "react-markdown";
 
 function Edit() {
   const [title, setTitle] = useState("");
@@ -11,6 +19,9 @@ function Edit() {
   const [submitStatus, setSubmitStatus] = useState([]);
   const [jsonInput, setJsonInput] = useState("");
   const [showJsonInput, setShowJsonInput] = useState(false);
+  const [isFormatting, setIsFormatting] = useState(false);
+  const [formatSuccess, setFormatSuccess] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   const router = useRouter();
 
@@ -20,6 +31,10 @@ function Edit() {
 
   const toggleJsonInput = () => {
     setShowJsonInput((prevState) => !prevState);
+  };
+
+  const togglePreview = () => {
+    setShowPreview((prevState) => !prevState);
   };
 
   useEffect(() => {
@@ -97,6 +112,92 @@ function Edit() {
     }
   };
 
+  const formatContent = async () => {
+    if (!content.trim()) {
+      setSubmitStatus([false, "Content is required for formatting"]);
+      return;
+    }
+
+    setIsFormatting(true);
+    setSubmitStatus([]);
+
+    try {
+      const response = await fetch("/api/ai/format-content", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to format content");
+      }
+
+      setContent(result.data);
+      setFormatSuccess(true);
+      setSubmitStatus([true, "Content formatted successfully!"]);
+
+      // Update JSON input
+      const jsonData = {
+        title,
+        imageUrl,
+        content: result.data,
+      };
+      setJsonInput(JSON.stringify(jsonData, null, 2));
+
+      // Hide success message after 3 seconds
+      setTimeout(() => {
+        setFormatSuccess(false);
+        setSubmitStatus([]);
+      }, 3000);
+    } catch (error) {
+      console.error("Error formatting content:", error);
+      setSubmitStatus([false, error.message || "Failed to format content"]);
+    } finally {
+      setIsFormatting(false);
+    }
+  };
+
+  const BlogPreview = () => (
+    <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-80 flex items-start justify-center p-4">
+      <div className="bg-gray-900 rounded-lg w-full max-w-4xl my-8 overflow-hidden shadow-2xl">
+        <div className="flex justify-between items-center p-4 border-b border-gray-700">
+          <h2 className="text-xl font-bold text-white">Blog Preview</h2>
+          <button
+            onClick={togglePreview}
+            className="text-gray-400 hover:text-white"
+          >
+            <AiOutlineClose size={24} />
+          </button>
+        </div>
+
+        <div className="p-6 overflow-auto max-h-[80vh]">
+          {/* Featured Image */}
+          {imageUrl && (
+            <div className="mb-6">
+              <img
+                src={imageUrl}
+                alt={title}
+                className="w-full h-auto rounded-lg object-cover max-h-[400px]"
+              />
+            </div>
+          )}
+
+          {/* Title */}
+          <h1 className="text-3xl font-bold text-white mb-6">{title}</h1>
+
+          {/* Content */}
+          <div className="prose prose-invert max-w-none prose-headings:text-white prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:text-gray-300 prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-ul:text-gray-300 prose-ol:text-gray-300 prose-li:my-1">
+            <ReactMarkdown>{content}</ReactMarkdown>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <>
       <Head>
@@ -138,7 +239,36 @@ function Edit() {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-white mb-2">Content</label>
+              <div className="flex justify-between items-center mb-2">
+                <label className="block text-white">Content</label>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={formatContent}
+                    disabled={isFormatting || !content.trim()}
+                    className="flex items-center px-3 py-1 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
+                  >
+                    {isFormatting ? (
+                      <>
+                        <AiOutlineLoading3Quarters className="animate-spin mr-1" />
+                        Formatting...
+                      </>
+                    ) : (
+                      <>
+                        <AiOutlineFormatPainter className="mr-1" />
+                        Format Content
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={togglePreview}
+                    disabled={!content.trim()}
+                    className="flex items-center px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
+                  >
+                    <AiOutlineEye className="mr-1" />
+                    Preview
+                  </button>
+                </div>
+              </div>
               <Markdown
                 key={content}
                 content={content || ""}
@@ -198,6 +328,8 @@ function Edit() {
           </div>
         </div>
       </div>
+
+      {showPreview && <BlogPreview />}
     </>
   );
 }

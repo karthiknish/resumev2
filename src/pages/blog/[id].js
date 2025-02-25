@@ -4,6 +4,7 @@ import Head from "next/head";
 import { motion } from "framer-motion";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { Card } from "@/components/ui/card";
+import ReactMarkdown from "react-markdown";
 
 function Id({ data }) {
   return (
@@ -62,10 +63,9 @@ function Id({ data }) {
                       {data?.title}
                     </h1>
                     {data && data.content && (
-                      <div
-                        className="prose prose-invert max-w-none font-calendas"
-                        dangerouslySetInnerHTML={{ __html: data.content }}
-                      />
+                      <div className="prose prose-invert max-w-none prose-headings:text-white prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:text-gray-300 prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-ul:text-gray-300 prose-ol:text-gray-300 prose-li:my-1 font-calendas">
+                        <ReactMarkdown>{data.content}</ReactMarkdown>
+                      </div>
                     )}
                   </div>
                 </div>
