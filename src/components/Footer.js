@@ -1,33 +1,43 @@
-import Link from "next/link";
+import React from "react";
+import { FadeIn, HoverCard } from "./animations/MotionComponents";
 import { AiFillGithub, AiFillLinkedin } from "react-icons/ai";
-function Footer() {
+
+export default function Footer() {
   return (
-    <div className="my-2 flex flex-col items-center gap-4 w-full">
-      <div className="flex gap-4 justify-center">
-        <Link
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://github.com/karthiknish"
-          className="text-2xl text-white hover:text-1536ba transition-all duration-300"
-          aria-label="View my GitHub profile"
-        >
-          <AiFillGithub className="text-4xl" />
-        </Link>
-        <Link
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.linkedin.com/in/karthik-nishanth/"
-          className="text-2xl text-white hover:text-1536ba transition-all duration-300"
-          aria-label="View my LinkedIn profile"
-        >
-          <AiFillLinkedin className="text-4xl" />
-        </Link>
-      </div>
-      <p className="text-sm text-gray-400">
-        © {new Date().getFullYear()} Karthik Nishanth. All rights reserved.
-      </p>
-    </div>
+    <FadeIn>
+      <footer className="bg-black text-white">
+        <div className="max-w-6xl mx-auto px-4 py-10">
+          <div className="flex justify-center space-x-6 mb-6">
+            <HoverCard>
+              <a
+                href="https://github.com/karthiksivaraman"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <AiFillGithub className="text-3xl" />
+              </a>
+            </HoverCard>
+            <HoverCard>
+              <a
+                href="https://linkedin.com/in/karthiksivaraman"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <AiFillLinkedin className="text-3xl" />
+              </a>
+            </HoverCard>
+          </div>
+
+          <div className="text-center">
+            <p className="text-gray-400 text-sm">
+              &copy; {new Date().getFullYear()} Karthik Nishanth. All rights
+              reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </FadeIn>
   );
 }
-
-export default Footer;

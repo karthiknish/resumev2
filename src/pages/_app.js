@@ -8,6 +8,7 @@ import Nav from "../components/Nav";
 import Chatbot from "../components/Chatbot";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SessionProvider } from "next-auth/react";
+import PageTransitionWrapper from "@/components/PageTransitionWrapper";
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
@@ -62,7 +63,9 @@ export default function App({ Component, pageProps }) {
 
           <Nav />
           <div className="pt-24">
-            <Component {...pageProps} session={session} />
+            <PageTransitionWrapper>
+              <Component {...pageProps} session={session} />
+            </PageTransitionWrapper>
           </div>
           <Footer />
           <Chatbot />

@@ -26,11 +26,12 @@ export default async function handler(req, res) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Create new user
+    // Create new user with explicit role assignment
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
+      role: "user", // Explicitly set default role to 'user'
     });
 
     // Remove password from response
@@ -38,6 +39,7 @@ export default async function handler(req, res) {
       _id: user._id,
       name: user.name,
       email: user.email,
+      role: user.role, // Include role in response
     };
 
     return res.status(201).json({

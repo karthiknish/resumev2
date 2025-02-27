@@ -225,7 +225,7 @@ const HomeScreen = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="relative min-h-screen"
+        className="relative -mt-10 min-h-screen"
       >
         <Head>
           <title>
@@ -675,7 +675,7 @@ const HomeScreen = () => {
             whileInView={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="bg-black mt-20 text-white py-12"
+            className="bg-black  text-white py-12"
           >
             <div className="container mx-auto px-4">
               <motion.h2
@@ -747,7 +747,7 @@ const HomeScreen = () => {
               </Accordion>
             </div>
           </motion.section>
-          <div className="max-w-4xl mx-auto px-8 py-16">
+          <div className="bg-black mx-auto px-8 py-16">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

@@ -1,91 +1,98 @@
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
-  AiOutlineEdit,
-  AiOutlineFileAdd,
   AiOutlineDashboard,
   AiOutlineCalendar,
   AiOutlineMessage,
-  AiOutlineDelete,
-  AiOutlineRobot,
-  AiOutlineClockCircle,
 } from "react-icons/ai";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import Calendar from "react-calendar";
-import { format } from "date-fns";
 import "react-calendar/dist/Calendar.css";
+import { FaComments } from "react-icons/fa";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AnimatePresence } from "framer-motion";
 import {
-  FaLock,
-  FaComments,
-  FaEnvelope,
-  FaDatabase,
-  FaChartBar,
-  FaTasks,
-  FaCog,
-  FaServer,
-} from "react-icons/fa";
-import MongoDBStats from "@/components/admin/MongoDBStats";
-import dynamic from "next/dynamic";
+  FadeIn,
+  SlideInLeft,
+  SlideUp,
+  PageTransition,
+} from "@/components/animations/MotionComponents";
 
-// Digital Clock Component
-function DigitalClock() {
-  const [time, setTime] = useState(new Date());
-  const [blinking, setBlinking] = useState(true);
+// Import extracted components
+import DigitalClock from "@/components/admin/ui/DigitalClock";
+import EmptyPage from "@/components/admin/ui/EmptyPage";
+import DashboardTab from "@/components/admin/tabs/DashboardTab";
+import CalendarTab from "@/components/admin/tabs/CalendarTab";
+import MessagesTab from "@/components/admin/tabs/MessagesTab";
+import ChatHistoryTab from "@/components/admin/tabs/ChatHistoryTab";
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTime(new Date());
-      setBlinking((prev) => !prev);
-    }, 1000);
+// Mock chat data for demonstration
+const MOCK_CHAT_LOGS = [
+  {
+    id: 1,
+    user: {
+      name: "John Smith",
+      email: "john@example.com",
+      avatar: "/avatars/01.png",
+    },
+    message:
+      "I'm having an issue with placing an order. The payment went through but I didn't receive a confirmation.",
+    timestamp: new Date(2023, 11, 18, 10, 45),
+    isRead: false,
+  },
+  {
+    id: 2,
+    user: {
+      name: "Sarah Johnson",
+      email: "sarah@example.com",
+      avatar: "/avatars/02.png",
+    },
+    message:
+      "Just wanted to say that I love the new blog feature! The design is really clean and modern.",
+    timestamp: new Date(2023, 11, 17, 14, 32),
+    isRead: true,
+  },
+  {
+    id: 3,
+    user: {
+      name: "Mike Davis",
+      email: "mike@example.com",
+      avatar: "/avatars/03.png",
+    },
+    message:
+      "How do I change my account password? I can't find the option in settings.",
+    timestamp: new Date(2023, 11, 17, 9, 18),
+    isRead: false,
+  },
+  {
+    id: 4,
+    user: {
+      name: "Emma Wilson",
+      email: "emma@example.com",
+      avatar: "/avatars/04.png",
+    },
+    message:
+      "Is there a way to export my data? I need it for a presentation next week.",
+    timestamp: new Date(2023, 11, 16, 16, 20),
+    isRead: true,
+  },
+  {
+    id: 5,
+    user: {
+      name: "Alex Brown",
+      email: "alex@example.com",
+      avatar: "/avatars/05.png",
+    },
+    message:
+      "The mobile responsiveness of the site is excellent! Works perfectly on my phone and tablet.",
+    timestamp: new Date(2023, 11, 15, 11, 5),
+    isRead: true,
+  },
+];
 
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
-
-  const formattedDate = format(time, "EEE, MMM d, yyyy");
-
-  // Format time parts separately to add blinking colon
-  const hours = time.getHours().toString().padStart(2, "0");
-  const minutes = time.getMinutes().toString().padStart(2, "0");
-  const seconds = time.getSeconds().toString().padStart(2, "0");
-
-  return (
-    <div className="flex flex-col items-end">
-      <div className="flex items-center bg-gray-800 px-4 py-2 rounded-lg text-white">
-        <AiOutlineClockCircle className="mr-2 text-blue-400" />
-        <span className="font-mono text-xl flex items-center">
-          {hours}
-          <span
-            className={`mx-0.5 ${
-              blinking ? "opacity-100" : "opacity-40"
-            } transition-opacity duration-300`}
-          >
-            :
-          </span>
-          {minutes}
-          <span
-            className={`mx-0.5 ${
-              blinking ? "opacity-100" : "opacity-40"
-            } transition-opacity duration-300`}
-          >
-            :
-          </span>
-          {seconds}
-        </span>
-      </div>
-      <div className="text-gray-400 mt-1 text-sm">{formattedDate}</div>
-    </div>
-  );
-}
-
-function EmptyPage() {
-  return null;
-}
-
-function Index() {
+function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -94,213 +101,298 @@ function Index() {
   const [blogDates, setBlogDates] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [postsOnSelectedDate, setPostsOnSelectedDate] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [sessionDebug, setSessionDebug] = useState(null);
+  const [chatLogs, setChatLogs] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [messageError, setMessageError] = useState(null);
+  const [chatHistories, setChatHistories] = useState([]);
+  const [isLoadingChatHistories, setIsLoadingChatHistories] = useState(false);
+  const [chatHistoriesError, setChatHistoriesError] = useState(null);
 
-  // Contact state
-  const [contacts, setContacts] = useState([]);
-  const [contactsLoading, setContactsLoading] = useState(false);
-  const [contactPage, setContactPage] = useState(1);
-  const [contactPagination, setContactPagination] = useState({
-    total: 0,
-    totalPages: 0,
-    page: 1,
-    limit: 10,
-  });
-  const [deleteLoading, setDeleteLoading] = useState(false);
-  const [selectedContact, setSelectedContact] = useState(null);
+  // Check for admin role in different formats when session changes
+  useEffect(() => {
+    if (session && session.user) {
+      // Log session info for debugging
+      console.log("Session user:", session.user);
 
-  const [isAuthorized, setIsAuthorized] = useState(false);
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [chatDbStatus, setChatDbStatus] = useState({ status: "unknown" });
-  const [migrationStatus, setMigrationStatus] = useState({ status: "unknown" });
+      // Store session data for debugging
+      setSessionDebug({
+        email: session.user.email,
+        name: session.user.name,
+        role: session.user.role,
+        isAdmin: session.user.isAdmin,
+        id: session.user.id,
+        allUserProps: Object.keys(session.user),
+        fullSession: session,
+      });
 
+      // Check various possible admin indicators
+      const isUserAdmin =
+        session.user.role === "admin" ||
+        session.user.role === "ADMIN" ||
+        session.user.isAdmin === true ||
+        session.user.admin === true ||
+        session.user.userRole === "admin" ||
+        (session.user.permissions &&
+          session.user.permissions.includes("admin")) ||
+        // Check if email matches the admin email from environment variable
+        session.user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+
+      console.log("Is user admin?", isUserAdmin);
+      console.log("Admin check conditions:", {
+        roleIsAdmin: session.user.role === "admin",
+        roleIsADMIN: session.user.role === "ADMIN",
+        isAdminProperty: session.user.isAdmin === true,
+        adminProperty: session.user.admin === true,
+        userRoleProperty: session.user.userRole === "admin",
+        hasAdminPermission:
+          session.user.permissions &&
+          session.user.permissions.includes("admin"),
+        emailMatchesAdmin:
+          session.user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL,
+        adminEmailEnvVar: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
+      });
+
+      setIsAdmin(isUserAdmin);
+    }
+  }, [session]);
+
+  // Handle redirect when not authenticated (client-side only)
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/signin");
     }
   }, [status, router]);
 
+  // Load blog data when component mounts and user is admin
   useEffect(() => {
-    const fetchBlogPosts = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch("/api/blog");
-        const result = await response.json();
-
-        if (result.success) {
-          setBlogPosts(result.data);
-
-          // Extract dates for the calendar
-          const dates = result.data.map((post) => new Date(post.createdAt));
-          setBlogDates(dates);
-        }
-      } catch (error) {
-        console.error("Error fetching blog posts:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (session) {
-      fetchBlogPosts();
+    if (isAdmin) {
+      fetchPosts();
     }
-  }, [session]);
+  }, [isAdmin]);
 
-  // Fetch contacts when tab changes or page changes
-  useEffect(() => {
-    if (activeTab === "contacts" && session) {
-      fetchContacts();
-    }
-  }, [activeTab, contactPage, session]);
-
-  const fetchContacts = async () => {
+  const fetchPosts = async () => {
     try {
-      setContactsLoading(true);
-      const response = await fetch(`/api/contacts?page=${contactPage}`);
-      const result = await response.json();
+      setIsLoading(true);
+      const response = await fetch("/api/blog");
+      const data = await response.json();
 
-      if (result.success) {
-        setContacts(result.data);
-        setContactPagination(result.pagination);
+      if (data.success && data.data) {
+        setBlogPosts(data.data);
+
+        // Extract dates for the calendar
+        const dates = data.data.map((post) => new Date(post.createdAt));
+        setBlogDates(dates);
+
+        // Set posts for the selected date (today)
+        const today = new Date();
+        const postsToday = data.data.filter((post) => {
+          const postDate = new Date(post.createdAt);
+          return (
+            postDate.getDate() === today.getDate() &&
+            postDate.getMonth() === today.getMonth() &&
+            postDate.getFullYear() === today.getFullYear()
+          );
+        });
+        setPostsOnSelectedDate(postsToday);
       }
     } catch (error) {
-      console.error("Error fetching contacts:", error);
+      console.error("Error fetching blog posts:", error);
     } finally {
-      setContactsLoading(false);
+      setIsLoading(false);
     }
   };
-
-  const handleDeleteContact = async (id) => {
-    if (!confirm("Are you sure you want to delete this contact?")) {
-      return;
-    }
-
-    try {
-      setDeleteLoading(true);
-      const response = await fetch(`/api/contacts?id=${id}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        // Refresh contacts after deletion
-        fetchContacts();
-      } else {
-        alert("Failed to delete contact");
-      }
-    } catch (error) {
-      console.error("Error deleting contact:", error);
-      alert("Error deleting contact");
-    } finally {
-      setDeleteLoading(false);
-    }
-  };
-
-  const handleContactPageChange = (newPage) => {
-    if (newPage > 0 && newPage <= contactPagination.totalPages) {
-      setContactPage(newPage);
-    }
-  };
-
-  const viewContactDetails = (contact) => {
-    setSelectedContact(contact);
-  };
-
-  const closeContactDetails = () => {
-    setSelectedContact(null);
-  };
-
-  useEffect(() => {
-    // Find posts on the selected date
-    if (blogPosts.length > 0 && selectedDate) {
-      const selectedDateStr = format(selectedDate, "yyyy-MM-dd");
-      const filteredPosts = blogPosts.filter((post) => {
-        const postDate = format(new Date(post.createdAt), "yyyy-MM-dd");
-        return postDate === selectedDateStr;
-      });
-      setPostsOnSelectedDate(filteredPosts);
-    }
-  }, [selectedDate, blogPosts]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
+    const postsOnDate = blogPosts.filter((post) => {
+      const postDate = new Date(post.createdAt);
+      return (
+        postDate.getDate() === date.getDate() &&
+        postDate.getMonth() === date.getMonth() &&
+        postDate.getFullYear() === date.getFullYear()
+      );
+    });
+    setPostsOnSelectedDate(postsOnDate);
   };
 
-  // Function to check if a date has blog posts
   const tileContent = ({ date, view }) => {
-    if (view === "month") {
-      const dateStr = format(date, "yyyy-MM-dd");
-      const hasPost = blogDates.some(
-        (blogDate) => format(new Date(blogDate), "yyyy-MM-dd") === dateStr
+    if (view !== "month") return null;
+
+    // Check if there are any blog posts on this date
+    const hasPosts = blogDates.some(
+      (postDate) =>
+        postDate.getDate() === date.getDate() &&
+        postDate.getMonth() === date.getMonth() &&
+        postDate.getFullYear() === date.getFullYear()
+    );
+
+    return hasPosts ? (
+      <div className="w-2 h-2 bg-blue-500 rounded-full mx-auto mt-1"></div>
+    ) : null;
+  };
+
+  // Load chat messages when tab changes to messages or on mount if active tab is messages
+  useEffect(() => {
+    if (isAdmin && (activeTab === "messages" || chatLogs.length === 0)) {
+      fetchChatMessages();
+    }
+  }, [isAdmin, activeTab]);
+
+  // Fetch chat messages from MongoDB
+  const fetchChatMessages = async () => {
+    try {
+      setIsLoadingMessages(true);
+      setMessageError(null);
+
+      const response = await fetch("/api/messages");
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch messages: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success && data.messages) {
+        // Transform data if needed to match the expected format
+        const formattedMessages = data.messages.map((msg) => ({
+          id: msg._id,
+          user: {
+            name: msg.name || "Anonymous",
+            email: msg.email || "No email provided",
+            avatar: msg.avatar || `/avatars/default.png`,
+          },
+          message: msg.message,
+          timestamp: new Date(msg.createdAt),
+          isRead: msg.isRead || false,
+        }));
+
+        setChatLogs(formattedMessages);
+      } else {
+        setChatLogs([]);
+        setMessageError("No messages found or invalid response format");
+      }
+    } catch (error) {
+      console.error("Error fetching chat messages:", error);
+      setMessageError(error.message);
+    } finally {
+      setIsLoadingMessages(false);
+    }
+  };
+
+  // Function to handle marking a message as read
+  const markAsRead = async (messageId) => {
+    try {
+      // Optimistically update UI
+      setChatLogs((prevLogs) =>
+        prevLogs.map((log) =>
+          log.id === messageId ? { ...log, isRead: true } : log
+        )
       );
 
-      return hasPost ? (
-        <div className="h-2 w-2 bg-blue-500 rounded-full mx-auto mt-1"></div>
-      ) : null;
-    }
-  };
-
-  // Initialize MongoDB Chat collection
-  const initializeChatDb = async () => {
-    try {
-      setChatDbStatus({
-        status: "loading",
-        message: "Initializing chat collection...",
-      });
-      const response = await fetch("/api/create-chat-model", {
-        method: "POST",
+      // Send update to server
+      const response = await fetch(`/api/messages/${messageId}/read`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          secret: password,
-        }),
+        body: JSON.stringify({ isRead: true }),
       });
 
-      const data = await response.json();
-      if (response.ok) {
-        setChatDbStatus({ status: "success", message: data.message });
-      } else {
-        setChatDbStatus({ status: "error", message: data.message });
+      if (!response.ok) {
+        throw new Error("Failed to update message status");
       }
     } catch (error) {
-      console.error("Error initializing chat collection:", error);
-      setChatDbStatus({ status: "error", message: error.message });
+      console.error("Error marking message as read:", error);
+      // Revert the optimistic update
+      fetchChatMessages();
     }
   };
 
-  // Migrate JSON data to MongoDB
-  const migrateJsonToMongoDB = async () => {
+  // Mark all messages as read
+  const markAllAsRead = async () => {
     try {
-      setMigrationStatus({
-        status: "loading",
-        message: "Migrating chat data to MongoDB...",
-      });
-      const response = await fetch("/api/migrate-chats-to-mongodb", {
-        method: "POST",
+      // Optimistically update UI
+      setChatLogs((prevLogs) =>
+        prevLogs.map((log) => ({ ...log, isRead: true }))
+      );
+
+      // Send update to server
+      const response = await fetch(`/api/messages/read-all`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          secret: password,
-        }),
       });
 
-      const data = await response.json();
-      if (response.ok) {
-        setMigrationStatus({
-          status: "success",
-          message: data.message,
-          results: data.results,
-        });
-      } else {
-        setMigrationStatus({ status: "error", message: data.message });
+      if (!response.ok) {
+        throw new Error("Failed to update message status");
       }
     } catch (error) {
-      console.error("Error migrating chat data:", error);
-      setMigrationStatus({ status: "error", message: error.message });
+      console.error("Error marking all messages as read:", error);
+      // Revert the optimistic update
+      fetchChatMessages();
     }
   };
 
+  // Filter chat logs based on search query
+  const filteredChatLogs = chatLogs.filter((log) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      log.user.name.toLowerCase().includes(query) ||
+      log.user.email.toLowerCase().includes(query) ||
+      log.message.toLowerCase().includes(query)
+    );
+  });
+
+  // Count unread messages
+  const unreadCount = chatLogs.filter((log) => !log.isRead).length;
+
+  // Fetch chat histories from MongoDB
+  const fetchChatHistories = async () => {
+    try {
+      setIsLoadingChatHistories(true);
+      setChatHistoriesError(null);
+
+      const response = await fetch("/api/chat-histories");
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch chat histories: ${response.statusText}`
+        );
+      }
+
+      const data = await response.json();
+
+      if (data.success && data.chatHistories) {
+        setChatHistories(data.chatHistories);
+      } else {
+        setChatHistories([]);
+        setChatHistoriesError(
+          "No chat histories found or invalid response format"
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching chat histories:", error);
+      setChatHistoriesError(error.message);
+    } finally {
+      setIsLoadingChatHistories(false);
+    }
+  };
+
+  // Load chat histories when tab changes to chat-history or on mount if active tab is chat-history
+  useEffect(() => {
+    if (
+      isAdmin &&
+      (activeTab === "chat-history" || chatHistories.length === 0)
+    ) {
+      fetchChatHistories();
+    }
+  }, [isAdmin, activeTab]);
+
+  // If no session exists, show a loading message
   if (status === "loading") {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
@@ -309,587 +401,190 @@ function Index() {
     );
   }
 
+  // If not authenticated, show a message (the redirect happens in useEffect)
   if (!session) {
-    return null;
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-white text-xl">Redirecting to sign in...</div>
+      </div>
+    );
   }
 
+  // Show debug information for logged-in users who aren't being recognized as admin
+  if (!isAdmin) {
+    return <EmptyPage sessionDebug={sessionDebug} />;
+  }
+
+  // Otherwise, show the admin dashboard
   return (
-    <>
-      <Head>
-        <title>Admin Dashboard</title>
-        <style jsx global>{`
-          .react-calendar {
-            width: 100%;
-            max-width: 100%;
-            background: #1f2937;
-            color: white;
-            border-radius: 8px;
-            border: 1px solid #374151;
-            font-family: "Calendas", Arial, sans-serif;
-          }
-          .react-calendar__tile {
-            padding: 10px;
-            color: white;
-          }
-          .react-calendar__tile:enabled:hover,
-          .react-calendar__tile:enabled:focus {
-            background-color: #374151;
-            border-radius: 6px;
-          }
-          .react-calendar__tile--active {
-            background: #3b82f6 !important;
-            border-radius: 6px;
-          }
-          .react-calendar__navigation button:enabled:hover,
-          .react-calendar__navigation button:enabled:focus {
-            background-color: #374151;
-            border-radius: 6px;
-          }
-          .react-calendar__month-view__weekdays__weekday {
-            color: #9ca3af;
-          }
-          .react-calendar__navigation button {
-            color: white;
-          }
-        `}</style>
-      </Head>
-      <div className="min-h-screen bg-black">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-            <h1 className="text-4xl font-medium text-white font-calendas mb-4 md:mb-0">
-              Admin Dashboard
-            </h1>
-            <DigitalClock />
-          </div>
+    <PageTransition>
+      <div className="admin-dashboard min-h-screen bg-black text-white">
+        <Head>
+          <title>Admin Dashboard</title>
+          <style jsx global>{`
+            .react-calendar {
+              width: 100%;
+              max-width: 100%;
+              background: #1f2937;
+              color: white;
+              border-radius: 8px;
+              border: 1px solid #374151;
+              font-family: "Calendas", Arial, sans-serif;
+              box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+            }
+            .react-calendar__tile {
+              padding: 10px;
+              color: white;
+            }
+            .react-calendar__tile:enabled:hover,
+            .react-calendar__tile:enabled:focus {
+              background-color: #374151;
+              border-radius: 6px;
+            }
+            .react-calendar__tile--active {
+              background: #3b82f6 !important;
+              border-radius: 6px;
+              box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+            }
+            .react-calendar__navigation button:enabled:hover,
+            .react-calendar__navigation button:enabled:focus {
+              background-color: #374151;
+              border-radius: 6px;
+            }
+            .react-calendar__month-view__weekdays__weekday {
+              color: #9ca3af;
+            }
+            .react-calendar__navigation button {
+              color: white;
+            }
 
-          {/* Admin Navigation */}
-          <div className="flex flex-wrap gap-2 mb-8 border-b border-gray-700 pb-4">
-            <button
-              onClick={() => setActiveTab("dashboard")}
-              className={`flex items-center px-4 py-2 rounded-lg ${
-                activeTab === "dashboard"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-              } transition-all duration-200`}
-            >
-              <AiOutlineDashboard className="mr-2" />
-              Dashboard
-            </button>
-            <button
-              onClick={() => setActiveTab("calendar")}
-              className={`flex items-center px-4 py-2 rounded-lg ${
-                activeTab === "calendar"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-              } transition-all duration-200`}
-            >
-              <AiOutlineCalendar className="mr-2" />
-              Calendar
-            </button>
-            <button
-              onClick={() => setActiveTab("contacts")}
-              className={`flex items-center px-4 py-2 rounded-lg ${
-                activeTab === "contacts"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-              } transition-all duration-200`}
-            >
-              <AiOutlineMessage className="mr-2" />
-              Contact Messages
-            </button>
-          </div>
+            /* Glow effects */
+            .glow-card {
+              box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+              transition: box-shadow 0.3s ease;
+            }
+            .glow-card:hover {
+              box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+            }
+            .glow-blue {
+              text-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+            }
+            .glow-button {
+              box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+              transition: box-shadow 0.3s ease;
+            }
+            .glow-button:hover {
+              box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+            }
+          `}</style>
+        </Head>
 
-          {/* Dashboard Content */}
-          {activeTab === "dashboard" && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Link
-                href="/admin/blog/create"
-                className="flex flex-col items-center justify-center p-8 bg-gray-800 border border-gray-700 rounded-lg transition-all duration-200 hover:bg-gray-700 group"
-              >
-                <AiOutlineFileAdd className="text-5xl mb-4 text-blue-500 group-hover:text-blue-400" />
-                <span className="text-white text-lg font-calendas">
-                  Create Blog
-                </span>
-              </Link>
-
-              <Link
-                href="/admin/blog/ai-create"
-                className="flex flex-col items-center justify-center p-8 bg-gray-800 border border-gray-700 rounded-lg transition-all duration-200 hover:bg-gray-700 group"
-              >
-                <AiOutlineRobot className="text-5xl mb-4 text-blue-500 group-hover:text-blue-400" />
-                <span className="text-white text-lg font-calendas">
-                  AI Blog Creator
-                </span>
-              </Link>
-
-              <Link
-                href="/admin/blog/edit"
-                className="flex flex-col items-center justify-center p-8 bg-gray-800 border border-gray-700 rounded-lg transition-all duration-200 hover:bg-gray-700 group"
-              >
-                <AiOutlineEdit className="text-5xl mb-4 text-blue-500 group-hover:text-blue-400" />
-                <span className="text-white text-lg font-calendas">
-                  Edit/Delete Blog
-                </span>
-              </Link>
-
-              {/* Recent Blog Posts Summary */}
-              <div className="col-span-1 sm:col-span-2 lg:col-span-4 mt-8 bg-gray-800 border border-gray-700 rounded-lg p-6">
-                <h2 className="text-2xl font-medium mb-4 text-white font-calendas">
-                  Recent Blog Posts
-                </h2>
-                {isLoading ? (
-                  <p className="text-gray-400">Loading blog posts...</p>
-                ) : blogPosts.length > 0 ? (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left text-white">
-                      <thead className="bg-gray-700 text-xs uppercase">
-                        <tr>
-                          <th className="px-6 py-3 rounded-tl-lg">Title</th>
-                          <th className="px-6 py-3">Date</th>
-                          <th className="px-6 py-3">Status</th>
-                          <th className="px-6 py-3 rounded-tr-lg">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {blogPosts.slice(0, 5).map((post) => (
-                          <tr
-                            key={post._id}
-                            className="border-b border-gray-700"
-                          >
-                            <td className="px-6 py-4 font-medium">
-                              {post.title}
-                            </td>
-                            <td className="px-6 py-4">
-                              {format(new Date(post.createdAt), "MMM dd, yyyy")}
-                            </td>
-                            <td className="px-6 py-4">
-                              <span
-                                className={`px-2 py-1 rounded-full text-xs ${
-                                  post.isPublished
-                                    ? "bg-green-900 text-green-300"
-                                    : "bg-yellow-900 text-yellow-300"
-                                }`}
-                              >
-                                {post.isPublished ? "Published" : "Draft"}
-                              </span>
-                            </td>
-                            <td className="px-6 py-4">
-                              <Link
-                                href={`/admin/blog/edit?id=${post._id}`}
-                                className="text-blue-500 hover:text-blue-400 mr-4"
-                              >
-                                Edit
-                              </Link>
-                              <Link
-                                href={`/blog/${post.slug}`}
-                                className="text-gray-400 hover:text-white"
-                                target="_blank"
-                              >
-                                View
-                              </Link>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p className="text-gray-400">No blog posts found.</p>
-                )}
-              </div>
+        <div className="container mx-auto px-4 py-12 mt-6">
+          <SlideInLeft delay={0.2}>
+            <div className="flex justify-between items-center mb-10">
+              <h1 className="text-4xl font-bold text-white font-calendas glow-blue">
+                Admin Dashboard
+              </h1>
+              <DigitalClock />
             </div>
-          )}
+          </SlideInLeft>
 
-          {/* Calendar View */}
-          {activeTab === "calendar" && (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2 bg-gray-800 border border-gray-700 rounded-lg p-6">
-                <h2 className="text-2xl font-medium mb-4 text-white font-calendas">
-                  Blog Post Calendar
-                </h2>
-                <p className="text-gray-400 mb-4">
-                  Dates with blog posts are marked with a blue dot
-                </p>
-                <Calendar
-                  onChange={handleDateChange}
-                  value={selectedDate}
-                  tileContent={tileContent}
-                  className="w-full"
-                />
-              </div>
+          <FadeIn delay={0.3}>
+            <Separator className="my-6 bg-gray-800" />
+          </FadeIn>
 
-              <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-                <h2 className="text-2xl font-medium mb-4 text-white font-calendas">
-                  Posts on {format(selectedDate, "MMMM d, yyyy")}
-                </h2>
-                {postsOnSelectedDate.length > 0 ? (
-                  <div className="space-y-4">
-                    {postsOnSelectedDate.map((post) => (
-                      <div
-                        key={post._id}
-                        className="p-4 bg-gray-700 rounded-lg"
-                      >
-                        <h3 className="text-lg font-medium text-white mb-2">
-                          {post.title}
-                        </h3>
-                        <p className="text-gray-300 text-sm mb-3 line-clamp-2">
-                          {post.description}
-                        </p>
-                        <div className="flex justify-between items-center">
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs ${
-                              post.isPublished
-                                ? "bg-green-900 text-green-300"
-                                : "bg-yellow-900 text-yellow-300"
-                            }`}
-                          >
-                            {post.isPublished ? "Published" : "Draft"}
-                          </span>
-                          <div>
-                            <Link
-                              href={`/admin/blog/edit?id=${post._id}`}
-                              className="text-blue-500 hover:text-blue-400 mr-3"
-                            >
-                              Edit
-                            </Link>
-                            <Link
-                              href={`/blog/${post.slug}`}
-                              className="text-gray-400 hover:text-white"
-                              target="_blank"
-                            >
-                              View
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-gray-400">
-                    No posts published on this date.
-                  </p>
-                )}
-
-                <div className="mt-6 pt-6 border-t border-gray-700">
-                  <Link
-                    href="/admin/blog/create"
-                    className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-                  >
-                    <AiOutlineFileAdd className="mr-2" />
-                    Create New Blog Post
-                  </Link>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Contacts View */}
-          {activeTab === "contacts" && (
-            <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-              <h2 className="text-2xl font-medium mb-4 text-white font-calendas">
-                Contact Form Messages
-              </h2>
-
-              {contactsLoading ? (
-                <div className="flex justify-center py-8">
-                  <div className="text-white">Loading contact messages...</div>
-                </div>
-              ) : contacts.length > 0 ? (
-                <>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left text-white">
-                      <thead className="bg-gray-700 text-xs uppercase">
-                        <tr>
-                          <th className="px-6 py-3 rounded-tl-lg">Name</th>
-                          <th className="px-6 py-3">Email</th>
-                          <th className="px-6 py-3">Date</th>
-                          <th className="px-6 py-3 rounded-tr-lg">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {contacts.map((contact) => (
-                          <tr
-                            key={contact._id}
-                            className="border-b border-gray-700"
-                          >
-                            <td className="px-6 py-4 font-medium">
-                              {contact.name}
-                            </td>
-                            <td className="px-6 py-4">
-                              <a
-                                href={`mailto:${contact.email}`}
-                                className="text-blue-400 hover:text-blue-300"
-                              >
-                                {contact.email}
-                              </a>
-                            </td>
-                            <td className="px-6 py-4">
-                              {format(
-                                new Date(contact.createdAt),
-                                "MMM dd, yyyy"
-                              )}
-                            </td>
-                            <td className="px-6 py-4">
-                              <button
-                                onClick={() => viewContactDetails(contact)}
-                                className="text-blue-500 hover:text-blue-400 mr-4"
-                              >
-                                View
-                              </button>
-                              <button
-                                onClick={() => handleDeleteContact(contact._id)}
-                                className="text-red-500 hover:text-red-400"
-                                disabled={deleteLoading}
-                              >
-                                {deleteLoading ? "Deleting..." : "Delete"}
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-
-                  {/* Pagination */}
-                  {contactPagination.totalPages > 1 && (
-                    <div className="flex justify-center mt-6 space-x-2">
-                      <button
-                        onClick={() => handleContactPageChange(contactPage - 1)}
-                        disabled={contactPage === 1}
-                        className={`px-3 py-1 rounded ${
-                          contactPage === 1
-                            ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-                            : "bg-gray-700 text-white hover:bg-gray-600"
-                        }`}
-                      >
-                        Previous
-                      </button>
-                      <div className="px-3 py-1 bg-gray-700 rounded text-white">
-                        Page {contactPage} of {contactPagination.totalPages}
-                      </div>
-                      <button
-                        onClick={() => handleContactPageChange(contactPage + 1)}
-                        disabled={contactPage === contactPagination.totalPages}
-                        className={`px-3 py-1 rounded ${
-                          contactPage === contactPagination.totalPages
-                            ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-                            : "bg-gray-700 text-white hover:bg-gray-600"
-                        }`}
-                      >
-                        Next
-                      </button>
-                    </div>
+          {/* Tabs using shadcn Tabs component */}
+          <Tabs
+            defaultValue="dashboard"
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="mb-8"
+          >
+            <SlideUp delay={0.4}>
+              <TabsList className="grid w-full grid-cols-4 mb-4">
+                <TabsTrigger
+                  value="dashboard"
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                >
+                  <AiOutlineDashboard className="mr-2" /> Dashboard
+                </TabsTrigger>
+                <TabsTrigger
+                  value="calendar"
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                >
+                  <AiOutlineCalendar className="mr-2" /> Calendar
+                </TabsTrigger>
+                <TabsTrigger
+                  value="messages"
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white relative"
+                >
+                  <AiOutlineMessage className="mr-2" /> Messages
+                  {unreadCount > 0 && (
+                    <Badge className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {unreadCount}
+                    </Badge>
                   )}
-                </>
-              ) : (
-                <p className="text-gray-400 py-8 text-center">
-                  No contact messages found.
-                </p>
-              )}
-
-              {/* Contact Details Modal */}
-              {selectedContact && (
-                <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-                  <div className="bg-gray-800 rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-                    <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-xl font-medium text-white">
-                        Message from {selectedContact.name}
-                      </h3>
-                      <button
-                        onClick={closeContactDetails}
-                        className="text-gray-400 hover:text-white"
-                      >
-                        &times;
-                      </button>
-                    </div>
-
-                    <div className="space-y-4">
-                      <div>
-                        <p className="text-gray-400 text-sm">From:</p>
-                        <p className="text-white">
-                          {selectedContact.name} ({selectedContact.email})
-                        </p>
-                      </div>
-
-                      <div>
-                        <p className="text-gray-400 text-sm">Date:</p>
-                        <p className="text-white">
-                          {format(
-                            new Date(selectedContact.createdAt),
-                            "MMMM d, yyyy 'at' h:mm a"
-                          )}
-                        </p>
-                      </div>
-
-                      <div>
-                        <p className="text-gray-400 text-sm">Message:</p>
-                        <div className="bg-gray-700 p-4 rounded-lg mt-2 text-white whitespace-pre-wrap">
-                          {selectedContact.message}
-                        </div>
-                      </div>
-
-                      <div className="flex justify-between pt-4 border-t border-gray-700 mt-4">
-                        <button
-                          onClick={() =>
-                            handleDeleteContact(selectedContact._id)
-                          }
-                          className="flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
-                          disabled={deleteLoading}
-                        >
-                          <AiOutlineDelete className="mr-2" />
-                          {deleteLoading ? "Deleting..." : "Delete Message"}
-                        </button>
-
-                        <a
-                          href={`mailto:${selectedContact.email}`}
-                          className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-                        >
-                          <AiOutlineMessage className="mr-2" />
-                          Reply via Email
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-              <h2 className="text-xl font-bold mb-4 flex items-center">
-                <FaChartBar className="text-purple-400 mr-2" />
-                Quick Stats
-              </h2>
-              <div className="space-y-4">
-                <Link
-                  href="/admin/chat-logs"
-                  className="block bg-gray-700 hover:bg-gray-600 p-4 rounded-lg transition flex items-center"
+                </TabsTrigger>
+                <TabsTrigger
+                  value="chat-history"
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
                 >
-                  <FaComments className="text-blue-400 mr-3 text-xl" />
-                  <span>View Chat Logs</span>
-                </Link>
+                  <FaComments className="mr-2" /> Chat History
+                </TabsTrigger>
+              </TabsList>
+            </SlideUp>
 
-                <Link
-                  href="/admin/contact-messages"
-                  className="block bg-gray-700 hover:bg-gray-600 p-4 rounded-lg transition flex items-center"
-                >
-                  <FaEnvelope className="text-green-400 mr-3 text-xl" />
-                  <span>View Contact Messages</span>
-                </Link>
-              </div>
-            </div>
+            <AnimatePresence mode="wait">
+              {/* Dashboard Content */}
+              <TabsContent value="dashboard" key="dashboard">
+                <DashboardTab blogPosts={blogPosts} isLoading={isLoading} />
+              </TabsContent>
 
-            <MongoDBStats authToken={password} />
-          </div>
+              {/* Calendar View */}
+              <TabsContent value="calendar" key="calendar">
+                <CalendarTab
+                  selectedDate={selectedDate}
+                  postsOnSelectedDate={postsOnSelectedDate}
+                  blogDates={blogDates}
+                  handleDateChange={handleDateChange}
+                />
+              </TabsContent>
 
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
-            <h2 className="text-xl font-bold mb-4 flex items-center">
-              <FaDatabase className="text-blue-400 mr-2" />
-              MongoDB Management
-            </h2>
+              {/* Messages Tab */}
+              <TabsContent value="messages" key="messages">
+                <MessagesTab
+                  chatLogs={chatLogs}
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
+                  isLoadingMessages={isLoadingMessages}
+                  messageError={messageError}
+                  fetchChatMessages={fetchChatMessages}
+                  unreadCount={unreadCount}
+                  markAsRead={markAsRead}
+                  markAllAsRead={markAllAsRead}
+                />
+              </TabsContent>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-gray-700 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold mb-3 flex items-center">
-                  <FaServer className="text-green-400 mr-2" />
-                  Initialize Chat Collection
-                </h3>
-                <p className="text-gray-300 mb-4 text-sm">
-                  Create the chat history collection and set up necessary
-                  indices if they don't exist.
-                </p>
-
-                {chatDbStatus.status === "loading" ? (
-                  <div className="bg-blue-900/50 text-blue-100 p-3 rounded mb-4 animate-pulse">
-                    {chatDbStatus.message}
-                  </div>
-                ) : chatDbStatus.status === "success" ? (
-                  <div className="bg-green-900/50 text-green-100 p-3 rounded mb-4">
-                    {chatDbStatus.message}
-                  </div>
-                ) : chatDbStatus.status === "error" ? (
-                  <div className="bg-red-900/50 text-red-100 p-3 rounded mb-4">
-                    Error: {chatDbStatus.message}
-                  </div>
-                ) : null}
-
-                <button
-                  onClick={initializeChatDb}
-                  disabled={chatDbStatus.status === "loading"}
-                  className={`w-full py-2 px-4 rounded transition ${
-                    chatDbStatus.status === "loading"
-                      ? "bg-gray-600 cursor-not-allowed"
-                      : "bg-blue-600 hover:bg-blue-700"
-                  }`}
-                >
-                  Initialize Collection
-                </button>
-              </div>
-
-              <div className="bg-gray-700 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold mb-3 flex items-center">
-                  <FaTasks className="text-yellow-400 mr-2" />
-                  Migrate Chat Data
-                </h3>
-                <p className="text-gray-300 mb-4 text-sm">
-                  Migrate existing chat data from JSON file to MongoDB database.
-                </p>
-
-                {migrationStatus.status === "loading" ? (
-                  <div className="bg-blue-900/50 text-blue-100 p-3 rounded mb-4 animate-pulse">
-                    {migrationStatus.message}
-                  </div>
-                ) : migrationStatus.status === "success" ? (
-                  <div className="bg-green-900/50 text-green-100 p-3 rounded mb-4">
-                    <p>{migrationStatus.message}</p>
-                    {migrationStatus.results && (
-                      <div className="mt-2 text-xs">
-                        <p>Total: {migrationStatus.results.total}</p>
-                        <p>Inserted: {migrationStatus.results.inserted}</p>
-                        <p>Updated: {migrationStatus.results.updated}</p>
-                        <p>Skipped: {migrationStatus.results.skipped}</p>
-                        <p>Errors: {migrationStatus.results.errors}</p>
-                      </div>
-                    )}
-                  </div>
-                ) : migrationStatus.status === "error" ? (
-                  <div className="bg-red-900/50 text-red-100 p-3 rounded mb-4">
-                    Error: {migrationStatus.message}
-                  </div>
-                ) : null}
-
-                <button
-                  onClick={migrateJsonToMongoDB}
-                  disabled={migrationStatus.status === "loading"}
-                  className={`w-full py-2 px-4 rounded transition ${
-                    migrationStatus.status === "loading"
-                      ? "bg-gray-600 cursor-not-allowed"
-                      : "bg-blue-600 hover:bg-blue-700"
-                  }`}
-                >
-                  Migrate Data
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h2 className="text-xl font-bold mb-4 flex items-center">
-              <FaCog className="text-orange-400 mr-2" />
-              System Settings
-            </h2>
-            {/* Additional admin functionality can be added here */}
-            <p className="text-gray-400">
-              Additional system settings will be implemented in future updates.
-            </p>
-          </div>
+              {/* Chat History Tab Content */}
+              <TabsContent
+                value="chat-history"
+                key="chat-history"
+                className="space-y-4"
+              >
+                <ChatHistoryTab
+                  chatHistories={chatHistories}
+                  isLoadingChatHistories={isLoadingChatHistories}
+                  chatHistoriesError={chatHistoriesError}
+                  fetchChatHistories={fetchChatHistories}
+                />
+              </TabsContent>
+            </AnimatePresence>
+          </Tabs>
         </div>
       </div>
-    </>
+    </PageTransition>
   );
 }
 
-export default process.env.NODE_ENV === "production"
-  ? EmptyPage
-  : dynamic(() => import("./AdminDashboard"), { ssr: false });
+// Export AdminDashboard as the default export for this page
+export default AdminDashboard;

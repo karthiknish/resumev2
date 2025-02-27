@@ -1,16 +1,35 @@
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
+import {
+  SlideInRight,
+  SlideUp,
+  FadeIn,
+  HoverCard,
+  MotionDiv,
+} from "./animations/MotionComponents";
 
 export default function Nav() {
   const [isOpen, setIsOpen] = useState(false);
+  const [colorChange, setColorChange] = useState(false);
   const { data: session, status } = useSession();
   const router = useRouter();
   const isHome = router.pathname === "/";
+
+  // Navigation links data - updated to only include available pages
+  const navLinks = [
+    { href: "/", label: "Home", delay: 0.2 },
+    { href: "/about", label: "About", delay: 0.3 },
+    { href: "/services", label: "Services", delay: 0.4 },
+    { href: "/resources", label: "Resources", delay: 0.5 },
+    { href: "/blog", label: "Blog", delay: 0.6 },
+    { href: "/skills", label: "Skills", delay: 0.7 },
+    { href: "/contact", label: "Contact", delay: 0.8 },
+  ];
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -27,6 +46,20 @@ export default function Nav() {
     };
   }, []);
 
+  useEffect(() => {
+    const changeNavbarColor = () => {
+      if (window.scrollY >= 80) {
+        setColorChange(true);
+      } else {
+        setColorChange(false);
+      }
+    };
+    window.addEventListener("scroll", changeNavbarColor);
+    return () => {
+      window.removeEventListener("scroll", changeNavbarColor);
+    };
+  }, []);
+
   const handleSignOut = async () => {
     await signOut({ callbackUrl: "/" });
   };
@@ -35,154 +68,203 @@ export default function Nav() {
     setIsOpen(false);
   };
 
-  const menuVariants = {
-    hidden: { opacity: 0, x: "100%" },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        duration: 0.5,
-        ease: "easeInOut",
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
   };
 
   return (
-    <header
-      className={`${isHome ? "" : "bg-black"} shadow-md fixed w-full z-50`}
+    <motion.nav
+      className={`fixed w-full z-50 ${
+        colorChange || !isHome
+          ? "bg-black bg-opacity-80 backdrop-blur-sm shadow-lg"
+          : "bg-black"
+      } transition-all duration-300`}
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5 }}
     >
-      <nav
-        className="max-w-[90rem] w-full mx-auto px-4 sm:px-6 py-4"
-        id="mobile-nav"
-      >
+      <div className="container mx-auto px-4 py-2">
         <div className="flex justify-between items-center">
-          <Link href="/">
-            <motion.span
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.2 }}
-              className="text-2xl font-bold text-white cursor-pointer"
-            >
+          <FadeIn delay={0.1}>
+            <Link href="/" className="flex items-center">
               <Image
                 src="/Logo.png"
                 alt="Logo"
-                width={100}
-                height={100}
-                className="object-contain"
+                width={50}
+                height={50}
+                className="mr-2"
               />
-            </motion.span>
-          </Link>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-white hover:text-gray-300"
-            >
-              {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-            </button>
-          </div>
-
-          {/* Navigation Links - Desktop & Mobile */}
-          <div
-            className={`${
-              isOpen ? "flex" : "hidden md:flex"
-            } flex-col md:flex-row absolute md:relative top-0 left-0 md:top-auto md:left-auto w-full md:w-auto h-screen md:h-auto bg-black md:bg-transparent items-center justify-center md:justify-end space-y-8 md:space-y-0 md:space-x-8 p-8 md:p-0 z-40`}
-          >
-            {/* Close button for mobile */}
-            <button
-              onClick={() => setIsOpen(false)}
-              className="absolute top-4 right-4 text-white md:hidden"
-            >
-              <FaTimes size={24} />
-            </button>
-
-            <Link
-              href="/"
-              className="text-white hover:text-gray-300 text-xl md:text-base font-calendas"
-              onClick={handleLinkClick}
-            >
-              Home
             </Link>
+          </FadeIn>
 
-            <Link
-              href="/services"
-              className="text-white hover:text-gray-300 text-xl md:text-base font-calendas"
-              onClick={handleLinkClick}
-            >
-              Services
-            </Link>
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center space-x-6">
+            {navLinks.map((link) => (
+              <SlideInRight key={link.href} delay={link.delay}>
+                <HoverCard scale={1.05}>
+                  <Link
+                    href={link.href}
+                    className={`text-lg ${
+                      (link.href === "/" && router.pathname === "/") ||
+                      (link.href !== "/" &&
+                        (router.pathname === link.href ||
+                          (link.href === "/blog" &&
+                            router.pathname.startsWith("/blog"))))
+                        ? "text-blue-400"
+                        : "text-white"
+                    } hover:text-blue-400 transition-colors`}
+                  >
+                    {link.label}
+                  </Link>
+                </HoverCard>
+              </SlideInRight>
+            ))}
 
-            <Link
-              href="/testimonials"
-              className="text-white hover:text-gray-300 text-xl md:text-base font-calendas"
-              onClick={handleLinkClick}
-            >
-              Testimonials
-            </Link>
-
-            <Link
-              href="/resources"
-              className="text-white hover:text-gray-300 text-xl md:text-base font-calendas"
-              onClick={handleLinkClick}
-            >
-              Resources
-            </Link>
-
-            <Link
-              href="/blog"
-              className="text-white hover:text-gray-300 text-xl md:text-base font-calendas"
-              onClick={handleLinkClick}
-            >
-              Blog
-            </Link>
-
-            <Link
-              href="/contact"
-              className="text-white hover:text-gray-300 text-xl md:text-base font-calendas"
-              onClick={handleLinkClick}
-            >
-              Contact
-            </Link>
-
+            {/* Authentication Links */}
             {session ? (
               <>
-                <Link
-                  href="/admin"
-                  className="text-white hover:text-gray-300 text-xl md:text-base font-calendas"
+                {session?.user?.role === "admin" && (
+                  <SlideInRight delay={1.0}>
+                    <HoverCard scale={1.05}>
+                      <Link
+                        href="/admin"
+                        className={`text-lg ${
+                          router.pathname.startsWith("/admin")
+                            ? "text-blue-400"
+                            : "text-white"
+                        } hover:text-blue-400 transition-colors`}
+                      >
+                        Admin
+                      </Link>
+                    </HoverCard>
+                  </SlideInRight>
+                )}
+
+                <SlideInRight delay={1.1}>
+                  <HoverCard scale={1.05}>
+                    <button
+                      onClick={handleSignOut}
+                      className="text-lg text-white hover:text-blue-400 transition-colors"
+                    >
+                      Sign Out
+                    </button>
+                  </HoverCard>
+                </SlideInRight>
+              </>
+            ) : (
+              <SlideInRight delay={0.9}>
+                <HoverCard scale={1.05}>
+                  <Link
+                    href="/signin"
+                    className={`text-lg ${
+                      router.pathname === "/signin"
+                        ? "text-blue-400"
+                        : "text-white"
+                    } hover:text-blue-400 transition-colors`}
+                  >
+                    Sign In
+                  </Link>
+                </HoverCard>
+              </SlideInRight>
+            )}
+          </div>
+
+          {/* Mobile Menu Button */}
+          <motion.div
+            className="md:hidden cursor-pointer"
+            whileTap={{ scale: 0.95 }}
+          >
+            <button onClick={toggleMenu} className="text-white text-2xl">
+              {isOpen ? <FaTimes /> : <FaBars />}
+            </button>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            id="mobile-nav"
+            className="md:hidden bg-gray-900 text-white pt-4 pb-8 shadow-lg"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {navLinks.map((link) => (
+              <motion.a
+                key={link.href}
+                href={link.href}
+                className={`block py-4 px-4 ${
+                  (link.href === "/" && router.pathname === "/") ||
+                  (link.href !== "/" &&
+                    (router.pathname === link.href ||
+                      (link.href === "/blog" &&
+                        router.pathname.startsWith("/blog"))))
+                    ? "text-blue-400"
+                    : "text-white"
+                }`}
+                onClick={handleLinkClick}
+              >
+                {link.label}
+              </motion.a>
+            ))}
+
+            {/* Authentication Mobile Links */}
+            {session ? (
+              <>
+                <motion.a
+                  href="/profile"
+                  className={`block py-4 px-4 ${
+                    router.pathname === "/profile"
+                      ? "text-blue-400"
+                      : "text-white"
+                  }`}
                   onClick={handleLinkClick}
                 >
-                  Admin
-                </Link>
+                  Profile
+                </motion.a>
 
-                <button
+                {session?.user?.role === "admin" && (
+                  <motion.a
+                    href="/admin"
+                    className={`block py-4 px-4 ${
+                      router.pathname.startsWith("/admin")
+                        ? "text-blue-400"
+                        : "text-white"
+                    }`}
+                    onClick={handleLinkClick}
+                  >
+                    Admin
+                  </motion.a>
+                )}
+
+                <motion.a
+                  href="#"
+                  className="block py-4 px-4 text-white"
                   onClick={() => {
                     handleSignOut();
                     handleLinkClick();
                   }}
-                  className="text-white hover:text-gray-300 text-xl md:text-base font-calendas"
                 >
                   Sign Out
-                </button>
+                </motion.a>
               </>
             ) : (
-              <Link
+              <motion.a
                 href="/signin"
-                className="text-white hover:text-gray-300 text-xl md:text-base font-calendas"
+                className={`block py-4 px-4 ${
+                  router.pathname === "/signin" ? "text-blue-400" : "text-white"
+                }`}
                 onClick={handleLinkClick}
               >
                 Sign In
-              </Link>
+              </motion.a>
             )}
-          </div>
-        </div>
-      </nav>
-    </header>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.nav>
   );
 }
