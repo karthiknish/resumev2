@@ -3,7 +3,7 @@ import { Analytics } from "@vercel/analytics/react";
 
 export default function Document() {
   return (
-    <Html lang="en">
+    <Html lang="en-GB">
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link

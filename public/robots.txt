@@ -1,7 +1,4 @@
-User-agent: Googlebot
-Disallow: /nogooglebot/
-
 User-agent: *
 Allow: /
 
-Sitemap: https://www.karthiknish.com/sitemap.xml
+Sitemap: https://www.yourdomain.co.uk/sitemap.xml
