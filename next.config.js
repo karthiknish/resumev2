@@ -2,7 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ["package-name-to-transpile"],
-  env: { PUPPETEER_CACHE: "/workspace/.cache/puppeteer" },
   images: {
     remotePatterns: [
       {
@@ -26,7 +25,6 @@ const nextConfig = {
       ...config.resolve.fallback,
       child_process: false,
     };
-    config.externals = [...config.externals, { canvas: "canvas" }]; // required by html-pdf
     return config;
   },
 };
