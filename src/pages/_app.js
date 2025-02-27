@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import * as gtag from "../lib/gtag";
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
+import Chatbot from "../components/Chatbot";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SessionProvider } from "next-auth/react";
 
@@ -27,11 +28,13 @@ export default function App({ Component, pageProps }) {
 
   useEffect(() => {
     const checkSession = async () => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        // Here you would typically validate the token with your backend
-        // For now, we'll just set a simple session object
-        setSession({ user: { token } });
+      if (typeof window !== "undefined") {
+        const token = localStorage.getItem("token");
+        if (token) {
+          // Here you would typically validate the token with your backend
+          // For now, we'll just set a simple session object
+          setSession({ user: { token } });
+        }
       }
     };
 
@@ -62,6 +65,7 @@ export default function App({ Component, pageProps }) {
             <Component {...pageProps} session={session} />
           </div>
           <Footer />
+          <Chatbot />
         </>
       </SessionProvider>
     </QueryClientProvider>

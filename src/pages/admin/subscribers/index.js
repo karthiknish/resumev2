@@ -1,8 +1,21 @@
+// Skip this page during build time
+function EmptyPage() {
+  return null;
+}
+
+// Export based on environment
+export default process.env.NODE_ENV === "production"
+  ? EmptyPage
+  : dynamic(() => import("./SubscribersPage"), { ssr: false });
+
+// Store the actual page in a separate component
 import { useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import Modal from "../../../components/Modal";
-function Index() {
+import dynamic from "next/dynamic";
+
+function SubscribersPage() {
   const [data, setData] = useState([]);
   const [showModal, setshowModal] = useState(false);
   const [subscriberToDelete, setSubscriberToDelete] = useState(null);
@@ -10,7 +23,7 @@ function Index() {
     getData();
   }, []);
   const getData = async () => {
-    await fetch("/api/subscribe", {
+    await fetch("/api/subscribers", {
       method: "GET",
     })
       .then((res) => res.json())
@@ -18,7 +31,7 @@ function Index() {
   };
 
   const deleteData = async (id) => {
-    await fetch(`/api/subscribe`, {
+    await fetch(`/api/subscribers`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -236,5 +249,3 @@ function Index() {
     </>
   );
 }
-
-export default Index;

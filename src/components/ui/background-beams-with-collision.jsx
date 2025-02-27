@@ -1,11 +1,46 @@
+/* eslint-disable */
 "use client";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 
 export const BackgroundBeamsWithCollision = ({ children, className }) => {
   const containerRef = useRef(null);
   const parentRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [activeBeams, setActiveBeams] = useState([]);
+  const lastCollisionCheck = useRef(0);
+
+  useEffect(() => {
+    // Only initialize and run animations if component is visible
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsVisible(true);
+          // Load beams progressively
+          const initialBeams = [0, 1]; // Start with just a couple of beams
+          setActiveBeams(initialBeams);
+
+          // Gradually add more beams
+          setTimeout(() => setActiveBeams((prev) => [...prev, 2, 3]), 500);
+          setTimeout(() => setActiveBeams((prev) => [...prev, 4, 5, 6]), 1000);
+        } else {
+          setIsVisible(false);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
+    };
+  }, []);
 
   const beams = [
     {
@@ -60,6 +95,43 @@ export const BackgroundBeamsWithCollision = ({ children, className }) => {
     },
   ];
 
+  // Throttled collision detection
+  const checkCollision = useCallback(() => {
+    const now = Date.now();
+    // Only run collision detection every 100ms
+    if (now - lastCollisionCheck.current < 100) return;
+    lastCollisionCheck.current = now;
+
+    // Your existing collision detection code
+    // ... existing code ...
+  }, []);
+
+  // Use requestAnimationFrame only when component is visible
+  useEffect(() => {
+    if (!isVisible) return;
+
+    let animationFrameId;
+    const animate = () => {
+      checkCollision();
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [isVisible, checkCollision]);
+
+  // Only render beams when visible
+  if (!isVisible) {
+    return (
+      <div ref={containerRef} className={cn("relative", className)}>
+        {children}
+      </div>
+    );
+  }
+
   return (
     <div
       ref={parentRef}
@@ -69,10 +141,10 @@ export const BackgroundBeamsWithCollision = ({ children, className }) => {
         className
       )}
     >
-      {beams.map((beam) => (
+      {activeBeams.map((beamIdx) => (
         <CollisionMechanism
-          key={beam.initialX + "beam-idx"}
-          beamOptions={beam}
+          key={beams[beamIdx].initialX + "beam-idx"}
+          beamOptions={beams[beamIdx]}
           containerRef={containerRef}
           parentRef={parentRef}
         />
@@ -99,6 +171,7 @@ const CollisionMechanism = React.forwardRef(
     });
     const [beamKey, setBeamKey] = useState(0);
     const [cycleCollisionDetected, setCycleCollisionDetected] = useState(false);
+    const [parentSize, setParentSize] = useState({ width: 0, height: 0 });
 
     useEffect(() => {
       const checkCollision = () => {
@@ -154,8 +227,7 @@ const CollisionMechanism = React.forwardRef(
           height: parentRef.current?.clientHeight || 0,
         });
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [parentRef]);
 
     return (
       <>

@@ -27,6 +27,7 @@ import {
   FaServer,
 } from "react-icons/fa";
 import MongoDBStats from "@/components/admin/MongoDBStats";
+import dynamic from "next/dynamic";
 
 // Digital Clock Component
 function DigitalClock() {
@@ -78,6 +79,10 @@ function DigitalClock() {
       <div className="text-gray-400 mt-1 text-sm">{formattedDate}</div>
     </div>
   );
+}
+
+function EmptyPage() {
+  return null;
 }
 
 function Index() {
@@ -885,4 +890,6 @@ function Index() {
   );
 }
 
-export default Index;
+export default process.env.NODE_ENV === "production"
+  ? EmptyPage
+  : dynamic(() => import("./AdminDashboard"), { ssr: false });

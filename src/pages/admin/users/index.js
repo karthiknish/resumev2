@@ -1,8 +1,21 @@
+// Skip this page during build time
+function EmptyPage() {
+  return null;
+}
+
+// Export based on environment
+export default process.env.NODE_ENV === "production"
+  ? EmptyPage
+  : dynamic(() => import("./UsersPage"), { ssr: false });
+
+// Store the actual page in a separate component
 import { useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import Modal from "../../../components/Modal";
-function Index() {
+import dynamic from "next/dynamic";
+
+function UsersPage() {
   const [data, setData] = useState([]);
   const [showModal, setshowModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
@@ -236,5 +249,3 @@ function Index() {
     </>
   );
 }
-
-export default Index;

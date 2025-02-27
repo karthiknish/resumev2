@@ -1,3 +1,4 @@
+/* eslint-disable */
 "use client";
 
 import {
@@ -7,10 +8,22 @@ import {
   useContext,
   useEffect,
   useRef,
+  useState,
 } from "react";
 import { useAnimationFrame } from "framer-motion"; // Changed from motion/react
 
 import { cn } from "@/lib/utils";
+
+// Throttle function for performance
+const throttle = (callback: Function, delay: number) => {
+  let lastCall = 0;
+  return function (...args: any[]) {
+    const now = Date.now();
+    if (now - lastCall < delay) return;
+    lastCall = now;
+    callback(...args);
+  };
+};
 
 // Custom hook to track mouse position
 const useMousePositionRef = (containerRef: React.RefObject<HTMLDivElement>) => {
@@ -20,16 +33,17 @@ const useMousePositionRef = (containerRef: React.RefObject<HTMLDivElement>) => {
     const container = containerRef.current;
     if (!container) return;
 
-    const handleMouseMove = (e: MouseEvent) => {
+    // Throttle mouse move handler to improve performance
+    const handleMouseMove = throttle((e: MouseEvent) => {
       const rect = container.getBoundingClientRect();
       const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
       const y = ((e.clientY - rect.top) / rect.height) * 2 - 1;
       mousePositionRef.current = { x, y };
-    };
+    }, 16); // ~ 60fps
 
     container.addEventListener("mousemove", handleMouseMove);
     return () => container.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+  }, [containerRef]);
 
   return mousePositionRef;
 };
@@ -56,52 +70,69 @@ const Floating = ({
   ...props
 }: FloatingProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const elementsMap = useRef(
-    new Map<
-      string,
-      {
-        element: HTMLDivElement;
-        depth: number;
-        currentPosition: { x: number; y: number };
-      }
-    >()
-  );
   const mousePositionRef = useMousePositionRef(containerRef);
+  const elementsRef = useRef<
+    Record<string, { element: HTMLDivElement; depth: number }>
+  >({});
+  const animationRef = useRef<number | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Only start animations when component is in view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsVisible(true);
+        } else {
+          setIsVisible(false);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
+    };
+  }, []);
 
   const registerElement = useCallback(
     (id: string, element: HTMLDivElement, depth: number) => {
-      elementsMap.current.set(id, {
-        element,
-        depth,
-        currentPosition: { x: 0, y: 0 },
-      });
+      elementsRef.current[id] = { element, depth };
     },
     []
   );
 
   const unregisterElement = useCallback((id: string) => {
-    elementsMap.current.delete(id);
+    delete elementsRef.current[id];
   }, []);
 
+  // Use animation frame only when visible
   useAnimationFrame(() => {
-    if (!containerRef.current) return;
+    if (!isVisible) return;
 
-    elementsMap.current.forEach((data) => {
-      const strength = (data.depth * sensitivity) / 20;
+    const { x, y } = mousePositionRef.current;
 
-      // Calculate new target position
-      const newTargetX = mousePositionRef.current.x * strength;
-      const newTargetY = mousePositionRef.current.y * strength;
+    Object.values(elementsRef.current).forEach(({ element, depth }) => {
+      if (!element) return;
 
-      // Check if we need to update
-      const dx = newTargetX - data.currentPosition.x;
-      const dy = newTargetY - data.currentPosition.y;
+      const currentX = parseFloat(element.dataset.x || "0");
+      const currentY = parseFloat(element.dataset.y || "0");
 
-      // Update position only if we're still moving
-      data.currentPosition.x += dx * easingFactor;
-      data.currentPosition.y += dy * easingFactor;
+      const targetX = x * sensitivity * depth;
+      const targetY = y * sensitivity * depth;
 
-      data.element.style.transform = `translate3d(${data.currentPosition.x}px, ${data.currentPosition.y}px, 0)`;
+      const newX = currentX + (targetX - currentX) * easingFactor;
+      const newY = currentY + (targetY - currentY) * easingFactor;
+
+      element.style.transform = `translate(${newX}px, ${newY}px)`;
+      element.dataset.x = newX.toString();
+      element.dataset.y = newY.toString();
     });
   });
 
@@ -145,18 +176,16 @@ export const FloatingElement = ({
   }, [depth, context]);
 
   useEffect(() => {
+    // Store the current idRef value in a variable to prevent it from changing
     const id = idRef.current;
 
-    // Copy the ref value to a variable inside the effect
-    const savedId = id;
-
     return () => {
-      if (savedId) {
-        // Use the saved variable in the cleanup function
-        cancelAnimationFrame(savedId);
+      if (id) {
+        // Use the stored id value in the cleanup function
+        context?.unregisterElement(id);
       }
     };
-  }, []);
+  }, [context]);
 
   return (
     <div

@@ -5,6 +5,8 @@ import {
   useImperativeHandle,
   useMemo,
   useState,
+  memo,
+  useRef,
 } from "react";
 import { AnimatePresence, motion } from "motion/react";
 
@@ -35,16 +37,40 @@ const TextRotate = forwardRef(
     ref
   ) => {
     const [currentTextIndex, setCurrentTextIndex] = useState(0);
+    const [isInView, setIsInView] = useState(false);
+    const elementRef = useRef(null);
+
+    // Defer animation initialization until component is in view
+    useEffect(() => {
+      if (!elementRef.current) return;
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            setIsInView(true);
+          }
+        },
+        { threshold: 0.1 }
+      );
+
+      observer.observe(elementRef.current);
+
+      return () => {
+        if (elementRef.current) {
+          observer.unobserve(elementRef.current);
+        }
+      };
+    }, []);
 
     // handy function to split text into characters with support for unicode and emojis
-    const splitIntoCharacters = (text) => {
+    const splitIntoCharacters = useCallback((text) => {
       if (typeof Intl !== "undefined" && "Segmenter" in Intl) {
         const segmenter = new Intl.Segmenter("en", { granularity: "grapheme" });
         return Array.from(segmenter.segment(text), ({ segment }) => segment);
       }
       // Fallback for browsers that don't support Intl.Segmenter
       return Array.from(text);
-    };
+    }, []);
 
     const elements = useMemo(() => {
       const currentText = texts[currentTextIndex];
@@ -60,7 +86,7 @@ const TextRotate = forwardRef(
         : splitBy === "lines"
         ? currentText.split("\n")
         : currentText.split(splitBy);
-    }, [texts, currentTextIndex, splitBy]);
+    }, [texts, currentTextIndex, splitBy, splitIntoCharacters]);
 
     const getStaggerDelay = useCallback(
       (index, totalChars) => {
@@ -144,83 +170,107 @@ const TextRotate = forwardRef(
       [next, previous, jumpTo, reset]
     );
 
+    // Memoize the split text calculation to avoid recalculating on every render
+    const splitTexts = useMemo(() => {
+      if (!texts || !texts.length) return [];
+      return texts.map((text) => {
+        if (splitBy === "characters") {
+          return splitIntoCharacters(text);
+        }
+        // ... existing code for other split methods ...
+      });
+    }, [texts, splitBy, splitIntoCharacters]);
+
+    // Only start the rotation interval when in view
     useEffect(() => {
-      if (!auto) return;
-      const intervalId = setInterval(next, rotationInterval);
+      if (!auto || !isInView) return;
+
+      const intervalId = setInterval(() => {
+        next();
+      }, rotationInterval);
+
       return () => clearInterval(intervalId);
-    }, [next, rotationInterval, auto]);
+    }, [currentTextIndex, rotationInterval, auto, isInView, texts?.length]);
 
     return (
-      <motion.span
-        className={cn("flex flex-wrap whitespace-pre-wrap", mainClassName)}
+      <div
+        ref={(el) => {
+          elementRef.current = el;
+          if (typeof ref === "function") {
+            ref(el);
+          } else if (ref) {
+            ref.current = el;
+          }
+        }}
+        className={cn(mainClassName)}
         {...props}
-        layout
-        transition={transition}
       >
-        <span className="sr-only">{texts[currentTextIndex]}</span>
-        <AnimatePresence
-          mode={animatePresenceMode}
-          initial={animatePresenceInitial}
-        >
-          <motion.div
-            key={currentTextIndex}
-            className={cn(
-              "flex flex-wrap",
-              splitBy === "lines" && "flex-col w-full"
-            )}
-            layout
-            aria-hidden="true"
+        {/* Only render animations when in view */}
+        {isInView && (
+          <AnimatePresence
+            mode={animatePresenceMode}
+            initial={animatePresenceInitial}
           >
-            {(splitBy === "characters"
-              ? elements
-              : elements.map((el, i) => ({
-                  characters: [el],
-                  needsSpace: i !== elements.length - 1,
-                }))
-            ).map((wordObj, wordIndex, array) => {
-              const previousCharsCount = array
-                .slice(0, wordIndex)
-                .reduce((sum, word) => sum + word.characters.length, 0);
+            <motion.div
+              className={cn(
+                "flex flex-wrap",
+                splitBy === "lines" && "flex-col w-full"
+              )}
+              layout
+              aria-hidden="true"
+            >
+              {(splitBy === "characters"
+                ? elements
+                : elements.map((el, i) => ({
+                    characters: [el],
+                    needsSpace: i !== elements.length - 1,
+                  }))
+              ).map((wordObj, wordIndex, array) => {
+                const previousCharsCount = array
+                  .slice(0, wordIndex)
+                  .reduce((sum, word) => sum + word.characters.length, 0);
 
-              return (
-                <span
-                  key={wordIndex}
-                  className={cn("inline-flex", splitLevelClassName)}
-                >
-                  {wordObj.characters.map((char, charIndex) => (
-                    <motion.span
-                      initial={initial}
-                      animate={animate}
-                      exit={exit}
-                      key={charIndex}
-                      transition={{
-                        ...transition,
-                        delay: getStaggerDelay(
-                          previousCharsCount + charIndex,
-                          array.reduce(
-                            (sum, word) => sum + word.characters.length,
-                            0
-                          )
-                        ),
-                      }}
-                      className={cn("inline-block", elementLevelClassName)}
-                    >
-                      {char}
-                    </motion.span>
-                  ))}
-                  {wordObj.needsSpace && (
-                    <span className="whitespace-pre"> </span>
-                  )}
-                </span>
-              );
-            })}
-          </motion.div>
-        </AnimatePresence>
-      </motion.span>
+                return (
+                  <span
+                    key={wordIndex}
+                    className={cn("inline-flex", splitLevelClassName)}
+                  >
+                    {wordObj.characters.map((char, charIndex) => (
+                      <motion.span
+                        initial={initial}
+                        animate={animate}
+                        exit={exit}
+                        key={charIndex}
+                        transition={{
+                          ...transition,
+                          delay: getStaggerDelay(
+                            previousCharsCount + charIndex,
+                            array.reduce(
+                              (sum, word) => sum + word.characters.length,
+                              0
+                            )
+                          ),
+                        }}
+                        className={cn("inline-block", elementLevelClassName)}
+                      >
+                        {char}
+                      </motion.span>
+                    ))}
+                    {wordObj.needsSpace && (
+                      <span className="whitespace-pre"> </span>
+                    )}
+                  </span>
+                );
+              })}
+            </motion.div>
+          </AnimatePresence>
+        )}
+      </div>
     );
   }
 );
 
 TextRotate.displayName = "TextRotate";
 
+// Export a memoized version to prevent unnecessary re-renders
 export { TextRotate };

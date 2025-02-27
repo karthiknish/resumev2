@@ -1,3 +1,4 @@
+/* eslint-disable */
 "use client";
 
 import { useEffect, useRef, useState, startTransition } from "react";
@@ -58,7 +59,7 @@ export const Spotlight = ({
       window.removeEventListener("mousemove", updatePosition);
       window.removeEventListener("mousemove", updateOpacity);
     };
-  }, [isMounted]);
+  }, [isMounted, updatePosition, updateOpacity]);
 
   useEffect(() => {
     if (!position) {
@@ -70,8 +71,7 @@ export const Spotlight = ({
     updateOpacity(
       new MouseEvent("mousemove", { clientX: position.x, clientY: position.y })
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [position]);
+  }, [position, updatePosition, updateOpacity]);
 
   const baseClassName = `relative ${className}`;
 

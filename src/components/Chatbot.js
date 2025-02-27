@@ -2,7 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { BiSend, BiMessageSquareDots, BiX } from "react-icons/bi";
 import { FaEnvelope } from "react-icons/fa";
 import Modal from "react-modal";
-Modal.setAppElement("#__next");
+
+// Only initialize Modal in browser environment to prevent SSR issues
+if (typeof window !== "undefined") {
+  Modal.setAppElement("#__next");
+}
 
 function Chatbot() {
   const [message, setMessage] = useState("");
@@ -12,6 +16,12 @@ function Chatbot() {
   const [isCollectingEmail, setIsCollectingEmail] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const chatEndRef = useRef(null);
+  const [isBrowser, setIsBrowser] = useState(false);
+
+  // Check if we're in the browser environment
+  useEffect(() => {
+    setIsBrowser(true);
+  }, []);
 
   // Scroll to the bottom of the chat when new messages are added
   useEffect(() => {
@@ -106,13 +116,18 @@ function Chatbot() {
   // Store chat history in localStorage and send to API
   const storeChatHistory = (messages, email = userEmail) => {
     try {
-      // Save to localStorage
-      const chatHistory = JSON.parse(localStorage.getItem("chatHistory")) || {};
-      chatHistory[email] = {
-        messages,
-        lastUpdated: new Date().toISOString(),
-      };
-      localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+      // Only attempt localStorage operations in browser environment
+      if (typeof window !== "undefined") {
+        // Save to localStorage
+        const chatHistory = JSON.parse(
+          localStorage.getItem("chatHistory") || "{}"
+        );
+        chatHistory[email] = {
+          messages,
+          lastUpdated: new Date().toISOString(),
+        };
+        localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+      }
 
       // Save to server if we have an email
       if (email) {
@@ -129,6 +144,49 @@ function Chatbot() {
     } catch (error) {
       console.error("Error storing chat history:", error);
     }
+  };
+
+  // Function to generate helpful responses for common queries
+  const generateHelpfulResponse = (content) => {
+    const lowerContent = content.toLowerCase();
+
+    // Check for performance-related queries
+    if (
+      lowerContent.includes("slow") ||
+      lowerContent.includes("loading") ||
+      lowerContent.includes("performance") ||
+      lowerContent.includes("speed") ||
+      lowerContent.includes("laggy") ||
+      lowerContent.includes("takes time")
+    ) {
+      // If specifically about home page
+      if (
+        lowerContent.includes("home") ||
+        lowerContent.includes("main page") ||
+        lowerContent.includes("landing")
+      ) {
+        return `I understand the home page is loading slowly for you. This could be due to several factors:
+
+1. **Image Optimization** - Large images might be slowing down the page. 
+2. **Too Many Components** - The home page may have many heavy components loading at once.
+3. **Network Issues** - Your connection might be affecting load times.
+
+I can help connect you with Karthik to address these performance issues. Would you like to [contact Karthik](/contact) about optimizing your website, or would you prefer some general advice on improving web performance?`;
+      }
+
+      // General performance issues
+      return `I notice you're experiencing performance issues. This could be due to several factors:
+
+1. **Image Sizes** - Unoptimized images can significantly slow down websites
+2. **JavaScript Loading** - Too many scripts loading synchronously
+3. **Server Response Time** - Hosting service performance varies
+4. **Third-party Services** - Analytics, ads, or other third-party scripts
+
+Karthik specializes in optimizing website performance. Would you like to [contact him](/contact) for a performance audit?`;
+    }
+
+    // If no special handling needed, return null
+    return null;
   };
 
   // Handle sending a message using Gemini API
@@ -149,7 +207,27 @@ function Chatbot() {
     setIsLoading(true);
 
     try {
-      // Call Gemini API
+      // Check if we have a pre-defined helpful response
+      const helpfulResponse = generateHelpfulResponse(content);
+
+      if (helpfulResponse) {
+        // Use the pre-defined response instead of calling API
+        const updatedMessages = [
+          ...newMessages,
+          {
+            user: "bot",
+            content: helpfulResponse,
+            timestamp: new Date().toISOString(),
+          },
+        ];
+
+        setMessages(updatedMessages);
+        storeChatHistory(updatedMessages);
+        setIsLoading(false);
+        return;
+      }
+
+      // Call Gemini API for other queries
       const response = await fetch("/api/gemini", {
         method: "POST",
         headers: {
@@ -228,6 +306,92 @@ function Chatbot() {
     }
   };
 
+  // Function to process markdown in messages
+  const renderFormattedMessage = (text) => {
+    // Replace bold markdown with HTML
+    // Handle both single asterisk and double asterisk patterns
+    let formattedText = text
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*(.*?)\*/g, "<strong>$1</strong>");
+
+    // Handle internal site navigation links with [text](path) format
+    formattedText = formattedText.replace(
+      /\[([^\]]+)\]\(([^)]+)\)/g,
+      (match, text, url) => {
+        // If it's an internal link (doesn't start with http)
+        if (!url.startsWith("http")) {
+          return `<a href="${url}" class="text-blue-300 underline hover:text-blue-100" target="_self">${text}</a>`;
+        }
+        // External link
+        return `<a href="${url}" class="text-blue-300 underline hover:text-blue-100" target="_blank" rel="noopener noreferrer">${text}</a>`;
+      }
+    );
+
+    // Convert URLs to clickable links
+    formattedText = formattedText.replace(
+      /(https?:\/\/[^\s]+)/g,
+      '<a href="$1" class="text-blue-300 underline hover:text-blue-100" target="_blank" rel="noopener noreferrer">$1</a>'
+    );
+
+    // Pattern match for references to the main website/portfolio
+    formattedText = formattedText.replace(
+      /(go to|visit|check out|view|browse)(\s+)(his|the|karthik's|karthik nishanth's|)(\s+)(portfolio website|website|portfolio|site|homepage)/gi,
+      '$1$2$3$4<a href="https://karthiknish.com" class="text-blue-300 underline hover:text-blue-100" target="_blank">portfolio website</a>'
+    );
+
+    // Add direct reference to karthiknish.com
+    formattedText = formattedText.replace(
+      /karthiknish\.com/g,
+      '<a href="https://karthiknish.com" class="text-blue-300 underline hover:text-blue-100" target="_blank">karthiknish.com</a>'
+    );
+
+    // Special case for contact page mentions
+    formattedText = formattedText.replace(
+      /contact page/gi,
+      '<a href="/contact" class="text-blue-300 underline hover:text-blue-100">contact page</a>'
+    );
+
+    // Additional patterns for contact section references
+    formattedText = formattedText.replace(
+      /(look for|find|view|check|see|locate)(\s+)(a |the |)("Contact"|"Contact Me"|Contact|Contact Me|contact section|contact information|contact details|get in touch|reach out)(\s+)(section|page|area|form|link|)/gi,
+      '$1$2$3<a href="/contact" class="text-blue-300 underline hover:text-blue-100">Contact section</a>$6'
+    );
+
+    // Direct contact mentions
+    formattedText = formattedText.replace(
+      /\b(contact us|contact me|contact him|contact karthik|get in touch|reach out)\b/gi,
+      '<a href="/contact" class="text-blue-300 underline hover:text-blue-100">$1</a>'
+    );
+
+    // Special case for portfolio mentions - using absolute URL now
+    formattedText = formattedText.replace(
+      /portfolio page/gi,
+      '<a href="https://karthiknish.com/portfolio" class="text-blue-300 underline hover:text-blue-100">portfolio page</a>'
+    );
+
+    // Special case for services mentions
+    formattedText = formattedText.replace(
+      /services page/gi,
+      '<a href="/services" class="text-blue-300 underline hover:text-blue-100">services page</a>'
+    );
+
+    // Special case for blog mentions
+    formattedText = formattedText.replace(
+      /blog page/gi,
+      '<a href="/blog" class="text-blue-300 underline hover:text-blue-100">blog page</a>'
+    );
+
+    // Handle line breaks
+    formattedText = formattedText.replace(/\n/g, "<br />");
+
+    return formattedText;
+  };
+
+  // Don't render anything during SSR
+  if (!isBrowser) {
+    return null;
+  }
+
   return (
     <div className="fixed z-30 bottom-5 right-5">
       {/* Chat button */}
@@ -251,8 +415,9 @@ function Chatbot() {
             zIndex: 1000,
           },
           content: {
-            top: "auto",
-            left: "auto",
+            position: "absolute",
+            top: "unset",
+            left: "unset",
             right: "20px",
             bottom: "80px",
             width: "350px",
@@ -283,17 +448,22 @@ function Chatbot() {
               key={index}
               className={`flex ${
                 msg.user === "bot" ? "justify-start" : "justify-end"
-              } mb-3`}
+              } mb-4`}
             >
               <div
-                className={`max-w-[80%] p-3 rounded-lg ${
+                className={`max-w-[85%] p-4 rounded-lg shadow-md ${
                   msg.user === "bot"
                     ? "bg-gray-700 text-white"
                     : "bg-blue-600 text-white"
                 }`}
               >
-                <p className="text-sm">{msg.content}</p>
-                <span className="text-xs opacity-70 mt-1 block text-right">
+                <p
+                  className="text-base leading-relaxed"
+                  dangerouslySetInnerHTML={{
+                    __html: renderFormattedMessage(msg.content),
+                  }}
+                ></p>
+                <span className="text-xs opacity-70 mt-2 block text-right">
                   {new Date(msg.timestamp).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
@@ -303,8 +473,8 @@ function Chatbot() {
             </div>
           ))}
           {isLoading && (
-            <div className="flex justify-start mb-3">
-              <div className="bg-gray-700 text-white max-w-[80%] p-3 rounded-lg">
+            <div className="flex justify-start mb-4">
+              <div className="bg-gray-700 text-white max-w-[85%] p-4 rounded-lg shadow-md">
                 <div className="flex space-x-2">
                   <div
                     className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
@@ -336,7 +506,7 @@ function Chatbot() {
                 <FaEnvelope />
               </div>
               <input
-                className="flex-grow p-2 rounded-md bg-gray-700 text-white text-sm border border-gray-600 focus:border-blue-500 focus:outline-none"
+                className="flex-grow p-2 rounded-md bg-gray-700 text-white text-base border border-gray-600 focus:border-blue-500 focus:outline-none"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -347,7 +517,7 @@ function Chatbot() {
             </>
           ) : (
             <input
-              className="flex-grow p-2 rounded-md bg-gray-700 text-white text-sm border border-gray-600 focus:border-blue-500 focus:outline-none"
+              className="flex-grow p-2 rounded-md bg-gray-700 text-white text-base border border-gray-600 focus:border-blue-500 focus:outline-none"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
