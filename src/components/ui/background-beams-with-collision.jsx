@@ -147,6 +147,16 @@ const CollisionMechanism = React.forwardRef(
       }
     }, [collision]);
 
+    useEffect(() => {
+      if (typeof window !== "undefined") {
+        setParentSize({
+          width: parentRef.current?.clientWidth || 0,
+          height: parentRef.current?.clientHeight || 0,
+        });
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     return (
       <>
         <motion.div

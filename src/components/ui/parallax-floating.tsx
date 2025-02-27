@@ -144,6 +144,20 @@ export const FloatingElement = ({
     return () => context.unregisterElement(idRef.current);
   }, [depth, context]);
 
+  useEffect(() => {
+    const id = idRef.current;
+
+    // Copy the ref value to a variable inside the effect
+    const savedId = id;
+
+    return () => {
+      if (savedId) {
+        // Use the saved variable in the cleanup function
+        cancelAnimationFrame(savedId);
+      }
+    };
+  }, []);
+
   return (
     <div
       ref={elementRef}

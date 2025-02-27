@@ -60,6 +60,19 @@ export const Spotlight = ({
     };
   }, [isMounted]);
 
+  useEffect(() => {
+    if (!position) {
+      return;
+    }
+    updatePosition(
+      new MouseEvent("mousemove", { clientX: position.x, clientY: position.y })
+    );
+    updateOpacity(
+      new MouseEvent("mousemove", { clientX: position.x, clientY: position.y })
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [position]);
+
   const baseClassName = `relative ${className}`;
 
   if (!isMounted) {

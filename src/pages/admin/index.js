@@ -16,6 +16,17 @@ import { useSession } from "next-auth/react";
 import Calendar from "react-calendar";
 import { format } from "date-fns";
 import "react-calendar/dist/Calendar.css";
+import {
+  FaLock,
+  FaComments,
+  FaEnvelope,
+  FaDatabase,
+  FaChartBar,
+  FaTasks,
+  FaCog,
+  FaServer,
+} from "react-icons/fa";
+import MongoDBStats from "@/components/admin/MongoDBStats";
 
 // Digital Clock Component
 function DigitalClock() {
@@ -91,6 +102,12 @@ function Index() {
   });
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
+
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [chatDbStatus, setChatDbStatus] = useState({ status: "unknown" });
+  const [migrationStatus, setMigrationStatus] = useState({ status: "unknown" });
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -214,6 +231,68 @@ function Index() {
       return hasPost ? (
         <div className="h-2 w-2 bg-blue-500 rounded-full mx-auto mt-1"></div>
       ) : null;
+    }
+  };
+
+  // Initialize MongoDB Chat collection
+  const initializeChatDb = async () => {
+    try {
+      setChatDbStatus({
+        status: "loading",
+        message: "Initializing chat collection...",
+      });
+      const response = await fetch("/api/create-chat-model", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          secret: password,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setChatDbStatus({ status: "success", message: data.message });
+      } else {
+        setChatDbStatus({ status: "error", message: data.message });
+      }
+    } catch (error) {
+      console.error("Error initializing chat collection:", error);
+      setChatDbStatus({ status: "error", message: error.message });
+    }
+  };
+
+  // Migrate JSON data to MongoDB
+  const migrateJsonToMongoDB = async () => {
+    try {
+      setMigrationStatus({
+        status: "loading",
+        message: "Migrating chat data to MongoDB...",
+      });
+      const response = await fetch("/api/migrate-chats-to-mongodb", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          secret: password,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setMigrationStatus({
+          status: "success",
+          message: data.message,
+          results: data.results,
+        });
+      } else {
+        setMigrationStatus({ status: "error", message: data.message });
+      }
+    } catch (error) {
+      console.error("Error migrating chat data:", error);
+      setMigrationStatus({ status: "error", message: error.message });
     }
   };
 
@@ -670,6 +749,136 @@ function Index() {
               )}
             </div>
           )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
+              <h2 className="text-xl font-bold mb-4 flex items-center">
+                <FaChartBar className="text-purple-400 mr-2" />
+                Quick Stats
+              </h2>
+              <div className="space-y-4">
+                <Link
+                  href="/admin/chat-logs"
+                  className="block bg-gray-700 hover:bg-gray-600 p-4 rounded-lg transition flex items-center"
+                >
+                  <FaComments className="text-blue-400 mr-3 text-xl" />
+                  <span>View Chat Logs</span>
+                </Link>
+
+                <Link
+                  href="/admin/contact-messages"
+                  className="block bg-gray-700 hover:bg-gray-600 p-4 rounded-lg transition flex items-center"
+                >
+                  <FaEnvelope className="text-green-400 mr-3 text-xl" />
+                  <span>View Contact Messages</span>
+                </Link>
+              </div>
+            </div>
+
+            <MongoDBStats authToken={password} />
+          </div>
+
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
+            <h2 className="text-xl font-bold mb-4 flex items-center">
+              <FaDatabase className="text-blue-400 mr-2" />
+              MongoDB Management
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-gray-700 p-4 rounded-lg">
+                <h3 className="text-lg font-semibold mb-3 flex items-center">
+                  <FaServer className="text-green-400 mr-2" />
+                  Initialize Chat Collection
+                </h3>
+                <p className="text-gray-300 mb-4 text-sm">
+                  Create the chat history collection and set up necessary
+                  indices if they don't exist.
+                </p>
+
+                {chatDbStatus.status === "loading" ? (
+                  <div className="bg-blue-900/50 text-blue-100 p-3 rounded mb-4 animate-pulse">
+                    {chatDbStatus.message}
+                  </div>
+                ) : chatDbStatus.status === "success" ? (
+                  <div className="bg-green-900/50 text-green-100 p-3 rounded mb-4">
+                    {chatDbStatus.message}
+                  </div>
+                ) : chatDbStatus.status === "error" ? (
+                  <div className="bg-red-900/50 text-red-100 p-3 rounded mb-4">
+                    Error: {chatDbStatus.message}
+                  </div>
+                ) : null}
+
+                <button
+                  onClick={initializeChatDb}
+                  disabled={chatDbStatus.status === "loading"}
+                  className={`w-full py-2 px-4 rounded transition ${
+                    chatDbStatus.status === "loading"
+                      ? "bg-gray-600 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700"
+                  }`}
+                >
+                  Initialize Collection
+                </button>
+              </div>
+
+              <div className="bg-gray-700 p-4 rounded-lg">
+                <h3 className="text-lg font-semibold mb-3 flex items-center">
+                  <FaTasks className="text-yellow-400 mr-2" />
+                  Migrate Chat Data
+                </h3>
+                <p className="text-gray-300 mb-4 text-sm">
+                  Migrate existing chat data from JSON file to MongoDB database.
+                </p>
+
+                {migrationStatus.status === "loading" ? (
+                  <div className="bg-blue-900/50 text-blue-100 p-3 rounded mb-4 animate-pulse">
+                    {migrationStatus.message}
+                  </div>
+                ) : migrationStatus.status === "success" ? (
+                  <div className="bg-green-900/50 text-green-100 p-3 rounded mb-4">
+                    <p>{migrationStatus.message}</p>
+                    {migrationStatus.results && (
+                      <div className="mt-2 text-xs">
+                        <p>Total: {migrationStatus.results.total}</p>
+                        <p>Inserted: {migrationStatus.results.inserted}</p>
+                        <p>Updated: {migrationStatus.results.updated}</p>
+                        <p>Skipped: {migrationStatus.results.skipped}</p>
+                        <p>Errors: {migrationStatus.results.errors}</p>
+                      </div>
+                    )}
+                  </div>
+                ) : migrationStatus.status === "error" ? (
+                  <div className="bg-red-900/50 text-red-100 p-3 rounded mb-4">
+                    Error: {migrationStatus.message}
+                  </div>
+                ) : null}
+
+                <button
+                  onClick={migrateJsonToMongoDB}
+                  disabled={migrationStatus.status === "loading"}
+                  className={`w-full py-2 px-4 rounded transition ${
+                    migrationStatus.status === "loading"
+                      ? "bg-gray-600 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700"
+                  }`}
+                >
+                  Migrate Data
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
+            <h2 className="text-xl font-bold mb-4 flex items-center">
+              <FaCog className="text-orange-400 mr-2" />
+              System Settings
+            </h2>
+            {/* Additional admin functionality can be added here */}
+            <p className="text-gray-400">
+              Additional system settings will be implemented in future updates.
+            </p>
+          </div>
         </div>
       </div>
     </>

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { FaQuoteLeft, FaStar, FaLinkedin, FaGithub } from "react-icons/fa";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { Card } from "@/components/ui/card";
+import Link from "next/link";
 
 export default function Testimonials({ testimonials }) {
   const [filteredTestimonials, setFilteredTestimonials] = useState([]);
@@ -171,15 +172,19 @@ export default function Testimonials({ testimonials }) {
               </div>
 
               <div className="mt-12 text-center">
-                <p className="text-gray-300 mb-4 font-calendas">
-                  Would you like to share your experience working with me?
+                <h2 className="text-2xl text-white font-bold mb-4">
+                  Ready to share your experience?
+                </h2>
+                <p className="text-gray-300 max-w-2xl mx-auto mb-6">
+                  If you've worked with me and would like to share your
+                  feedback, I'd be honored to hear from you.
                 </p>
-                <a
+                <Link
                   href="/contact"
-                  className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full transition-colors"
+                  className="px-8 py-3 bg-teal-600 text-white font-medium rounded-lg hover:bg-teal-700 transition-colors"
                 >
-                  Leave a Testimonial
-                </a>
+                  Submit a Testimonial
+                </Link>
               </div>
             </motion.div>
           </Card>
