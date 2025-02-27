@@ -29,6 +29,7 @@ export default function Nav() {
     { href: "/blog", label: "Blog", delay: 0.6 },
     { href: "/skills", label: "Skills", delay: 0.7 },
     { href: "/contact", label: "Contact", delay: 0.8 },
+    { href: "/linkedin-manager", label: "LinkedIn", delay: 0.9 },
   ];
 
   // Close menu when clicking outside
@@ -74,7 +75,7 @@ export default function Nav() {
 
   return (
     <motion.nav
-      className={`fixed w-full z-50 ${
+      className={`mt-10 fixed w-full z-50 ${
         colorChange || !isHome
           ? "bg-black bg-opacity-80 backdrop-blur-sm shadow-lg"
           : "bg-black"

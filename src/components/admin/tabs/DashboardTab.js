@@ -34,7 +34,7 @@ function DashboardTab({ blogPosts, isLoading }) {
   return (
     <FadeIn delay={0.2}>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StaggerContainer>
+        <StaggerContainer className="grid grid-cols-1 sm:grid-cols-3 col-span-1 sm:col-span-2 lg:col-span-4 gap-6">
           <StaggerItem index={0}>
             <Link href="/admin/blog/create" className="block h-full">
               <HoverCard>

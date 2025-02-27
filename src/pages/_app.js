@@ -3,17 +3,24 @@ import Script from "next/script";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import * as gtag from "../lib/gtag";
-import Footer from "../components/Footer";
-import Nav from "../components/Nav";
-import Chatbot from "../components/Chatbot";
+import { Inter } from "next/font/google";
+import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SessionProvider } from "next-auth/react";
 import PageTransitionWrapper from "@/components/PageTransitionWrapper";
+
+// Configure the Inter font
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
   const queryClient = new QueryClient();
   const [session, setSession] = useState(null);
+  const [domLoaded, setDomLoaded] = useState(false);
 
   useEffect(() => {
     const handleRouteChange = (url) => {
@@ -42,10 +49,14 @@ export default function App({ Component, pageProps }) {
     checkSession();
   }, []);
 
+  useEffect(() => {
+    setDomLoaded(true);
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
-        <>
+        <main className={`${inter.variable} font-sans`}>
           <Script
             strategy="afterInteractive"
             src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
@@ -62,14 +73,13 @@ export default function App({ Component, pageProps }) {
           </Script>
 
           <Nav />
-          <div className="pt-24">
+          <div>
             <PageTransitionWrapper>
-              <Component {...pageProps} session={session} />
+              {domLoaded && <Component {...pageProps} session={session} />}
             </PageTransitionWrapper>
           </div>
           <Footer />
-          <Chatbot />
-        </>
+        </main>
       </SessionProvider>
     </QueryClientProvider>
   );

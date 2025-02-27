@@ -7,8 +7,17 @@
     font-family: 'Calendas', system-ui, -apple-system, sans-serif;
   }
   
+  :root {
+    --color-primary: #6366f1;
+    --color-primary-rgb: 99, 102, 241;
+    --background: #000000;
+    --foreground: #ffffff;
+    --border: #333333;
+    --ring: #6366f1;
+  }
+  
   body {
-    background-color: black;
+    background-color: black !important;
     color: white;
     font-family: 'Calendas', system-ui, -apple-system, sans-serif;
   }
@@ -33,13 +42,58 @@
   }
 }
 
-
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
+    background-color: black !important;
+  }
+}
+
+/* Fix for Spline component */
+canvas {
+  display: block !important;
+}
+
+/* Prevent Spline from causing layout shifts */
+.spline-container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Optimize Spline performance */
+canvas {
+  image-rendering: optimizeSpeed;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* Fix for floating elements */
+.floating-container {
+  pointer-events: none;
+}
+.floating-container img {
+  pointer-events: auto;
+}
+
+/* Prevent buffer overflow issues */
+iframe, canvas, video {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Improve performance for animations */
+.motion-reduce {
+  transition: none !important;
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion) {
+  * {
+    transition: none !important;
+    animation: none !important;
   }
 }

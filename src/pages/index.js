@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
 import Head from "next/head";
-import React, { Suspense, useState } from "react";
+import React, { useState } from "react";
+// Import components directly
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { HeroGeometric } from "@/components/ui/shape-landing-hero";
 import { TextRotate } from "@/components/ui/text-rotate";
@@ -14,7 +15,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { BentoGrid } from "@/components/ui/bento-grid";
-import { SplineScene } from "@/components/ui/splite";
 import { Card } from "@/components/ui/card";
 import { Spotlight } from "@/components/ui/spotlight";
 import {
@@ -29,86 +29,18 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/router";
 import Services from "@/components/Services";
+import ContactForm from "@/components/Form";
+import Faq from "@/components/Faq";
 
 const HomeScreen = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [submitError, setSubmitError] = useState(null);
-
-  const router = useRouter();
-
-  // Basic validation function
-  const validateForm = () => {
-    if (!formData.name.trim()) {
-      setSubmitError("Name is required.");
-      return false;
-    }
-    if (
-      !formData.email.trim() ||
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
-    ) {
-      setSubmitError("Valid email is required.");
-      return false;
-    }
-    if (!formData.message.trim()) {
-      setSubmitError("Message is required.");
-      return false;
-    }
-    return true;
-  };
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.value,
-    });
-    // Clear error when user starts typing again
-    if (submitError) {
-      setSubmitError(null);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitError(null);
-    setSubmitSuccess(false);
-
-    if (!validateForm()) {
-      setIsSubmitting(false);
-      return;
-    }
-
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        setSubmitSuccess(true);
-        setFormData({ name: "", email: "", message: "" });
-        // Redirect to success page
-        router.push("/success");
-      } else {
-        const errorData = await response.json();
-        setSubmitError(errorData.message || "Failed to send message.");
-      }
-    } catch (error) {
-      setSubmitError("An unexpected error occurred.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  // Simple loading component for lazy-loaded components
+  const SimpleLoader = ({ className }) => (
+    <div
+      className={`flex items-center justify-center h-full w-full ${className}`}
+    >
+      <div className="animate-pulse bg-gradient-to-tr from-primary/20 to-primary/40 rounded-xl h-full w-full"></div>
+    </div>
+  );
 
   const exampleImages = [
     {
@@ -220,12 +152,18 @@ const HomeScreen = () => {
   ];
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <div className="bg-black overflow-hidden relative">
+      <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
+      <HeroGeometric
+        className="absolute inset-0 -z-0 opacity-30"
+        duration={20}
+        speed={2}
+      />
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="relative -mt-10 min-h-screen"
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="relative z-10 min-h-screen py-20 flex flex-col items-center justify-center"
       >
         <Head>
           <title>
@@ -245,637 +183,479 @@ const HomeScreen = () => {
           <link rel="canonical" href="https://karthiknish.com/" />
         </Head>
 
-        <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
         <motion.div
           initial={{ x: -100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative z-10"
+          className="relative z-10 container mx-auto flex flex-col items-center"
         >
-          <HeroGeometric
-            badge="Freelance Full Stack Developer"
-            title1="Crafting Digital"
-            title2="Experiences"
-          />
-          <motion.section
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="w-full bg-black h-screen overflow-hidden md:overflow-visible flex flex-col items-center justify-center relative"
-          >
-            <Floating sensitivity={-0.5} className="h-full">
-              <FloatingElement
-                depth={0.5}
-                className="top-[15%] left-[2%] md:top-[25%] md:left-[5%]"
-              >
-                <motion.img
-                  src={exampleImages[0].url}
-                  alt={exampleImages[0].title}
-                  className="w-16 h-12 sm:w-24 sm:h-16 md:w-28 md:h-20 lg:w-32 lg:h-24 object-cover hover:scale-105 duration-200 cursor-pointer transition-transform -rotate-[3deg] shadow-2xl rounded-xl"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.5 }}
-                  whileHover={{ scale: 1.1 }}
-                />
-              </FloatingElement>
-
-              <FloatingElement
-                depth={1}
-                className="top-[0%] left-[8%] md:top-[6%] md:left-[11%]"
-              >
-                <motion.img
-                  src={exampleImages[1].url}
-                  alt={exampleImages[1].title}
-                  className="w-40 h-28 sm:w-48 sm:h-36 md:w-56 md:h-44 lg:w-60 lg:h-48 object-cover hover:scale-105 duration-200 cursor-pointer transition-transform -rotate-12 shadow-2xl rounded-xl"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.7 }}
-                  whileHover={{ scale: 1.1 }}
-                />
-              </FloatingElement>
-
-              <FloatingElement
-                depth={4}
-                className="top-[90%] left-[6%] md:top-[80%] md:left-[8%]"
-              >
-                <motion.img
-                  src={exampleImages[2].url}
-                  alt={exampleImages[2].title}
-                  className="w-40 h-40 sm:w-48 sm:h-48 md:w-60 md:h-60 lg:w-64 lg:h-64 object-cover -rotate-[4deg] hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl rounded-xl"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.9 }}
-                  whileHover={{ scale: 1.1 }}
-                />
-              </FloatingElement>
-
-              <FloatingElement
-                depth={2}
-                className="top-[0%] left-[87%] md:top-[2%] md:left-[83%]"
-              >
-                <motion.img
-                  src={exampleImages[3].url}
-                  alt={exampleImages[3].title}
-                  className="w-40 h-36 sm:w-48 sm:h-44 md:w-60 md:h-52 lg:w-64 lg:h-56 object-cover hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl rotate-[6deg] rounded-xl"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 1.1 }}
-                  whileHover={{ scale: 1.1 }}
-                />
-              </FloatingElement>
-
-              <FloatingElement
-                depth={1}
-                className="top-[78%] left-[83%] md:top-[68%] md:left-[83%]"
-              >
-                <motion.img
-                  src={exampleImages[4].url}
-                  alt={exampleImages[4].title}
-                  className="w-44 h-44 sm:w-64 sm:h-64 md:w-72 md:h-72 lg:w-80 lg:h-80 object-cover hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl rotate-[19deg] rounded-xl"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 1.3 }}
-                  whileHover={{ scale: 1.1 }}
-                />
-              </FloatingElement>
-            </Floating>
-
-            <div className="flex flex-col justify-center items-center w-[250px] sm:w-[300px] md:w-[500px] lg:w-[700px] z-50 pointer-events-auto">
-              <motion.h1
-                className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl text-center w-full justify-center items-center flex-col flex whitespace-pre leading-tight font-calendas tracking-tight space-y-1 md:space-y-4 text-white"
-                animate={{ opacity: 1, y: 0 }}
-                initial={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.2, ease: "easeOut", delay: 0.3 }}
-              >
-                <span>I Build </span>
-                <LayoutGroup>
-                  <motion.span layout className="flex whitespace-pre">
-                    <motion.span
-                      layout
-                      className="flex whitespace-pre"
-                      transition={{
-                        type: "spring",
-                        damping: 30,
-                        stiffness: 400,
-                      }}
-                    >
-                      Websites{" "}
-                    </motion.span>
-                    <TextRotate
-                      texts={[
-                        "that scale",
-                        "that perform",
-                        "with precision",
-                        "with passion",
-                        "⚡ fast",
-                        "secure 🔒",
-                        "elegant",
-                        "✨ modern",
-                        "robust",
-                        "🚀 efficient",
-                        "future-proof",
-                        "seamless",
-                        "strategic",
-                      ]}
-                      mainClassName="overflow-hidden pr-3 text-blue-500 py-0 pb-2 md:pb-4 rounded-xl"
-                      staggerDuration={0.03}
-                      staggerFrom="last"
-                      rotationInterval={3000}
-                      transition={{
-                        type: "spring",
-                        damping: 30,
-                        stiffness: 400,
-                      }}
-                    />
-                  </motion.span>
-                </LayoutGroup>
-              </motion.h1>
-              <motion.p
-                className="text-sm sm:text-lg md:text-xl lg:text-2xl text-center font-calendas pt-4 sm:pt-8 md:pt-10 lg:pt-12 text-white"
-                animate={{ opacity: 1, y: 0 }}
-                initial={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.2, ease: "easeOut", delay: 0.5 }}
-              >
-                Freelance web developer creating custom, scalable, and
-                high-performance web solutions for businesses and individuals.
-              </motion.p>
-
-              <div className="flex flex-row justify-center space-x-4 items-center mt-10 sm:mt-16 md:mt-20 lg:mt-20 text-xs">
-                <motion.button
-                  className="sm:text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-blue-500 px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-2xl hover:bg-blue-600 transition-colors"
-                  animate={{ opacity: 1, y: 0 }}
-                  initial={{ opacity: 0, y: 20 }}
-                  transition={{
-                    duration: 0.2,
-                    ease: "easeOut",
-                    delay: 0.7,
-                  }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Link className="text-white font-calendas" href="/contact">
-                    Get in Touch <span className="font-calendas ml-1">→</span>
-                  </Link>
-                </motion.button>
-                <motion.button
-                  className="sm:text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-blue-500 px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-2xl hover:bg-blue-600 transition-colors"
-                  animate={{ opacity: 1, y: 0 }}
-                  initial={{ opacity: 0, y: 20 }}
-                  transition={{
-                    duration: 0.2,
-                    ease: "easeOut",
-                    delay: 0.7,
-                  }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Link
-                    href="https://github.com/karthiknish"
-                    className="font-calendas"
-                  >
-                    View GitHub <span className="font-calendas ml-1">→</span>
-                  </Link>
-                </motion.button>
-              </div>
-            </div>
-          </motion.section>
-
-          <motion.div
-            initial={{ x: 100, opacity: 0 }}
-            whileInView={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <Card className="w-full h-[500px] bg-black/[0.96] relative overflow-hidden border-0">
-              <Spotlight
-                className="-top-40 left-0 md:left-60 md:-top-20"
-                fill="white"
+          <Floating sensitivity={-0.5} className="h-full w-full absolute">
+            <FloatingElement
+              depth={0.5}
+              className="top-[15%] left-[2%] md:top-[25%] md:left-[5%]"
+            >
+              <motion.img
+                src={exampleImages[0].url}
+                alt={exampleImages[0].title}
+                className="w-16 h-12 sm:w-24 sm:h-16 md:w-28 md:h-20 lg:w-32 lg:h-24 object-cover hover:scale-105 duration-200 cursor-pointer transition-transform -rotate-[3deg] shadow-2xl rounded-xl"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5 }}
+                whileHover={{ scale: 1.1 }}
               />
+            </FloatingElement>
 
-              <div className="flex h-full">
-                <div className="flex-1 p-8 relative z-10 flex flex-col justify-center">
-                  <motion.h1
-                    initial={{ y: 20, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                    viewport={{ once: true }}
-                    className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 font-calendas"
+            <FloatingElement
+              depth={1}
+              className="top-[0%] left-[8%] md:top-[6%] md:left-[11%]"
+            >
+              <motion.img
+                src={exampleImages[1].url}
+                alt={exampleImages[1].title}
+                className="w-40 h-28 sm:w-48 sm:h-36 md:w-56 md:h-44 lg:w-60 lg:h-48 object-cover hover:scale-105 duration-200 cursor-pointer transition-transform -rotate-12 shadow-2xl rounded-xl"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.7 }}
+                whileHover={{ scale: 1.1 }}
+              />
+            </FloatingElement>
+
+            <FloatingElement
+              depth={4}
+              className="top-[90%] left-[6%] md:top-[80%] md:left-[8%]"
+            >
+              <motion.img
+                src={exampleImages[2].url}
+                alt={exampleImages[2].title}
+                className="w-40 h-40 sm:w-48 sm:h-48 md:w-60 md:h-60 lg:w-64 lg:h-64 object-cover -rotate-[4deg] hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl rounded-xl"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.9 }}
+                whileHover={{ scale: 1.1 }}
+              />
+            </FloatingElement>
+
+            <FloatingElement
+              depth={2}
+              className="top-[0%] left-[87%] md:top-[2%] md:left-[83%]"
+            >
+              <motion.img
+                src={exampleImages[3].url}
+                alt={exampleImages[3].title}
+                className="w-40 h-36 sm:w-48 sm:h-44 md:w-60 md:h-52 lg:w-64 lg:h-56 object-cover hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl rotate-[6deg] rounded-xl"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1.1 }}
+                whileHover={{ scale: 1.1 }}
+              />
+            </FloatingElement>
+
+            <FloatingElement
+              depth={1}
+              className="top-[78%] left-[83%] md:top-[68%] md:left-[83%]"
+            >
+              <motion.img
+                src={exampleImages[4].url}
+                alt={exampleImages[4].title}
+                className="w-44 h-44 sm:w-64 sm:h-64 md:w-72 md:h-72 lg:w-80 lg:h-80 object-cover hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl rotate-[19deg] rounded-xl"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1.3 }}
+                whileHover={{ scale: 1.1 }}
+              />
+            </FloatingElement>
+          </Floating>
+
+          <div className="flex flex-col justify-center items-center w-[250px] sm:w-[300px] md:w-[500px] lg:w-[700px] z-50 pointer-events-auto mt-10">
+            <motion.h1
+              className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl text-center w-full justify-center items-center flex-col flex whitespace-pre leading-tight font-calendas tracking-tight space-y-1 md:space-y-4 text-white"
+              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.2, ease: "easeOut", delay: 0.3 }}
+            >
+              <span>I Build </span>
+              <LayoutGroup>
+                <motion.span layout className="flex whitespace-pre">
+                  <motion.span
+                    layout
+                    className="flex whitespace-pre"
+                    transition={{
+                      type: "spring",
+                      damping: 30,
+                      stiffness: 400,
+                    }}
                   >
-                    About Me
-                  </motion.h1>
-                  <motion.p
-                    initial={{ y: 20, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                    viewport={{ once: true }}
-                    className="mt-4 text-neutral-300 max-w-lg font-calendas"
-                  >
-                    I'm a freelance full-stack developer passionate about
-                    building innovative web solutions. With expertise in React,
-                    Node.js, and cloud technologies, I create scalable
-                    applications tailored to your needs.
-                  </motion.p>
-                </div>
+                    Websites{" "}
+                  </motion.span>
+                  <TextRotate
+                    texts={[
+                      "that scale",
+                      "that perform",
+                      "with precision",
+                      "with passion",
+                      "⚡ fast",
+                      "secure 🔒",
+                      "elegant",
+                      "✨ modern",
+                      "robust",
+                      "🚀 efficient",
+                      "future-proof",
+                      "seamless",
+                      "strategic",
+                    ]}
+                    mainClassName="overflow-hidden pr-3 text-blue-500 py-0 pb-2 md:pb-4 rounded-xl"
+                    staggerDuration={0.03}
+                    staggerFrom="last"
+                    rotationInterval={3000}
+                    transition={{
+                      type: "spring",
+                      damping: 30,
+                      stiffness: 400,
+                    }}
+                  />
+                </motion.span>
+              </LayoutGroup>
+            </motion.h1>
+            <motion.p
+              className="text-sm sm:text-lg md:text-xl lg:text-2xl text-center font-calendas pt-4 sm:pt-8 md:pt-10 lg:pt-12 text-white"
+              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.2, ease: "easeOut", delay: 0.5 }}
+            >
+              Freelance web developer creating custom, scalable, and
+              high-performance web solutions for businesses and individuals.
+            </motion.p>
 
-                <div className="flex-1 relative">
-                  <Suspense fallback={<div>Loading 3D Scene...</div>}>
-                    <SplineScene
-                      scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-                      className="w-full h-full"
-                    />
-                  </Suspense>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-
-          {/* New Section: Why Choose a Freelancer? */}
-          <motion.section
-            initial={{ y: 100, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="bg-black py-16"
-          >
-            <div className="container mx-auto px-4">
-              <motion.h2
-                initial={{ y: 20, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                viewport={{ once: true }}
-                className="text-3xl text-center font-bold sm:text-4xl mb-12 text-white font-calendas"
+            <div className="flex flex-row justify-center space-x-4 items-center mt-10 sm:mt-16 md:mt-20 lg:mt-20 text-xs">
+              <motion.button
+                className="sm:text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-blue-500 px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-2xl hover:bg-blue-600 transition-colors"
+                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 20 }}
+                transition={{
+                  duration: 0.2,
+                  ease: "easeOut",
+                  delay: 0.7,
+                }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                Why Choose a Freelancer Over an Agency?
-              </motion.h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {/* Benefit 1: Cost-Effectiveness */}
-                <motion.div
+                <Link className="text-white font-calendas" href="/contact">
+                  Get in Touch <span className="font-calendas ml-1">→</span>
+                </Link>
+              </motion.button>
+              <motion.button
+                className="sm:text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-blue-500 px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-2xl hover:bg-blue-600 transition-colors"
+                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 20 }}
+                transition={{
+                  duration: 0.2,
+                  ease: "easeOut",
+                  delay: 0.7,
+                }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Link
+                  href="https://github.com/karthiknish"
+                  className="font-calendas"
+                >
+                  View GitHub <span className="font-calendas ml-1">→</span>
+                </Link>
+              </motion.button>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ x: 100, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <Card className="w-full h-[500px] bg-black/[0.96] relative overflow-hidden border-0">
+            <Spotlight
+              className="-top-40 left-0 md:left-60 md:-top-20"
+              fill="white"
+            />
+
+            <div className="flex flex-col md:flex-row h-full">
+              <div className="flex-1 p-8 relative z-10 flex flex-col justify-center">
+                <motion.h1
+                  initial={{ y: 20, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  viewport={{ once: true }}
+                  className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 font-calendas"
+                >
+                  About Me
+                </motion.h1>
+                <motion.p
                   initial={{ y: 20, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.4 }}
                   viewport={{ once: true }}
-                  className="bg-black/50 p-6 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors"
+                  className="mt-4 text-neutral-300 max-w-lg font-calendas"
                 >
-                  <h3 className="text-xl font-bold text-white mb-2 font-calendas">
-                    Cost-Effectiveness
-                  </h3>
-                  <p className="text-gray-400 font-calendas">
-                    Freelancers typically have lower overhead costs compared to
-                    agencies, allowing for more competitive pricing without
-                    compromising quality.
-                  </p>
-                </motion.div>
-
-                {/* Benefit 2: Personalized Attention */}
+                  I'm a freelance full-stack developer passionate about building
+                  innovative web solutions. With expertise in React, Node.js,
+                  and cloud technologies, I create scalable applications
+                  tailored to your needs.
+                </motion.p>
                 <motion.div
                   initial={{ y: 20, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.6 }}
                   viewport={{ once: true }}
-                  className="bg-black/50 p-6 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors"
+                  className="mt-6"
                 >
-                  <h3 className="text-xl font-bold text-white mb-2 font-calendas">
-                    Personalized Attention
-                  </h3>
-                  <p className="text-gray-400 font-calendas">
-                    Working with a freelancer means direct communication and a
-                    single point of contact, ensuring your vision is understood
-                    and implemented accurately.
-                  </p>
+                  <ul className="space-y-2 text-neutral-300 font-calendas">
+                    <li className="flex items-center">
+                      <span className="text-blue-500 mr-2">✓</span> Modern web
+                      technologies
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-blue-500 mr-2">✓</span> Performance
+                      optimization
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-blue-500 mr-2">✓</span> Responsive
+                      design
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-blue-500 mr-2">✓</span> Scalable
+                      architecture
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-blue-500 mr-2">✓</span>{" "}
+                      User-centered approach
+                    </li>
+                  </ul>
                 </motion.div>
+              </div>
 
-                {/* Benefit 3: Flexibility and Speed */}
+              <div className="flex-1 relative hidden md:flex items-center justify-center">
+                {/* Replace Spline with a static image */}
                 <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.4, duration: 0.6 }}
+                  viewport={{ once: true }}
+                  className="relative w-[80%] h-[80%] rounded-xl overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl"></div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center p-6">
+                      <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                        <Code className="w-10 h-10 text-white" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-2">
+                        Full Stack Development
+                      </h3>
+                      <p className="text-gray-300">
+                        Creating seamless experiences from front-end to back-end
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </Card>
+        </motion.div>
+
+        {/* New Section: Why Choose a Freelancer? */}
+        <motion.section
+          initial={{ y: 100, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="bg-black py-16"
+        >
+          <div className="container mx-auto px-4">
+            <motion.h2
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              viewport={{ once: true }}
+              className="text-3xl text-center font-bold sm:text-4xl mb-12 text-white font-calendas"
+            >
+              Why Choose a Freelancer Over an Agency?
+            </motion.h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {/* Benefit 1: Cost-Effectiveness */}
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                viewport={{ once: true }}
+                className="bg-black/50 p-6 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors"
+              >
+                <h3 className="text-xl font-bold text-white mb-2 font-calendas">
+                  Cost-Effectiveness
+                </h3>
+                <p className="text-gray-400 font-calendas">
+                  Freelancers typically have lower overhead costs compared to
+                  agencies, allowing for more competitive pricing without
+                  compromising quality.
+                </p>
+              </motion.div>
+
+              {/* Benefit 2: Personalized Attention */}
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                viewport={{ once: true }}
+                className="bg-black/50 p-6 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors"
+              >
+                <h3 className="text-xl font-bold text-white mb-2 font-calendas">
+                  Personalized Attention
+                </h3>
+                <p className="text-gray-400 font-calendas">
+                  Working with a freelancer means direct communication and a
+                  single point of contact, ensuring your vision is understood
+                  and implemented accurately.
+                </p>
+              </motion.div>
+
+              {/* Benefit 3: Flexibility and Speed */}
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.8 }}
+                viewport={{ once: true }}
+                className="bg-black/50 p-6 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors"
+              >
+                <h3 className="text-xl font-bold text-white mb-2 font-calendas">
+                  Flexibility and Speed
+                </h3>
+                <p className="text-gray-400 font-calendas">
+                  Freelancers can adapt quickly to changing project requirements
+                  and typically deliver faster turnaround times due to
+                  streamlined processes.
+                </p>
+              </motion.div>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* New Tech Stack Section */}
+        <motion.section
+          initial={{ y: 100, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="bg-black py-16"
+        >
+          <div className="container mx-auto px-4">
+            <motion.h2
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              viewport={{ once: true }}
+              className="text-3xl text-center font-bold sm:text-4xl mb-12 text-white font-calendas"
+            >
+              Technical Expertise
+            </motion.h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {techStack.map((tech, index) => (
+                <motion.div
+                  key={index}
                   initial={{ y: 20, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.8 }}
+                  transition={{ delay: 0.2 * index }}
                   viewport={{ once: true }}
                   className="bg-black/50 p-6 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors"
                 >
+                  <div className={`${tech.color} mb-4`}>{tech.icon}</div>
                   <h3 className="text-xl font-bold text-white mb-2 font-calendas">
-                    Flexibility and Speed
+                    {tech.title}
                   </h3>
                   <p className="text-gray-400 font-calendas">
-                    Freelancers can adapt quickly to changing project
-                    requirements and typically deliver faster turnaround times
-                    due to streamlined processes.
+                    {tech.description}
                   </p>
                 </motion.div>
-              </div>
+              ))}
             </div>
-          </motion.section>
-
-          {/* New Tech Stack Section */}
-          <motion.section
-            initial={{ y: 100, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="bg-black py-16"
-          >
-            <div className="container mx-auto px-4">
-              <motion.h2
-                initial={{ y: 20, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                viewport={{ once: true }}
-                className="text-3xl text-center font-bold sm:text-4xl mb-12 text-white font-calendas"
-              >
-                Technical Expertise
-              </motion.h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {techStack.map((tech, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ y: 20, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2 * index }}
-                    viewport={{ once: true }}
-                    className="bg-black/50 p-6 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors"
-                  >
-                    <div className={`${tech.color} mb-4`}>{tech.icon}</div>
-                    <h3 className="text-xl font-bold text-white mb-2 font-calendas">
-                      {tech.title}
-                    </h3>
-                    <p className="text-gray-400 font-calendas">
-                      {tech.description}
-                    </p>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </motion.section>
-
-          <motion.section
-            initial={{ y: 100, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="bg-black py-12"
-          >
-            <div className="container mx-auto px-4">
-              <motion.h2
-                initial={{ y: 20, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                viewport={{ once: true }}
-                className="text-3xl text-center font-bold sm:text-4xl mb-8 text-white font-calendas"
-              >
-                Featured Projects
-              </motion.h2>
-              {(() => {
-                const itemsSample = [
-                  {
-                    title: "E-commerce Platform",
-                    meta: "35% Growth",
-                    description:
-                      "Advanced UX design and performance optimization for increased conversions",
-                    icon: <TrendingUp className="w-4 h-4 text-blue-500" />,
-                    status: "Live",
-                    tags: ["UX", "Performance", "Analytics"],
-                    colSpan: 2,
-                    hasPersistentHover: true,
-                  },
-                  {
-                    title: "Startup Infrastructure",
-                    meta: "10x Scale",
-                    description:
-                      "Scalable architecture supporting exponential user growth",
-                    icon: <CheckCircle className="w-4 h-4 text-blue-500" />,
-                    status: "Updated",
-                    tags: ["Architecture", "Scaling"],
-                  },
-                  {
-                    title: "AI Integration",
-                    meta: "40% Cost Reduction",
-                    description:
-                      "AI-powered chatbot implementation for customer service",
-                    icon: <Video className="w-4 h-4 text-blue-500" />,
-                    tags: ["AI", "Automation"],
-                    colSpan: 2,
-                  },
-                  {
-                    title: "Analytics System",
-                    meta: "25% Revenue Growth",
-                    description:
-                      "Data analytics overhaul providing actionable insights",
-                    icon: <Globe className="w-4 h-4 text-blue-500" />,
-                    status: "Live",
-                    tags: ["Analytics", "Business Intelligence"],
-                  },
-                ];
-
-                return <BentoGrid items={itemsSample} />;
-              })()}
-            </div>
-          </motion.section>
-
-          <motion.section
-            initial={{ x: -100, opacity: 0 }}
-            whileInView={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="bg-black  text-white py-12"
-          >
-            <div className="container mx-auto px-4">
-              <motion.h2
-                initial={{ y: 20, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                viewport={{ once: true }}
-                className="text-3xl text-center font-bold sm:text-4xl mb-8 font-calendas"
-              >
-                Frequently Asked Questions
-              </motion.h2>
-              <Accordion
-                type="single"
-                collapsible
-                className="w-full max-w-3xl mx-auto"
-              >
-                <AccordionItem value="item-1">
-                  <AccordionTrigger className="text-lg font-medium font-calendas">
-                    What technologies do you specialize in?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-300 font-calendas">
-                    I specialize in modern web technologies including React,
-                    Next.js, Node.js, and TypeScript. I'm also experienced with
-                    cloud platforms like AWS and Azure, and have extensive
-                    knowledge of database systems including MongoDB and
-                    PostgreSQL.
-                  </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="item-2">
-                  <AccordionTrigger className="text-lg font-medium font-calendas">
-                    How do you approach new projects?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-300 font-calendas">
-                    I begin with a thorough analysis of your requirements and
-                    objectives. Then, I develop a strategic roadmap that
-                    outlines technical solutions, timelines, and deliverables.
-                    Throughout the project, I maintain clear communication and
-                    adapt to changing needs while ensuring high-quality code and
-                    optimal performance.
-                  </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="item-3">
-                  <AccordionTrigger className="text-lg font-medium font-calendas">
-                    What sets you apart from other developers?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-300 font-calendas">
-                    My unique combination of technical expertise and focus on
-                    client needs allows me to not just code solutions, but to
-                    truly understand and solve your challenges. I focus on
-                    delivering scalable, maintainable code while keeping your
-                    objectives at the forefront.
-                  </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="item-4">
-                  <AccordionTrigger className="text-lg font-medium font-calendas">
-                    How do you handle project deadlines and communication?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-300 font-calendas">
-                    I maintain transparent communication through regular updates
-                    and status reports. I use agile methodologies to ensure
-                    timely delivery and adapt quickly to changes. My project
-                    management skills help me balance multiple priorities while
-                    maintaining high quality standards.
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </div>
-          </motion.section>
-          <div className="bg-black mx-auto px-8 py-16">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <Services />
-            </motion.div>
           </div>
-          <motion.main
-            initial={{ x: 100, opacity: 0 }}
-            whileInView={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="bg-black mx-auto px-4 pt-20"
+        </motion.section>
+
+        <motion.section
+          initial={{ y: 100, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="bg-black py-12"
+        >
+          <div className="container mx-auto px-4">
+            <motion.h2
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              viewport={{ once: true }}
+              className="text-3xl text-center font-bold sm:text-4xl mb-8 text-white font-calendas"
+            >
+              Featured Projects
+            </motion.h2>
+            {(() => {
+              const itemsSample = [
+                {
+                  title: "E-commerce Platform",
+                  meta: "35% Growth",
+                  description:
+                    "Advanced UX design and performance optimization for increased conversions",
+                  icon: <TrendingUp className="w-4 h-4 text-blue-500" />,
+                  status: "Live",
+                  tags: ["UX", "Performance", "Analytics"],
+                  colSpan: 2,
+                  hasPersistentHover: true,
+                },
+                {
+                  title: "Startup Infrastructure",
+                  meta: "10x Scale",
+                  description:
+                    "Scalable architecture supporting exponential user growth",
+                  icon: <CheckCircle className="w-4 h-4 text-blue-500" />,
+                  status: "Updated",
+                  tags: ["Architecture", "Scaling"],
+                },
+                {
+                  title: "AI Integration",
+                  meta: "40% Cost Reduction",
+                  description:
+                    "AI-powered chatbot implementation for customer service",
+                  icon: <Video className="w-4 h-4 text-blue-500" />,
+                  tags: ["AI", "Automation"],
+                  colSpan: 2,
+                },
+                {
+                  title: "Analytics System",
+                  meta: "25% Revenue Growth",
+                  description:
+                    "Data analytics overhaul providing actionable insights",
+                  icon: <Globe className="w-4 h-4 text-blue-500" />,
+                  status: "Live",
+                  tags: ["Analytics", "Business Intelligence"],
+                },
+              ];
+
+              return <BentoGrid items={itemsSample} />;
+            })()}
+          </div>
+        </motion.section>
+
+        <Faq />
+        <div className="bg-black mx-auto px-8 py-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <section id="contact" className="py-12">
-              <div className="container mx-auto">
-                <div className="text-center space-y-4">
-                  <motion.h2
-                    initial={{ y: 20, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                    viewport={{ once: true }}
-                    className="text-3xl font-bold sm:text-4xl text-white font-calendas"
-                  >
-                    Contact Me
-                  </motion.h2>
-                  <motion.p
-                    initial={{ y: 20, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                    viewport={{ once: true }}
-                    className="text-gray-300 max-w-[700px] mx-auto font-calendas"
-                  >
-                    Ready to start your next project? Let's discuss how I can
-                    help bring your vision to life.
-                  </motion.p>
-
-                  {/* Display success message */}
-                  {submitSuccess && (
-                    <div className="bg-green-500 text-white p-4 rounded-md text-center">
-                      Message sent successfully! I'll be in touch soon.
-                    </div>
-                  )}
-
-                  {/* Display error message */}
-                  {submitError && (
-                    <div className="bg-red-500 text-white p-4 rounded-md text-center">
-                      {submitError}
-                    </div>
-                  )}
-
-                  <motion.form
-                    onSubmit={handleSubmit}
-                    initial={{ y: 20, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.6 }}
-                    viewport={{ once: true }}
-                    className="max-w-md mx-auto space-y-4"
-                  >
-                    <div>
-                      <label
-                        htmlFor="name"
-                        className="block text-sm font-medium text-gray-300 font-calendas"
-                      >
-                        Name
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        placeholder="Your Name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        className="mt-1 p-2 w-full border rounded bg-gray-700 text-white font-calendas"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="email"
-                        className="block text-sm font-medium text-gray-300 font-calendas"
-                      >
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        placeholder="Your Email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="mt-1 p-2 w-full border rounded bg-gray-700 text-white font-calendas"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="message"
-                        className="block text-sm font-medium text-gray-300 font-calendas"
-                      >
-                        Message
-                      </label>
-                      <textarea
-                        id="message"
-                        placeholder="Your Message"
-                        value={formData.message}
-                        onChange={handleChange}
-                        rows="4"
-                        className="mt-1 p-2 w-full border rounded bg-gray-700 text-white font-calendas"
-                        required
-                      ></textarea>
-                    </div>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full sm:text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-blue-500 px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-2xl hover:bg-blue-600 transition-colors"
-                    >
-                      Send Message
-                    </motion.button>
-                  </motion.form>
-                </div>
-              </div>
-            </section>
-          </motion.main>
-        </motion.div>
+            <Services />
+          </motion.div>
+        </div>
+        <ContactForm />
       </motion.div>
-    </Suspense>
+    </div>
   );
 };
 

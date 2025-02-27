@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  AiOutlineDashboard,
-  AiOutlineCalendar,
-  AiOutlineMessage,
-} from "react-icons/ai";
+import { AiOutlineDashboard, AiOutlineCalendar } from "react-icons/ai";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
@@ -25,72 +21,9 @@ import DigitalClock from "@/components/admin/ui/DigitalClock";
 import EmptyPage from "@/components/admin/ui/EmptyPage";
 import DashboardTab from "@/components/admin/tabs/DashboardTab";
 import CalendarTab from "@/components/admin/tabs/CalendarTab";
-import MessagesTab from "@/components/admin/tabs/MessagesTab";
 import ChatHistoryTab from "@/components/admin/tabs/ChatHistoryTab";
 
 // Mock chat data for demonstration
-const MOCK_CHAT_LOGS = [
-  {
-    id: 1,
-    user: {
-      name: "John Smith",
-      email: "john@example.com",
-      avatar: "/avatars/01.png",
-    },
-    message:
-      "I'm having an issue with placing an order. The payment went through but I didn't receive a confirmation.",
-    timestamp: new Date(2023, 11, 18, 10, 45),
-    isRead: false,
-  },
-  {
-    id: 2,
-    user: {
-      name: "Sarah Johnson",
-      email: "sarah@example.com",
-      avatar: "/avatars/02.png",
-    },
-    message:
-      "Just wanted to say that I love the new blog feature! The design is really clean and modern.",
-    timestamp: new Date(2023, 11, 17, 14, 32),
-    isRead: true,
-  },
-  {
-    id: 3,
-    user: {
-      name: "Mike Davis",
-      email: "mike@example.com",
-      avatar: "/avatars/03.png",
-    },
-    message:
-      "How do I change my account password? I can't find the option in settings.",
-    timestamp: new Date(2023, 11, 17, 9, 18),
-    isRead: false,
-  },
-  {
-    id: 4,
-    user: {
-      name: "Emma Wilson",
-      email: "emma@example.com",
-      avatar: "/avatars/04.png",
-    },
-    message:
-      "Is there a way to export my data? I need it for a presentation next week.",
-    timestamp: new Date(2023, 11, 16, 16, 20),
-    isRead: true,
-  },
-  {
-    id: 5,
-    user: {
-      name: "Alex Brown",
-      email: "alex@example.com",
-      avatar: "/avatars/05.png",
-    },
-    message:
-      "The mobile responsiveness of the site is excellent! Works perfectly on my phone and tablet.",
-    timestamp: new Date(2023, 11, 15, 11, 5),
-    isRead: true,
-  },
-];
 
 function AdminDashboard() {
   const { data: session, status } = useSession();
@@ -479,7 +412,7 @@ function AdminDashboard() {
           `}</style>
         </Head>
 
-        <div className="container mx-auto px-4 py-12 mt-6">
+        <div className="container mx-auto px-4 py-12 ">
           <SlideInLeft delay={0.2}>
             <div className="flex justify-between items-center mb-10">
               <h1 className="text-4xl font-bold text-white font-calendas glow-blue">
@@ -501,7 +434,7 @@ function AdminDashboard() {
             className="mb-8"
           >
             <SlideUp delay={0.4}>
-              <TabsList className="grid w-full grid-cols-4 mb-4">
+              <TabsList className="grid w-full grid-cols-3 mb-4">
                 <TabsTrigger
                   value="dashboard"
                   className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
@@ -513,17 +446,6 @@ function AdminDashboard() {
                   className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
                 >
                   <AiOutlineCalendar className="mr-2" /> Calendar
-                </TabsTrigger>
-                <TabsTrigger
-                  value="messages"
-                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white relative"
-                >
-                  <AiOutlineMessage className="mr-2" /> Messages
-                  {unreadCount > 0 && (
-                    <Badge className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {unreadCount}
-                    </Badge>
-                  )}
                 </TabsTrigger>
                 <TabsTrigger
                   value="chat-history"
@@ -547,21 +469,6 @@ function AdminDashboard() {
                   postsOnSelectedDate={postsOnSelectedDate}
                   blogDates={blogDates}
                   handleDateChange={handleDateChange}
-                />
-              </TabsContent>
-
-              {/* Messages Tab */}
-              <TabsContent value="messages" key="messages">
-                <MessagesTab
-                  chatLogs={chatLogs}
-                  searchQuery={searchQuery}
-                  setSearchQuery={setSearchQuery}
-                  isLoadingMessages={isLoadingMessages}
-                  messageError={messageError}
-                  fetchChatMessages={fetchChatMessages}
-                  unreadCount={unreadCount}
-                  markAsRead={markAsRead}
-                  markAllAsRead={markAllAsRead}
                 />
               </TabsContent>
 
