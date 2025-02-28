@@ -1,5 +1,4 @@
 import { Html, Head, Main, NextScript } from "next/document";
-import Script from "next/script";
 
 export default function Document() {
   return (
@@ -23,21 +22,9 @@ export default function Document() {
           href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=optional"
           rel="stylesheet"
         />
-        {/* Google Analytics */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-WR5RLSRK90"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-WR5RLSRK90');
-          `}
-        </Script>
+        {/* Google Analytics script moved to _app.js */}
       </Head>
-      <body className="antialiased">
+      <body className="antialiased bg-black text-white">
         <Main />
         <NextScript />
       </body>
