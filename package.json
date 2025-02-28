@@ -68,18 +68,16 @@
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "turndown": "^7.2.0",
-    "typescript": "5.7.3",
-    "@types/react": "18.3.18",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.10",
     "@types/node": "^20.11.5",
-    "@types/react": "18.3.18",
+    "@types/react": "^18.3.18",
     "autoprefixer": "^10.4.17",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
-    "typescript": "5.7.3"
+    "typescript": "^5.7.3"
   },
   "description": "This project is a personal portfolio website built with Next.js, showcasing my skills, achievements, and projects as a full-stack developer and digital marketer.",
   "main": "next.config.js",
