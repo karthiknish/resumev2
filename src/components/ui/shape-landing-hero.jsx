@@ -63,9 +63,9 @@ function ElegantShape({
 }
 
 function HeroGeometric({
-  badge = "Design Collective",
-  title1 = "Elevate Your Digital Vision",
-  title2 = "Crafting Exceptional Websites",
+  badge = "Full Stack Developer",
+  title1 = "Building Modern",
+  title2 = "Web Solutions",
 }) {
   const fadeUpVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -88,7 +88,7 @@ function HeroGeometric({
   };
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#030303]">
+    <div className="relative min-h-screen my-24 w-full flex items-center justify-center overflow-hidden bg-[#030303]">
       <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.05] via-transparent to-rose-500/[0.05] blur-3xl" />
       <div className="absolute inset-0 overflow-hidden">
         <ElegantShape
@@ -177,8 +177,8 @@ function HeroGeometric({
             animate="visible"
           >
             <p className="text-base sm:text-lg md:text-xl text-white/40 mb-8 leading-relaxed font-light tracking-wide max-w-xl mx-auto px-4">
-              Crafting exceptional digital experiences through innovative design
-              and cutting-edge technology.
+              Specialized in React, Next.js, and full-stack development.
+              Creating fast, scalable, and user-friendly web applications.
             </p>
             <button
               onClick={scrollToContent}

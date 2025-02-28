@@ -1,100 +1,57 @@
 import React, { useState, useEffect, useRef } from "react";
-import Spline from "@splinetool/react-spline";
+// Import Spline conditionally only on client side
+import dynamic from "next/dynamic";
 
-export function SplineScene({ scene, className }) {
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [splineApp, setSplineApp] = useState(null);
-  const [retryCount, setRetryCount] = useState(0);
-  const splineRef = useRef(null);
-  const maxRetries = 2;
-
-  // Handle successful loading of the Spline scene
-  const handleLoad = (splineApp) => {
-    setSplineApp(splineApp);
-    setLoading(false);
-    setError(null);
-  };
-
-  // Handle any errors that might occur when loading the Spline scene
-  const handleError = (err) => {
-    console.error("Error loading Spline scene:", err);
-    setError(err);
-    setLoading(false);
-
-    // If we haven't exceeded max retries, try again
-    if (retryCount < maxRetries) {
-      setTimeout(() => {
-        setRetryCount((prev) => prev + 1);
-        setLoading(true);
-        // Force remount of Spline component
-        setSplineApp(null);
-      }, 1500);
-    }
-  };
-
-  // Use a static fallback image if Spline fails to load after retries
-  const renderFallback = () => (
-    <div className="absolute inset-0 flex items-center justify-center bg-black/80 text-white">
-      <div className="flex flex-col items-center text-center p-6">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="64"
-          height="64"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="text-blue-500 mb-4"
-        >
-          <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
-          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-          <line x1="12" y1="17" x2="12.01" y2="17"></line>
-        </svg>
-        <p className="text-lg font-bold mb-2">3D Scene Unavailable</p>
-        <p className="mb-4">The interactive 3D scene couldn't be loaded.</p>
-        <button
-          onClick={() => {
-            setRetryCount(0);
-            setLoading(true);
-            setError(null);
-          }}
-          className="px-4 py-2 bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
-        >
-          Try Again
-        </button>
+// Create a static fallback component
+const StaticFallback = ({ className }) => (
+  <div
+    className={`${className} relative bg-gradient-to-br from-black to-blue-900/30`}
+  >
+    <div className="absolute inset-0 flex items-center justify-center">
+      <div className="text-center p-8">
+        <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-blue-500/20 flex items-center justify-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="48"
+            height="48"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-blue-500"
+          >
+            <path d="M12 3h.393a7.5 7.5 0 0 0 7.92 12.446A1 1 0 0 1 21 16.9v-1.4a1 1 0 0 0-1-1h-2.283a1 1 0 0 0-.707.293l-1.043 1.043a.5.5 0 0 0 0 .707l.52.52a.5.5 0 0 1-.52.827L12.6 14.6a.5.5 0 0 1-.196-.404V7.5a.5.5 0 0 0-.5-.5H9.5a.5.5 0 0 0-.5.5v1.4a1 1 0 0 1-1 1H5.5a.5.5 0 0 0-.5.5v2.7a.5.5 0 0 0 .5.5H8a.5.5 0 0 1 .5.5v4.1a.5.5 0 0 0 .5.5h6.4a.5.5 0 0 0 .5-.5v-1.717a.5.5 0 0 1 .7-.458 7.5 7.5 0 0 0 4.9.217 1 1 0 0 0 .6-.917v-.834a1 1 0 0 0-.4-.8A7.5 7.5 0 0 0 12 3Z"></path>
+          </svg>
+        </div>
+        <h3 className="text-xl font-bold text-white mb-2">
+          Interactive 3D Experience
+        </h3>
+        <p className="text-blue-300 mb-4">
+          Our 3D visualization is currently optimizing for your device.
+        </p>
+        <div className="grid grid-cols-3 gap-2 max-w-xs mx-auto">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="aspect-square rounded-lg bg-gradient-to-br from-blue-500/20 to-purple-500/20 animate-pulse"
+              style={{ animationDelay: `${i * 0.1}s` }}
+            ></div>
+          ))}
+        </div>
       </div>
     </div>
-  );
+  </div>
+);
 
-  // Use a simpler version of the scene if we're having buffer issues
-  const useSimpleScene = retryCount > 0;
+export function SplineScene({ scene, className }) {
+  const [isClient, setIsClient] = useState(false);
 
-  return (
-    <div className={`${className} relative`} style={{ minHeight: "300px" }}>
-      {loading && !error && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-white">
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 rounded-full border-4 border-t-blue-500 border-b-blue-700 border-l-blue-500 border-r-blue-700 animate-spin"></div>
-            <p className="mt-4">Loading 3D scene...</p>
-          </div>
-        </div>
-      )}
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
-      {error && retryCount >= maxRetries ? (
-        renderFallback()
-      ) : (
-        <div key={retryCount} ref={splineRef}>
-          <Spline
-            scene={scene}
-            onLoad={handleLoad}
-            onError={handleError}
-            style={{ width: "100%", height: "100%" }}
-          />
-        </div>
-      )}
-    </div>
-  );
+  // For now, always use the static fallback to avoid the buffer error
+  return <StaticFallback className={className} />;
 }

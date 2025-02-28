@@ -5,18 +5,14 @@ import React, { useState } from "react";
 // Import components directly
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { HeroGeometric } from "@/components/ui/shape-landing-hero";
+
+
 import { TextRotate } from "@/components/ui/text-rotate";
 import Floating, { FloatingElement } from "@/components/ui/parallax-floating";
-import { motion, LayoutGroup, AnimatePresence } from "framer-motion";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { motion, LayoutGroup } from "framer-motion";
+
 import { BentoGrid } from "@/components/ui/bento-grid";
-import { Card } from "@/components/ui/card";
-import { Spotlight } from "@/components/ui/spotlight";
+
 import {
   TrendingUp,
   CheckCircle,
@@ -27,7 +23,7 @@ import {
   Cloud,
   Lock,
 } from "lucide-react";
-import { useRouter } from "next/router";
+
 import Services from "@/components/Services";
 import ContactForm from "@/components/Form";
 import Faq from "@/components/Faq";
@@ -163,7 +159,7 @@ const HomeScreen = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="relative z-10 min-h-screen py-20 flex flex-col items-center justify-center"
+        className="relative z-10  min-h-screen py-20 flex flex-col items-center justify-center"
       >
         <Head>
           <title>
@@ -187,7 +183,7 @@ const HomeScreen = () => {
           initial={{ x: -100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative z-10 container mx-auto flex flex-col items-center"
+          className="relative z-10 container mx-auto mb-10 flex flex-col items-center"
         >
           <Floating sensitivity={-0.5} className="h-full w-full absolute">
             <FloatingElement
@@ -366,109 +362,13 @@ const HomeScreen = () => {
           </div>
         </motion.div>
 
-        <motion.div
-          initial={{ x: 100, opacity: 0 }}
-          whileInView={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          <Card className="w-full h-[500px] bg-black/[0.96] relative overflow-hidden border-0">
-            <Spotlight
-              className="-top-40 left-0 md:left-60 md:-top-20"
-              fill="white"
-            />
-
-            <div className="flex flex-col md:flex-row h-full">
-              <div className="flex-1 p-8 relative z-10 flex flex-col justify-center">
-                <motion.h1
-                  initial={{ y: 20, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  viewport={{ once: true }}
-                  className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 font-calendas"
-                >
-                  About Me
-                </motion.h1>
-                <motion.p
-                  initial={{ y: 20, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                  viewport={{ once: true }}
-                  className="mt-4 text-neutral-300 max-w-lg font-calendas"
-                >
-                  I'm a freelance full-stack developer passionate about building
-                  innovative web solutions. With expertise in React, Node.js,
-                  and cloud technologies, I create scalable applications
-                  tailored to your needs.
-                </motion.p>
-                <motion.div
-                  initial={{ y: 20, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.6 }}
-                  viewport={{ once: true }}
-                  className="mt-6"
-                >
-                  <ul className="space-y-2 text-neutral-300 font-calendas">
-                    <li className="flex items-center">
-                      <span className="text-blue-500 mr-2">✓</span> Modern web
-                      technologies
-                    </li>
-                    <li className="flex items-center">
-                      <span className="text-blue-500 mr-2">✓</span> Performance
-                      optimization
-                    </li>
-                    <li className="flex items-center">
-                      <span className="text-blue-500 mr-2">✓</span> Responsive
-                      design
-                    </li>
-                    <li className="flex items-center">
-                      <span className="text-blue-500 mr-2">✓</span> Scalable
-                      architecture
-                    </li>
-                    <li className="flex items-center">
-                      <span className="text-blue-500 mr-2">✓</span>{" "}
-                      User-centered approach
-                    </li>
-                  </ul>
-                </motion.div>
-              </div>
-
-              <div className="flex-1 relative hidden md:flex items-center justify-center">
-                {/* Replace Spline with a static image */}
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.4, duration: 0.6 }}
-                  viewport={{ once: true }}
-                  className="relative w-[80%] h-[80%] rounded-xl overflow-hidden"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl"></div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center p-6">
-                      <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
-                        <Code className="w-10 h-10 text-white" />
-                      </div>
-                      <h3 className="text-2xl font-bold text-white mb-2">
-                        Full Stack Development
-                      </h3>
-                      <p className="text-gray-300">
-                        Creating seamless experiences from front-end to back-end
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-            </div>
-          </Card>
-        </motion.div>
-
         {/* New Section: Why Choose a Freelancer? */}
         <motion.section
           initial={{ y: 100, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="bg-black py-16"
+          className="bg-black py-16 mt-24"
         >
           <div className="container mx-auto px-4">
             <motion.h2
