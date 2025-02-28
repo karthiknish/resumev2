@@ -21,8 +21,6 @@ const nextConfig = {
     // Enable image optimization
     unoptimized: false,
   },
-  // Optimize bundle size
-  swcMinify: true,
   // Production source maps for better debugging
   productionBrowserSourceMaps: false,
   compiler: {
