@@ -26,6 +26,8 @@ const nextConfig = {
     };
     return config;
   },
+  // Ensure SWC is used for compilation
+  swcMinify: true,
 };
 
 module.exports = nextConfig;
