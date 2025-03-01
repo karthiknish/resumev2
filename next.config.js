@@ -18,6 +18,24 @@ const nextConfig = {
       },
     ],
   },
+  // Add headers for audio files
+  async headers() {
+    return [
+      {
+        source: "/uploads/audio/:path*",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "audio/mpeg",
+          },
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+    ];
+  },
   // Simplified webpack config
   webpack: (config) => {
     config.resolve.fallback = {
@@ -25,7 +43,7 @@ const nextConfig = {
       child_process: false,
     };
     return config;
-  }
+  },
 };
 
 module.exports = nextConfig;

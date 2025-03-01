@@ -40,6 +40,23 @@ const BlogSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    // New fields for AI-generated summary
+    aiSummary: {
+      type: String,
+      default: null,
+    },
+    hasAudioSummary: {
+      type: Boolean,
+      default: false,
+    },
+    audioSummaryUrl: {
+      type: String,
+      default: null,
+    },
+    summaryGeneratedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );
