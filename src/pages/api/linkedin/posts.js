@@ -1,4 +1,4 @@
-import { connectDB } from "@/lib/mongodb";
+import dbConnect from "@/lib/dbConnect";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import mongoose from "mongoose";
@@ -36,7 +36,7 @@ export default async function handler(req, res) {
 
   // Connect to database
   try {
-    await connectDB();
+    await dbConnect();
   } catch (error) {
     console.error("Database connection error:", error);
     return res.status(500).json({ error: "Failed to connect to database" });

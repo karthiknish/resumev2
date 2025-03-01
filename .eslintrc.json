@@ -6,5 +6,8 @@
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/ban-ts-comment": "off"
   },
-  "ignorePatterns": ["**/*.js", "**/*.jsx"]
+  "ignorePatterns": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
+  "parserOptions": {
+    "requireConfigFile": false
+  }
 }
