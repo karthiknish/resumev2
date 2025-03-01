@@ -17,19 +17,41 @@ const BlogAudioSummary = ({ title, content }) => {
   const [audioElement, setAudioElement] = useState(null);
   const [useFallback, setUseFallback] = useState(false);
   const [fallbackText, setFallbackText] = useState("");
+  const [voicesLoaded, setVoicesLoaded] = useState(false);
 
   // Initialize speech synthesis for fallback
   useEffect(() => {
     // Check if browser supports speech synthesis
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      // Do nothing - just confirming availability
+      // Load voices - they might not be immediately available
+      const loadVoices = () => {
+        window.speechSynthesis.getVoices();
+        setVoicesLoaded(true);
+      };
+
+      // Chrome needs this event to load voices
+      if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+      }
+
+      // Try loading voices immediately for other browsers
+      loadVoices();
     }
+
+    // Cleanup function to stop any ongoing speech when component unmounts
+    return () => {
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
   }, []);
 
   const handleGenerateSummary = async () => {
     try {
       setIsLoading(true);
       setError(null);
+      setAudioUrl("");
+      setUseFallback(false);
 
       // Step 1: Generate text summary using Gemini
       const summaryResponse = await fetch("/api/ai/blog-summarize", {
@@ -46,7 +68,9 @@ const BlogAudioSummary = ({ title, content }) => {
       }
 
       const summaryData = await summaryResponse.json();
-      setSummary(summaryData.summary);
+      const summaryText = summaryData.summary;
+      setSummary(summaryText);
+      setFallbackText(summaryText); // Always set fallback text in case we need it
 
       // Step 2: Try to convert summary to audio using Google Cloud TTS
       try {
@@ -55,15 +79,20 @@ const BlogAudioSummary = ({ title, content }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ text: summaryData.summary }),
+          body: JSON.stringify({ text: summaryText }),
         });
 
-        if (!audioResponse.ok) {
-          // If Google Cloud TTS fails, use fallback
-          throw new Error("Cloud TTS unavailable");
+        const audioData = await audioResponse.json();
+
+        if (!audioResponse.ok || audioData.useFallback) {
+          // If Google Cloud TTS returns useFallback flag or error status
+          console.warn(
+            "Cloud TTS service returned fallback flag:",
+            audioData.reason || "unknown reason"
+          );
+          throw new Error(audioData.message || "Cloud TTS unavailable");
         }
 
-        const audioData = await audioResponse.json();
         setAudioUrl(audioData.audioUrl);
 
         // Create audio element
@@ -73,28 +102,15 @@ const BlogAudioSummary = ({ title, content }) => {
         audio.addEventListener("ended", () => {
           setIsPlaying(false);
         });
+
+        audio.addEventListener("error", (e) => {
+          console.error("Audio playback error:", e);
+          setUseFallback(true);
+          setIsPlaying(false);
+        });
       } catch (ttsError) {
-        console.warn("Using fallback TTS:", ttsError);
-
-        // Use fallback TTS
-        const fallbackResponse = await fetch(
-          "/api/ai/text-to-speech-fallback",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ text: summaryData.summary }),
-          }
-        );
-
-        if (!fallbackResponse.ok) {
-          throw new Error("Both TTS services failed");
-        }
-
-        const fallbackData = await fallbackResponse.json();
+        console.warn("Using fallback TTS:", ttsError.message);
         setUseFallback(true);
-        setFallbackText(fallbackData.text);
       }
     } catch (err) {
       console.error("Error generating audio summary:", err);
@@ -116,9 +132,14 @@ const BlogAudioSummary = ({ title, content }) => {
 
           // Set English voice if available
           const voices = window.speechSynthesis.getVoices();
-          const englishVoice = voices.find(
-            (voice) => voice.lang.includes("en-") && voice.name.includes("Male")
-          );
+          const englishVoice =
+            voices.find(
+              (voice) =>
+                voice.lang.includes("en-") &&
+                (voice.name.includes("Male") ||
+                  voice.name.includes("David") ||
+                  voice.name.includes("James"))
+            ) || voices.find((voice) => voice.lang.includes("en-"));
 
           if (englishVoice) {
             utterance.voice = englishVoice;
@@ -132,16 +153,34 @@ const BlogAudioSummary = ({ title, content }) => {
             setIsPlaying(false);
           };
 
+          utterance.onerror = (event) => {
+            console.error("Speech synthesis error:", event);
+            setIsPlaying(false);
+            setError("Browser speech synthesis failed. Please try again.");
+          };
+
           window.speechSynthesis.speak(utterance);
           setIsPlaying(true);
         }
+      } else {
+        setError("Your browser doesn't support text-to-speech functionality.");
       }
     } else if (audioElement) {
       // Use the audio element for Google Cloud TTS
       if (isPlaying) {
         audioElement.pause();
       } else {
-        audioElement.play();
+        // Add error handling for audio playback
+        const playPromise = audioElement.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((error) => {
+            console.error("Audio playback error:", error);
+            setUseFallback(true);
+            setError(
+              "Audio playback failed. Using browser speech synthesis as fallback."
+            );
+          });
+        }
       }
 
       setIsPlaying(!isPlaying);
@@ -190,6 +229,7 @@ const BlogAudioSummary = ({ title, content }) => {
               } text-white shadow-lg transition-colors`}
               onClick={toggleAudio}
               disabled={!audioUrl && !useFallback}
+              aria-label={isPlaying ? "Pause audio" : "Play audio"}
             >
               {isPlaying ? (
                 <PauseIcon className="w-5 h-5" />
