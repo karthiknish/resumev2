@@ -101,12 +101,14 @@ iframe, canvas, video {
 /* Add padding to account for fixed navigation */
 .page-content {
   padding-top: 6rem; /* Adjust this value based on your nav height */
+  contain: content; /* Improve paint performance */
 }
 
 /* Ensure the navigation doesn't overlap with content */
 .nav-padding {
   height: 5rem; /* Adjust this value based on your nav height */
   width: 100%;
+  contain: strict; /* Improve paint performance */
 }
 
 /* Page transition styles */
@@ -115,6 +117,9 @@ iframe, canvas, video {
   width: 100%;
   min-height: calc(100vh - 5rem); /* Adjust based on your nav height */
   overflow-x: hidden; /* Prevent horizontal scrolling during transitions */
+  contain: content; /* Improve paint performance */
+  will-change: opacity, transform; /* Hint to browser for optimization */
+  isolation: isolate; /* Create a new stacking context */
 }
 
 /* Prevent FOUC (Flash of Unstyled Content) during page transitions */
@@ -125,4 +130,57 @@ html.js-page-transitioning {
 /* Improve animation performance */
 .page-transition-wrapper > * {
   will-change: opacity, transform;
+  backface-visibility: hidden; /* Prevent flickering in some browsers */
+  transform: translateZ(0); /* Force GPU acceleration */
+  -webkit-font-smoothing: antialiased; /* Improve text rendering */
+}
+
+/* Performance optimizations for images */
+img, svg, video {
+  content-visibility: auto; /* Improve loading performance */
+  contain: content; /* Improve paint performance */
+}
+
+/* Optimize large components */
+.large-component {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px; /* Provide size hint for browser */
+  contain: content;
+}
+
+/* Optimize animations */
+@media (prefers-reduced-motion: no-preference) {
+  .animate-optimized {
+    transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1.0);
+    will-change: opacity, transform;
+  }
+}
+
+/* Optimize for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .page-transition-wrapper {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Loading animation */
+.loading-pulse {
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }

@@ -10,7 +10,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "setup": "npm install tailwindcss@3.4.1 postcss@8.4.35 autoprefixer@10.4.17 @tailwindcss/typography@0.5.10 tailwindcss-animate@1.0.7 @heroicons/react @google-cloud/text-to-speech --save && npm install typescript@5.7.3 @types/react@18.3.18 @types/node@20.11.5 --no-save"
+    "setup": "npm install tailwindcss@3.4.1 postcss@8.4.35 autoprefixer@10.4.17 @tailwindcss/typography@0.5.10 tailwindcss-animate@1.0.7 @heroicons/react @google-cloud/text-to-speech --save && npm install typescript@5.7.3 @types/react@18.3.18 @types/node@20.11.5 --no-save",
+    "analyze": "ANALYZE=true next build",
+    "optimize-images": "node scripts/optimize-images.js",
+    "perf": "npm run optimize-images && npm run build",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@google-cloud/text-to-speech": "^5.8.1",
@@ -33,6 +37,8 @@
     "@tiptap/react": "^2.1.12",
     "@tiptap/starter-kit": "^2.1.12",
     "@vercel/analytics": "^1.4.1",
+    "ajv": "^8.12.0",
+    "ajv-formats": "^3.0.1",
     "autoprefixer": "^10.4.17",
     "axios": "^1.6.2",
     "bcrypt": "^5.1.1",
@@ -70,7 +76,6 @@
     "react-markdown": "^10.0.0",
     "react-modal": "^3.16.1",
     "react-query": "^3.39.3",
-    "sharp": "^0.33.4",
     "tailwind-merge": "^2.6.0",
     "tailwindcss": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
@@ -80,7 +85,17 @@
   "devDependencies": {
     "@types/node": "^20.11.5",
     "@types/react": "^18.3.18",
-    "typescript": "^5.7.3"
+    "css-minimizer-webpack-plugin": "^7.0.1",
+    "glob": "^11.0.1",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
+    "sharp": "^0.33.5",
+    "typescript": "^5.7.3",
+    "webpack-bundle-analyzer": "^4.10.2"
+  },
+  "resolutions": {
+    "ajv": "8.12.0",
+    "schema-utils/ajv": "8.12.0"
   },
   "description": "This project is a personal portfolio website built with Next.js, showcasing my skills, achievements, and projects as a full-stack developer and digital marketer.",
   "main": "next.config.js",
