@@ -108,22 +108,33 @@ const nextConfig = {
 
     // Add bundle analyzer in non-production builds
     if (process.env.ANALYZE === "true") {
-      const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
-      config.plugins.push(
-        new BundleAnalyzerPlugin({
-          analyzerMode: "server",
-          analyzerPort: isServer ? 8888 : 8889,
-          openAnalyzer: true,
-        })
-      );
+      try {
+        const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+        config.plugins.push(
+          new BundleAnalyzerPlugin({
+            analyzerMode: "server",
+            analyzerPort: isServer ? 8888 : 8889,
+            openAnalyzer: true,
+          })
+        );
+      } catch (e) {
+        console.warn(
+          "webpack-bundle-analyzer not found, skipping bundle analysis"
+        );
+      }
     }
 
     // Optimize CSS
     if (!dev && !isServer) {
-      // Minify CSS
-      config.optimization.minimizer.push(
-        new (require("css-minimizer-webpack-plugin"))({})
-      );
+      // Minify CSS - only if the plugin is available
+      try {
+        const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+        config.optimization.minimizer.push(new CssMinimizerPlugin({}));
+      } catch (e) {
+        console.warn(
+          "css-minimizer-webpack-plugin not found, skipping CSS optimization"
+        );
+      }
     }
 
     return config;
