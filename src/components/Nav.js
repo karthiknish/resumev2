@@ -27,7 +27,7 @@ export default function Nav() {
     { href: "/services", label: "Services", delay: 0.4 },
     { href: "/resources", label: "Resources", delay: 0.5 },
     { href: "/blog", label: "Blog", delay: 0.6 },
-    { href: "/skills", label: "Skills", delay: 0.7 },
+
     { href: "/contact", label: "Contact", delay: 0.8 },
   ];
 
