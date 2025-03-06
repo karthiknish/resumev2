@@ -1,9 +1,7 @@
-import { useState } from "react";
+import React from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
-import { Card } from "@/components/ui/card";
 import {
   FaCode,
   FaMobileAlt,
@@ -14,9 +12,11 @@ import {
   FaChevronDown,
   FaChevronUp,
 } from "react-icons/fa";
+import { FadeIn, HoverCard } from "../components/animations/MotionComponents";
 import PageContainer from "@/components/PageContainer";
+
 export default function Services() {
-  const [expandedFaq, setExpandedFaq] = useState(null);
+  const [expandedFaq, setExpandedFaq] = React.useState(null);
 
   const toggleFaq = (index) => {
     setExpandedFaq(expandedFaq === index ? null : index);
@@ -24,7 +24,7 @@ export default function Services() {
 
   const services = [
     {
-      icon: <FaCode className="text-4xl text-blue-500" />,
+      icon: <FaCode className="text-5xl" style={{ color: "#5BD3F3" }} />,
       title: "Frontend Development",
       description:
         "Creating responsive, interactive, and visually appealing user interfaces using modern frameworks like React, Next.js, and Vue.js.",
@@ -37,7 +37,7 @@ export default function Services() {
       ],
     },
     {
-      icon: <FaServer className="text-4xl text-green-500" />,
+      icon: <FaServer className="text-5xl" style={{ color: "#5B9853" }} />,
       title: "Backend Development",
       description:
         "Building robust server-side applications and APIs using Node.js, Express, and other modern technologies.",
@@ -50,7 +50,7 @@ export default function Services() {
       ],
     },
     {
-      icon: <FaMobileAlt className="text-4xl text-purple-500" />,
+      icon: <FaMobileAlt className="text-5xl" style={{ color: "#E535AB" }} />,
       title: "Mobile App Development",
       description:
         "Developing cross-platform mobile applications using React Native that work seamlessly on both iOS and Android devices.",
@@ -63,7 +63,7 @@ export default function Services() {
       ],
     },
     {
-      icon: <FaDatabase className="text-4xl text-yellow-500" />,
+      icon: <FaDatabase className="text-5xl" style={{ color: "#FF9900" }} />,
       title: "Database Design",
       description:
         "Designing and implementing efficient database solutions using SQL and NoSQL technologies.",
@@ -76,7 +76,7 @@ export default function Services() {
       ],
     },
     {
-      icon: <FaRocket className="text-4xl text-red-500" />,
+      icon: <FaRocket className="text-5xl" style={{ color: "#DD4B25" }} />,
       title: "Performance Optimization",
       description:
         "Improving the speed and efficiency of web applications through various optimization techniques.",
@@ -89,7 +89,7 @@ export default function Services() {
       ],
     },
     {
-      icon: <FaTools className="text-4xl text-indigo-500" />,
+      icon: <FaTools className="text-5xl" style={{ color: "#3178C6" }} />,
       title: "Technical Consultation",
       description:
         "Providing expert advice on technology stack selection, architecture design, and best practices.",
@@ -145,38 +145,29 @@ export default function Services() {
         />
       </Head>
       <PageContainer>
-        <div className="min-h-screen bg-black/95 p-8 relative">
-          <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
-          <div className="max-w-6xl mx-auto space-y-8">
-            <Card className="border-none bg-black/60 backdrop-blur-sm p-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <h1 className="text-3xl font-bold text-white mb-6 font-calendas">
+        <div className="min-h-screen p-8 md:p-16 max-w-6xl mx-auto">
+          <FadeIn>
+            <div className="mb-16">
+              <div className="text-center mb-10">
+                <h1 className="text-6xl font-bold text-white mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
                   Services
                 </h1>
-
-                <p className="text-gray-300 mb-8 font-calendas max-w-3xl">
+                <div className="w-24 h-1 bg-blue-500 mx-auto mb-8 rounded-full"></div>
+                <p className="text-gray-300 mb-8 max-w-3xl mx-auto text-lg">
                   I offer a comprehensive range of development services to help
                   bring your digital ideas to life. Whether you need a stunning
                   website, a powerful web application, or a mobile app, I have
                   the expertise to deliver high-quality solutions tailored to
                   your specific needs.
                 </p>
+              </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                  {services.map((service, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      className="bg-gray-900 rounded-lg p-6 h-full flex flex-col"
-                    >
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                {services.map((service, index) => (
+                  <HoverCard key={index}>
+                    <div className="bg-gradient-to-br from-gray-900 to-black p-8 rounded-xl shadow-2xl border border-blue-500/20 h-full flex flex-col">
                       <div className="mb-4">{service.icon}</div>
-                      <h2 className="text-xl font-bold text-white mb-3">
+                      <h2 className="text-2xl font-bold text-blue-400 mb-3">
                         {service.title}
                       </h2>
                       <p className="text-gray-300 mb-4 flex-grow">
@@ -184,73 +175,91 @@ export default function Services() {
                       </p>
                       <ul className="space-y-2 mt-2">
                         {service.features.map((feature, idx) => (
-                          <li
-                            key={idx}
-                            className="text-gray-400 flex items-start"
-                          >
-                            <span className="text-blue-500 mr-2">•</span>
-                            {feature}
+                          <li key={idx} className="flex items-start">
+                            <div className="bg-blue-500 p-1 rounded-full mr-3 mt-1">
+                              <svg
+                                className="w-4 h-4 text-white"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M5 13l4 4L19 7"
+                                ></path>
+                              </svg>
+                            </div>
+                            <p className="text-gray-300">{feature}</p>
                           </li>
                         ))}
                       </ul>
-                    </motion.div>
-                  ))}
-                </div>
+                    </div>
+                  </HoverCard>
+                ))}
+              </div>
+            </div>
+          </FadeIn>
 
-                <div className="bg-gray-900 rounded-lg p-6 mb-12">
-                  <h2 className="text-2xl font-bold text-white mb-6">
-                    Frequently Asked Questions
-                  </h2>
-                  <div className="space-y-4">
-                    {faqs.map((faq, index) => (
-                      <div
-                        key={index}
-                        className="border-b border-gray-800 pb-4 last:border-b-0"
-                      >
-                        <button
-                          onClick={() => toggleFaq(index)}
-                          className="flex justify-between items-center w-full text-left font-medium text-white hover:text-blue-400 transition-colors"
-                        >
-                          <span>{faq.question}</span>
-                          {expandedFaq === index ? (
-                            <FaChevronUp className="text-blue-500" />
-                          ) : (
-                            <FaChevronDown className="text-gray-500" />
-                          )}
-                        </button>
-                        {expandedFaq === index && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            transition={{ duration: 0.3 }}
-                            className="mt-3 text-gray-300"
-                          >
-                            <p>{faq.answer}</p>
-                          </motion.div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-blue-900/30 rounded-lg p-8 text-center">
-                  <h2 className="text-2xl font-bold text-white mb-4">
-                    Ready to Start Your Project?
-                  </h2>
-                  <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-                    Let's discuss how I can help bring your ideas to life.
-                    Contact me for a free consultation and project estimate.
-                  </p>
-                  <Link
-                    href="/contact"
-                    className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full transition-colors"
+          <FadeIn delay={0.2}>
+            <div className="bg-gradient-to-br from-gray-900 to-black p-8 rounded-xl shadow-2xl border border-blue-500/20 mb-12">
+              <h2 className="text-3xl font-bold text-white mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                Frequently Asked Questions
+              </h2>
+              <div className="w-24 h-1 bg-blue-500 mb-8 rounded-full"></div>
+              <div className="space-y-4">
+                {faqs.map((faq, index) => (
+                  <div
+                    key={index}
+                    className="border-b border-gray-800 pb-4 last:border-b-0"
                   >
-                    Get in Touch
-                  </Link>
-                </div>
-              </motion.div>
-            </Card>
-          </div>
+                    <button
+                      onClick={() => toggleFaq(index)}
+                      className="flex justify-between items-center w-full text-left font-medium text-white hover:text-blue-400 transition-colors"
+                    >
+                      <span className="text-lg">{faq.question}</span>
+                      {expandedFaq === index ? (
+                        <FaChevronUp className="text-blue-500" />
+                      ) : (
+                        <FaChevronDown className="text-gray-500" />
+                      )}
+                    </button>
+                    {expandedFaq === index && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        transition={{ duration: 0.3 }}
+                        className="mt-3 text-gray-300"
+                      >
+                        <p className="text-lg leading-relaxed">{faq.answer}</p>
+                      </motion.div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.4}>
+            <div className="bg-gradient-to-br from-blue-900/30 to-purple-900/30 p-8 rounded-xl shadow-2xl border border-blue-500/20 text-center">
+              <h2 className="text-3xl font-bold text-white mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                Ready to Start Your Project?
+              </h2>
+              <div className="w-24 h-1 bg-blue-500 mx-auto mb-8 rounded-full"></div>
+              <p className="text-gray-300 mb-8 max-w-2xl mx-auto text-lg leading-relaxed">
+                Let's discuss how I can help bring your ideas to life. Contact
+                me for a free consultation and project estimate.
+              </p>
+              <Link
+                href="/contact"
+                className="inline-block px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md transition-colors"
+              >
+                Get in Touch →
+              </Link>
+            </div>
+          </FadeIn>
         </div>
       </PageContainer>
     </>
