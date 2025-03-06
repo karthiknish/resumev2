@@ -60,7 +60,7 @@ export default function Footer() {
               <div className="flex space-x-4">
                 <HoverCard>
                   <a
-                    href="https://github.com/karthiksivaraman"
+                    href="https://github.com/karthiknish"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-400 hover:text-white transition-colors"
@@ -70,7 +70,7 @@ export default function Footer() {
                 </HoverCard>
                 <HoverCard>
                   <a
-                    href="https://linkedin.com/in/karthiksivaraman"
+                    href="https://www.linkedin.com/in/karthik-nishanth/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-400 hover:text-white transition-colors"
