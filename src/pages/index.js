@@ -352,6 +352,7 @@ const HomeScreen = () => {
                 whileTap={{ scale: 0.95 }}
               >
                 <Link
+                  target="_blank"
                   href="https://github.com/karthiknish"
                   className="font-calendas"
                 >
