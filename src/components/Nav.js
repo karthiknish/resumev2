@@ -75,16 +75,16 @@ export default function Nav() {
 
   return (
     <motion.nav
-      className={`mt-10 fixed w-full z-50 ${
+      className={`fixed top-0 left-0 right-0 w-full z-[100] ${
         colorChange || !isHome
-          ? "bg-black bg-opacity-80 backdrop-blur-sm shadow-lg"
-          : "bg-black"
+          ? "bg-black bg-opacity-90 backdrop-blur-sm shadow-lg"
+          : "bg-black bg-opacity-80"
       } transition-all duration-300`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="container mx-auto px-4 py-2">
+      <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           <FadeIn delay={0.1}>
             <Link href="/" className="flex items-center">
@@ -187,7 +187,7 @@ export default function Nav() {
         {isOpen && (
           <motion.div
             id="mobile-nav"
-            className="md:hidden bg-gray-900 text-white pt-4 pb-8 shadow-lg"
+            className="md:hidden bg-gray-900 text-white pt-4 pb-8 shadow-lg z-[100]"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}

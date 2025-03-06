@@ -2,10 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import Head from "next/head";
 import { motion } from "framer-motion";
-import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { Card } from "@/components/ui/card";
 import ReactMarkdown from "react-markdown";
 import BlogAudioSummary from "@/components/BlogAudioSummary";
+import PageContainer from "@/components/PageContainer";
 
 function Id({ data }) {
   return (
@@ -43,47 +43,45 @@ function Id({ data }) {
           href={`https://www.karthiknish.com/blog/${data?._id}`}
         />
       </Head>
-      <div className="min-h-screen bg-black/95 p-8 relative font-calendas">
-        <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
-        <div className="max-w-6xl mx-auto space-y-8">
-          <Card className="border-none bg-black/60 backdrop-blur-sm p-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              {data && (
+      <PageContainer className="space-y-8 font-calendas">
+        <Card className="border-none bg-black/60 backdrop-blur-sm p-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            {data && (
+              <div className="flex flex-col">
+                <img
+                  src={data.imageUrl}
+                  alt={data.title}
+                  className="w-full h-[400px] object-cover rounded-lg mb-8"
+                />
                 <div className="flex flex-col">
-                  <img
-                    src={data.imageUrl}
-                    alt={data.title}
-                    className="w-full h-[400px] object-cover rounded-lg mb-8"
-                  />
-                  <div className="flex flex-col">
-                    <h1 className="text-4xl font-bold text-white mb-8 font-calendas">
-                      {data?.title}
-                    </h1>
+                  <h1 className="text-4xl font-bold text-white mb-4 font-calendas">
+                    {data?.title}
+                  </h1>
 
-                    {/* Add the BlogAudioSummary component */}
-                    {data?.content && (
-                      <BlogAudioSummary
-                        title={data.title}
-                        content={data.content}
-                      />
-                    )}
+                  {/* Audio Player */}
+                  {data?.content && (
+                    <BlogAudioSummary
+                      title={data.title}
+                      content={data.content}
+                      blogId={data._id}
+                    />
+                  )}
 
-                    {data && data.content && (
-                      <div className="prose prose-invert max-w-none prose-headings:text-white prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:text-gray-300 prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-ul:text-gray-300 prose-ol:text-gray-300 prose-li:my-1 font-calendas">
-                        <ReactMarkdown>{data.content}</ReactMarkdown>
-                      </div>
-                    )}
-                  </div>
+                  {data && data.content && (
+                    <div className="prose prose-invert max-w-none prose-headings:text-white prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:text-gray-300 prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-ul:text-gray-300 prose-ol:text-gray-300 prose-li:my-1 font-calendas">
+                      <ReactMarkdown>{data.content}</ReactMarkdown>
+                    </div>
+                  )}
                 </div>
-              )}
-            </motion.div>
-          </Card>
-        </div>
-      </div>
+              </div>
+            )}
+          </motion.div>
+        </Card>
+      </PageContainer>
     </>
   );
 }

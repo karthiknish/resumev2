@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { useRouter } from "next/router";
 import Services from "@/components/Services";
-
+import PageContainer from "@/components/PageContainer";
 export default function Contact() {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -68,77 +68,79 @@ export default function Contact() {
           content="Get in touch with me for any inquiries or collaborations."
         />
       </Head>
-      <div className="min-h-screen bg-black relative">
-        <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
-        <div className="max-w-4xl mx-auto p-8 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="space-y-16"
-          >
-            {/* Services Section */}
-            <Services />
+      <PageContainer>
+        <div className="min-h-screen bg-black relative">
+          <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
+          <div className="max-w-4xl mx-auto p-8 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="space-y-16"
+            >
+              {/* Services Section */}
+              <Services />
 
-            {/* Contact Form Section */}
-            <section className="space-y-8">
-              <h2 className="text-3xl font-medium text-white font-calendas text-center">
-                Get in Touch
-              </h2>
+              {/* Contact Form Section */}
+              <section className="space-y-8">
+                <h2 className="text-3xl font-medium text-white font-calendas text-center">
+                  Get in Touch
+                </h2>
 
-              {error && (
-                <div className="p-3 bg-red-500/10 border border-red-500 text-red-500 rounded-md">
-                  {error}
-                </div>
-              )}
+                {error && (
+                  <div className="p-3 bg-red-500/10 border border-red-500 text-red-500 rounded-md">
+                    {error}
+                  </div>
+                )}
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-4">
-                  <input
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    type="text"
-                    className="w-full px-4 py-3 text-white bg-gray-800 border border-gray-700 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none font-calendas"
-                    placeholder="Your Name"
-                    required
-                  />
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="space-y-4">
+                    <input
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      type="text"
+                      className="w-full px-4 py-3 text-white bg-gray-800 border border-gray-700 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none font-calendas"
+                      placeholder="Your Name"
+                      required
+                    />
 
-                  <input
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    type="email"
-                    className="w-full px-4 py-3 text-white bg-gray-800 border border-gray-700 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none font-calendas"
-                    placeholder="Your Email"
-                    required
-                  />
+                    <input
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      type="email"
+                      className="w-full px-4 py-3 text-white bg-gray-800 border border-gray-700 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none font-calendas"
+                      placeholder="Your Email"
+                      required
+                    />
 
-                  <textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 text-white bg-gray-800 border border-gray-700 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none font-calendas"
-                    placeholder="Your Message"
-                    rows={5}
-                    required
-                  />
+                    <textarea
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 text-white bg-gray-800 border border-gray-700 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none font-calendas"
+                      placeholder="Your Message"
+                      rows={5}
+                      required
+                    />
 
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-full bg-blue-600 py-3 text-white rounded-lg font-calendas hover:bg-blue-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
-                  >
-                    {isLoading ? "Sending..." : "Send Message"}
-                  </motion.button>
-                </div>
-              </form>
-            </section>
-          </motion.div>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      type="submit"
+                      disabled={isLoading}
+                      className="w-full bg-blue-600 py-3 text-white rounded-lg font-calendas hover:bg-blue-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
+                    >
+                      {isLoading ? "Sending..." : "Send Message"}
+                    </motion.button>
+                  </div>
+                </form>
+              </section>
+            </motion.div>
+          </div>
         </div>
-      </div>
+      </PageContainer>
     </>
   );
 }

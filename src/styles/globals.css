@@ -97,3 +97,14 @@ iframe, canvas, video {
     animation: none !important;
   }
 }
+
+/* Add padding to account for fixed navigation */
+.page-content {
+  padding-top: 6rem; /* Adjust this value based on your nav height */
+}
+
+/* Ensure the navigation doesn't overlap with content */
+.nav-padding {
+  height: 5rem; /* Adjust this value based on your nav height */
+  width: 100%;
+}

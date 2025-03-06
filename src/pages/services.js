@@ -14,7 +14,7 @@ import {
   FaChevronDown,
   FaChevronUp,
 } from "react-icons/fa";
-
+import PageContainer from "@/components/PageContainer";
 export default function Services() {
   const [expandedFaq, setExpandedFaq] = useState(null);
 
@@ -144,114 +144,115 @@ export default function Services() {
           content="web development, mobile development, frontend, backend, full stack, React, Node.js"
         />
       </Head>
+      <PageContainer>
+        <div className="min-h-screen bg-black/95 p-8 relative">
+          <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
+          <div className="max-w-6xl mx-auto space-y-8">
+            <Card className="border-none bg-black/60 backdrop-blur-sm p-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <h1 className="text-3xl font-bold text-white mb-6 font-calendas">
+                  Services
+                </h1>
 
-      <div className="min-h-screen bg-black/95 p-8 relative">
-        <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
-        <div className="max-w-6xl mx-auto space-y-8">
-          <Card className="border-none bg-black/60 backdrop-blur-sm p-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <h1 className="text-3xl font-bold text-white mb-6 font-calendas">
-                Services
-              </h1>
+                <p className="text-gray-300 mb-8 font-calendas max-w-3xl">
+                  I offer a comprehensive range of development services to help
+                  bring your digital ideas to life. Whether you need a stunning
+                  website, a powerful web application, or a mobile app, I have
+                  the expertise to deliver high-quality solutions tailored to
+                  your specific needs.
+                </p>
 
-              <p className="text-gray-300 mb-8 font-calendas max-w-3xl">
-                I offer a comprehensive range of development services to help
-                bring your digital ideas to life. Whether you need a stunning
-                website, a powerful web application, or a mobile app, I have the
-                expertise to deliver high-quality solutions tailored to your
-                specific needs.
-              </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                {services.map((service, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="bg-gray-900 rounded-lg p-6 h-full flex flex-col"
-                  >
-                    <div className="mb-4">{service.icon}</div>
-                    <h2 className="text-xl font-bold text-white mb-3">
-                      {service.title}
-                    </h2>
-                    <p className="text-gray-300 mb-4 flex-grow">
-                      {service.description}
-                    </p>
-                    <ul className="space-y-2 mt-2">
-                      {service.features.map((feature, idx) => (
-                        <li
-                          key={idx}
-                          className="text-gray-400 flex items-start"
-                        >
-                          <span className="text-blue-500 mr-2">•</span>
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </motion.div>
-                ))}
-              </div>
-
-              <div className="bg-gray-900 rounded-lg p-6 mb-12">
-                <h2 className="text-2xl font-bold text-white mb-6">
-                  Frequently Asked Questions
-                </h2>
-                <div className="space-y-4">
-                  {faqs.map((faq, index) => (
-                    <div
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                  {services.map((service, index) => (
+                    <motion.div
                       key={index}
-                      className="border-b border-gray-800 pb-4 last:border-b-0"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      className="bg-gray-900 rounded-lg p-6 h-full flex flex-col"
                     >
-                      <button
-                        onClick={() => toggleFaq(index)}
-                        className="flex justify-between items-center w-full text-left font-medium text-white hover:text-blue-400 transition-colors"
-                      >
-                        <span>{faq.question}</span>
-                        {expandedFaq === index ? (
-                          <FaChevronUp className="text-blue-500" />
-                        ) : (
-                          <FaChevronDown className="text-gray-500" />
-                        )}
-                      </button>
-                      {expandedFaq === index && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          transition={{ duration: 0.3 }}
-                          className="mt-3 text-gray-300"
-                        >
-                          <p>{faq.answer}</p>
-                        </motion.div>
-                      )}
-                    </div>
+                      <div className="mb-4">{service.icon}</div>
+                      <h2 className="text-xl font-bold text-white mb-3">
+                        {service.title}
+                      </h2>
+                      <p className="text-gray-300 mb-4 flex-grow">
+                        {service.description}
+                      </p>
+                      <ul className="space-y-2 mt-2">
+                        {service.features.map((feature, idx) => (
+                          <li
+                            key={idx}
+                            className="text-gray-400 flex items-start"
+                          >
+                            <span className="text-blue-500 mr-2">•</span>
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                    </motion.div>
                   ))}
                 </div>
-              </div>
 
-              <div className="bg-blue-900/30 rounded-lg p-8 text-center">
-                <h2 className="text-2xl font-bold text-white mb-4">
-                  Ready to Start Your Project?
-                </h2>
-                <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-                  Let's discuss how I can help bring your ideas to life. Contact
-                  me for a free consultation and project estimate.
-                </p>
-                <Link
-                  href="/contact"
-                  className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full transition-colors"
-                >
-                  Get in Touch
-                </Link>
-              </div>
-            </motion.div>
-          </Card>
+                <div className="bg-gray-900 rounded-lg p-6 mb-12">
+                  <h2 className="text-2xl font-bold text-white mb-6">
+                    Frequently Asked Questions
+                  </h2>
+                  <div className="space-y-4">
+                    {faqs.map((faq, index) => (
+                      <div
+                        key={index}
+                        className="border-b border-gray-800 pb-4 last:border-b-0"
+                      >
+                        <button
+                          onClick={() => toggleFaq(index)}
+                          className="flex justify-between items-center w-full text-left font-medium text-white hover:text-blue-400 transition-colors"
+                        >
+                          <span>{faq.question}</span>
+                          {expandedFaq === index ? (
+                            <FaChevronUp className="text-blue-500" />
+                          ) : (
+                            <FaChevronDown className="text-gray-500" />
+                          )}
+                        </button>
+                        {expandedFaq === index && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            transition={{ duration: 0.3 }}
+                            className="mt-3 text-gray-300"
+                          >
+                            <p>{faq.answer}</p>
+                          </motion.div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bg-blue-900/30 rounded-lg p-8 text-center">
+                  <h2 className="text-2xl font-bold text-white mb-4">
+                    Ready to Start Your Project?
+                  </h2>
+                  <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
+                    Let's discuss how I can help bring your ideas to life.
+                    Contact me for a free consultation and project estimate.
+                  </p>
+                  <Link
+                    href="/contact"
+                    className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full transition-colors"
+                  >
+                    Get in Touch
+                  </Link>
+                </div>
+              </motion.div>
+            </Card>
+          </div>
         </div>
-      </div>
+      </PageContainer>
     </>
   );
 }
