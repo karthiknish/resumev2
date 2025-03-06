@@ -7,6 +7,8 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SessionProvider } from "next-auth/react";
+import PageTransitionWrapper from "@/components/PageTransitionWrapper";
+import { Analytics } from "@vercel/analytics/react";
 
 // Configure the Inter font
 const inter = Inter({
@@ -23,6 +25,39 @@ export default function App({
 }) {
   const router = useRouter();
   const [domLoaded, setDomLoaded] = useState(false);
+  const [transitionType, setTransitionType] = useState("default");
+
+  // Handle page transitions
+  useEffect(() => {
+    const handleRouteChangeStart = () => {
+      document.documentElement.classList.add("js-page-transitioning");
+    };
+
+    const handleRouteChangeComplete = () => {
+      document.documentElement.classList.remove("js-page-transitioning");
+    };
+
+    router.events.on("routeChangeStart", handleRouteChangeStart);
+    router.events.on("routeChangeComplete", handleRouteChangeComplete);
+    router.events.on("routeChangeError", handleRouteChangeComplete);
+
+    return () => {
+      router.events.off("routeChangeStart", handleRouteChangeStart);
+      router.events.off("routeChangeComplete", handleRouteChangeComplete);
+      router.events.off("routeChangeError", handleRouteChangeComplete);
+    };
+  }, [router]);
+
+  // Set different transition types based on route
+  useEffect(() => {
+    if (router.pathname.startsWith("/blog")) {
+      setTransitionType("fade");
+    } else if (router.pathname.startsWith("/projects")) {
+      setTransitionType("slide");
+    } else {
+      setTransitionType("default");
+    }
+  }, [router.pathname]);
 
   useEffect(() => {
     setDomLoaded(true);
@@ -48,8 +83,13 @@ export default function App({
           </Script>
 
           <Nav />
-          <div>{domLoaded && <Component {...pageProps} />}</div>
+          {domLoaded && (
+            <PageTransitionWrapper transitionType={transitionType}>
+              <Component {...pageProps} />
+            </PageTransitionWrapper>
+          )}
           <Footer />
+          <Analytics />
         </main>
       </SessionProvider>
     </QueryClientProvider>

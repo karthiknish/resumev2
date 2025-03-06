@@ -108,3 +108,21 @@ iframe, canvas, video {
   height: 5rem; /* Adjust this value based on your nav height */
   width: 100%;
 }
+
+/* Page transition styles */
+.page-transition-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - 5rem); /* Adjust based on your nav height */
+  overflow-x: hidden; /* Prevent horizontal scrolling during transitions */
+}
+
+/* Prevent FOUC (Flash of Unstyled Content) during page transitions */
+html.js-page-transitioning {
+  overflow: hidden;
+}
+
+/* Improve animation performance */
+.page-transition-wrapper > * {
+  will-change: opacity, transform;
+}
