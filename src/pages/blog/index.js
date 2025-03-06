@@ -13,6 +13,7 @@ import PageContainer from "@/components/PageContainer";
 function Index({ data = [] }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [limitedContent, setLimitedContent] = useState([]);
+  const [filteredContent, setFilteredContent] = useState([]);
 
   useEffect(() => {
     // Sort posts by createdAt date in descending order
@@ -20,19 +21,38 @@ function Index({ data = [] }) {
       (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
     );
 
-    setLimitedContent(
-      sortedData.map((post) => ({
-        ...post,
-        limitedContent: limitCharacters({ text: post.content, length: 250 }),
-      }))
-    );
+    const processedData = sortedData.map((post) => ({
+      ...post,
+      limitedContent: limitCharacters({ text: post.content, length: 250 }),
+    }));
+
+    setLimitedContent(processedData);
+    setFilteredContent(processedData);
   }, [data]);
+
+  // Filter posts in real-time as user types
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setFilteredContent(limitedContent);
+    } else {
+      const filtered = limitedContent.filter(
+        (post) =>
+          post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          post.content.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredContent(filtered);
+    }
+  }, [searchTerm, limitedContent]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
       Router.push(`/blog/search?q=${encodeURIComponent(searchTerm)}`);
     }
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
   };
 
   return (
@@ -66,7 +86,7 @@ function Index({ data = [] }) {
                   <input
                     type="text"
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={handleSearchChange}
                     placeholder="Search posts..."
                     className="px-3 py-2 bg-black/40 border border-gray-700 rounded-l-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500 w-full md:w-auto"
                   />
@@ -78,21 +98,20 @@ function Index({ data = [] }) {
                     <FaSearch />
                   </button>
                 </form>
-
-                <div className="flex gap-2">
-                  <Link
-                    href="/blog/archive"
-                    className="flex items-center gap-2 px-3 py-2 bg-black/40 border border-gray-700 rounded-md text-white hover:bg-black/60 transition-colors"
-                  >
-                    <FaArchive /> Archive
-                  </Link>
-                </div>
               </div>
             </div>
 
-            {limitedContent.length > 0 && (
+            {searchTerm.trim() !== "" && (
+              <div className="mb-6">
+                <p className="text-gray-300">
+                  Showing {filteredContent.length} results for "{searchTerm}"
+                </p>
+              </div>
+            )}
+
+            {filteredContent.length > 0 ? (
               <div className="space-y-12">
-                {limitedContent.map((post) => (
+                {filteredContent.map((post) => (
                   <div
                     key={post._id}
                     onClick={() => Router.push(`/blog/${post.slug}`)}
@@ -120,6 +139,10 @@ function Index({ data = [] }) {
                     </div>
                   </div>
                 ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 text-gray-400">
+                No posts found matching your search.
               </div>
             )}
           </motion.div>
