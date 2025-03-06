@@ -1,36 +1,47 @@
+import React from "react";
 import Link from "next/link";
 import Head from "next/head";
 import { motion } from "framer-motion";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
+import PageContainer from "@/components/PageContainer";
+import { FadeIn } from "@/components/animations/MotionComponents";
 
-function FourOhFour() {
+export default function FourOhFour() {
   return (
-    <div className="min-h-screen flex justify-center items-center bg-black">
+    <>
       <Head>
-        <title>404 Not Found // Karthik Nishanth</title>
+        <title>404 Not Found - Karthik Nishanth | Full Stack Developer</title>
+        <meta
+          name="description"
+          content="The page you're looking for doesn't exist or has been moved."
+        />
       </Head>
+      <PageContainer>
+        <div className="min-h-screen p-8 md:p-16 max-w-6xl mx-auto relative">
+          <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-md mx-auto p-8 relative text-center gap-6 my-auto z-30 border border-gray-700 rounded-lg backdrop-blur-sm bg-black/50 flex flex-col"
-      >
-        <h1 className="text-white text-5xl font-bold font-calendas">
-          404 Error
-        </h1>
-        <p className="text-gray-300 text-lg">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
-        <Link
-          className="text-blue-400 hover:text-blue-300 transition-colors duration-300 text-lg font-calendas"
-          href="/"
-        >
-          Return to homepage <span className="ml-1">&#8594;</span>
-        </Link>
-      </motion.div>
-    </div>
+          <FadeIn>
+            <div className="text-center mb-10">
+              <h1 className="text-6xl font-bold text-white mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                404 Error
+              </h1>
+              <div className="w-24 h-1 bg-blue-500 mx-auto mb-8 rounded-full"></div>
+            </div>
+
+            <div className="bg-gradient-to-br from-gray-900 to-black p-8 rounded-xl shadow-2xl border border-blue-500/20 max-w-2xl mx-auto text-center">
+              <p className="text-gray-300 text-lg mb-8">
+                The page you're looking for doesn't exist or has been moved.
+              </p>
+              <Link
+                href="/"
+                className="inline-block px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md transition-colors"
+              >
+                Return to Homepage →
+              </Link>
+            </div>
+          </FadeIn>
+        </div>
+      </PageContainer>
+    </>
   );
 }
-
-export default FourOhFour;
