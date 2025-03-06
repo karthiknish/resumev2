@@ -7,7 +7,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import ReactMarkdown from "react-markdown";
-import { FaSearch, FaFolderOpen, FaArchive } from "react-icons/fa";
+import { FaSearch, FaArchive } from "react-icons/fa";
 import PageContainer from "@/components/PageContainer";
 
 function Index({ data = [] }) {
@@ -81,12 +81,6 @@ function Index({ data = [] }) {
 
                 <div className="flex gap-2">
                   <Link
-                    href="/blog/categories"
-                    className="flex items-center gap-2 px-3 py-2 bg-black/40 border border-gray-700 rounded-md text-white hover:bg-black/60 transition-colors"
-                  >
-                    <FaFolderOpen /> Categories
-                  </Link>
-                  <Link
                     href="/blog/archive"
                     className="flex items-center gap-2 px-3 py-2 bg-black/40 border border-gray-700 rounded-md text-white hover:bg-black/60 transition-colors"
                   >
@@ -121,15 +115,6 @@ function Index({ data = [] }) {
                           <p className="text-blue-500 font-calendas underline group-hover:text-blue-400 transition-colors">
                             Read more
                           </p>
-                          {post.category && (
-                            <Link
-                              href={`/blog/categories/${post.category}`}
-                              onClick={(e) => e.stopPropagation()}
-                              className="text-sm bg-blue-900/50 text-blue-300 px-3 py-1 rounded-full hover:bg-blue-800/50 transition-colors"
-                            >
-                              {post.category}
-                            </Link>
-                          )}
                         </div>
                       </div>
                     </div>

@@ -92,90 +92,103 @@ function DashboardTab({ blogPosts, isLoading }) {
                 Recent Blog Posts
               </CardTitle>
             </CardHeader>
-            <CardContent className="bg-gray-900">
+            <CardContent className="bg-gray-900 p-0">
               {isLoading ? (
-                <p className="text-gray-300">Loading blog posts...</p>
-              ) : blogPosts.length > 0 ? (
+                <p className="text-gray-300 p-4">Loading blog posts...</p>
+              ) : blogPosts && blogPosts.length > 0 ? (
                 <div className="overflow-x-auto">
-                  <StaggerContainer>
-                    <Table>
-                      <TableHeader>
-                        <TableRow className="border-gray-700">
-                          <TableHead className="text-gray-300">Title</TableHead>
-                          <TableHead className="text-gray-300">Date</TableHead>
-                          <TableHead className="text-gray-300">
-                            Status
-                          </TableHead>
-                          <TableHead className="text-gray-300">
-                            Actions
-                          </TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {blogPosts.slice(0, 5).map((post, index) => (
-                          <StaggerItem key={post._id} index={index}>
-                            <TableRow className="border-gray-700">
-                              <TableCell className="font-medium text-white">
-                                {post.title}
-                              </TableCell>
-                              <TableCell className="text-gray-300">
-                                {format(
-                                  new Date(post.createdAt),
-                                  "MMM dd, yyyy"
-                                )}
-                              </TableCell>
-                              <TableCell>
-                                <Badge
-                                  variant={
-                                    post.isPublished ? "success" : "warning"
-                                  }
-                                  className={
-                                    post.isPublished
-                                      ? "bg-green-900 text-green-300"
-                                      : "bg-yellow-900 text-yellow-300"
-                                  }
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="border-gray-700 border-b-2">
+                        <TableCell className="text-gray-300 py-2 w-2/5 font-bold text-left">
+                          Title
+                        </TableCell>
+                        <TableCell className="text-gray-300 py-2 w-1/5 font-bold text-left">
+                          Date
+                        </TableCell>
+                        <TableCell className="text-gray-300 py-2 w-1/5 font-bold text-left">
+                          Actions
+                        </TableCell>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody className="mt-0">
+                      {blogPosts.slice(0, 5).map((post, index) => (
+                        <div key={post._id || index} index={index}>
+                          <TableRow className="border-gray-700 hover:bg-gray-800/50">
+                            <TableCell className="font-medium text-white truncate w-2/5 text-left">
+                              {post.title}
+                            </TableCell>
+                            <TableCell className="text-gray-300 w-1/5 text-left">
+                              {format(
+                                new Date(post.createdAt || new Date()),
+                                "MMM dd, yyyy"
+                              )}
+                            </TableCell>
+                            <TableCell className="text-left w-1/5">
+                              <div className="flex space-x-2">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  asChild
+                                  className="text-white hover:text-white hover:bg-gray-800"
                                 >
-                                  {post.isPublished ? "Published" : "Draft"}
-                                </Badge>
-                              </TableCell>
-                              <TableCell>
-                                <div className="flex space-x-2">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    asChild
-                                    className="text-white hover:text-white hover:bg-gray-800"
+                                  <Link
+                                    href={`/admin/blog/edit?id=${post._id}`}
                                   >
-                                    <Link
-                                      href={`/admin/blog/edit?id=${post._id}`}
-                                    >
-                                      Edit
-                                    </Link>
-                                  </Button>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    asChild
-                                    className="text-white border-gray-700 hover:border-gray-600 hover:text-white"
-                                  >
-                                    <Link
-                                      href={`/blog/${post.slug}`}
-                                      target="_blank"
-                                    >
-                                      View
-                                    </Link>
-                                  </Button>
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          </StaggerItem>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </StaggerContainer>
+                                    Edit
+                                  </Link>
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="text-red-500 hover:text-red-400 hover:bg-gray-800"
+                                  onClick={() => {
+                                    if (
+                                      confirm(
+                                        "Are you sure you want to delete this post?"
+                                      )
+                                    ) {
+                                      fetch(`/api/blog/delete?id=${post._id}`, {
+                                        method: "DELETE",
+                                      })
+                                        .then((response) => response.json())
+                                        .then((data) => {
+                                          if (data.success) {
+                                            // We need to update the parent component's state
+                                            // This is a prop, so we can't modify it directly
+                                            // The parent component should handle refreshing the posts
+                                            window.location.reload();
+                                          } else {
+                                            alert(
+                                              "Failed to delete post: " +
+                                                data.message
+                                            );
+                                          }
+                                        })
+                                        .catch((error) => {
+                                          console.error(
+                                            "Error deleting post:",
+                                            error
+                                          );
+                                          alert(
+                                            "An error occurred while deleting the post"
+                                          );
+                                        });
+                                    }
+                                  }}
+                                >
+                                  Delete
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        </div>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </div>
               ) : (
-                <p className="text-gray-300">No blog posts found.</p>
+                <p className="text-gray-300 p-4">No blog posts found.</p>
               )}
             </CardContent>
           </Card>
