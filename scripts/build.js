@@ -77,17 +77,20 @@ async function main() {
 
   // Install dependencies
   runCommand("npm install");
-
+  
   // Install additional dependencies needed for build
   runCommand(
     "npm install tailwindcss@3.4.1 postcss@8.4.35 autoprefixer@10.4.17 @tailwindcss/typography@0.5.10 tailwindcss-animate@1.0.7 @heroicons/react @google-cloud/text-to-speech css-minimizer-webpack-plugin webpack-bundle-analyzer --save"
   );
-
+  
   // Install dev dependencies
   runCommand(
     "npm install typescript@5.7.3 @types/react@18.3.18 @types/node@20.11.5 --no-save"
   );
 
+  // Set environment variable to disable Sharp
+  process.env.NODE_ENV = "production";
+  
   // Apply Ajv patch
   applyAjvPatch();
 

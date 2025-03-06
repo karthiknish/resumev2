@@ -25,6 +25,10 @@ const nextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
     minimumCacheTTL: 60,
+    // Disable Sharp in production if causing issues
+    disableStaticImages: process.env.NODE_ENV === "production",
+    // Use squoosh instead of Sharp in production
+    loader: process.env.NODE_ENV === "production" ? "default" : "default",
   },
   // Add performance-related headers
   async headers() {

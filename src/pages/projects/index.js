@@ -75,6 +75,10 @@ const Index = () => {
                     className="md:h-48 h-full object-contain mb-4 mr-4"
                     src={project.image}
                     alt={project.title}
+                    width={500}
+                    height={300}
+                    priority={index === 0}
+                    loading={index === 0 ? "eager" : "lazy"}
                   />
                   <div className="flex flex-col w-full">
                     <h3 className="text-xl font-semibold mb-2 text-white">
