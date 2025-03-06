@@ -10,11 +10,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "setup": "npm install tailwindcss@3.4.1 postcss@8.4.35 autoprefixer@10.4.17 @tailwindcss/typography@0.5.10 tailwindcss-animate@1.0.7 @heroicons/react @google-cloud/text-to-speech css-minimizer-webpack-plugin webpack-bundle-analyzer patch-package postinstall-postinstall --save && npm install typescript@5.7.3 @types/react@18.3.18 @types/node@20.11.5 --no-save && npm run postinstall",
+    "setup": "npm install patch-package postinstall-postinstall --save && npm install tailwindcss@3.4.1 postcss@8.4.35 autoprefixer@10.4.17 @tailwindcss/typography@0.5.10 tailwindcss-animate@1.0.7 @heroicons/react @google-cloud/text-to-speech css-minimizer-webpack-plugin webpack-bundle-analyzer --save && npm install typescript@5.7.3 @types/react@18.3.18 @types/node@20.11.5 --no-save && npx patch-package",
     "analyze": "ANALYZE=true next build",
     "optimize-images": "node scripts/optimize-images.js",
     "perf": "npm run optimize-images && npm run build",
-    "postinstall": "patch-package"
+    "postinstall": "npx patch-package",
+    "custom-build": "node scripts/build.js"
   },
   "dependencies": {
     "@google-cloud/text-to-speech": "^5.8.1",

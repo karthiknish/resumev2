@@ -1,7 +1,12 @@
 {
   "version": 2,
-  "buildCommand": "npm run setup && npm run build",
+  "buildCommand": "node scripts/build.js",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "outputDirectory": ".next"
+  "outputDirectory": ".next",
+  "git": {
+    "deploymentEnabled": {
+      "main": true
+    }
+  }
 }
