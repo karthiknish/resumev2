@@ -2,55 +2,51 @@ import { useRouter } from "next/router";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, useEffect, useCallback, memo } from "react";
 
-// Default page transition variants - optimized for performance
+// Default page transition variants - optimized for speed
 const pageVariants = {
   initial: {
     opacity: 0,
-    y: 20,
+    y: 10, // Reduced distance for faster animation
   },
   animate: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.4, // Slightly faster for better perceived performance
-      ease: [0.25, 0.1, 0.25, 1.0], // Custom cubic-bezier for smoother animation
+      duration: 0.2, // Faster animation
+      ease: "easeOut", // Simpler easing function
     },
   },
   exit: {
     opacity: 0,
-    y: -10, // Reduced distance for better performance
     transition: {
-      duration: 0.2, // Faster exit for better perceived performance
-      ease: [0.25, 0.1, 0.25, 1.0],
+      duration: 0.1, // Very quick exit
     },
   },
 };
 
-// Slide transition variants - optimized for performance
+// Slide transition variants - optimized for speed
 const slideVariants = {
   initial: {
     opacity: 0,
-    x: 50, // Reduced distance for better performance
+    x: 20, // Reduced distance for faster animation
   },
   animate: {
     opacity: 1,
     x: 0,
     transition: {
-      duration: 0.4,
-      ease: [0.25, 0.1, 0.25, 1.0],
+      duration: 0.2, // Faster animation
+      ease: "easeOut", // Simpler easing function
     },
   },
   exit: {
     opacity: 0,
-    x: -50, // Reduced distance for better performance
     transition: {
-      duration: 0.2,
-      ease: [0.25, 0.1, 0.25, 1.0],
+      duration: 0.1, // Very quick exit
     },
   },
 };
 
-// Fade transition variants - optimized for performance
+// Fade transition variants - optimized for speed
 const fadeVariants = {
   initial: {
     opacity: 0,
@@ -58,15 +54,13 @@ const fadeVariants = {
   animate: {
     opacity: 1,
     transition: {
-      duration: 0.3,
-      ease: [0.25, 0.1, 0.25, 1.0],
+      duration: 0.15, // Very fast fade in
     },
   },
   exit: {
     opacity: 0,
     transition: {
-      duration: 0.2,
-      ease: [0.25, 0.1, 0.25, 1.0],
+      duration: 0.1, // Very quick exit
     },
   },
 };
@@ -87,76 +81,31 @@ function PageTransitionWrapper({
   const router = useRouter();
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
 
-  // Check for user's motion preference - memoized for performance
-  useEffect(() => {
-    // Use matchMedia API to check for reduced motion preference
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setShouldReduceMotion(mediaQuery.matches);
+  // Define callbacks at the top level of the component
+  const handleRouteChangeStart = useCallback(() => {
+    // Store scroll position - simplified for performance
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem(
+        `scrollPos-${router.asPath}`,
+        window.scrollY.toString()
+      );
+    }
+  }, [router.asPath]);
 
-    const handleChange = (e) => setShouldReduceMotion(e.matches);
+  const handleRouteChangeComplete = useCallback((url) => {
+    if (typeof window !== "undefined") {
+      const scrollPos = sessionStorage.getItem(`scrollPos-${url}`);
 
-    // Use modern event listener if available
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener("change", handleChange);
-      return () => mediaQuery.removeEventListener("change", handleChange);
-    } else {
-      // Fallback for older browsers
-      mediaQuery.addListener(handleChange);
-      return () => mediaQuery.removeListener(handleChange);
+      // Simplified scroll restoration
+      if (scrollPos) {
+        window.scrollTo(0, parseInt(scrollPos));
+      } else {
+        window.scrollTo(0, 0);
+      }
     }
   }, []);
 
-  // Handle scroll restoration - memoized with useCallback for performance
-  useEffect(() => {
-    if (!enableScrollRestoration) return;
-
-    // Store scroll position before navigation - optimized with throttling
-    const handleRouteChangeStart = useCallback(() => {
-      // Use requestIdleCallback if available for better performance
-      if (window.requestIdleCallback) {
-        window.requestIdleCallback(() => {
-          sessionStorage.setItem(
-            `scrollPos-${router.asPath}`,
-            window.scrollY.toString()
-          );
-        });
-      } else {
-        sessionStorage.setItem(
-          `scrollPos-${router.asPath}`,
-          window.scrollY.toString()
-        );
-      }
-    }, [router.asPath]);
-
-    // Restore scroll position after navigation - optimized with throttling
-    const handleRouteChangeComplete = useCallback((url) => {
-      const scrollPos = sessionStorage.getItem(`scrollPos-${url}`);
-
-      // Use requestAnimationFrame for smoother scrolling
-      if (scrollPos) {
-        window.requestAnimationFrame(() => {
-          window.scrollTo({
-            top: parseInt(scrollPos),
-            behavior: "auto", // Use 'auto' instead of 'smooth' for better performance
-          });
-        });
-      } else {
-        window.requestAnimationFrame(() => {
-          window.scrollTo(0, 0);
-        });
-      }
-    }, []);
-
-    router.events.on("routeChangeStart", handleRouteChangeStart);
-    router.events.on("routeChangeComplete", handleRouteChangeComplete);
-
-    return () => {
-      router.events.off("routeChangeStart", handleRouteChangeStart);
-      router.events.off("routeChangeComplete", handleRouteChangeComplete);
-    };
-  }, [router, enableScrollRestoration]);
-
-  // Select the appropriate variants based on transition type and motion preference - memoized for performance
+  // Get variants based on transition type and motion preference
   const getVariants = useCallback(() => {
     if (shouldReduceMotion) return fadeVariants;
 
@@ -170,7 +119,43 @@ function PageTransitionWrapper({
     }
   }, [transitionType, shouldReduceMotion]);
 
-  // Use AnimatePresence with optimized settings
+  // Check for user's motion preference
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+      setShouldReduceMotion(mediaQuery.matches);
+
+      const handleChange = (e) => setShouldReduceMotion(e.matches);
+
+      if (mediaQuery.addEventListener) {
+        mediaQuery.addEventListener("change", handleChange);
+        return () => mediaQuery.removeEventListener("change", handleChange);
+      } else {
+        mediaQuery.addListener(handleChange);
+        return () => mediaQuery.removeListener(handleChange);
+      }
+    }
+  }, []);
+
+  // Handle scroll restoration
+  useEffect(() => {
+    if (!enableScrollRestoration) return;
+
+    router.events.on("routeChangeStart", handleRouteChangeStart);
+    router.events.on("routeChangeComplete", handleRouteChangeComplete);
+
+    return () => {
+      router.events.off("routeChangeStart", handleRouteChangeStart);
+      router.events.off("routeChangeComplete", handleRouteChangeComplete);
+    };
+  }, [
+    router,
+    enableScrollRestoration,
+    handleRouteChangeStart,
+    handleRouteChangeComplete,
+  ]);
+
+  // Simplified AnimatePresence for better performance
   return (
     <AnimatePresence mode="wait" initial={false}>
       <motion.div
@@ -180,15 +165,10 @@ function PageTransitionWrapper({
         exit="exit"
         variants={getVariants()}
         className="page-transition-wrapper"
-        // Add layout prop for smoother transitions with changing content sizes
-        layout="position"
-        // Add layoutId for consistent animations between pages
-        layoutId="page-transition"
-        // Optimize GPU rendering
+        // Removed layout prop for better performance
+        // Simplified style properties
         style={{
-          backfaceVisibility: "hidden",
-          transform: "translateZ(0)",
-          WebkitFontSmoothing: "subpixel-antialiased",
+          willChange: "opacity, transform",
         }}
       >
         {children}
@@ -197,82 +177,43 @@ function PageTransitionWrapper({
   );
 }
 
-// Memoize the component to prevent unnecessary re-renders
-export default memo(PageTransitionWrapper);
+// Export without memo for better performance in some cases
+export default PageTransitionWrapper;
 
-/**
- * Advanced variants for more complex animations
- * Can be imported and used in individual pages for custom animations
- */
+// Simplified animation variants for components
 export const fadeInUpVariants = {
-  initial: { opacity: 0, y: 20 }, // Reduced distance for better performance
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1.0] },
-  },
-  exit: {
-    opacity: 0,
-    y: 20,
-    transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1.0] },
-  },
+  initial: { opacity: 0, y: 10 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.2 } },
+  exit: { opacity: 0, transition: { duration: 0.1 } },
 };
 
 export const fadeInLeftVariants = {
-  initial: { opacity: 0, x: -30 }, // Reduced distance for better performance
-  animate: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1.0] },
-  },
-  exit: {
-    opacity: 0,
-    x: -30,
-    transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1.0] },
-  },
+  initial: { opacity: 0, x: -10 },
+  animate: { opacity: 1, x: 0, transition: { duration: 0.2 } },
+  exit: { opacity: 0, transition: { duration: 0.1 } },
 };
 
 export const fadeInRightVariants = {
-  initial: { opacity: 0, x: 30 }, // Reduced distance for better performance
-  animate: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1.0] },
-  },
-  exit: {
-    opacity: 0,
-    x: 30,
-    transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1.0] },
-  },
+  initial: { opacity: 0, x: 10 },
+  animate: { opacity: 1, x: 0, transition: { duration: 0.2 } },
+  exit: { opacity: 0, transition: { duration: 0.1 } },
 };
 
 export const zoomInVariants = {
-  initial: { opacity: 0, scale: 0.95 }, // Less extreme scale for better performance
-  animate: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1.0] },
-  },
-  exit: {
-    opacity: 0,
-    scale: 0.95,
-    transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1.0] },
-  },
+  initial: { opacity: 0, scale: 0.98 },
+  animate: { opacity: 1, scale: 1, transition: { duration: 0.2 } },
+  exit: { opacity: 0, transition: { duration: 0.1 } },
 };
 
 export const staggerContainerVariants = {
   animate: {
     transition: {
-      staggerChildren: 0.05, // Faster stagger for better performance
+      staggerChildren: 0.03, // Faster stagger
     },
   },
 };
 
 export const staggerItemVariants = {
-  initial: { opacity: 0, y: 10 }, // Reduced distance for better performance
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1.0] },
-  },
+  initial: { opacity: 0, y: 5 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.15 } },
 };
