@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { SessionProvider } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { Analytics } from "@vercel/analytics/react";
+import { Toaster } from "@/components/ui/sonner";
 
 // Dynamically import PageTransitionWrapper with no SSR
 const PageTransitionWrapper = dynamic(
@@ -181,6 +182,7 @@ export default function App({
           ) : (
             <LoadingFallback />
           )}
+          <Toaster />
           <Footer />
           <Analytics />
         </main>
