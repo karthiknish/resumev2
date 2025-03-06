@@ -15,7 +15,7 @@ import {
   SlideUp,
   PageTransition,
 } from "@/components/animations/MotionComponents";
-
+import PageContainer from "@/components/PageContainer";
 // Import extracted components
 import DigitalClock from "@/components/admin/ui/DigitalClock";
 import EmptyPage from "@/components/admin/ui/EmptyPage";
@@ -412,7 +412,7 @@ function AdminDashboard() {
           `}</style>
         </Head>
 
-        <div className="container mx-auto px-4 py-12 ">
+        <PageContainer>
           <SlideInLeft delay={0.2}>
             <div className="flex justify-between items-center mb-10">
               <h1 className="text-4xl font-bold text-white font-calendas glow-blue">
@@ -487,7 +487,7 @@ function AdminDashboard() {
               </TabsContent>
             </AnimatePresence>
           </Tabs>
-        </div>
+        </PageContainer>
       </div>
     </PageTransition>
   );

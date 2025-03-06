@@ -51,16 +51,6 @@ export default function Footer() {
                     </Link>
                   </HoverCard>
                 </li>
-                <li>
-                  <HoverCard>
-                    <Link
-                      href="/linkedin-manager"
-                      className="text-gray-400 hover:text-white transition-colors"
-                    >
-                      LinkedIn Manager
-                    </Link>
-                  </HoverCard>
-                </li>
               </ul>
             </div>
 
