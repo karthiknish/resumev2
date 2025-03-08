@@ -160,10 +160,7 @@ const HomeScreen = () => {
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://karthiknish.com/" />
-        <meta
-          property="og:image"
-          content="https://karthiknish.com/images/og-image.jpg"
-        />
+        <meta property="og:image" content="https://karthiknish.com/Logo.png" />
         <meta property="og:site_name" content="Karthik Nishanth" />
 
         <meta name="twitter:card" content="summary_large_image" />
@@ -175,10 +172,7 @@ const HomeScreen = () => {
           name="twitter:description"
           content="Freelance web developer creating custom, scalable, and high-performance web solutions for businesses and individuals."
         />
-        <meta
-          name="twitter:image"
-          content="https://karthiknish.com/images/og-image.jpg"
-        />
+        <meta name="twitter:image" content="https://karthiknish.com/Logo.png" />
 
         <meta name="robots" content="index, follow" />
         <meta name="googlebot" content="index, follow" />
