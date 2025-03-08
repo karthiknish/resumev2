@@ -186,82 +186,74 @@ export default function Nav() {
         {isOpen && (
           <motion.div
             id="mobile-nav"
-            className="md:hidden bg-gray-900 text-white pt-4 pb-8 shadow-lg z-[100]"
+            className="md:hidden bg-black text-white pt-4 pb-8 shadow-lg z-[100] fixed top-[80px] left-0 right-0 h-screen w-full overflow-y-auto"
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
+            animate={{ opacity: 1, height: "100vh" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
           >
-            {navLinks.map((link) => (
-              <motion.a
-                key={link.href}
-                href={link.href}
-                className={`block py-4 px-4 ${
-                  (link.href === "/" && router.pathname === "/") ||
-                  (link.href !== "/" &&
-                    (router.pathname === link.href ||
-                      (link.href === "/blog" &&
-                        router.pathname.startsWith("/blog"))))
-                    ? "text-blue-400"
-                    : "text-white"
-                }`}
-                onClick={handleLinkClick}
-              >
-                {link.label}
-              </motion.a>
-            ))}
-
-            {/* Authentication Mobile Links */}
-            {session ? (
-              <>
+            <div className="flex flex-col h-full">
+              {navLinks.map((link) => (
                 <motion.a
-                  href="/profile"
-                  className={`block py-4 px-4 ${
-                    router.pathname === "/profile"
+                  key={link.href}
+                  href={link.href}
+                  className={`block py-4 px-4 text-center text-xl ${
+                    (link.href === "/" && router.pathname === "/") ||
+                    (link.href !== "/" &&
+                      (router.pathname === link.href ||
+                        (link.href === "/blog" &&
+                          router.pathname.startsWith("/blog"))))
                       ? "text-blue-400"
                       : "text-white"
                   }`}
                   onClick={handleLinkClick}
                 >
-                  Profile
+                  {link.label}
                 </motion.a>
+              ))}
 
-                {session?.user?.role === "admin" && (
+              {/* Authentication Mobile Links */}
+              {session ? (
+                <>
+                  {session?.user?.role === "admin" && (
+                    <motion.a
+                      href="/admin"
+                      className={`block py-4 px-4 text-center text-xl ${
+                        router.pathname.startsWith("/admin")
+                          ? "text-blue-400"
+                          : "text-white"
+                      }`}
+                      onClick={handleLinkClick}
+                    >
+                      Admin
+                    </motion.a>
+                  )}
+
                   <motion.a
-                    href="/admin"
-                    className={`block py-4 px-4 ${
-                      router.pathname.startsWith("/admin")
-                        ? "text-blue-400"
-                        : "text-white"
-                    }`}
-                    onClick={handleLinkClick}
+                    href="#"
+                    className="block py-4 px-4 text-white text-center text-xl"
+                    onClick={() => {
+                      handleSignOut();
+                      handleLinkClick();
+                    }}
                   >
-                    Admin
+                    Sign Out
                   </motion.a>
-                )}
-
+                </>
+              ) : (
                 <motion.a
-                  href="#"
-                  className="block py-4 px-4 text-white"
-                  onClick={() => {
-                    handleSignOut();
-                    handleLinkClick();
-                  }}
+                  href="/signin"
+                  className={`block py-4 px-4 text-center text-xl ${
+                    router.pathname === "/signin"
+                      ? "text-blue-400"
+                      : "text-white"
+                  }`}
+                  onClick={handleLinkClick}
                 >
-                  Sign Out
+                  Sign In
                 </motion.a>
-              </>
-            ) : (
-              <motion.a
-                href="/signin"
-                className={`block py-4 px-4 ${
-                  router.pathname === "/signin" ? "text-blue-400" : "text-white"
-                }`}
-                onClick={handleLinkClick}
-              >
-                Sign In
-              </motion.a>
-            )}
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
