@@ -103,6 +103,37 @@ function About() {
           name="description"
           content="Full Stack Developer specializing in modern web technologies, based in Liverpool. Expertise in React, Node.js, and cloud technologies."
         />
+        <meta
+          property="og:title"
+          content="About Me - Karthik Nishanth | Full Stack Developer"
+        />
+        <meta
+          property="og:description"
+          content="Full Stack Developer specializing in modern web technologies, based in Liverpool. Expertise in React, Node.js, and cloud technologies."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://karthiknish.com/about" />
+        <meta
+          property="og:image"
+          content="https://karthiknish.com/images/og-image.jpg"
+        />
+        <meta property="og:site_name" content="Karthik Nishanth" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="About Me - Karthik Nishanth | Full Stack Developer"
+        />
+        <meta
+          name="twitter:description"
+          content="Full Stack Developer specializing in modern web technologies, based in Liverpool. Expertise in React, Node.js, and cloud technologies."
+        />
+        <meta
+          name="twitter:image"
+          content="https://karthiknish.com/images/og-image.jpg"
+        />
+        <meta name="robots" content="index, follow" />
+        <meta name="googlebot" content="index, follow" />
+        <link rel="canonical" href="https://karthiknish.com/about" />
       </Head>
       <PageContainer>
         <div className="min-h-screen p-8 md:p-16 max-w-6xl mx-auto">
