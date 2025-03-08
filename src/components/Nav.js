@@ -121,7 +121,7 @@ export default function Nav() {
             ))}
 
             {/* Authentication Links */}
-            {session ? (
+            {session && (
               <>
                 {session?.user?.role === "admin" && (
                   <SlideInRight delay={1.0}>
@@ -151,21 +151,6 @@ export default function Nav() {
                   </HoverCard>
                 </SlideInRight>
               </>
-            ) : (
-              <SlideInRight delay={0.9}>
-                <HoverCard scale={1.05}>
-                  <Link
-                    href="/signin"
-                    className={`text-lg ${
-                      router.pathname === "/signin"
-                        ? "text-blue-400"
-                        : "text-white"
-                    } hover:text-blue-400 transition-colors`}
-                  >
-                    Sign In
-                  </Link>
-                </HoverCard>
-              </SlideInRight>
             )}
           </div>
 
@@ -213,7 +198,7 @@ export default function Nav() {
               ))}
 
               {/* Authentication Mobile Links */}
-              {session ? (
+              {session && (
                 <>
                   {session?.user?.role === "admin" && (
                     <motion.a
@@ -240,18 +225,6 @@ export default function Nav() {
                     Sign Out
                   </motion.a>
                 </>
-              ) : (
-                <motion.a
-                  href="/signin"
-                  className={`block py-4 px-4 text-center text-xl ${
-                    router.pathname === "/signin"
-                      ? "text-blue-400"
-                      : "text-white"
-                  }`}
-                  onClick={handleLinkClick}
-                >
-                  Sign In
-                </motion.a>
               )}
             </div>
           </motion.div>
