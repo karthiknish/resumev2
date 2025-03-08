@@ -137,12 +137,43 @@ export default function Services() {
         <title>Services - Karthik Nishanth | Full Stack Developer</title>
         <meta
           name="description"
-          content="Professional web and mobile development services offered by Karthik Nishanth"
+          content="Professional web and mobile development services offered by Karthik Nishanth. Specializing in web applications, mobile apps, and technical consultation."
         />
         <meta
           name="keywords"
-          content="web development, mobile development, frontend, backend, full stack, React, Node.js"
+          content="web development, mobile development, frontend, backend, full stack, React, Node.js, Next.js, technical consultation"
         />
+        <meta
+          property="og:title"
+          content="Services - Karthik Nishanth | Full Stack Developer"
+        />
+        <meta
+          property="og:description"
+          content="Professional web and mobile development services offered by Karthik Nishanth. Specializing in web applications, mobile apps, and technical consultation."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://karthiknish.com/services" />
+        <meta
+          property="og:image"
+          content="https://karthiknish.com/images/og-image.jpg"
+        />
+        <meta property="og:site_name" content="Karthik Nishanth" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="Services - Karthik Nishanth | Full Stack Developer"
+        />
+        <meta
+          name="twitter:description"
+          content="Professional web and mobile development services offered by Karthik Nishanth. Specializing in web applications, mobile apps, and technical consultation."
+        />
+        <meta
+          name="twitter:image"
+          content="https://karthiknish.com/images/og-image.jpg"
+        />
+        <meta name="robots" content="index, follow" />
+        <meta name="googlebot" content="index, follow" />
+        <link rel="canonical" href="https://karthiknish.com/services" />
       </Head>
       <PageContainer>
         <div className="min-h-screen p-8 md:p-16 max-w-6xl mx-auto">
