@@ -9,6 +9,7 @@ const ContactForm = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -25,10 +26,38 @@ const ContactForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitError(null);
+    setSubmitSuccess(false);
 
-    // Add your form submission logic here
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-    setIsSubmitting(false);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to submit contact form");
+      }
+
+      // Reset form on success
+      setFormData({
+        name: "",
+        email: "",
+        message: "",
+      });
+      setSubmitSuccess(true);
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+      setSubmitError(
+        error.message || "Something went wrong. Please try again later."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -66,6 +95,13 @@ const ContactForm = () => {
             {submitError && (
               <div className="bg-red-500 text-white p-4 rounded-md text-center">
                 {submitError}
+              </div>
+            )}
+
+            {/* Display success message */}
+            {submitSuccess && (
+              <div className="bg-green-500 text-white p-4 rounded-md text-center">
+                Thank you for your message! I'll get back to you soon.
               </div>
             )}
 
@@ -135,7 +171,7 @@ const ContactForm = () => {
                 disabled={isSubmitting}
                 className="w-full sm:text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-blue-500 px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-2xl hover:bg-blue-600 transition-colors"
               >
-                Send Message
+                {isSubmitting ? "Sending..." : "Send Message"}
               </motion.button>
             </motion.form>
           </div>
@@ -146,3 +182,4 @@ const ContactForm = () => {
 };
 
 export default ContactForm;
+
