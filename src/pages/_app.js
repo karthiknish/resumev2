@@ -10,7 +10,7 @@ import { SessionProvider } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "@/components/ui/sonner";
-
+import ChatBot from "@/components/Chatbot";
 // Dynamically import PageTransitionWrapper with no SSR
 const PageTransitionWrapper = dynamic(
   () => import("@/components/PageTransitionWrapper"),
@@ -192,6 +192,7 @@ export default function App({
           )}
           <Toaster />
           <Footer />
+          <ChatBot />
           <Analytics />
         </main>
       </SessionProvider>
