@@ -82,15 +82,22 @@ export default function App({
     const handleRouteChangeComplete = (url) => {
       document.documentElement.classList.remove("js-page-transitioning");
 
+      // Track page view on route change
+      if (typeof window !== "undefined" && window.gtag) {
+        window.gtag("config", "G-LSLF7F9MS0", {
+          page_path: url,
+        });
+      }
+
       // Report web vitals
       if (typeof window !== "undefined" && "performance" in window) {
         // Report LCP (Largest Contentful Paint)
         const performanceObserver = new PerformanceObserver((entryList) => {
           const entries = entryList.getEntries();
           const lastEntry = entries[entries.length - 1];
-          if (lastEntry) {
+          if (lastEntry && typeof window.gtag === "function") {
             // Send to analytics
-            gtag("event", "web_vitals", {
+            window.gtag("event", "web_vitals", {
               event_category: "Web Vitals",
               event_label: url,
               value: Math.round(lastEntry.startTime + lastEntry.duration),
@@ -156,18 +163,19 @@ export default function App({
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
         <main className={`${inter.variable} font-sans`}>
-          {/* Google Analytics - load with high priority but non-blocking */}
+          {/* Google Analytics - load with higher priority */}
           <Script
-            strategy="afterInteractive"
-            src="https://www.googletagmanager.com/gtag/js?id=G-WR5RLSRK90"
+            strategy="beforeInteractive"
+            src="https://www.googletagmanager.com/gtag/js?id=G-LSLF7F9MS0"
           />
-          <Script id="google-analytics" strategy="afterInteractive">
+          <Script id="google-analytics" strategy="beforeInteractive">
             {`
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', 'G-WR5RLSRK90', {
+              gtag('config', 'G-LSLF7F9MS0', {
                 page_path: window.location.pathname,
+                send_page_view: true
               });
             `}
           </Script>
