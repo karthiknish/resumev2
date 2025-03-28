@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && next-sitemap",
     "start": "next start",
     "lint": "next lint",
     "setup": "npm install patch-package postinstall-postinstall --save && npm install tailwindcss@3.4.1 postcss@8.4.35 autoprefixer@10.4.17 @tailwindcss/typography@0.5.10 tailwindcss-animate@1.0.7 @heroicons/react @google-cloud/text-to-speech css-minimizer-webpack-plugin webpack-bundle-analyzer --save && npm install typescript@5.7.3 @types/react@18.3.18 @types/node@20.11.5 --no-save && npx patch-package",
@@ -90,6 +90,7 @@
     "@types/node": "^20.11.5",
     "@types/react": "^18.3.18",
     "glob": "^11.0.1",
+    "next-sitemap": "4.2.3",
     "patch-package": "^8.0.0",
     "postinstall-postinstall": "^2.1.0",
     "sharp": "^0.33.5",

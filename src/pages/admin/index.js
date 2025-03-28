@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { AiOutlineDashboard, AiOutlineCalendar } from "react-icons/ai";
+import {
+  AiOutlineDashboard,
+  AiOutlineCalendar,
+  AiOutlineMail, // Icon for Contacts tab
+  AiOutlineUser, // Icon for Users tab
+} from "react-icons/ai";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
@@ -22,6 +27,8 @@ import EmptyPage from "@/components/admin/ui/EmptyPage";
 import DashboardTab from "@/components/admin/tabs/DashboardTab";
 import CalendarTab from "@/components/admin/tabs/CalendarTab";
 import ChatHistoryTab from "@/components/admin/tabs/ChatHistoryTab";
+import ContactsTab from "@/components/admin/tabs/ContactsTab";
+import UsersTab from "@/components/admin/tabs/UsersTab"; // Import the new UsersTab
 
 // Mock chat data for demonstration
 
@@ -63,26 +70,14 @@ function AdminDashboard() {
 
       // Check various possible admin indicators
       const isUserAdmin =
-        session.user.role === "admin" ||
-        session.user.role === "ADMIN" ||
-        session.user.isAdmin === true ||
-        session.user.admin === true ||
-        session.user.userRole === "admin" ||
-        (session.user.permissions &&
-          session.user.permissions.includes("admin")) ||
-        // Check if email matches the admin email from environment variable
-        session.user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+        session?.user?.role === "admin" ||
+        session?.user?.isAdmin === true ||
+        session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
       console.log("Is user admin?", isUserAdmin);
       console.log("Admin check conditions:", {
         roleIsAdmin: session.user.role === "admin",
-        roleIsADMIN: session.user.role === "ADMIN",
         isAdminProperty: session.user.isAdmin === true,
-        adminProperty: session.user.admin === true,
-        userRoleProperty: session.user.userRole === "admin",
-        hasAdminPermission:
-          session.user.permissions &&
-          session.user.permissions.includes("admin"),
         emailMatchesAdmin:
           session.user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL,
         adminEmailEnvVar: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
@@ -151,6 +146,8 @@ function AdminDashboard() {
     setPostsOnSelectedDate(postsOnDate);
   };
 
+  // This function is passed to CalendarTab but not used there currently
+  // It needs to be passed into the ReactCalendar component's tileContent prop
   const tileContent = ({ date, view }) => {
     if (view !== "month") return null;
 
@@ -162,9 +159,8 @@ function AdminDashboard() {
         postDate.getFullYear() === date.getFullYear()
     );
 
-    return hasPosts ? (
-      <div className="w-2 h-2 bg-blue-500 rounded-full mx-auto mt-1"></div>
-    ) : null;
+    // Use a class name for styling the dot
+    return hasPosts ? <div className="blog-post-indicator"></div> : null;
   };
 
   // Load chat messages when tab changes to messages or on mount if active tab is messages
@@ -354,44 +350,126 @@ function AdminDashboard() {
       <div className="admin-dashboard min-h-screen bg-black text-white">
         <Head>
           <title>Admin Dashboard</title>
+          {/* Updated Calendar Dark Theme Styles */}
           <style jsx global>{`
+            /* === React Calendar Dark Theme Styles === */
             .react-calendar {
               width: 100%;
               max-width: 100%;
-              background: #1f2937;
-              color: white;
+              background: #111827 !important; /* Darker background (gray-900) */
+              color: #d1d5db; /* Light gray text (gray-300) */
               border-radius: 8px;
-              border: 1px solid #374151;
-              font-family: "Calendas", Arial, sans-serif;
-              box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+              border: 1px solid #374151; /* Gray border (gray-700) */
+              font-family: "Calendas", Arial, sans-serif; /* Ensure font consistency */
+              box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow */
             }
+
+            /* Tile base style */
             .react-calendar__tile {
               padding: 10px;
-              color: white;
+              color: #d1d5db; /* Light gray text */
+              border-radius: 6px;
+              position: relative; /* Needed for the dot */
+              transition: background-color 0.2s ease; /* Smooth transition */
             }
+
+            /* Tile hover/focus */
             .react-calendar__tile:enabled:hover,
             .react-calendar__tile:enabled:focus {
-              background-color: #374151;
-              border-radius: 6px;
+              background-color: #1f2937; /* Darker gray on hover/focus (gray-800) */
             }
+
+            /* Style for today's date */
+            .react-calendar__tile--now {
+              background: #374151; /* Gray background for today (gray-700) */
+              font-weight: bold;
+              color: #ffffff; /* White text for today */
+            }
+            .react-calendar__tile--now:enabled:hover,
+            .react-calendar__tile--now:enabled:focus {
+              background: #4b5563; /* Darker gray hover for today (gray-600) */
+            }
+
+            /* Style for active/selected date */
             .react-calendar__tile--active {
-              background: #3b82f6 !important;
+              background: #3b82f6 !important; /* Blue for active/selected date (blue-500) */
+              color: white !important; /* Ensure text is white */
+              box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); /* Blue glow */
+            }
+            .react-calendar__tile--active:enabled:hover,
+            .react-calendar__tile--active:enabled:focus {
+              background: #2563eb !important; /* Darker blue on hover (blue-600) */
+            }
+
+            /* Navigation buttons */
+            .react-calendar__navigation button {
+              color: #d1d5db; /* Light gray text */
+              min-width: 44px;
+              background: none;
+              font-size: 1rem;
+              margin-top: 8px;
               border-radius: 6px;
-              box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+              padding: 4px 0;
+              transition: background-color 0.2s ease; /* Smooth transition */
             }
             .react-calendar__navigation button:enabled:hover,
             .react-calendar__navigation button:enabled:focus {
-              background-color: #374151;
-              border-radius: 6px;
+              background-color: #1f2937; /* Darker gray on hover/focus (gray-800) */
             }
-            .react-calendar__month-view__weekdays__weekday {
-              color: #9ca3af;
-            }
-            .react-calendar__navigation button {
-              color: white;
+            .react-calendar__navigation button[disabled] {
+              color: #4b5563; /* Dim disabled buttons (gray-600) */
+              background-color: transparent;
             }
 
-            /* Glow effects */
+            /* Weekday names */
+            .react-calendar__month-view__weekdays {
+              text-align: center;
+              text-transform: uppercase;
+              font-weight: bold;
+              font-size: 0.75em;
+              color: #9ca3af; /* Lighter gray for weekday names (gray-400) */
+              padding-bottom: 0.75em; /* Add spacing */
+              border-bottom: 1px solid #374151; /* Separator line (gray-700) */
+              margin-bottom: 0.5em;
+            }
+            .react-calendar__month-view__weekdays__weekday {
+              padding: 0.5em;
+            }
+
+            /* Days from neighboring months */
+            .react-calendar__month-view__days__day--neighboringMonth {
+              color: #4b5563; /* Dim days from other months (gray-600) */
+            }
+
+            /* Year/Decade/Century views */
+            .react-calendar__year-view .react-calendar__tile,
+            .react-calendar__decade-view .react-calendar__tile,
+            .react-calendar__century-view .react-calendar__tile {
+              padding: 2em 0.5em;
+              background-color: #1f2937; /* Match hover color for consistency */
+              color: #d1d5db;
+            }
+            .react-calendar__year-view .react-calendar__tile:hover,
+            .react-calendar__decade-view .react-calendar__tile:hover,
+            .react-calendar__century-view .react-calendar__tile:hover {
+              background-color: #374151; /* Darker hover */
+            }
+
+            /* Style for the dot indicating posts */
+            .blog-post-indicator {
+              height: 6px;
+              width: 6px;
+              background-color: #ec4899; /* Pink dot (pink-500) */
+              border-radius: 50%;
+              position: absolute;
+              bottom: 6px;
+              left: 50%;
+              transform: translateX(-50%);
+            }
+
+            /* === End Calendar Styles === */
+
+            /* Glow effects (Keep existing glow styles) */
             .glow-card {
               box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
               transition: box-shadow 0.3s ease;
@@ -434,7 +512,8 @@ function AdminDashboard() {
             className="mb-8"
           >
             <SlideUp delay={0.4}>
-              <TabsList className="grid w-full grid-cols-3 mb-4">
+              {/* Update grid columns to 5 */}
+              <TabsList className="grid w-full grid-cols-5 mb-4">
                 <TabsTrigger
                   value="dashboard"
                   className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
@@ -453,13 +532,31 @@ function AdminDashboard() {
                 >
                   <FaComments className="mr-2" /> Chat History
                 </TabsTrigger>
+                {/* Add Contacts Tab Trigger */}
+                <TabsTrigger
+                  value="contacts"
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                >
+                  <AiOutlineMail className="mr-2" /> Contacts
+                </TabsTrigger>
+                {/* Add Users Tab Trigger */}
+                <TabsTrigger
+                  value="users"
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                >
+                  <AiOutlineUser className="mr-2" /> Users
+                </TabsTrigger>
               </TabsList>
             </SlideUp>
 
             <AnimatePresence mode="wait">
               {/* Dashboard Content */}
               <TabsContent value="dashboard" key="dashboard">
-                <DashboardTab blogPosts={blogPosts} isLoading={isLoading} />
+                <DashboardTab
+                  blogPosts={blogPosts}
+                  isLoading={isLoading}
+                  unreadCount={unreadCount} // Pass unreadCount prop
+                />
               </TabsContent>
 
               {/* Calendar View */}
@@ -469,6 +566,8 @@ function AdminDashboard() {
                   postsOnSelectedDate={postsOnSelectedDate}
                   blogDates={blogDates}
                   handleDateChange={handleDateChange}
+                  // Pass tileContent function to CalendarTab
+                  tileContent={tileContent}
                 />
               </TabsContent>
 
@@ -484,6 +583,16 @@ function AdminDashboard() {
                   chatHistoriesError={chatHistoriesError}
                   fetchChatHistories={fetchChatHistories}
                 />
+              </TabsContent>
+
+              {/* Contacts Tab Content */}
+              <TabsContent value="contacts" key="contacts">
+                <ContactsTab />
+              </TabsContent>
+
+              {/* Users Tab Content */}
+              <TabsContent value="users" key="users">
+                <UsersTab />
               </TabsContent>
             </AnimatePresence>
           </Tabs>

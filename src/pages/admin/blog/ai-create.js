@@ -12,10 +12,13 @@ import {
   AiOutlineCheck,
   AiOutlinePicture,
   AiOutlineFormatPainter,
+  AiOutlineBulb, // Icon for suggestions
+  AiOutlineTags, // Icon for topic suggestions
 } from "react-icons/ai";
-import { FiRefreshCw } from "react-icons/fi";
+import { FiRefreshCw, FiPlus } from "react-icons/fi"; // Added FiPlus
 import { IoMdClose } from "react-icons/io";
 import ReactMarkdown from "react-markdown";
+import PageContainer from "@/components/PageContainer"; // Import PageContainer
 
 export default function AICreateBlog() {
   const { data: session, status } = useSession();
@@ -45,6 +48,18 @@ export default function AICreateBlog() {
 
   const [isFormatting, setIsFormatting] = useState(false);
   const [formatSuccess, setFormatSuccess] = useState(false);
+
+  // Keyword suggestion states
+  const [isSuggestingKeywords, setIsSuggestingKeywords] = useState(false);
+  const [suggestedKeywords, setSuggestedKeywords] = useState([]);
+
+  // Outline generation states
+  const [isGeneratingOutline, setIsGeneratingOutline] = useState(false);
+  const [generatedOutline, setGeneratedOutline] = useState(null); // { title: string, headings: string[] }
+
+  // Topic suggestion states
+  const [isSuggestingTopics, setIsSuggestingTopics] = useState(false);
+  const [suggestedTopics, setSuggestedTopics] = useState([]);
 
   const toneOptions = [
     "professional",
@@ -82,8 +97,11 @@ export default function AICreateBlog() {
 
     setError("");
     setIsGenerating(true);
-    setGeneratedContent(null);
+    setGeneratedContent(null); // Clear previous full content
     setSelectedImage(null);
+    // Keep suggested keywords, but clear outline if generating full post directly
+    // setSuggestedKeywords([]);
+    // setGeneratedOutline(null); // Clear outline if generating full post without using outline first
 
     try {
       const keywordsArray = keywords
@@ -97,10 +115,11 @@ export default function AICreateBlog() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          topic,
+          topic: generatedOutline?.title || topic, // Use outline title if available
           tone,
           length: parseInt(length),
           keywords: keywordsArray.length > 0 ? keywordsArray : undefined,
+          outline: generatedOutline, // Pass the generated outline
         }),
       });
 
@@ -120,6 +139,8 @@ export default function AICreateBlog() {
       } else {
         setImageSearchQuery(topic);
       }
+      // Suggest keywords based on the final topic/title used
+      handleSuggestKeywords(generatedOutline?.title || topic);
     } catch (error) {
       console.error("Error generating content:", error);
       setError(error.message || "Failed to generate content");
@@ -138,6 +159,7 @@ export default function AICreateBlog() {
     setIsSearchingImages(true);
 
     try {
+      // NOTE: Assuming you have a Pexels API endpoint set up
       const response = await fetch(
         `/api/pexels/search?query=${encodeURIComponent(
           imageSearchQuery
@@ -179,15 +201,18 @@ export default function AICreateBlog() {
       // Extract a brief excerpt from the content
       const excerpt =
         editedContent
-          .replace(/[#*_]/g, "")
+          .replace(/[#*_]/g, "") // Remove markdown formatting for excerpt
           .split("\n")
-          .filter((line) => line.trim().length > 0)[0]
-          .substring(0, 150) + "...";
+          .filter((line) => line.trim().length > 0)[0] // Get first non-empty line
+          ?.substring(0, 150) + "..." || // Take first 150 chars
+        editedTitle; // Fallback to title if content is empty
 
       // Use selected image URL or fallback to placeholder
       const imageUrl = selectedImage
         ? selectedImage.src.large
-        : "https://source.unsplash.com/random/1200x630/?blog";
+        : `https://source.unsplash.com/random/1200x630/?${encodeURIComponent(
+            topic || "blog"
+          )}`; // Use topic for random image
 
       const response = await fetch("/api/blog/create", {
         method: "POST",
@@ -203,7 +228,7 @@ export default function AICreateBlog() {
             .split(",")
             .map((k) => k.trim())
             .filter((k) => k),
-          isPublished: false,
+          isPublished: false, // Save as draft by default
         }),
       });
 
@@ -217,7 +242,7 @@ export default function AICreateBlog() {
 
       // Redirect to edit page after a short delay
       setTimeout(() => {
-        router.push(`/admin/blog/edit?id=${result.data._id}`);
+        router.push(`/admin/blog/edit/${result.data._id}`); // Use correct edit path
       }, 1500);
     } catch (error) {
       console.error("Error saving blog post:", error);
@@ -229,6 +254,113 @@ export default function AICreateBlog() {
 
   const toggleEditMode = () => {
     setIsEditing(!isEditing);
+  };
+
+  // Function to suggest keywords
+  const handleSuggestKeywords = async (currentTopic = topic) => {
+    // Accept topic override
+    if (!currentTopic.trim()) {
+      // Don't show error if topic is empty, just don't suggest
+      // setError("Please enter a topic first to suggest keywords.");
+      return;
+    }
+    setError("");
+    setIsSuggestingKeywords(true);
+    setSuggestedKeywords([]);
+
+    try {
+      const response = await fetch("/api/ai/suggest-keywords", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic: currentTopic }), // Use passed topic
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to suggest keywords");
+      }
+      setSuggestedKeywords(result.keywords || []);
+    } catch (error) {
+      console.error("Error suggesting keywords:", error);
+      setError(error.message || "Failed to suggest keywords");
+    } finally {
+      setIsSuggestingKeywords(false);
+    }
+  };
+
+  // Function to generate outline
+  const handleGenerateOutline = async () => {
+    if (!topic.trim()) {
+      setError("Please enter a topic first to generate an outline.");
+      return;
+    }
+    setError("");
+    setIsGeneratingOutline(true);
+    setGeneratedOutline(null); // Clear previous outline
+
+    try {
+      const response = await fetch("/api/ai/generate-outline", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic }),
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to generate outline");
+      }
+      setGeneratedOutline(result.outline);
+      // Suggest keywords based on the new outline/topic
+      handleSuggestKeywords(result.outline?.title || topic);
+    } catch (error) {
+      console.error("Error generating outline:", error);
+      setError(error.message || "Failed to generate outline");
+    } finally {
+      setIsGeneratingOutline(false);
+    }
+  };
+
+  // Function to add a suggested keyword to the input field
+  const addKeyword = (keywordToAdd) => {
+    const currentKeywords = keywords
+      .split(",")
+      .map((k) => k.trim())
+      .filter((k) => k);
+    if (!currentKeywords.includes(keywordToAdd)) {
+      setKeywords([...currentKeywords, keywordToAdd].join(", "));
+    }
+    // Remove the keyword from suggestions after adding
+    setSuggestedKeywords(suggestedKeywords.filter((k) => k !== keywordToAdd));
+  };
+
+  // Function to suggest topics
+  const handleSuggestTopics = async () => {
+    setError("");
+    setIsSuggestingTopics(true);
+    setSuggestedTopics([]);
+    try {
+      const response = await fetch("/api/ai/suggest-topics", {
+        method: "POST",
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to suggest topics");
+      }
+      setSuggestedTopics(result.topics || []);
+    } catch (error) {
+      console.error("Error suggesting topics:", error);
+      setError(error.message || "Failed to suggest topics");
+    } finally {
+      setIsSuggestingTopics(false);
+    }
+  };
+
+  // Function to use a suggested topic
+  const useSuggestedTopic = (suggestedTopic) => {
+    setTopic(suggestedTopic);
+    setSuggestedTopics([]); // Clear suggestions after selection
+    // Optionally clear other fields like keywords/outline
+    setKeywords("");
+    setSuggestedKeywords([]);
+    setGeneratedOutline(null);
   };
 
   const formatContent = async () => {
@@ -277,6 +409,7 @@ export default function AICreateBlog() {
   }
 
   if (!session) {
+    // Should be redirected by useEffect, but good to have a fallback
     return null;
   }
 
@@ -285,8 +418,11 @@ export default function AICreateBlog() {
       <Head>
         <title>{editedTitle || "AI Blog Creator"}</title>
       </Head>
-      <div className="min-h-screen bg-black p-8">
+      {/* Wrap content with PageContainer */}
+      <PageContainer>
         <div className="max-w-6xl mx-auto">
+          {" "}
+          {/* Removed min-h-screen bg-black p-8 */}
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-3xl md:text-4xl font-medium text-white font-calendas">
               <span className="flex items-center">
@@ -301,25 +437,21 @@ export default function AICreateBlog() {
               Back
             </button>
           </div>
-
           {error && (
             <div className="mb-6 p-4 bg-red-900/30 border border-red-500 text-red-500 rounded-lg">
               {error}
             </div>
           )}
-
           {saveSuccess && (
             <div className="mb-6 p-4 bg-green-900/30 border border-green-500 text-green-500 rounded-lg">
               Blog post saved successfully! Redirecting to editor...
             </div>
           )}
-
           {formatSuccess && (
             <div className="mb-6 p-4 bg-green-900/30 border border-green-500 text-green-500 rounded-lg">
               Content formatted successfully!
             </div>
           )}
-
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Input Form */}
             <div className="lg:col-span-1 bg-gray-800 border border-gray-700 rounded-lg p-6">
@@ -332,14 +464,51 @@ export default function AICreateBlog() {
                   <label className="block text-gray-300 mb-2">
                     Topic/Title*
                   </label>
-                  <input
-                    type="text"
-                    value={topic}
-                    onChange={(e) => setTopic(e.target.value)}
-                    placeholder="e.g., The Future of Web Development"
-                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    disabled={isGenerating}
-                  />
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="text"
+                      value={topic}
+                      onChange={(e) => setTopic(e.target.value)}
+                      placeholder="e.g., The Future of Web Development"
+                      className="flex-1 w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      disabled={
+                        isGenerating ||
+                        isGeneratingOutline ||
+                        isSuggestingTopics
+                      }
+                    />
+                    <button
+                      onClick={handleSuggestTopics}
+                      disabled={
+                        isSuggestingTopics ||
+                        isGenerating ||
+                        isGeneratingOutline
+                      }
+                      title="Suggest Topics"
+                      className="p-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition-colors disabled:bg-gray-700 disabled:text-gray-500 disabled:cursor-not-allowed"
+                    >
+                      {isSuggestingTopics ? (
+                        <AiOutlineLoading3Quarters className="animate-spin" />
+                      ) : (
+                        <AiOutlineTags /> // Using Tags icon for topic suggestion
+                      )}
+                    </button>
+                  </div>
+                  {/* Display Suggested Topics */}
+                  {suggestedTopics.length > 0 && (
+                    <div className="mt-2 space-y-1">
+                      <p className="text-xs text-gray-400">Suggestions:</p>
+                      {suggestedTopics.map((suggestedTopic, index) => (
+                        <button
+                          key={index}
+                          onClick={() => useSuggestedTopic(suggestedTopic)}
+                          className="block w-full text-left text-sm bg-gray-700 text-gray-200 px-3 py-1 rounded hover:bg-gray-600 transition-colors"
+                        >
+                          {suggestedTopic}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -348,7 +517,7 @@ export default function AICreateBlog() {
                     value={tone}
                     onChange={(e) => setTone(e.target.value)}
                     className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    disabled={isGenerating}
+                    disabled={isGenerating || isGeneratingOutline}
                   >
                     {toneOptions.map((option) => (
                       <option key={option} value={option}>
@@ -366,7 +535,7 @@ export default function AICreateBlog() {
                     value={length}
                     onChange={(e) => setLength(e.target.value)}
                     className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    disabled={isGenerating}
+                    disabled={isGenerating || isGeneratingOutline}
                   >
                     {lengthOptions.map((option) => (
                       <option key={option} value={option}>
@@ -380,34 +549,116 @@ export default function AICreateBlog() {
                   <label className="block text-gray-300 mb-2">
                     Keywords (comma separated)
                   </label>
-                  <input
-                    type="text"
-                    value={keywords}
-                    onChange={(e) => setKeywords(e.target.value)}
-                    placeholder="e.g., react, nextjs, web design"
-                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    disabled={isGenerating}
-                  />
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="text"
+                      value={keywords}
+                      onChange={(e) => setKeywords(e.target.value)}
+                      placeholder="e.g., react, nextjs, web design"
+                      className="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      disabled={
+                        isGenerating ||
+                        isSuggestingKeywords ||
+                        isGeneratingOutline
+                      }
+                    />
+                    <button
+                      onClick={() => handleSuggestKeywords()} // Trigger suggestion
+                      disabled={
+                        isSuggestingKeywords ||
+                        !topic.trim() ||
+                        isGenerating ||
+                        isGeneratingOutline
+                      }
+                      title="Suggest Keywords based on Topic"
+                      className="p-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition-colors disabled:bg-gray-700 disabled:text-gray-500 disabled:cursor-not-allowed"
+                    >
+                      {isSuggestingKeywords ? (
+                        <AiOutlineLoading3Quarters className="animate-spin" />
+                      ) : (
+                        <AiOutlineBulb />
+                      )}
+                    </button>
+                  </div>
+                  {/* Display Suggested Keywords */}
+                  {suggestedKeywords.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {suggestedKeywords.map((kw, index) => (
+                        <button
+                          key={index}
+                          onClick={() => addKeyword(kw)}
+                          className="flex items-center text-xs bg-teal-800/50 text-teal-300 px-2 py-1 rounded-full hover:bg-teal-700/60 transition-colors"
+                          title={`Add "${kw}"`}
+                        >
+                          <FiPlus className="mr-1" size={12} /> {kw}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
+                {/* Generate Outline Button */}
+                <button
+                  onClick={handleGenerateOutline}
+                  disabled={
+                    isGeneratingOutline || !topic.trim() || isGenerating
+                  }
+                  className="w-full mt-2 flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
+                >
+                  {isGeneratingOutline ? (
+                    <>
+                      <AiOutlineLoading3Quarters className="animate-spin mr-2" />
+                      Generating Outline...
+                    </>
+                  ) : (
+                    "Generate Outline"
+                  )}
+                </button>
+
+                {/* Generate Full Post Button */}
                 <button
                   onClick={handleGenerate}
-                  disabled={isGenerating || !topic.trim()}
+                  disabled={
+                    isGenerating || !topic.trim() || isGeneratingOutline
+                  }
                   className="w-full mt-4 flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
                 >
                   {isGenerating ? (
                     <>
                       <AiOutlineLoading3Quarters className="animate-spin mr-2" />
-                      Generating...
+                      Generating Full Post...
                     </>
                   ) : (
                     <>
                       <AiOutlineRobot className="mr-2" />
-                      Generate Blog Post
+                      Generate Blog Post{" "}
+                      {generatedOutline ? "(Using Outline)" : ""}
                     </>
                   )}
                 </button>
               </div>
+
+              {/* Display Generated Outline */}
+              {generatedOutline && (
+                <div className="mt-6 p-4 bg-gray-700 border border-gray-600 rounded-lg">
+                  <h4 className="text-md font-semibold mb-2 text-gray-200">
+                    Suggested Outline:
+                  </h4>
+                  <p className="text-sm text-gray-300 mb-1">
+                    <strong>Title:</strong> {generatedOutline.title}
+                  </p>
+                  <ul className="list-disc list-inside space-y-1">
+                    {generatedOutline.headings.map((heading, index) => (
+                      <li key={index} className="text-sm text-gray-300">
+                        {heading}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="text-xs text-gray-400 mt-3">
+                    Click "Generate Blog Post" to use this outline.
+                  </p>
+                </div>
+              )}
 
               {/* Featured Image Section */}
               {generatedContent && (
@@ -568,14 +819,16 @@ export default function AICreateBlog() {
                 </div>
               ) : (
                 <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 h-full flex flex-col items-center justify-center text-center">
-                  {isGenerating ? (
+                  {isGenerating || isGeneratingOutline ? ( // Show loading if either is running
                     <div className="py-12">
                       <AiOutlineLoading3Quarters className="animate-spin text-5xl text-blue-500 mx-auto mb-4" />
                       <p className="text-gray-400 text-lg">
-                        Generating your blog post...
+                        {isGeneratingOutline
+                          ? "Generating outline..."
+                          : "Generating your blog post..."}
                       </p>
                       <p className="text-gray-500 mt-2">
-                        This may take up to 30 seconds
+                        This may take a moment...
                       </p>
                     </div>
                   ) : (
@@ -595,8 +848,8 @@ export default function AICreateBlog() {
             </div>
           </div>
         </div>
-      </div>
-
+      </PageContainer>{" "}
+      {/* Close PageContainer */}
       {/* Pexels Image Search Modal */}
       {showImageSearch && (
         <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">

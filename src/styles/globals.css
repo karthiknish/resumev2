@@ -120,14 +120,13 @@ iframe, canvas, video {
   contain: content; /* Improve paint performance */
   will-change: opacity, transform; /* Hint to browser for optimization */
   isolation: isolate; /* Create a new stacking context */
-  /* Faster transitions */
-  transition-duration: 0.2s !important;
+  /* transition-duration removed - let framer-motion handle it */
 }
 
 /* Prevent FOUC (Flash of Unstyled Content) during page transitions */
-html.js-page-transitioning {
-  overflow: hidden;
-}
+/* html.js-page-transitioning { */
+  /* overflow: hidden; */ /* Commented out - might clip animations */
+/* } */
 
 /* Improve animation performance */
 .page-transition-wrapper > * {
@@ -135,8 +134,7 @@ html.js-page-transitioning {
   backface-visibility: hidden; /* Prevent flickering in some browsers */
   transform: translateZ(0); /* Force GPU acceleration */
   -webkit-font-smoothing: antialiased; /* Improve text rendering */
-  /* Faster transitions */
-  transition-duration: 0.2s !important;
+  /* transition-duration removed - let framer-motion handle it */
 }
 
 /* Performance optimizations for images */

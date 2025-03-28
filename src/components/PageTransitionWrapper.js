@@ -169,6 +169,7 @@ function PageTransitionWrapper({
         // Simplified style properties
         style={{
           willChange: "opacity, transform",
+          overflow: "visible", // Ensure overflow doesn't clip animation
         }}
       >
         {children}

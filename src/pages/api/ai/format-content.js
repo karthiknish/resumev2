@@ -1,219 +1,5 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
-import TurndownService from "turndown";
-
-// Initialize TurnDown service with specific options
-const turndownService = new TurndownService({
-  headingStyle: "atx",
-  codeBlockStyle: "fenced",
-  emDelimiter: "*",
-  bulletListMarker: "-",
-  hr: "---",
-});
-
-// Simple function to format markdown content
-function formatMarkdown(content) {
-  // First, strip excessive backslashes
-  let formatted = content.replace(/\\{2,}/g, "");
-
-  // Remove any backslashes that aren't needed for escaping
-  formatted = formatted.replace(/\\([^*#_`])/g, "$1");
-
-  // Normalize line breaks (convert \r\n to \n)
-  formatted = formatted.replace(/\r\n/g, "\n");
-
-  // Ensure consistent line breaks by first normalizing multiple breaks
-  formatted = formatted.replace(/\n{3,}/g, "\n\n");
-
-  // Split into lines for processing
-  const lines = formatted.split("\n");
-  const result = [];
-  let inCodeBlock = false;
-  let inList = false;
-  let previousLineType = null; // To track what kind of line we just processed
-
-  for (let i = 0; i < lines.length; i++) {
-    let line = lines[i].trim();
-    let currentLineType = "text"; // Default line type
-
-    // Skip completely empty lines but maintain paragraph breaks
-    if (!line) {
-      // Only add an empty line if the previous line wasn't empty
-      // and we're not at the beginning of the document
-      if (result.length > 0 && result[result.length - 1] !== "") {
-        result.push("");
-      }
-      previousLineType = "empty";
-      continue;
-    }
-
-    // Handle code blocks
-    if (line.startsWith("```")) {
-      inCodeBlock = !inCodeBlock;
-      // Add an empty line before a code block if not already there
-      if (
-        inCodeBlock &&
-        result.length > 0 &&
-        result[result.length - 1] !== ""
-      ) {
-        result.push("");
-      }
-      result.push(line);
-      // Add an empty line after closing a code block
-      if (!inCodeBlock) {
-        result.push("");
-      }
-      currentLineType = "codeblock";
-      previousLineType = currentLineType;
-      continue;
-    }
-
-    // Don't process content inside code blocks
-    if (inCodeBlock) {
-      result.push(line);
-      currentLineType = "codeblock-content";
-      previousLineType = currentLineType;
-      continue;
-    }
-
-    // Process headings - ensure proper format
-    if (line.match(/^#{1,6}\s/)) {
-      const headingMatch = line.match(/^(#{1,6})\s*(.*)/);
-      if (headingMatch) {
-        // Add an empty line before heading if not at start and previous line isn't empty
-        if (result.length > 0 && result[result.length - 1] !== "") {
-          result.push("");
-        }
-
-        const [_, hashes, text] = headingMatch;
-        result.push(`${hashes} ${text}`);
-
-        // Always add empty line after heading
-        result.push("");
-        currentLineType = "heading";
-      }
-      previousLineType = currentLineType;
-      continue;
-    }
-
-    // Fix malformed headings (no space after #)
-    if (line.match(/^#{1,6}[^#\s]/)) {
-      // Check if it's a hashtag or a heading
-      if (line.match(/^#+[a-zA-Z0-9]+$/) && line.length < 20) {
-        // It's a hashtag, not a heading
-        result.push(line.replace(/^#/, "\\#"));
-        currentLineType = "text";
-      } else {
-        // It's a malformed heading
-        // Add an empty line before heading if not at start and previous line isn't empty
-        if (result.length > 0 && result[result.length - 1] !== "") {
-          result.push("");
-        }
-
-        const headingLevel = line.match(/^#+/)[0].length;
-        const headingText = line.substring(headingLevel).trim();
-        result.push(`${"#".repeat(headingLevel)} ${headingText}`);
-
-        // Always add empty line after heading
-        result.push("");
-        currentLineType = "heading";
-      }
-      previousLineType = currentLineType;
-      continue;
-    }
-
-    // Handle list items
-    if (line.match(/^[-*+]\s/) || line.match(/^\d+\.\s/)) {
-      // If this is the first list item and previous line isn't empty, add an empty line
-      if (
-        !inList &&
-        previousLineType !== "empty" &&
-        result.length > 0 &&
-        result[result.length - 1] !== ""
-      ) {
-        result.push("");
-      }
-
-      result.push(line);
-      inList = true;
-      currentLineType = "list";
-      previousLineType = currentLineType;
-      continue;
-    } else if (inList) {
-      // End of list - add an empty line if not already there
-      if (result[result.length - 1] !== "") {
-        result.push("");
-      }
-      inList = false;
-    }
-
-    // Handle blockquotes
-    if (line.startsWith(">")) {
-      // If this is the first blockquote line and previous line isn't empty, add an empty line
-      if (
-        previousLineType !== "blockquote" &&
-        previousLineType !== "empty" &&
-        result.length > 0 &&
-        result[result.length - 1] !== ""
-      ) {
-        result.push("");
-      }
-
-      result.push(line);
-      currentLineType = "blockquote";
-      previousLineType = currentLineType;
-      continue;
-    }
-
-    // Handle horizontal rules
-    if (line.match(/^(\*{3,}|-{3,}|_{3,})$/)) {
-      // Add an empty line before horizontal rule if not already there
-      if (result.length > 0 && result[result.length - 1] !== "") {
-        result.push("");
-      }
-
-      result.push(line);
-
-      // Add an empty line after horizontal rule
-      result.push("");
-      currentLineType = "hr";
-      previousLineType = currentLineType;
-      continue;
-    }
-
-    // Regular paragraph
-    // If transitioning from a different block type, ensure there's a line break
-    if (
-      previousLineType !== "text" &&
-      previousLineType !== "empty" &&
-      result.length > 0 &&
-      result[result.length - 1] !== ""
-    ) {
-      result.push("");
-    }
-
-    result.push(line);
-
-    // Add empty line after paragraph if not at end and not in a list
-    if (i < lines.length - 1 && !inList) {
-      // Only add line break if next line isn't empty
-      const nextLine = lines[i + 1].trim();
-      if (
-        nextLine &&
-        !nextLine.match(/^[-*+]\s/) &&
-        !nextLine.match(/^\d+\.\s/)
-      ) {
-        result.push("");
-      }
-    }
-
-    currentLineType = "text";
-    previousLineType = currentLineType;
-  }
-
-  // Join lines and return
-  return result.join("\n").trim();
-}
 
 // Main handler function
 export default async function handler(req, res) {
@@ -223,6 +9,16 @@ export default async function handler(req, res) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
+  // Basic admin check
+  const isAdmin =
+    session?.user?.role === "admin" ||
+    session?.user?.isAdmin === true ||
+    session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+
+  if (!isAdmin) {
+    return res.status(403).json({ message: "Forbidden" });
+  }
+
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
   }
@@ -230,23 +26,82 @@ export default async function handler(req, res) {
   try {
     const { content } = req.body;
 
-    if (!content) {
+    if (!content || typeof content !== "string" || !content.trim()) {
       return res.status(400).json({
         success: false,
-        message: "Content is required",
+        message: "Content is required and must be a non-empty string",
       });
     }
 
-    // Step 1: Clean the content of excessive backslashes
-    const cleanedContent = content
-      .replace(/\\{2,}/g, "")
-      .replace(/\\([^*#_`])/g, "$1");
+    // Step 1: Basic cleaning (optional, but can help)
+    // Normalize line breaks and remove excessive whitespace/backslashes if needed
+    let cleanedContent = content
+      .replace(/\r\n/g, "\n") // Normalize line breaks
+      .replace(/\\{2,}/g, "\\") // Reduce multiple backslashes
+      .replace(/ +\n/g, "\n") // Trim trailing spaces on lines
+      .trim();
 
-    // Step 2: Convert HTML to Markdown if present
-    const markdown = turndownService.turndown(cleanedContent);
+    // Step 2: Call Gemini API for formatting refinement
+    const formattingPrompt = `
+      Review the following markdown text and improve its formatting for readability and structure. Apply these rules:
+      - Ensure consistent use of markdown headings (#, ##, ###). Identify logical sections and apply appropriate heading levels if missing.
+      - Break down long paragraphs into shorter ones (2-5 sentences).
+      - Use bullet points (-) or numbered lists (1.) for items that should be lists.
+      - Apply **bold text** for emphasis on key terms or important phrases where appropriate.
+      - Ensure proper spacing around headings, lists, and paragraphs (usually one blank line).
+      - Correct any minor markdown syntax errors.
+      - Do NOT add any introductory or concluding remarks, just return the formatted markdown content.
 
-    // Step 3: Format the markdown for better readability
-    const formattedMarkdown = formatMarkdown(markdown);
+      Here is the markdown content to format:
+      ---
+      ${cleanedContent}
+      ---
+    `;
+
+    const formatResponse = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": process.env.GEMINI_API_KEY,
+        },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: formattingPrompt }] }],
+          generationConfig: {
+            temperature: 0.3, // Lower temperature for more deterministic formatting
+            maxOutputTokens: 8192,
+          },
+        }),
+      }
+    );
+
+    const formatData = await formatResponse.json();
+
+    if (!formatResponse.ok) {
+      console.error("Gemini Formatting API Error:", formatData);
+      throw new Error(
+        formatData?.error?.message ||
+          `Gemini formatting request failed with status ${formatResponse.status}`
+      );
+    }
+
+    if (
+      !formatData.candidates ||
+      !formatData.candidates[0] ||
+      !formatData.candidates[0].content ||
+      !formatData.candidates[0].content.parts ||
+      !formatData.candidates[0].content.parts[0]
+    ) {
+      console.error(
+        "Unexpected Gemini formatting response structure:",
+        formatData
+      );
+      throw new Error("Invalid response structure from AI formatting model.");
+    }
+
+    const formattedMarkdown =
+      formatData.candidates[0].content.parts[0].text.trim();
 
     return res.status(200).json({
       success: true,

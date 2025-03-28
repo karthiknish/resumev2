@@ -88,6 +88,7 @@ const HomeScreen = () => {
     },
   ];
   const items = [
+    // This is the FAQ items array
     {
       id: "1",
       title: "What services do you offer?",
@@ -218,7 +219,6 @@ const HomeScreen = () => {
             <meta name="author" content="Karthik Nishanth" />
             <link rel="canonical" href="https://karthiknish.com/" />
           </Head>
-
           <motion.div
             initial={{ x: -100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -402,7 +402,6 @@ const HomeScreen = () => {
               </div>
             </div>
           </motion.div>
-
           {/* New Section: Why Choose a Freelancer? */}
           <motion.section
             initial={{ y: 100, opacity: 0 }}
@@ -478,7 +477,6 @@ const HomeScreen = () => {
               </div>
             </div>
           </motion.section>
-
           {/* New Tech Stack Section */}
           <motion.section
             initial={{ y: 100, opacity: 0 }}
@@ -519,7 +517,6 @@ const HomeScreen = () => {
               </div>
             </div>
           </motion.section>
-
           <motion.section
             initial={{ y: 100, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
@@ -538,6 +535,7 @@ const HomeScreen = () => {
                 Featured Projects
               </motion.h2>
               {(() => {
+                // Original itemsSample for BentoGrid
                 const itemsSample = [
                   {
                     title: "E-commerce Platform",
@@ -583,8 +581,7 @@ const HomeScreen = () => {
               })()}
             </div>
           </motion.section>
-
-          <Faq />
+          <Faq items={items} /> {/* Pass FAQ items */}
           <div className="bg-black mx-auto px-8 py-16">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -602,5 +599,3 @@ const HomeScreen = () => {
 };
 
 export default HomeScreen;
-
-

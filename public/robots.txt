@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /admin/ # Disallow crawling of admin pages
 
-Sitemap: https://www.yourdomain.co.uk/sitemap.xml
+Sitemap: https://karthiknish.com/sitemap.xml # Updated domain
