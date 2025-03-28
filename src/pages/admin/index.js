@@ -4,6 +4,7 @@ import {
   AiOutlineCalendar,
   AiOutlineMail, // Icon for Contacts tab
   AiOutlineUser, // Icon for Users tab
+  AiOutlineThunderbolt, // Icon for Bytes tab
 } from "react-icons/ai";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -28,7 +29,8 @@ import DashboardTab from "@/components/admin/tabs/DashboardTab";
 import CalendarTab from "@/components/admin/tabs/CalendarTab";
 import ChatHistoryTab from "@/components/admin/tabs/ChatHistoryTab";
 import ContactsTab from "@/components/admin/tabs/ContactsTab";
-import UsersTab from "@/components/admin/tabs/UsersTab"; // Import the new UsersTab
+import UsersTab from "@/components/admin/tabs/UsersTab";
+import BytesTab from "@/components/admin/tabs/BytesTab"; // Import the new BytesTab
 
 // Mock chat data for demonstration
 
@@ -512,8 +514,8 @@ function AdminDashboard() {
             className="mb-8"
           >
             <SlideUp delay={0.4}>
-              {/* Update grid columns to 5 */}
-              <TabsList className="grid w-full grid-cols-5 mb-4">
+              {/* Update grid columns to 6 */}
+              <TabsList className="grid w-full grid-cols-6 mb-4">
                 <TabsTrigger
                   value="dashboard"
                   className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
@@ -545,6 +547,13 @@ function AdminDashboard() {
                   className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
                 >
                   <AiOutlineUser className="mr-2" /> Users
+                </TabsTrigger>
+                {/* Add Bytes Tab Trigger */}
+                <TabsTrigger
+                  value="bytes"
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                >
+                  <AiOutlineThunderbolt className="mr-2" /> Bytes
                 </TabsTrigger>
               </TabsList>
             </SlideUp>
@@ -593,6 +602,11 @@ function AdminDashboard() {
               {/* Users Tab Content */}
               <TabsContent value="users" key="users">
                 <UsersTab />
+              </TabsContent>
+
+              {/* Bytes Tab Content */}
+              <TabsContent value="bytes" key="bytes">
+                <BytesTab />
               </TabsContent>
             </AnimatePresence>
           </Tabs>
