@@ -52,8 +52,8 @@ export default async function handler(req, res) {
       - **Paragraphs:** Break down long paragraphs (more than 5-6 sentences) into shorter, more readable ones. Ensure single blank lines separate paragraphs.
       - **Lists:** Convert sequences of related items into bulleted (-) or numbered (1.) lists where appropriate. Ensure correct list item indentation and spacing.
       - **Emphasis:** Apply **bold text** to key terms, concepts, or phrases for emphasis, but use it sparingly and strategically. Do not bold entire sentences or paragraphs. Use *italic text* for minor emphasis if needed.
-      - **Code Blocks:** Ensure code snippets are enclosed in proper markdown code blocks (\`\`\`language\ncode\n\`\`\`) with language identifiers if possible.
-      - **Links & Images:** Ensure markdown links `[text](url)` and images `![alt](url)` are correctly formatted.
+      - **Code Blocks:** Ensure code snippets are enclosed in proper markdown code blocks (\`\`\`language\\ncode\\n\`\`\`) with language identifiers if possible.
+      - **Links & Images:** Ensure markdown links \`[text](url)\` and images \`![alt](url)\` are correctly formatted.
       - **Whitespace:** Remove excessive blank lines (more than one consecutive blank line). Ensure consistent spacing around punctuation. Trim leading/trailing whitespace from lines.
       - **Consistency:** Maintain a consistent style throughout the document.
 
