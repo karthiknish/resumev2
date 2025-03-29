@@ -26,28 +26,32 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Construct the prompt for Gemini
+    // Construct the improved prompt for Gemini
     const prompt = `
-      Provide a list of 3-5 current trending news headlines or topics in the web development and technology sector.
-      For each item, provide a very brief (1-2 sentence) summary.
-      Format the output strictly as a numbered list, with the headline/topic first, followed by the summary on the next line. Separate items with a blank line.
+      Act as a tech news curator. Provide a list of 3-5 current (within the last few days) and significant trending news headlines or topics in the web development and general technology sector. Focus on topics relevant to developers and tech professionals (e.g., new framework releases, major updates, security news, AI advancements in tech).
+
+      For each item:
+      1. Provide a concise, informative headline.
+      2. Provide a very brief (1-2 sentence) summary explaining the core news item.
+
+      Format the output strictly as a numbered list, with the headline first, followed by the summary on the next line. Separate items with a blank line.
 
       Example:
-      1. New JavaScript Framework Released
-      A new framework focusing on performance has gained traction among developers.
+      1. React Conf 2025 Key Announcements
+      Highlights include the new concurrent features and server components updates.
 
-      2. AI Integration in Code Editors
-      Major code editors are adding AI-powered features for code completion and debugging.
+      2. Major Browser Engine Update Impacts CSS
+      A recent update affects how certain CSS properties are rendered, requiring developer attention.
 
-      3. Serverless Architecture Adoption Grows
-      More companies are moving towards serverless solutions for scalability and cost savings.
+      3. AI Code Assistant Market Heats Up
+      New players challenge existing AI coding tools with advanced features.
 
-      Do not include any extra text, explanations, or markdown formatting other than the numbering.
+      Do not include any extra text, explanations, or markdown formatting other than the numbering. Ensure the news is recent and relevant.
     `;
 
     // Use the utility function
     const generationConfig = {
-      temperature: 0.6, // Slightly more factual for news
+      temperature: 0.5, // More factual for news headlines/summaries
       maxOutputTokens: 1000,
     };
     const newsText = await callGemini(prompt, generationConfig);

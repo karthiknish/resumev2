@@ -2,7 +2,8 @@
 
 // List of models to try in order of preference/capability
 const modelOptions = [
-  // "gemini-2.0-flash", // Add newer models when available and tested
+  "gemini-2.5-pro-03-25",
+  "gemini-2.0-flash", // Add newer models when available and tested
   "gemini-1.5-pro", // More capable model
   "gemini-1.5-flash", // Faster model
   "gemini-1.0-pro", // Older pro model
@@ -29,12 +30,16 @@ export async function callGemini(prompt, generationConfigOverride = {}) {
   for (const model of modelOptions) {
     try {
       // Determine API version based on model name (adjust if needed for future models)
-      const apiVersion = model.startsWith("gemini-1.0") ? "v1beta" : "v1beta"; // Stick to v1beta for now for consistency unless specific features needed
+      const apiVersion = model.startsWith(
+        "gemini-2.5-pro-03-25" || "gemini-2.0-flash"
+      )
+        ? "v1beta"
+        : "v1"; // Use v1 for newer models, v1beta for older ones
       const geminiUrl = `https://generativelanguage.googleapis.com/${apiVersion}/models/${model}:generateContent`;
 
       console.log(
-        `Attempting Gemini call with model: ${model} via ${geminiUrl}`
-      ); // Log model being tried
+        `Attempting Gemini call with model: ${model} via ${apiVersion} API`
+      ); // Log model being tried with API version
 
       // Default generation config - merge with overrides
       const generationConfig = {

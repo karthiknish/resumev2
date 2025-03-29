@@ -15,42 +15,42 @@ export default async function handler(req, res) {
     }
 
     // Get the API key from environment variables
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY; // Still needed for the utility function check
 
     if (!apiKey) {
       console.error("GEMINI_API_KEY is not defined in environment variables");
       return res.status(500).json({ error: "API configuration error" });
     }
 
-    // Website context information to help the AI understand the site
+    // Enhanced Website context information
     const websiteContext = `
-You are a helpful assistant for Karthik Nishanth's portfolio website. Here's important information about Karthik and the website:
+You are a friendly and professional AI assistant for Karthik Nishanth's portfolio website (karthiknish.com). Your goal is to help users find information and understand Karthik's services.
 
-ABOUT KARTHIK:
-- Karthik Nishanth is a Full Stack Developer and Cloud Specialist based in the UK
-- He specializes in React, Node.js, Next.js, TypeScript, and cloud technologies
-- He has extensive experience in building modern web applications and cloud solutions
-- He offers web development services, consultations, and technical expertise
+**About Karthik Nishanth:**
+*   **Role:** Full Stack Developer & Cloud Specialist based in Liverpool, UK.
+*   **Expertise:** Modern web development (React, Next.js, Node.js, TypeScript), Cloud platforms (AWS, Azure, Vercel), API development, Database design (MongoDB, PostgreSQL), Web performance optimization, SEO best practices.
+*   **Services:** Custom web application development, Cloud architecture & deployment, Technical consulting, API integration, Website performance audits.
+*   **Approach:** Focuses on building scalable, maintainable, and high-performance solutions tailored to client needs. Bridges the gap between technical implementation and business goals.
 
-WEBSITE SECTIONS:
-- Portfolio: Showcases Karthik's development projects and case studies
-- Services: Web development, cloud solutions, technical consultations
-- Blog: Technical articles and insights on modern web technologies
-- Contact: Ways to reach out for collaboration or inquiries
+**Website Structure:**
+*   **Homepage (/):** Overview of services, skills, and value proposition.
+*   **About (/about):** More detailed background on Karthik's experience and philosophy.
+*   **Services (/services):** Detailed breakdown of offered services.
+*   **Portfolio/Projects (/projects):** Showcases past work with descriptions and links.
+*   **Blog (/blog):** Contains technical articles, tutorials, and insights written by Karthik.
+*   **Bytes (/bytes):** Short-form updates, news snippets, quick thoughts.
+*   **Contact (/contact):** Form and information for getting in touch.
+*   **Resources (/resources):** Curated list of useful tools and articles.
 
-ACCEPTABLE TOPICS TO DISCUSS:
-- Questions about Karthik's professional background and skills
-- Inquiries about his web development services and pricing
-- Technical questions related to web development, cloud computing, and programming
-- Information about contacting Karthik or working with him
-- Details about his portfolio projects and case studies
-- Questions about website functionality or navigation
-
-YOUR ROLE:
-- Provide helpful, accurate information about Karthik and his services
-- Be friendly and professional in your responses
-- Direct users to the appropriate sections of the website when relevant
-- Assist users in connecting with Karthik for potential collaborations
+**Your Interaction Style:**
+*   Be helpful, polite, and professional.
+*   Answer questions accurately based *only* on the information provided here about Karthik and the website content.
+*   If asked about specific project details not listed, state that detailed case studies are on the portfolio page and offer to link there.
+*   If asked for pricing, explain that pricing depends on project scope and encourage the user to get in touch via the contact page for a custom quote.
+*   If asked about topics outside Karthik's expertise or the website's scope (e.g., unrelated tech, personal life), politely state that you can only assist with information related to Karthik's professional services and website content.
+*   Guide users to relevant pages (e.g., "You can find more details on the /services page.").
+*   Keep responses concise but informative.
+*   **Strictly avoid making up information not provided here.**
 `;
 
     // Guardrails for the chatbot - define topics to avoid
@@ -72,6 +72,7 @@ YOUR ROLE:
       { term: "hacking", category: "security" },
       { term: "password", category: "security" },
       { term: "illegal", category: "security" },
+      // Add more specific terms if needed
     ];
 
     // Check if the prompt contains restricted topics
@@ -86,62 +87,60 @@ YOUR ROLE:
         ...new Set(matchedRestrictions.map((r) => r.category)),
       ];
 
-      let restrictionMessage = "I'm sorry, but I can't assist with ";
+      let restrictionMessage = "I'm sorry, but I cannot assist with ";
+      const messages = [];
+      if (categories.includes("privacy"))
+        messages.push("requests for personal information");
+      if (categories.includes("financial"))
+        messages.push("financial or payment-related questions");
+      if (categories.includes("security"))
+        messages.push("security-sensitive topics");
+      if (categories.includes("off-topic"))
+        messages.push(
+          "topics unrelated to web development, technology, or Karthik's services"
+        );
 
-      if (categories.includes("privacy")) {
-        restrictionMessage += "requests for personal information. ";
-      }
-      if (categories.includes("financial")) {
-        restrictionMessage += "financial or payment-related questions. ";
-      }
-      if (categories.includes("security")) {
-        restrictionMessage += "security-sensitive topics. ";
-      }
-      if (categories.includes("off-topic")) {
-        restrictionMessage +=
-          "topics unrelated to web development, technology, or Karthik's services. ";
-      }
-
+      restrictionMessage += messages.join(" or ") + ". ";
       restrictionMessage +=
         "I'm here to help with questions about Karthik's services, web development, and technical topics. How else can I assist you today?";
 
       return res.status(200).json({ response: restrictionMessage });
     }
 
-    // Construct the full prompt including context and history
-    // Note: The callGemini utility expects a single string prompt.
-    // We need to format the history and context appropriately within that string.
-    // Alternatively, modify callGemini to accept history object.
-    // For now, let's create a single string prompt.
-
-    let fullPrompt = websiteContext + "\n\nConversation History:\n";
+    // Construct the full prompt including context and history for the utility function
+    let fullPrompt = websiteContext + "\n\n**Conversation History:**\n";
+    // Format history for the single prompt string
     chatHistory.forEach((msg) => {
       fullPrompt += `${msg.role === "user" ? "User" : "Assistant"}: ${
         msg.parts[0].text
       }\n`;
     });
-    fullPrompt += `User: ${prompt}\nAssistant:`; // Add the latest user prompt
+    fullPrompt += `\n**Current User Query:**\nUser: ${prompt}\n\n**Your Response:**\nAssistant:`; // Add the latest user prompt clearly marked
 
-    // Define generation config and safety settings for the chatbot
+    // Define generation config for the chatbot
     const generationConfig = {
-      temperature: 0.7,
+      temperature: 0.7, // Balanced temperature for helpful conversation
       topK: 40,
       topP: 0.95,
-      maxOutputTokens: 1024,
+      maxOutputTokens: 1024, // Allow for reasonably detailed answers
     };
-    // Note: Safety settings are not directly supported by the current callGemini utility.
-    // This would require modifying callGemini or handling safety post-response if needed.
-    // For now, we rely on default safety or potential errors thrown by the API.
+    // Note: Safety settings are handled by the Gemini API itself based on project settings,
+    // but the utility function doesn't explicitly pass them. Relying on API defaults or errors.
 
     // Call the utility function
     const responseText = await callGemini(fullPrompt, generationConfig);
 
     // Return the response to the client
     return res.status(200).json({ response: responseText });
+
   } catch (error) {
     console.error("Error handling Gemini request:", error);
+    // Provide a generic error message to the user
+    let userErrorMessage =
+      "I'm sorry, but I encountered an technical issue and cannot respond right now. Please try again later.";
+    // Log the specific error for debugging but don't expose details to the user
     return res
       .status(500)
-      .json({ error: "Internal server error", message: error.message });
+      .json({ error: userErrorMessage, details: error.message }); // Keep details internal
   }
 }

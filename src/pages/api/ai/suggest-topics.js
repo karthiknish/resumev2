@@ -29,19 +29,20 @@ export default async function handler(req, res) {
     // Optional: Could accept a 'theme' or 'category' in req.body later
     // const { theme } = req.body;
 
-    // Construct the prompt for Gemini
+    // Construct the improved prompt for Gemini
     const prompt = `
-      Suggest 5 engaging and relevant blog post topics suitable for a web development / tech blog.
-      Consider current trends, common challenges, or interesting technologies.
+      Act as a content strategist for a web development blog. Suggest 5 engaging and relevant blog post topics or titles suitable for an audience of developers, tech enthusiasts, and potential clients.
+      Focus on current trends, practical tutorials, common challenges, insightful comparisons, or interesting technologies within web development (React, Next.js, Node.js, Cloud, etc.).
+      Ensure the topics are specific enough to be covered well in a blog post.
 
-      Format the output strictly as a numbered list, with each topic on a new line:
-      1. [Topic 1]
-      2. [Topic 2]
-      3. [Topic 3]
-      4. [Topic 4]
-      5. [Topic 5]
+      Format the output strictly as a numbered list, with each topic/title on a new line:
+      1. [Topic/Title 1]
+      2. [Topic/Title 2]
+      3. [Topic/Title 3]
+      4. [Topic/Title 4]
+      5. [Topic/Title 5]
 
-      Do not include any extra text, explanations, or markdown formatting.
+      Do not include any extra text, explanations, or markdown formatting. Just the numbered list of topics/titles.
     `;
 
     // Use the utility function

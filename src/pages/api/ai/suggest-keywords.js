@@ -34,18 +34,20 @@ export default async function handler(req, res) {
       });
     }
 
-    // Construct the prompt for Gemini
+    // Construct the improved prompt for Gemini
     const prompt = `
-      Given the blog post topic "${topic}", suggest 5-10 relevant SEO keywords or keyphrases.
-      Focus on terms that people might search for related to this topic.
-      Return the keywords as a simple comma-separated list, with no extra text or explanation.
-      Example: keyword1, keyword phrase 2, keyword3
+      Act as an SEO specialist. For the blog post topic "${topic}", suggest 7-10 relevant SEO keywords and keyphrases.
+      Include a mix of short-tail (e.g., "web development") and long-tail keywords (e.g., "best practices for Next.js SEO").
+      Focus on terms that have reasonable search volume and relevance to the topic.
+
+      Return the keywords strictly as a simple comma-separated list, with no extra text, explanations, numbering, or formatting.
+      Example: keyword1, keyword phrase 2, keyword3, long tail keyword phrase 4
     `;
 
     // Use the utility function
     const generationConfig = {
-      temperature: 0.5, // Slightly more focused for keyword suggestion
-      maxOutputTokens: 200,
+      temperature: 0.5, // More focused for keyword suggestion
+      maxOutputTokens: 250, // Allow slightly more tokens for longer phrases
     };
     const suggestedKeywordsText = await callGemini(prompt, generationConfig);
 

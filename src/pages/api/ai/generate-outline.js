@@ -34,12 +34,12 @@ export default async function handler(req, res) {
       });
     }
 
-    // Construct the prompt for Gemini
+    // Construct the improved prompt for Gemini
     const prompt = `
-      Generate a blog post outline for the topic: "${topic}".
+      Act as an expert blog post outliner. Generate a logical and comprehensive blog post outline for the topic: "${topic}".
       The outline should include:
-      1. An engaging and SEO-friendly Title.
-      2. 3-5 relevant main section Headings.
+      1. An engaging and SEO-friendly Title that accurately reflects the topic.
+      2. 3-5 relevant main section Headings that cover the key aspects of the topic in a logical flow. Headings should be descriptive and clear.
 
       Format the output strictly as follows, with each item on a new line:
       Title: [Generated Title]
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
       Heading: [Generated Heading 3]
       ... (up to 5 headings)
 
-      Do not include any extra text, explanations, or markdown formatting like #.
+      Do not include any introduction, conclusion, summaries, explanations, markdown formatting (#), or any text other than the "Title:" and "Heading:" lines.
     `;
 
     // Use the utility function
@@ -64,10 +64,15 @@ export default async function handler(req, res) {
     const headings = [];
 
     lines.forEach((line) => {
-      if (line.toLowerCase().startsWith("title:")) {
-        title = line.substring(6).trim();
-      } else if (line.toLowerCase().startsWith("heading:")) {
-        headings.push(line.substring(8).trim());
+      const trimmedLine = line.trim(); // Trim each line
+      if (trimmedLine.toLowerCase().startsWith("title:")) {
+        title = trimmedLine.substring(6).trim();
+      } else if (trimmedLine.toLowerCase().startsWith("heading:")) {
+        const heading = trimmedLine.substring(8).trim();
+        if (heading) {
+          // Ensure heading is not empty after trimming
+          headings.push(heading);
+        }
       }
     });
 
@@ -78,6 +83,7 @@ export default async function handler(req, res) {
         outlineText
       );
       // Attempt a simpler split or return an error/default
+      // For now, just return empty headings
     }
 
     return res.status(200).json({

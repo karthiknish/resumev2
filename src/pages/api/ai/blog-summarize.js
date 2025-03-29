@@ -12,30 +12,32 @@ export default async function handler(req, res) {
     const { content, title } = req.body;
 
     if (!content || typeof content !== "string" || !content.trim()) {
-      return res
-        .status(400)
-        .json({
-          error: "Blog content is required and must be a non-empty string",
-        });
+      return res.status(400).json({
+        error: "Blog content is required and must be a non-empty string",
+      });
     }
 
-    // Create a prompt for blog summarization
+    // Create an improved prompt for blog summarization
     const summarizationPrompt = `
-Please create a concise summary of the following blog post titled "${
-      title || "Blog Post"
-    }". 
-The summary should:
-1. Be approximately 150-200 words
-2. Capture the main points and key takeaways
-3. Be suitable for reading aloud as audio content
-4. Use simple, clear language that works well for speech
+      Act as a skilled content summarizer. Create a concise and engaging summary of the following blog post${
+        title ? ` titled "${title}"` : ""
+      }.
 
-Here is the blog content to summarize:
-${content}
-`;
+      **Instructions:**
+      1.  **Length:** The summary should be approximately 150-200 words.
+      2.  **Core Content:** Capture the main points, key arguments, and essential takeaways of the original post accurately.
+      3.  **Clarity for Audio:** Write in simple, clear language suitable for reading aloud as an audio summary. Avoid complex jargon where possible or explain it briefly. Use shorter sentences and clear transitions.
+      4.  **Engagement:** Maintain an informative and slightly engaging tone, similar to a brief news report or abstract.
+      5.  **Format:** Output the summary as a single block of text (1-2 paragraphs). Do not include headings, bullet points, or any markdown formatting. Do not add introductory or concluding phrases like "This blog post discusses..." or "In summary...". Just provide the summary text itself.
+
+      **Blog Content to Summarize:**
+      ---
+      ${content}
+      ---
+    `;
     // Define specific generation config for summarization
     const generationConfig = {
-      temperature: 0.2, // Lower temperature for more factual output
+      temperature: 0.3, // Lower temperature for factual summary
       maxOutputTokens: 512, // Limit summary length
     };
 
@@ -43,10 +45,6 @@ ${content}
     const summaryText = await callGemini(summarizationPrompt, generationConfig);
 
     // Return the summary to the client
-    // Note: The callGemini function throws an error if all models fail,
-    // so we don't need the complex error handling loop here.
-    // Safety blocks might still need specific handling if the utility doesn't cover them.
-    // For now, assuming callGemini returns the text or throws.
     return res.status(200).json({ summary: summaryText });
   } catch (error) {
     console.error("Error handling blog summarization:", error);
