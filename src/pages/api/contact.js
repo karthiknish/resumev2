@@ -1,5 +1,4 @@
 import nodemailer from "nodemailer";
-import nodemailer from "nodemailer";
 import dbConnect from "@/lib/dbConnect";
 import { createContactSubmission } from "@/lib/contactService"; // Import the service function
 
