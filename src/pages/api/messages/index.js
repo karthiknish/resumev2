@@ -24,7 +24,8 @@ export default async function handler(req, res) {
 
   // Connect to the database
   await dbConnect();
-  const Message = require("@/models/Message").default;
+  // Use ES module import for the Mongoose model
+  const Message = (await import("@/models/Message")).default;
 
   // Handle GET method to retrieve messages
   if (req.method === "GET") {

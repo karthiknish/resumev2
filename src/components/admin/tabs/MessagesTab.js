@@ -24,7 +24,7 @@ const formatDate = (dateString) => {
 };
 
 export default function MessagesTab() {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([]); // Explicitly initialize as empty array
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -58,6 +58,7 @@ export default function MessagesTab() {
           isRead: msg.isRead || false,
         }));
         setMessages(formattedMessages);
+        console.log("Fetched and formatted messages:", formattedMessages); // Add console log
       } else {
         setMessages([]);
         setError("No messages found or invalid response format");

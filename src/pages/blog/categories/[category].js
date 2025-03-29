@@ -7,9 +7,7 @@ import { format } from "date-fns";
 import { motion } from "framer-motion";
 import { FaArrowLeft, FaTag, FaClock } from "react-icons/fa";
 
-// Components
-import Navbar from "../../../components/Navbar";
-import Footer from "../../../components/Footer";
+
 import Loader from "../../../components/Loader";
 
 export default function CategoryPage() {
@@ -59,8 +57,6 @@ export default function CategoryPage() {
           content={`Blog posts in the ${category} category`}
         />
       </Head>
-
-      <Navbar />
 
       <main className="container mx-auto px-4 py-8 min-h-screen">
         <div className="mb-8">
@@ -133,8 +129,6 @@ export default function CategoryPage() {
           )}
         </div>
       </main>
-
-      <Footer />
     </>
   );
 }
