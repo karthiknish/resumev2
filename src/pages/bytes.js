@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, createRef } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { format } from "date-fns";
@@ -14,10 +14,86 @@ function BytesPage() {
   const [bytes, setBytes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0); // Index of the currently focused byte
+  const byteRefs = useRef([]); // Refs for each byte card element
+  const containerRef = useRef(null); // Ref for the container handling touch events
+  const touchStartY = useRef(0); // Store touch start Y position
 
+  // Effect to fetch bytes on mount
   useEffect(() => {
     fetchBytes();
   }, []);
+
+  // Effect to initialize or update refs when bytes data changes
+  useEffect(() => {
+    byteRefs.current = bytes.map((_, i) => byteRefs.current[i] ?? createRef());
+  }, [bytes]);
+
+  // Function to scroll to a specific byte index
+  const scrollToByte = (index) => {
+    if (byteRefs.current[index] && byteRefs.current[index].current) {
+      byteRefs.current[index].current.scrollIntoView({
+        behavior: "smooth",
+        block: "center", // Try to center the item vertically
+      });
+    }
+  };
+
+  // Effect to handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (bytes.length === 0) return;
+
+      let newIndex = activeIndex;
+      if (event.key === "ArrowDown") {
+        event.preventDefault(); // Prevent default page scroll
+        newIndex = Math.min(activeIndex + 1, bytes.length - 1);
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault(); // Prevent default page scroll
+        newIndex = Math.max(activeIndex - 1, 0);
+      }
+
+      if (newIndex !== activeIndex) {
+        setActiveIndex(newIndex);
+        scrollToByte(newIndex);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [activeIndex, bytes.length]); // Re-run if activeIndex or bytes length changes
+
+  // Touch event handlers for swipe navigation
+  const handleTouchStart = (e) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (bytes.length === 0 || !touchStartY.current) return;
+
+    const touchEndY = e.changedTouches[0].clientY;
+    const deltaY = touchStartY.current - touchEndY; // Positive for swipe up, negative for swipe down
+    const swipeThreshold = 50; // Minimum pixels to be considered a swipe
+
+    let newIndex = activeIndex;
+
+    if (deltaY > swipeThreshold) {
+      // Swiped Up (Next byte)
+      newIndex = Math.min(activeIndex + 1, bytes.length - 1);
+    } else if (deltaY < -swipeThreshold) {
+      // Swiped Down (Previous byte)
+      newIndex = Math.max(activeIndex - 1, 0);
+    }
+
+    if (newIndex !== activeIndex) {
+      setActiveIndex(newIndex);
+      scrollToByte(newIndex);
+    }
+
+    touchStartY.current = 0; // Reset touch start position
+  };
 
   const fetchBytes = async () => {
     setIsLoading(true);
@@ -76,10 +152,27 @@ function BytesPage() {
           ) : error ? (
             <div className="text-center text-red-500">{error}</div>
           ) : bytes.length > 0 ? (
-            <StaggerContainer className="max-w-2xl mx-auto space-y-6">
+            <StaggerContainer
+              ref={containerRef}
+              className="max-w-2xl mx-auto space-y-6 focus:outline-none" // Added focus:outline-none
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              tabIndex={-1} // Make container focusable for potential future keyboard focus management
+            >
               {bytes.map((byte, index) => (
-                <StaggerItem key={byte._id} index={index}>
-                  <Card className="bg-gray-900 border border-gray-700 overflow-hidden">
+                <StaggerItem
+                  key={byte._id}
+                  index={index}
+                  ref={byteRefs.current[index]}
+                >
+                  {/* Added ref here */}
+                  <Card
+                    className={`bg-gray-900 border border-gray-700 overflow-hidden transition-all duration-300 ${
+                      index === activeIndex
+                        ? "ring-2 ring-blue-500 scale-105 shadow-lg" // Highlight active byte
+                        : "opacity-80 scale-100" // Dim inactive bytes slightly
+                    }`}
+                  >
                     <CardContent className="p-5">
                       {byte.imageUrl && (
                         <img

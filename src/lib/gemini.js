@@ -29,17 +29,13 @@ export async function callGemini(prompt, generationConfigOverride = {}) {
 
   for (const model of modelOptions) {
     try {
-      // Determine API version based on model name (adjust if needed for future models)
-      const apiVersion = model.startsWith(
-        "gemini-2.5-pro-03-25" || "gemini-2.0-flash"
-      )
-        ? "v1beta"
-        : "v1"; // Use v1 for newer models, v1beta for older ones
+      // Use v1beta endpoint for all current models in the list
+      const apiVersion = "v1beta";
       const geminiUrl = `https://generativelanguage.googleapis.com/${apiVersion}/models/${model}:generateContent`;
 
       console.log(
         `Attempting Gemini call with model: ${model} via ${apiVersion} API`
-      ); // Log model being tried with API version
+      ); // Log model being tried
 
       // Default generation config - merge with overrides
       const generationConfig = {
