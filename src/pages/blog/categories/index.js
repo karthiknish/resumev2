@@ -4,9 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { FaFolder, FaArrowRight } from "react-icons/fa";
 
-// Components
-import Navbar from "../../../components/Navbar";
-import Footer from "../../../components/Footer";
+
 import Loader from "../../../components/Loader";
 
 export default function CategoriesPage() {
@@ -43,8 +41,6 @@ export default function CategoriesPage() {
         <title>Blog Categories</title>
         <meta name="description" content="Browse all blog categories" />
       </Head>
-
-      <Navbar />
 
       <main className="container mx-auto px-4 py-8 min-h-screen">
         <div className="mb-8">
@@ -106,8 +102,6 @@ export default function CategoriesPage() {
           )}
         </div>
       </main>
-
-      <Footer />
     </>
   );
 }
