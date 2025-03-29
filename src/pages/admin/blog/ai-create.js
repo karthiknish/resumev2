@@ -12,10 +12,11 @@ import {
   AiOutlineCheck,
   AiOutlinePicture,
   AiOutlineFormatPainter,
-  AiOutlineBulb, // Icon for suggestions
+  AiOutlineBulb, // Icon for keyword suggestions
   AiOutlineTags, // Icon for topic suggestions
+  AiOutlineGlobal, // Icon for trending news
 } from "react-icons/ai";
-import { FiRefreshCw, FiPlus } from "react-icons/fi"; // Added FiPlus
+import { FiRefreshCw, FiPlus } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
 import ReactMarkdown from "react-markdown";
 import PageContainer from "@/components/PageContainer"; // Import PageContainer
@@ -60,6 +61,10 @@ export default function AICreateBlog() {
   // Topic suggestion states
   const [isSuggestingTopics, setIsSuggestingTopics] = useState(false);
   const [suggestedTopics, setSuggestedTopics] = useState([]);
+
+  // Trending news states
+  const [isLoadingNews, setIsLoadingNews] = useState(false);
+  const [trendingNews, setTrendingNews] = useState([]); // Array of { headline: string, summary: string }
 
   const toneOptions = [
     "professional",
@@ -363,6 +368,28 @@ export default function AICreateBlog() {
     setGeneratedOutline(null);
   };
 
+  // Function to fetch trending news
+  const handleFetchNews = async () => {
+    setError("");
+    setIsLoadingNews(true);
+    setTrendingNews([]);
+    try {
+      const response = await fetch("/api/ai/get-trending-news", {
+        method: "POST",
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to fetch trending news");
+      }
+      setTrendingNews(result.news || []);
+    } catch (error) {
+      console.error("Error fetching trending news:", error);
+      setError(error.message || "Failed to fetch trending news");
+    } finally {
+      setIsLoadingNews(false);
+    }
+  };
+
   const formatContent = async () => {
     if (!editedContent.trim()) {
       setError("Content is required for formatting");
@@ -657,6 +684,58 @@ export default function AICreateBlog() {
                   <p className="text-xs text-gray-400 mt-3">
                     Click "Generate Blog Post" to use this outline.
                   </p>
+                </div>
+              )}
+
+              {/* Fetch Trending News Button */}
+              <div className="mt-6 pt-6 border-t border-gray-700">
+                <h3 className="text-lg font-medium mb-4 text-white">
+                  Get Inspiration
+                </h3>
+                <button
+                  onClick={handleFetchNews}
+                  disabled={
+                    isLoadingNews || isGenerating || isGeneratingOutline
+                  }
+                  className="w-full flex items-center justify-center px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
+                >
+                  {isLoadingNews ? (
+                    <>
+                      <AiOutlineLoading3Quarters className="animate-spin mr-2" />
+                      Fetching News...
+                    </>
+                  ) : (
+                    <>
+                      <AiOutlineGlobal className="mr-2" /> Fetch Trending Tech
+                      News
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Display Trending News */}
+              {trendingNews.length > 0 && (
+                <div className="mt-4 space-y-3">
+                  <h4 className="text-md font-semibold text-gray-200">
+                    Trending Topics:
+                  </h4>
+                  {trendingNews.map((newsItem, index) => (
+                    <div
+                      key={index}
+                      className="p-3 bg-gray-700 border border-gray-600 rounded-lg"
+                    >
+                      <button
+                        onClick={() => useSuggestedTopic(newsItem.headline)} // Reuse function to set topic
+                        className="block w-full text-left font-medium text-blue-400 hover:underline mb-1"
+                        title="Use this as topic"
+                      >
+                        {newsItem.headline}
+                      </button>
+                      <p className="text-xs text-gray-400">
+                        {newsItem.summary}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               )}
 

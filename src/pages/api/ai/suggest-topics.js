@@ -1,5 +1,7 @@
+// src/pages/api/ai/suggest-topics.js
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
+import { callGemini } from "@/lib/gemini"; // Import the utility function
 
 export default async function handler(req, res) {
   // Check for authenticated session
@@ -42,52 +44,12 @@ export default async function handler(req, res) {
       Do not include any extra text, explanations, or markdown formatting.
     `;
 
-    // Call Google's Gemini API
-    const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": process.env.GEMINI_API_KEY,
-        },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: {
-            temperature: 0.8, // Higher temperature for more creative topic ideas
-            maxOutputTokens: 500,
-          },
-        }),
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error("Gemini Topic Suggestion API Error:", data);
-      throw new Error(
-        data?.error?.message ||
-          `Gemini topic suggestion request failed with status ${response.status}`
-      );
-    }
-
-    if (
-      !data.candidates ||
-      !data.candidates[0] ||
-      !data.candidates[0].content ||
-      !data.candidates[0].content.parts ||
-      !data.candidates[0].content.parts[0]
-    ) {
-      console.error(
-        "Unexpected Gemini topic suggestion response structure:",
-        data
-      );
-      throw new Error(
-        "Invalid response structure from AI topic suggestion model."
-      );
-    }
-
-    const suggestionsText = data.candidates[0].content.parts[0].text.trim();
+    // Use the utility function
+    const generationConfig = {
+      temperature: 0.8, // Higher temperature for more creative topic ideas
+      maxOutputTokens: 500,
+    };
+    const suggestionsText = await callGemini(prompt, generationConfig);
 
     // Parse the numbered list
     const topicsArray = suggestionsText

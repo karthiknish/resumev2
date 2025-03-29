@@ -3,9 +3,13 @@ import { format } from "date-fns";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { FadeIn } from "@/components/animations/MotionComponents";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea"; // Use Textarea for body
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { AiOutlineLoading3Quarters, AiOutlineDelete } from "react-icons/ai";
+import {
+  AiOutlineLoading3Quarters,
+  AiOutlineDelete,
+  AiOutlineGlobal, // Icon for trending news
+} from "react-icons/ai";
 
 function BytesTab() {
   const [bytes, setBytes] = useState([]);
@@ -18,6 +22,9 @@ function BytesTab() {
     imageUrl: "",
     link: "",
   });
+  // Trending news states
+  const [isLoadingNews, setIsLoadingNews] = useState(false);
+  const [trendingNews, setTrendingNews] = useState([]); // Array of { headline: string, summary: string }
 
   useEffect(() => {
     fetchBytes();
@@ -109,6 +116,38 @@ function BytesTab() {
     }
   };
 
+  // Function to fetch trending news
+  const handleFetchNews = async () => {
+    setError(""); // Clear previous errors
+    setIsLoadingNews(true);
+    setTrendingNews([]);
+    try {
+      const response = await fetch("/api/ai/get-trending-news", {
+        method: "POST",
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to fetch trending news");
+      }
+      setTrendingNews(result.news || []);
+    } catch (error) {
+      console.error("Error fetching trending news:", error);
+      setError(error.message || "Failed to fetch trending news");
+    } finally {
+      setIsLoadingNews(false);
+    }
+  };
+
+  // Function to use a suggested news headline
+  const useNewsHeadline = (headline) => {
+    setFormState((prevState) => ({
+      ...prevState,
+      headline: headline,
+      body: "",
+    })); // Populate headline, clear body
+    setTrendingNews([]); // Clear news suggestions
+  };
+
   return (
     <FadeIn>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -188,6 +227,53 @@ function BytesTab() {
                   {isSubmitting ? "Saving..." : "Save Byte"}
                 </Button>
               </form>
+
+              {/* Fetch Trending News Section */}
+              <div className="mt-4 pt-4 border-t border-gray-700">
+                <Button
+                  type="button" // Prevent form submission
+                  onClick={handleFetchNews}
+                  disabled={isLoadingNews || isSubmitting}
+                  className="w-full flex items-center justify-center px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
+                >
+                  {isLoadingNews ? (
+                    <>
+                      <AiOutlineLoading3Quarters className="animate-spin mr-2" />
+                      Fetching News...
+                    </>
+                  ) : (
+                    <>
+                      <AiOutlineGlobal className="mr-2" /> Fetch Trending News
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              {/* Display Trending News */}
+              {trendingNews.length > 0 && (
+                <div className="mt-4 space-y-2">
+                  <h4 className="text-sm font-semibold text-gray-200">
+                    Trending Topics:
+                  </h4>
+                  {trendingNews.map((newsItem, index) => (
+                    <div
+                      key={index}
+                      className="p-2 bg-gray-700 border border-gray-600 rounded-lg"
+                    >
+                      <button
+                        onClick={() => useNewsHeadline(newsItem.headline)}
+                        className="block w-full text-left text-xs font-medium text-blue-400 hover:underline mb-1"
+                        title="Use this as headline"
+                      >
+                        {newsItem.headline}
+                      </button>
+                      <p className="text-xs text-gray-400">
+                        {newsItem.summary}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

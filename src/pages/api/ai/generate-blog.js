@@ -1,5 +1,7 @@
+// src/pages/api/ai/generate-blog.js
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
+import { callGemini } from "@/lib/gemini"; // Import the utility function
 
 export default async function handler(req, res) {
   // Check for authenticated session
@@ -23,13 +25,33 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { topic, tone, length, keywords } = req.body;
+    const { topic, tone, length, keywords, outline } = req.body; // Destructure outline
 
     if (!topic) {
       return res.status(400).json({ message: "Topic is required" });
     }
 
     // Construct the improved prompt for Gemini
+    // Incorporate the outline if provided
+    const outlineInstructions = outline
+      ? `
+      **Use the following outline:**
+      - **Title:** ${outline.title || topic}
+      - **Headings:**
+        ${outline.headings.map((h) => `- ${h}`).join("\n        ")}
+      Ensure the generated content follows this structure precisely, using the provided title and headings for the main sections.
+    `
+      : `
+      - **Structure:**
+          1.  **Title:** Create an engaging and SEO-friendly title (output as a level 1 markdown heading: # Title).
+          2.  **Introduction:** Write a brief introduction (1-2 paragraphs) that hooks the reader and states the post's purpose.
+          3.  **Main Sections:** Include 3-5 main sections, each with a clear, descriptive subheading (output as level 2 markdown headings: ## Subheading). Break down complex ideas into smaller paragraphs (2-4 sentences each).
+          4.  **Formatting:** Use markdown formatting effectively:
+              *   Use bullet points (-) or numbered lists (1.) for lists.
+              *   Use **bold text** for emphasis on key terms, concepts, or keywords.
+          5.  **Conclusion:** Write a concluding summary (1-2 paragraphs) that recaps the main points and offers a final thought or call to action.
+    `;
+
     const prompt = `
       Act as an expert content writer and SEO specialist. Write a well-structured and engaging blog post about "${topic}".
 
@@ -51,71 +73,18 @@ export default async function handler(req, res) {
             )}.`
           : "Optimize for relevant keywords related to the topic."
       }
-      - **Structure:**
-          1.  **Title:** Create an engaging and SEO-friendly title (output as a level 1 markdown heading: # Title).
-          2.  **Introduction:** Write a brief introduction (1-2 paragraphs) that hooks the reader and states the post's purpose.
-          3.  **Main Sections:** Include 3-5 main sections, each with a clear, descriptive subheading (output as level 2 markdown headings: ## Subheading). Break down complex ideas into smaller paragraphs (2-4 sentences each).
-          4.  **Formatting:** Use markdown formatting effectively:
-              *   Use bullet points (-) or numbered lists (1.) for lists.
-              *   Use **bold text** for emphasis on key terms, concepts, or keywords.
-          5.  **Conclusion:** Write a concluding summary (1-2 paragraphs) that recaps the main points and offers a final thought or call to action.
+      ${outlineInstructions}
       - **Output:** Return the entire response, starting *directly* with the markdown title (# Title), as a single block of valid markdown text. Do not include any preamble, notes, or explanations before or after the markdown content.
     `;
 
-    // Call Google's Gemini API
-    const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": process.env.GEMINI_API_KEY,
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: prompt,
-                },
-              ],
-            },
-          ],
-          // Adjust generation config if needed, e.g., temperature for creativity
-          generationConfig: {
-            temperature: 0.7, // Slightly creative but still focused
-            topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 8192, // Ensure enough tokens for longer posts
-          },
-        }),
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error("Gemini API Error Response:", data); // Log error details
-      throw new Error(
-        data?.error?.message ||
-          `Gemini API request failed with status ${response.status}`
-      );
-    }
-
-    // Check if candidates exist and have content
-    if (
-      !data.candidates ||
-      !data.candidates[0] ||
-      !data.candidates[0].content ||
-      !data.candidates[0].content.parts ||
-      !data.candidates[0].content.parts[0]
-    ) {
-      console.error("Unexpected Gemini API response structure:", data);
-      throw new Error("Invalid response structure from AI model.");
-    }
-
-    // Extract the generated text
-    const generatedText = data.candidates[0].content.parts[0].text;
+    // Use the utility function to call Gemini
+    const generationConfig = {
+      temperature: 0.7,
+      topK: 40,
+      topP: 0.95,
+      maxOutputTokens: 8192,
+    };
+    const generatedText = await callGemini(prompt, generationConfig);
 
     // Parse the markdown to extract title and content
     // Improved regex to handle potential variations in title markdown
@@ -137,9 +106,8 @@ export default async function handler(req, res) {
       if (
         lines.length > 1 &&
         lines[0].trim().length > 0 &&
-        lines[0].length < 100
+        lines[0].length < 100 // Heuristic: title is likely short
       ) {
-        // Heuristic: title is likely short
         title = lines[0].trim();
         content = lines.slice(1).join("\n").trimStart();
       }

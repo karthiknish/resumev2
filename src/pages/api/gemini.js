@@ -1,5 +1,5 @@
 // src/pages/api/gemini.js
-// This file creates an API endpoint that forwards requests to Google's Gemini API
+import { callGemini } from "@/lib/gemini"; // Import the utility function
 
 export default async function handler(req, res) {
   // Only allow POST requests
@@ -108,123 +108,33 @@ YOUR ROLE:
       return res.status(200).json({ response: restrictionMessage });
     }
 
-    // List of models to try in order of preference
-    const modelOptions = [
-      "gemini-2.0-flash", // Next generation model (PRIMARY)
-      "gemini-2.0-flash-lite", // Cost efficient 2.0 model
-      "gemini-1.5-pro", // More capable for complex reasoning
-      "gemini-1.5-flash", // Fast and versatile
-      "gemini-1.5-flash-8b", // Optimized for high volume tasks
-      "gemini-1.0-pro", // Original model (fallback)
-    ];
+    // Construct the full prompt including context and history
+    // Note: The callGemini utility expects a single string prompt.
+    // We need to format the history and context appropriately within that string.
+    // Alternatively, modify callGemini to accept history object.
+    // For now, let's create a single string prompt.
 
-    // Try models in sequence until one works
-    let responseText = null;
-    let lastError = null;
+    let fullPrompt = websiteContext + "\n\nConversation History:\n";
+    chatHistory.forEach((msg) => {
+      fullPrompt += `${msg.role === "user" ? "User" : "Assistant"}: ${
+        msg.parts[0].text
+      }\n`;
+    });
+    fullPrompt += `User: ${prompt}\nAssistant:`; // Add the latest user prompt
 
-    for (const model of modelOptions) {
-      try {
-        // Use v1 endpoint for all models
-        const apiVersion = model.startsWith("gemini-2.0") ? "v1beta" : "v1";
-        const geminiUrl = `https://generativelanguage.googleapis.com/${apiVersion}/models/${model}:generateContent`;
+    // Define generation config and safety settings for the chatbot
+    const generationConfig = {
+      temperature: 0.7,
+      topK: 40,
+      topP: 0.95,
+      maxOutputTokens: 1024,
+    };
+    // Note: Safety settings are not directly supported by the current callGemini utility.
+    // This would require modifying callGemini or handling safety post-response if needed.
+    // For now, we rely on default safety or potential errors thrown by the API.
 
-        // Prepend the system context to the request
-        const completeHistory =
-          chatHistory.length > 0
-            ? [
-                { role: "model", parts: [{ text: websiteContext }] },
-                ...chatHistory,
-              ]
-            : [];
-
-        // Structure the request body according to Gemini API specifications
-        const requestBody = {
-          contents: [
-            ...completeHistory,
-            {
-              role: "user",
-              parts: [{ text: prompt }],
-            },
-          ],
-          generationConfig: {
-            temperature: 0.7,
-            topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 1024,
-          },
-          safetySettings: [
-            {
-              category: "HARM_CATEGORY_HARASSMENT",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE",
-            },
-            {
-              category: "HARM_CATEGORY_HATE_SPEECH",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE",
-            },
-            {
-              category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE",
-            },
-            {
-              category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE",
-            },
-          ],
-        };
-
-        // Send request to Gemini API
-        const response = await fetch(`${geminiUrl}?key=${apiKey}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestBody),
-        });
-
-        // Parse the response
-        const data = await response.json();
-
-        // Check if response was successful
-        if (response.ok) {
-          // Extract text from response
-          if (
-            data.candidates &&
-            data.candidates.length > 0 &&
-            data.candidates[0].content &&
-            data.candidates[0].content.parts &&
-            data.candidates[0].content.parts.length > 0
-          ) {
-            responseText = data.candidates[0].content.parts[0].text;
-            console.log(`Successfully used model: ${model}`);
-            break; // Exit the loop if we got a valid response
-          } else if (data.promptFeedback && data.promptFeedback.blockReason) {
-            // Handle safety blocks
-            responseText = `I'm sorry, I cannot provide a response to that query due to safety concerns.`;
-            break;
-          }
-        } else {
-          // Log the error and try the next model
-          console.warn(`Error with model ${model}:`, data);
-          lastError = data;
-        }
-      } catch (error) {
-        console.warn(`Exception with model ${model}:`, error);
-        lastError = error;
-      }
-    }
-
-    // If we didn't get a valid response from any model
-    if (!responseText) {
-      if (lastError) {
-        console.error("All Gemini models failed:", lastError);
-        return res.status(500).json({
-          error: "Error from Gemini API",
-          details: lastError,
-        });
-      } else {
-        responseText = `I'm sorry, I couldn't generate a response. Please try rephrasing your question.`;
-      }
-    }
+    // Call the utility function
+    const responseText = await callGemini(fullPrompt, generationConfig);
 
     // Return the response to the client
     return res.status(200).json({ response: responseText });

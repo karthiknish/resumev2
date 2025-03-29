@@ -1,5 +1,7 @@
+// src/pages/api/ai/format-content.js
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
+import { callGemini } from "@/lib/gemini"; // Import the utility function
 
 // Main handler function
 export default async function handler(req, res) {
@@ -58,50 +60,15 @@ export default async function handler(req, res) {
       ---
     `;
 
-    const formatResponse = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": process.env.GEMINI_API_KEY,
-        },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: formattingPrompt }] }],
-          generationConfig: {
-            temperature: 0.3, // Lower temperature for more deterministic formatting
-            maxOutputTokens: 8192,
-          },
-        }),
-      }
+    // Use the utility function
+    const generationConfig = {
+      temperature: 0.3, // Lower temperature for more deterministic formatting
+      maxOutputTokens: 8192,
+    };
+    const formattedMarkdown = await callGemini(
+      formattingPrompt,
+      generationConfig
     );
-
-    const formatData = await formatResponse.json();
-
-    if (!formatResponse.ok) {
-      console.error("Gemini Formatting API Error:", formatData);
-      throw new Error(
-        formatData?.error?.message ||
-          `Gemini formatting request failed with status ${formatResponse.status}`
-      );
-    }
-
-    if (
-      !formatData.candidates ||
-      !formatData.candidates[0] ||
-      !formatData.candidates[0].content ||
-      !formatData.candidates[0].content.parts ||
-      !formatData.candidates[0].content.parts[0]
-    ) {
-      console.error(
-        "Unexpected Gemini formatting response structure:",
-        formatData
-      );
-      throw new Error("Invalid response structure from AI formatting model.");
-    }
-
-    const formattedMarkdown =
-      formatData.candidates[0].content.parts[0].text.trim();
 
     return res.status(200).json({
       success: true,
