@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
+import nodemailer from "nodemailer";
 import dbConnect from "@/lib/dbConnect";
-import Contact from "@/models/Contact";
+import { createContactSubmission } from "@/lib/contactService"; // Import the service function
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -17,15 +18,10 @@ export default async function handler(req, res) {
     // Connect to database
     await dbConnect();
 
-    // Save contact message to database
-    await Contact.create({
-      name,
-      email,
-      message,
-      createdAt: new Date(),
-    });
+    // Save contact message using the service function (includes validation)
+    const newContact = await createContactSubmission({ name, email, message });
 
-    // Send email notification
+    // If saving to DB was successful, proceed to send email notification
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_SERVER_HOST,
       port: process.env.EMAIL_SERVER_PORT,

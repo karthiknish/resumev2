@@ -1,31 +1,44 @@
-import { useEffect, useState } from "react";
-import { format } from "date-fns";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { FadeIn } from "@/components/animations/MotionComponents";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import {
-  AiOutlineLoading3Quarters,
-  AiOutlineDelete,
-  AiOutlineGlobal, // Icon for trending news
-} from "react-icons/ai";
+  Loader2,
+  Trash2,
+  ExternalLink,
+  Image as ImageIcon,
+  FileText,
+  CalendarDays,
+} from "lucide-react"; // Added icons
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import Image from "next/image"; // Use Next.js Image
 
-function BytesTab() {
+// Simple date formatter
+const formatDate = (dateString) => {
+  if (!dateString) return "N/A";
+  return new Date(dateString).toLocaleDateString("en-GB", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+export default function BytesTab() {
   const [bytes, setBytes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formState, setFormState] = useState({
-    headline: "",
-    body: "",
-    imageUrl: "",
-    link: "",
-  });
-  // Trending news states
-  const [isLoadingNews, setIsLoadingNews] = useState(false);
-  const [trendingNews, setTrendingNews] = useState([]); // Array of { headline: string, summary: string }
 
+  // Form state for new byte
+  const [newHeadline, setNewHeadline] = useState("");
+  const [newBody, setNewBody] = useState("");
+  const [newImageUrl, setNewImageUrl] = useState("");
+  const [newLink, setNewLink] = useState("");
+
+  // Fetch bytes on mount
   useEffect(() => {
     fetchBytes();
   }, []);
@@ -36,308 +49,248 @@ function BytesTab() {
     try {
       const response = await fetch("/api/bytes");
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to fetch bytes");
       }
       const data = await response.json();
-      if (data.success && Array.isArray(data.data)) {
+      if (data.success && data.data) {
         setBytes(data.data);
       } else {
-        setError("Failed to load bytes or invalid data format.");
         setBytes([]);
+        setError("No bytes found or invalid response format");
       }
-    } catch (e) {
-      console.error("Error fetching bytes:", e);
-      setError(`Failed to fetch bytes: ${e.message}`);
-      setBytes([]);
+    } catch (err) {
+      setError(err.message);
+      toast.error(err.message || "Could not load bytes.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormState((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
+  // Handle new byte submission
+  const handleCreateByte = async (e) => {
     e.preventDefault();
-    if (!formState.headline || !formState.body) {
-      setError("Headline and Body are required.");
+    if (!newHeadline.trim() || !newBody.trim()) {
+      toast.error("Headline and Body are required.");
       return;
     }
     setIsSubmitting(true);
-    setError(null);
-
     try {
       const response = await fetch("/api/bytes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formState),
+        body: JSON.stringify({
+          headline: newHeadline,
+          body: newBody,
+          imageUrl: newImageUrl || undefined, // Send undefined if empty
+          link: newLink || undefined, // Send undefined if empty
+        }),
       });
-      const result = await response.json();
       if (!response.ok) {
-        throw new Error(result.message || "Failed to create byte");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to create byte");
       }
-      // Add new byte to the top of the list and reset form
-      setBytes([result.data, ...bytes]);
-      setFormState({ headline: "", body: "", imageUrl: "", link: "" });
+      const newData = await response.json();
+      // Add new byte to the top of the list optimistically
+      setBytes((prev) => [newData.data, ...prev]);
+      toast.success("Byte created successfully!");
+      // Reset form
+      setNewHeadline("");
+      setNewBody("");
+      setNewImageUrl("");
+      setNewLink("");
     } catch (err) {
-      console.error("Error creating byte:", err);
-      setError(err.message || "Failed to create byte");
+      toast.error(err.message || "Failed to create byte.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleDelete = async (byteId) => {
-    if (!byteId) return;
-    if (window.confirm("Are you sure you want to delete this byte?")) {
-      try {
-        const response = await fetch(`/api/bytes/${byteId}`, {
-          method: "DELETE",
-        });
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(
-            errorData.message || `Failed to delete byte: ${response.status}`
-          );
-        }
-        // Remove from state
-        setBytes((prevBytes) =>
-          prevBytes.filter((byte) => byte._id !== byteId)
-        );
-      } catch (err) {
-        console.error("Error deleting byte:", err);
-        alert(`Error deleting byte: ${err.message}`);
-      }
+  // Handle byte deletion
+  const handleDeleteByte = async (id) => {
+    if (!confirm("Are you sure you want to delete this byte?")) {
+      return;
     }
-  };
-
-  // Function to fetch trending news
-  const handleFetchNews = async () => {
-    setError(""); // Clear previous errors
-    setIsLoadingNews(true);
-    setTrendingNews([]);
     try {
-      const response = await fetch("/api/ai/get-trending-news", {
-        method: "POST",
-      });
-      const result = await response.json();
+      const response = await fetch(`/api/bytes/${id}`, { method: "DELETE" }); // Assuming DELETE endpoint exists at /api/bytes/[id]
       if (!response.ok) {
-        throw new Error(result.message || "Failed to fetch trending news");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to delete byte");
       }
-      setTrendingNews(result.news || []);
-    } catch (error) {
-      console.error("Error fetching trending news:", error);
-      setError(error.message || "Failed to fetch trending news");
-    } finally {
-      setIsLoadingNews(false);
+      // Remove byte from state
+      setBytes((prev) => prev.filter((byte) => byte._id !== id));
+      toast.success("Byte deleted successfully!");
+    } catch (err) {
+      toast.error(err.message || "Failed to delete byte.");
     }
-  };
-
-  // Function to use a suggested news headline
-  const useNewsHeadline = (headline) => {
-    setFormState((prevState) => ({
-      ...prevState,
-      headline: headline,
-      body: "",
-    })); // Populate headline, clear body
-    setTrendingNews([]); // Clear news suggestions
   };
 
   return (
-    <FadeIn>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Create New Byte Form */}
-        <div className="md:col-span-1">
-          <Card className="glow-card">
-            <CardHeader className="bg-black rounded-t-lg">
-              <CardTitle className="text-xl font-medium text-white font-calendas glow-blue">
-                Create New Byte
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="bg-gray-900 p-4 space-y-4">
-              <form onSubmit={handleSubmit}>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
-                    Headline*
-                  </label>
-                  <Input
-                    name="headline"
-                    value={formState.headline}
-                    onChange={handleInputChange}
-                    maxLength={200}
-                    required
-                    className="bg-gray-800 border-gray-700 text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
-                    Body*
-                  </label>
-                  <Textarea
-                    name="body"
-                    value={formState.body}
-                    onChange={handleInputChange}
-                    maxLength={500}
-                    required
-                    rows={4}
-                    className="bg-gray-800 border-gray-700 text-white"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    {500 - formState.body.length} characters remaining
-                  </p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
-                    Image URL (Optional)
-                  </label>
-                  <Input
-                    name="imageUrl"
-                    type="url"
-                    value={formState.imageUrl}
-                    onChange={handleInputChange}
-                    className="bg-gray-800 border-gray-700 text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
-                    Link (Optional)
-                  </label>
-                  <Input
-                    name="link"
-                    type="url"
-                    value={formState.link}
-                    onChange={handleInputChange}
-                    className="bg-gray-800 border-gray-700 text-white"
-                  />
-                </div>
-                {error && <p className="text-red-500 text-sm">{error}</p>}
-                <Button
-                  type="submit"
+    <div className="space-y-6">
+      {/* Form for creating new byte */}
+      <Card className="border-gray-700 bg-gray-900 text-white">
+        <CardHeader>
+          <CardTitle>Create New Byte</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleCreateByte} className="space-y-4">
+            <div>
+              <label
+                htmlFor="headline"
+                className="block text-sm font-medium text-gray-300 mb-1"
+              >
+                Headline*
+              </label>
+              <Input
+                id="headline"
+                value={newHeadline}
+                onChange={(e) => setNewHeadline(e.target.value)}
+                placeholder="Short, catchy headline"
+                required
+                maxLength={200}
+                disabled={isSubmitting}
+                className="bg-gray-800 border-gray-600"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="body"
+                className="block text-sm font-medium text-gray-300 mb-1"
+              >
+                Body*
+              </label>
+              <Textarea
+                id="body"
+                value={newBody}
+                onChange={(e) => setNewBody(e.target.value)}
+                placeholder="The main content of the byte (max 500 chars)"
+                required
+                maxLength={500}
+                rows={3}
+                disabled={isSubmitting}
+                className="bg-gray-800 border-gray-600"
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label
+                  htmlFor="imageUrl"
+                  className="block text-sm font-medium text-gray-300 mb-1"
+                >
+                  Image URL (Optional)
+                </label>
+                <Input
+                  id="imageUrl"
+                  value={newImageUrl}
+                  onChange={(e) => setNewImageUrl(e.target.value)}
+                  placeholder="https://..."
                   disabled={isSubmitting}
-                  className="w-full mt-4 bg-blue-600 hover:bg-blue-700"
-                >
-                  {isSubmitting ? (
-                    <AiOutlineLoading3Quarters className="animate-spin mr-2" />
-                  ) : null}
-                  {isSubmitting ? "Saving..." : "Save Byte"}
-                </Button>
-              </form>
-
-              {/* Fetch Trending News Section */}
-              <div className="mt-4 pt-4 border-t border-gray-700">
-                <Button
-                  type="button" // Prevent form submission
-                  onClick={handleFetchNews}
-                  disabled={isLoadingNews || isSubmitting}
-                  className="w-full flex items-center justify-center px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
-                >
-                  {isLoadingNews ? (
-                    <>
-                      <AiOutlineLoading3Quarters className="animate-spin mr-2" />
-                      Fetching News...
-                    </>
-                  ) : (
-                    <>
-                      <AiOutlineGlobal className="mr-2" /> Fetch Trending News
-                    </>
-                  )}
-                </Button>
+                  className="bg-gray-800 border-gray-600"
+                />
               </div>
+              <div>
+                <label
+                  htmlFor="link"
+                  className="block text-sm font-medium text-gray-300 mb-1"
+                >
+                  Link URL (Optional)
+                </label>
+                <Input
+                  id="link"
+                  value={newLink}
+                  onChange={(e) => setNewLink(e.target.value)}
+                  placeholder="https://..."
+                  disabled={isSubmitting}
+                  className="bg-gray-800 border-gray-600"
+                />
+              </div>
+            </div>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              {isSubmitting ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : null}
+              {isSubmitting ? "Creating..." : "Create Byte"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
 
-              {/* Display Trending News */}
-              {trendingNews.length > 0 && (
-                <div className="mt-4 space-y-2">
-                  <h4 className="text-sm font-semibold text-gray-200">
-                    Trending Topics:
-                  </h4>
-                  {trendingNews.map((newsItem, index) => (
-                    <div
-                      key={index}
-                      className="p-2 bg-gray-700 border border-gray-600 rounded-lg"
-                    >
-                      <button
-                        onClick={() => useNewsHeadline(newsItem.headline)}
-                        className="block w-full text-left text-xs font-medium text-blue-400 hover:underline mb-1"
-                        title="Use this as headline"
-                      >
-                        {newsItem.headline}
-                      </button>
-                      <p className="text-xs text-gray-400">
-                        {newsItem.summary}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* List Existing Bytes */}
-        <div className="md:col-span-2">
-          <Card className="glow-card">
-            <CardHeader className="bg-black rounded-t-lg">
-              <CardTitle className="text-xl font-medium text-white font-calendas glow-blue">
-                Existing Bytes
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="bg-gray-900 p-4 space-y-4 max-h-[70vh] overflow-y-auto">
-              {isLoading ? (
-                <p className="text-gray-300 text-center">Loading bytes...</p>
-              ) : error && !bytes.length ? ( // Show error only if list is empty
-                <p className="text-red-500 text-center">{error}</p>
-              ) : bytes.length > 0 ? (
-                bytes.map((byte) => (
-                  <div
-                    key={byte._id}
-                    className="bg-gray-800 p-4 rounded-lg border border-gray-700 flex justify-between items-start"
-                  >
-                    <div>
-                      <h4 className="font-semibold text-white mb-1">
+      {/* List of existing bytes */}
+      <Card className="border-gray-700 bg-gray-900 text-white">
+        <CardHeader>
+          <CardTitle>Existing Bytes ({bytes.length})</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {isLoading && (
+            <div className="flex justify-center items-center py-10">
+              <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+            </div>
+          )}
+          {error && !isLoading && (
+            <p className="text-red-400 text-center py-10">Error: {error}</p>
+          )}
+          {!isLoading && !error && bytes.length === 0 && (
+            <p className="text-gray-400 text-center py-10">
+              No bytes created yet.
+            </p>
+          )}
+          {!isLoading && !error && bytes.length > 0 && (
+            <div className="space-y-4">
+              {bytes.map((byte) => (
+                <Card key={byte._id} className="bg-gray-800 border-gray-700">
+                  <CardContent className="p-4 flex flex-col md:flex-row gap-4">
+                    {byte.imageUrl && (
+                      <div className="flex-shrink-0 w-full md:w-32 h-32 relative rounded overflow-hidden">
+                        <Image
+                          src={byte.imageUrl}
+                          alt={byte.headline}
+                          layout="fill"
+                          objectFit="cover"
+                        />
+                      </div>
+                    )}
+                    <div className="flex-grow">
+                      <h3 className="font-semibold text-lg text-white mb-1">
                         {byte.headline}
-                      </h4>
-                      <p className="text-sm text-gray-300 mb-2">{byte.body}</p>
-                      {byte.link && (
-                        <a
-                          href={byte.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs text-blue-400 hover:underline"
-                        >
-                          Link
-                        </a>
-                      )}
-                      <p className="text-xs text-gray-500 mt-2">
-                        Created:{" "}
-                        {format(new Date(byte.createdAt), "MMM dd, yyyy HH:mm")}
-                      </p>
+                      </h3>
+                      <p className="text-gray-300 text-sm mb-3">{byte.body}</p>
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-400">
+                        <span className="flex items-center gap-1">
+                          <CalendarDays className="w-3 h-3" />{" "}
+                          {formatDate(byte.createdAt)}
+                        </span>
+                        {byte.link && (
+                          <a
+                            href={byte.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-blue-400 hover:underline"
+                          >
+                            <ExternalLink className="w-3 h-3" /> Link
+                          </a>
+                        )}
+                      </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-red-500 hover:text-red-400 hover:bg-gray-700 ml-4"
-                      onClick={() => handleDelete(byte._id)}
-                    >
-                      <AiOutlineDelete />
-                    </Button>
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-400 text-center">
-                  No bytes created yet.
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    </FadeIn>
+                    <div className="flex-shrink-0 flex flex-col md:items-end justify-start pt-1">
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDeleteByte(byte._id)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 }
-
-export default BytesTab;

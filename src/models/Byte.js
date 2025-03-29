@@ -31,5 +31,12 @@ const ByteSchema = new mongoose.Schema(
   }
 );
 
+// Add indexes
+ByteSchema.index({ createdAt: -1 }); // For sorting
+ByteSchema.index(
+  { headline: "text", body: "text" },
+  { name: "ByteTextIndex", weights: { headline: 10, body: 1 } }
+); // Text index for searching
+
 // Prevent model recompilation in Next.js dev environment
 export default mongoose.models.Byte || mongoose.model("Byte", ByteSchema);

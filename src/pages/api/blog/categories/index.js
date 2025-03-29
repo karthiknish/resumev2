@@ -1,54 +1,37 @@
-import dbConnect from "../../../../lib/dbConnect";
-import Blog from "../../../../models/Blog";
+// src/pages/api/blog/categories/index.js
+import dbConnect from "@/lib/dbConnect";
+import Blog from "@/models/Blog";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
-    return res.status(405).json({ message: "Method not allowed" });
+    return res.status(405).json({ message: "Method Not Allowed" });
   }
 
   try {
     await dbConnect();
 
-    // Get all published posts
-    const posts = await Blog.find({ status: "published" })
-      .select("category")
-      .lean();
-
-    // Count posts by category
-    const categoryMap = {};
-
-    posts.forEach((post) => {
-      if (post.category) {
-        const category = post.category.trim();
-        if (category) {
-          categoryMap[category] = (categoryMap[category] || 0) + 1;
-        }
-      }
+    // Use distinct to get unique category values from published posts
+    // Filter out null, undefined, or empty strings, and the default "Uncategorized" if desired
+    const categories = await Blog.distinct("category", {
+      isPublished: true, // Only consider published posts
+      category: { $ne: null, $nin: ["", "Uncategorized"] }, // Exclude null, empty, and "Uncategorized"
     });
 
-    // Convert to array format
-    const categories = Object.keys(categoryMap)
-      .map((name) => ({
-        name,
-        count: categoryMap[name],
-      }))
-      .sort((a, b) => {
-        // Sort by count (descending) then by name (ascending)
-        if (b.count !== a.count) {
-          return b.count - a.count;
-        }
-        return a.name.localeCompare(b.name);
-      });
+    // Sort categories alphabetically
+    categories.sort();
 
-    return res.status(200).json({
-      success: true,
-      categories,
-    });
+    // Optionally add "All" or keep "Uncategorized" if needed for filtering logic
+    // For now, just returning the distinct, non-default categories.
+
+    return res.status(200).json({ success: true, categories });
   } catch (error) {
-    console.error("Error fetching categories:", error);
-    return res.status(500).json({
-      success: false,
-      message: error.message || "Error fetching categories",
-    });
+    console.error("Error fetching blog categories:", error);
+    return res
+      .status(500)
+      .json({
+        success: false,
+        message: "Internal Server Error",
+        error: error.message,
+      });
   }
 }

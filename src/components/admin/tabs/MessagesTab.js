@@ -1,37 +1,152 @@
-import { FaCheckCircle, FaCircle, FaComments, FaServer } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+  Loader2,
+  MailCheck,
+  MailWarning,
+  Trash2,
+  Search,
+  MessageSquare,
+} from "lucide-react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import { format } from "date-fns";
-import {
-  FadeIn,
-  StaggerContainer,
-  StaggerItem,
-  HoverCard,
-  PulseAnimation,
-} from "@/components/animations/MotionComponents";
+import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
 
-function MessagesTab({
-  chatLogs,
-  searchQuery,
-  setSearchQuery,
-  isLoadingMessages,
-  messageError,
-  fetchChatMessages,
-  unreadCount,
-  markAsRead,
-  markAllAsRead,
-}) {
-  // Filter chat logs based on search query
-  const filteredChatLogs = chatLogs.filter((log) => {
+// Simple date formatter
+const formatDate = (dateString) => {
+  if (!dateString) return "N/A";
+  return new Date(dateString).toLocaleString("en-GB", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+};
+
+export default function MessagesTab() {
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Fetch messages on mount
+  useEffect(() => {
+    fetchMessages();
+  }, []);
+
+  const fetchMessages = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch("/api/messages");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to fetch messages");
+      }
+      const data = await response.json();
+      if (data.success && data.messages) {
+        // Format messages slightly for consistency if needed
+        const formattedMessages = data.messages.map((msg) => ({
+          id: msg._id, // Use _id as id
+          user: {
+            name: msg.name || "Anonymous",
+            email: msg.email || "No email",
+            avatar: msg.avatar || "/avatars/default.png",
+          },
+          message: msg.message,
+          timestamp: new Date(msg.createdAt),
+          isRead: msg.isRead || false,
+        }));
+        setMessages(formattedMessages);
+      } else {
+        setMessages([]);
+        setError("No messages found or invalid response format");
+      }
+    } catch (err) {
+      setError(err.message);
+      toast.error(err.message || "Could not load messages.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Mark a single message as read/unread
+  const toggleReadStatus = async (messageId, currentStatus) => {
+    try {
+      // Optimistic UI update
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === messageId ? { ...msg, isRead: !currentStatus } : msg
+        )
+      );
+
+      const response = await fetch(`/api/messages/${messageId}/read`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isRead: !currentStatus }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update message status");
+      }
+      // No need to refetch on success due to optimistic update
+      toast.success(`Message marked as ${!currentStatus ? "read" : "unread"}.`);
+    } catch (error) {
+      console.error("Error toggling read status:", error);
+      toast.error("Failed to update message status.");
+      // Revert optimistic update on error
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === messageId ? { ...msg, isRead: currentStatus } : msg
+        )
+      );
+    }
+  };
+
+  // Mark all messages as read
+  const markAllAsRead = async () => {
+    const unreadIds = messages
+      .filter((msg) => !msg.isRead)
+      .map((msg) => msg.id);
+    if (unreadIds.length === 0) {
+      toast.info("No unread messages to mark.");
+      return;
+    }
+
+    try {
+      // Optimistic UI update
+      setMessages((prev) => prev.map((msg) => ({ ...msg, isRead: true })));
+
+      const response = await fetch(`/api/messages/read-all`, {
+        method: "PATCH",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to mark all messages as read");
+      }
+      toast.success("All messages marked as read.");
+    } catch (error) {
+      console.error("Error marking all as read:", error);
+      toast.error("Failed to mark all messages as read.");
+      // Revert optimistic update
+      fetchMessages(); // Refetch to get correct state
+    }
+  };
+
+  // Placeholder for delete functionality
+  const handleDeleteMessage = async (id) => {
+    if (!confirm("Are you sure you want to delete this message?")) return;
+    toast.info(`Delete functionality for message ${id} not implemented yet.`);
+    // TODO: Implement API call DELETE /api/messages/[id]
+    // Example:
+    // try {
+    //   const response = await fetch(`/api/messages/${id}`, { method: 'DELETE' });
+    //   if (!response.ok) throw new Error('Failed to delete');
+    //   setMessages(prev => prev.filter(m => m.id !== id));
+    //   toast.success("Message deleted.");
+    // } catch (err) { toast.error("Failed to delete message."); }
+  };
+
+  // Filter messages based on search query
+  const filteredMessages = messages.filter((log) => {
     const query = searchQuery.toLowerCase();
     return (
       log.user.name.toLowerCase().includes(query) ||
@@ -40,191 +155,133 @@ function MessagesTab({
     );
   });
 
+  const unreadCount = messages.filter((msg) => !msg.isRead).length;
+
   return (
-    <FadeIn delay={0.2}>
-      <div className="space-y-6">
-        <Card className="glow-card">
-          <CardHeader className="bg-black rounded-t-lg">
-            <CardTitle className="text-2xl font-medium text-white font-calendas glow-blue flex items-center justify-between">
-              <span>User Messages</span>
-              <Badge
-                variant="outline"
-                className="bg-blue-900 text-blue-300 ml-2"
-              >
-                {unreadCount} unread
+    <Card className="border-gray-700 bg-gray-900 text-white">
+      <CardHeader>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <CardTitle className="flex items-center gap-2">
+            <MessageSquare className="w-5 h-5" /> Messages (
+            {filteredMessages.length} / {messages.length})
+            {unreadCount > 0 && (
+              <Badge variant="destructive" className="ml-2">
+                {unreadCount} Unread
               </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-6 bg-gray-900">
-            <div className="mb-6">
+            )}
+          </CardTitle>
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <div className="relative w-full sm:w-64">
               <Input
+                type="text"
                 placeholder="Search messages..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-gray-800 border-gray-700 text-white"
+                className="bg-gray-800 border-gray-600 pl-8"
               />
+              <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
             </div>
-
-            {/* Loading state */}
-            {isLoadingMessages && (
-              <div className="text-center py-10">
-                <div className="animate-pulse mb-4">
-                  <div className="h-12 w-12 mx-auto rounded-full bg-blue-600 opacity-75"></div>
-                </div>
-                <h3 className="text-xl text-gray-300 mb-2">
-                  Loading messages...
-                </h3>
-              </div>
-            )}
-
-            {/* Error state */}
-            {messageError && !isLoadingMessages && (
-              <div className="text-center py-10">
-                <div className="text-red-500 mb-4 text-5xl">
-                  <FaServer className="mx-auto" />
-                </div>
-                <h3 className="text-xl text-gray-300 mb-2">
-                  Error loading messages
-                </h3>
-                <p className="text-gray-400">{messageError}</p>
-                <Button
-                  variant="outline"
-                  className="mt-4 text-white border-gray-600"
-                  onClick={fetchChatMessages}
-                >
-                  Try Again
-                </Button>
-              </div>
-            )}
-
-            {/* Chat messages list */}
-            {!isLoadingMessages && !messageError && (
-              <StaggerContainer className="space-y-4">
-                {filteredChatLogs.length > 0 ? (
-                  filteredChatLogs.map((log, index) => (
-                    <StaggerItem key={log.id} index={index}>
-                      <HoverCard scale={1.01}>
-                        <Card
-                          className={`bg-gray-800 border ${
-                            !log.isRead
-                              ? "border-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.3)]"
-                              : "border-gray-700"
-                          }`}
-                        >
-                          <CardContent className="p-4">
-                            <div className="flex items-start space-x-4">
-                              <Avatar className="h-10 w-10 border-2 border-gray-700">
-                                <AvatarImage
-                                  src={log.user.avatar}
-                                  alt={log.user.name}
-                                />
-                                <AvatarFallback className="bg-blue-900 text-white">
-                                  {log.user.name
-                                    .split(" ")
-                                    .map((name) => name[0])
-                                    .join("")}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex-1">
-                                <div className="flex justify-between">
-                                  <div>
-                                    <p className="font-medium text-white mb-1">
-                                      {log.user.name}
-                                    </p>
-                                    <p className="text-sm text-blue-300">
-                                      {log.user.email}
-                                    </p>
-                                  </div>
-                                  <div className="text-right">
-                                    <p className="text-sm text-gray-300">
-                                      {format(log.timestamp, "MMM dd, yyyy")}
-                                    </p>
-                                    <p className="text-sm text-gray-400">
-                                      {format(log.timestamp, "h:mm a")}
-                                    </p>
-                                  </div>
-                                </div>
-                                <div className="mt-3">
-                                  <p className="text-white">{log.message}</p>
-                                </div>
-                                <div className="mt-4 flex justify-between items-center">
-                                  <div className="flex items-center">
-                                    {log.isRead ? (
-                                      <span className="text-gray-400 text-sm flex items-center">
-                                        <FaCheckCircle className="mr-1" /> Read
-                                      </span>
-                                    ) : (
-                                      <span className="text-blue-400 text-sm flex items-center">
-                                        <FaCircle className="mr-1 text-xs" />{" "}
-                                        New
-                                      </span>
-                                    )}
-                                  </div>
-                                  <div className="flex space-x-2">
-                                    {!log.isRead && (
-                                      <Button
-                                        variant="secondary"
-                                        size="sm"
-                                        onClick={() => markAsRead(log.id)}
-                                        className="bg-gray-700 hover:bg-gray-600 text-white"
-                                      >
-                                        Mark as Read
-                                      </Button>
-                                    )}
-                                    <Button
-                                      variant="default"
-                                      size="sm"
-                                      className="bg-blue-600 hover:bg-blue-700 text-white glow-button"
-                                    >
-                                      Reply
-                                    </Button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </HoverCard>
-                    </StaggerItem>
-                  ))
-                ) : (
-                  <div className="text-center py-10">
-                    <FaComments className="mx-auto text-5xl text-gray-400 mb-4" />
-                    <h3 className="text-xl text-white mb-2">
-                      No messages found
-                    </h3>
-                    <p className="text-gray-300">
-                      {searchQuery
-                        ? "No messages match your search criteria"
-                        : "There are no messages to display"}
-                    </p>
+            <Button
+              onClick={markAllAsRead}
+              disabled={unreadCount === 0 || isLoading}
+              size="sm"
+              variant="outline"
+              className="border-gray-600 hover:bg-gray-700"
+            >
+              <MailCheck className="mr-2 h-4 w-4" /> Mark all read
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {isLoading && (
+          <div className="flex justify-center items-center py-10">
+            <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+          </div>
+        )}
+        {error && !isLoading && (
+          <p className="text-red-400 text-center py-10">Error: {error}</p>
+        )}
+        {!isLoading && !error && messages.length === 0 && (
+          <p className="text-gray-400 text-center py-10">
+            No messages received yet.
+          </p>
+        )}
+        {!isLoading &&
+          !error &&
+          filteredMessages.length === 0 &&
+          messages.length > 0 && (
+            <p className="text-gray-400 text-center py-10">
+              No messages match your search.
+            </p>
+          )}
+        {!isLoading && !error && filteredMessages.length > 0 && (
+          <div className="space-y-4">
+            {filteredMessages.map((msg) => (
+              <Card
+                key={msg.id}
+                className={`border ${
+                  msg.isRead
+                    ? "border-gray-700 bg-gray-800/50"
+                    : "border-blue-500 bg-blue-900/20"
+                }`}
+              >
+                <CardContent className="p-4 flex gap-4">
+                  <div className="flex-shrink-0 pt-1">
+                    <Image
+                      src={msg.user.avatar}
+                      alt={msg.user.name}
+                      width={40}
+                      height={40}
+                      className="rounded-full"
+                    />
                   </div>
-                )}
-              </StaggerContainer>
-            )}
-          </CardContent>
-          <CardFooter className="pt-6 border-t border-gray-700 bg-black rounded-b-lg">
-            <div className="w-full flex justify-between">
-              <Button
-                variant="outline"
-                className="text-white border-gray-700 hover:bg-gray-800"
-                onClick={markAllAsRead}
-                disabled={unreadCount === 0 || isLoadingMessages}
-              >
-                Mark All as Read
-              </Button>
-              <Button
-                className="bg-blue-600 hover:bg-blue-700 text-white glow-button"
-                disabled={chatLogs.length === 0 || isLoadingMessages}
-              >
-                Export Messages
-              </Button>
-            </div>
-          </CardFooter>
-        </Card>
-      </div>
-    </FadeIn>
+                  <div className="flex-grow">
+                    <div className="flex justify-between items-start mb-1">
+                      <div>
+                        <p className="font-semibold text-white">
+                          {msg.user.name}
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          {msg.user.email}
+                        </p>
+                      </div>
+                      <span className="text-xs text-gray-400 flex-shrink-0 ml-4">
+                        {formatDate(msg.timestamp)}
+                      </span>
+                    </div>
+                    <p className="text-gray-200 mt-2 whitespace-pre-wrap">
+                      {msg.message}
+                    </p>
+                    <div className="flex justify-end space-x-2 mt-3">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => toggleReadStatus(msg.id, msg.isRead)}
+                        className="text-gray-400 hover:text-white"
+                      >
+                        {msg.isRead ? (
+                          <Mail className="mr-1 h-4 w-4" />
+                        ) : (
+                          <MailWarning className="mr-1 h-4 w-4" />
+                        )}
+                        {msg.isRead ? "Mark Unread" : "Mark Read"}
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDeleteMessage(msg.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }
-
-export default MessagesTab;

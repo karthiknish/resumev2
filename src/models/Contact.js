@@ -19,5 +19,8 @@ const contactSchema = new mongoose.Schema({
   },
 });
 
+// Add index for sorting by creation date
+contactSchema.index({ createdAt: -1 });
+
 export default mongoose.models.Contact ||
   mongoose.model("Contact", contactSchema);

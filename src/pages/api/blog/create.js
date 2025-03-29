@@ -89,7 +89,9 @@ export default async function handler(req, res) {
   try {
     await dbConnect();
 
-    const { title, content, excerpt, imageUrl, tags, isPublished } = req.body;
+    // Add 'category' to destructuring
+    const { title, content, excerpt, imageUrl, tags, isPublished, category } =
+      req.body;
 
     // Validate required fields
     if (!title || !content || !excerpt || !imageUrl) {
@@ -137,15 +139,19 @@ export default async function handler(req, res) {
       slug,
       author: session.user.id,
       isPublished: Boolean(isPublished),
+      category: category ? category.trim() : undefined, // Add category, let model handle default if empty/undefined
       createdAt: new Date(),
+      // audioSummaryUrl: null, // Ensure it's not set on creation
     });
+
+    // --- Removed Audio Summary Generation ---
 
     return res.status(201).json({
       success: true,
-      data: blog,
+      data: blog, // Return the created blog data (without audio URL)
     });
   } catch (error) {
-    console.error("Create blog error:", error);
+    console.error("Create blog error (outer catch):", error);
     return res.status(500).json({
       success: false,
       message: "Error creating blog post",

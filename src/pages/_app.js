@@ -1,7 +1,8 @@
 import "@/styles/globals.css";
 import Script from "next/script";
 import { useRouter } from "next/router";
-import { useEffect, useState, lazy, Suspense } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react"; // Import React
+import ReactDOM from "react-dom"; // Import ReactDOM for react-axe
 import { Inter } from "next/font/google";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
@@ -51,6 +52,18 @@ export default function App({
   const router = useRouter();
   const [domLoaded, setDomLoaded] = useState(false);
   const [transitionType, setTransitionType] = useState("default");
+
+  // Initialize react-axe for development only
+  useEffect(() => {
+    if (
+      process.env.NODE_ENV === "development" &&
+      typeof window !== "undefined"
+    ) {
+      import("@axe-core/react").then((axe) => {
+        axe.default(React, ReactDOM, 1000); // Initialize axe with a 1s delay
+      });
+    }
+  }, []);
 
   // Check if the Component has a getLayout function
   const getLayout = Component.getLayout || ((page) => page);
@@ -190,7 +203,17 @@ export default function App({
           ) : (
             <LoadingFallback />
           )}
-          <Toaster />
+          {/* Added toastOptions for styling */}
+          <Toaster
+            toastOptions={{
+              classNames: {
+                toast: "bg-gray-800 border-gray-700 text-white", // Dark background, border, light text
+                success: "text-green-400",
+                error: "text-red-400",
+                // Add other types if needed (info, warning, etc.)
+              },
+            }}
+          />
           <Footer />
           <ChatBot />
           <Analytics />

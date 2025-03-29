@@ -2,8 +2,9 @@
 
 // List of models to try in order of preference/capability
 const modelOptions = [
-  "gemini-2.5-pro-03-25",
+  "gemini-2.5-pro-exp-03-25",
   "gemini-2.0-flash", // Add newer models when available and tested
+
   "gemini-1.5-pro", // More capable model
   "gemini-1.5-flash", // Faster model
   "gemini-1.0-pro", // Older pro model

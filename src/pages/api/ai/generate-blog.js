@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
-  // Basic admin check (adjust based on your session structure)
+  // Basic admin check
   const isAdmin =
     session?.user?.role === "admin" ||
     session?.user?.isAdmin === true ||
@@ -25,105 +25,121 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { topic, tone, length, keywords, outline } = req.body; // Destructure outline
+    const { topic, tone, length, keywords, outline } = req.body;
 
-    if (!topic && !outline?.title) {
+    // Determine the primary topic/title source
+    const effectiveTopic = outline?.title || topic;
+
+    if (!effectiveTopic) {
       // Need at least a topic or an outline title
       return res
         .status(400)
         .json({ message: "Topic or Outline Title is required" });
     }
 
-    const effectiveTopic = outline?.title || topic; // Use outline title if available
+    let prompt;
+    let generationConfig = {
+      temperature: 0.7,
+      topK: 40,
+      topP: 0.95,
+      maxOutputTokens: 8192, // Default max tokens
+    };
 
-    // Construct the improved prompt for Gemini
-    const outlineInstructions = outline
-      ? `
+    // Construct prompt based on whether an outline is provided
+    if (outline && outline.headings && outline.headings.length > 0) {
+      // --- Prompt for generating from OUTLINE ---
+      const outlineInstructions = `
       **Use the following outline:**
       - **Title:** ${outline.title || effectiveTopic}
       - **Headings:**
         ${outline.headings.map((h) => `- ${h}`).join("\n        ")}
       Ensure the generated content follows this structure precisely, using the provided title and headings for the main sections. Expand on each heading with detailed, informative content.
-    `
-      : `
-      - **Structure:**
-          1.  **Title:** Create an engaging, clear, and SEO-friendly title for the topic "${effectiveTopic}" (output as a level 1 markdown heading: # Title).
-          2.  **Introduction:** Write a compelling introduction (1-2 paragraphs) that hooks the reader, clearly states the post's purpose, and briefly outlines what will be covered.
-          3.  **Main Sections:** Develop 3-5 logical main sections, each with a clear, descriptive subheading (output as level 2 markdown headings: ## Subheading). Elaborate on each point with sufficient detail, examples, or explanations. Break down complex ideas into smaller, digestible paragraphs (2-4 sentences each).
-          4.  **Formatting:** Use markdown formatting effectively for readability:
-              *   Use bullet points (-) or numbered lists (1.) for lists or sequential steps.
-              *   Use **bold text** strategically for emphasis on key terms, concepts, or keywords.
-              *   Use markdown code blocks (\`\`\`language\ncode\n\`\`\`) for any code examples, specifying the language where appropriate.
-          5.  **Conclusion:** Write a concise concluding summary (1-2 paragraphs) that recaps the main points and offers a final thought, takeaway, or call to action. Do not introduce new information here.
-    `;
+      `;
 
-    const prompt = `
-      Act as an expert content writer, technical blogger, and SEO specialist. Your target audience is likely other developers, tech enthusiasts, or potential clients seeking web development services. Write a high-quality, well-structured, and engaging blog post about "${effectiveTopic}".
+      prompt = `
+        Act as an expert content writer, technical blogger, and SEO specialist. Your target audience is likely other developers, tech enthusiasts, or potential clients seeking web development services. Write a high-quality, well-structured, and engaging blog post about "${effectiveTopic}".
 
-      **Instructions:**
-      - **Tone:** ${
-        tone
-          ? `Adopt a ${tone} tone. Ensure clarity and accuracy.`
-          : "Adopt a professional, informative, and slightly enthusiastic tone."
-      }
-      - **Length:** ${
-        length
-          ? `Aim for a length of approximately ${length} words. Focus on quality and depth over strict word count.`
-          : "Aim for a length of approximately 800 words."
-      }
-      - **Keywords:** ${
-        keywords && keywords.length > 0
-          ? `Naturally and strategically integrate the following keywords throughout the text, focusing on readability: ${keywords.join(
-              ", "
-            )}. Avoid keyword stuffing.`
-          : "Optimize for relevant keywords related to the topic naturally within the content."
-      }
-      ${outlineInstructions}
-      - **Readability:** Ensure paragraphs are well-structured and sentences flow logically. Use transition words where appropriate.
-      - **Output:** Return the entire response, starting *directly* with the markdown title (# Title), as a single block of valid, well-formatted markdown text. Do not include any preamble, notes, disclaimers, or explanations before or after the markdown content itself.
-    `;
-
-    // Use the utility function to call Gemini
-    const generationConfig = {
-      temperature: 0.7, // Balance creativity and focus
-      topK: 40,
-      topP: 0.95,
-      maxOutputTokens: 8192, // Ensure enough tokens for potentially longer posts
-    };
-    const generatedText = await callGemini(prompt, generationConfig);
-
-    // Parse the markdown to extract title and content
-    const titleMatch =
-      generatedText.match(/^#\s+(.+?)(\r?\n|$)/m) || // Matches '# Title'
-      generatedText.match(/^(.+)(\r?\n=+)(\r?\n|$)/m) || // Matches Title\n===
-      generatedText.match(/^(.+)(\r?\n-+)(\r?\n|$)/m); // Matches Title\n---
-
-    let title = effectiveTopic; // Default to effective topic if no title found
-    let content = generatedText;
-
-    if (titleMatch && titleMatch[1]) {
-      title = titleMatch[1].trim();
-      // Remove the title line and the following newline(s) from the content
-      content = generatedText.replace(titleMatch[0], "").trimStart();
+        **Instructions:**
+        - **Tone:** ${
+          tone
+            ? `Adopt a ${tone} tone. Ensure clarity and accuracy.`
+            : "Adopt a professional, informative, and slightly enthusiastic tone."
+        }
+        - **Length:** ${
+          length
+            ? `Aim for a length of approximately ${length} words. Focus on quality and depth over strict word count.`
+            : "Aim for a length of approximately 800 words."
+        }
+        - **Keywords:** ${
+          keywords && keywords.length > 0
+            ? `Naturally and strategically integrate the following keywords throughout the text, focusing on readability: ${keywords.join(
+                ", "
+              )}. Avoid keyword stuffing.`
+            : "Optimize for relevant keywords related to the topic naturally within the content."
+        }
+        ${outlineInstructions}
+        - **Readability:** Ensure paragraphs are well-structured and sentences flow logically. Use transition words where appropriate. Use markdown formatting effectively (bold, lists, code blocks).
+        - **Output:** Return the entire response, starting *directly* with the markdown title (# Title), as a single block of valid, well-formatted markdown text. Do not include any preamble, notes, disclaimers, or explanations before or after the markdown content itself.
+      `;
+      // Keep default maxOutputTokens for full post generation
     } else {
-      // If no markdown title found, assume first line might be the title (heuristic)
-      const lines = generatedText.split("\n");
-      if (
-        lines.length > 1 &&
-        lines[0].trim().length > 0 &&
-        lines[0].length < 100 &&
-        !lines[0].startsWith("##") // Avoid mistaking a subheading for the title
-      ) {
-        title = lines[0].trim();
-        content = lines.slice(1).join("\n").trimStart();
+      // --- Prompt for generating DRAFT from TITLE only ---
+      prompt = `
+        Act as a content writer. Generate a draft blog post in markdown format based *only* on the provided title.
+
+        **Title:** "${effectiveTopic}"
+
+        **Instructions:**
+        - Create a reasonable introduction (1-2 paragraphs).
+        - Develop 2-4 body paragraphs discussing potential aspects related to the title.
+        - Write a brief conclusion (1 paragraph).
+        - Use standard markdown formatting (paragraphs, maybe one or two ## subheadings if appropriate). Keep it relatively simple.
+        - Focus on generating coherent text relevant to the title.
+        - Output *only* the generated markdown content. Do not include the title itself (like '# Title') in the output. Do not add any preamble, notes, or explanations.
+      `;
+      generationConfig.maxOutputTokens = 2048; // Use fewer tokens for a draft
+    }
+
+    // Call the utility function to call Gemini
+    console.log(
+      "Generating blog content with prompt:",
+      prompt.substring(0, 200) + "..."
+    ); // Log start of prompt
+    const generatedText = await callGemini(prompt, generationConfig);
+    console.log(
+      "Generated text received (first 200 chars):",
+      generatedText.substring(0, 200) + "..."
+    );
+
+    let title = effectiveTopic; // Start with the provided title/topic
+    let content = generatedText.trim();
+
+    // If generated from outline, the AI might have included the title again
+    if (outline) {
+      const titleMatch = content.match(/^#\s+(.+?)(\r?\n|$)/m);
+      if (titleMatch && titleMatch[1]) {
+        // If AI included a title matching the outline/topic, remove it from content
+        if (
+          titleMatch[1].trim().toLowerCase() === effectiveTopic.toLowerCase()
+        ) {
+          console.log("AI included title, removing it from content.");
+          content = content.replace(titleMatch[0], "").trimStart();
+        } else {
+          // If AI generated a different title, maybe use it? For now, stick to effectiveTopic.
+          console.log(
+            "AI generated a different title, keeping original effectiveTopic."
+          );
+          // Optionally: title = titleMatch[1].trim(); // Uncomment to use AI's title
+        }
       }
     }
+    // If generated *only* from title, the entire response is the content.
 
     return res.status(200).json({
       success: true,
       data: {
-        title,
-        content,
+        title: title, // Return the title used for generation
+        content: content, // Return the generated content
       },
     });
   } catch (error) {

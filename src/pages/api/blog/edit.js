@@ -17,11 +17,22 @@ export default async function handler(req, res) {
   try {
     await dbConnect();
 
-    const { id, title, content, imageUrl, description } = req.body;
+    // Add 'category' to destructuring
+    const { id, title, content, imageUrl, description, category } = req.body;
 
-    // Validate required fields
-    if (!id || !title || !content || !imageUrl || !description) {
-      return res.status(400).json({ message: "Missing required fields" });
+    // Improved validation for required fields
+    const missingFields = [];
+    if (!id) missingFields.push("Blog ID (id)");
+    if (!title) missingFields.push("Title");
+    if (!content) missingFields.push("Content");
+    if (!imageUrl) missingFields.push("Image URL");
+    if (!description) missingFields.push("Description"); // Assuming description is required for edit
+
+    if (missingFields.length > 0) {
+      return res.status(400).json({
+        message: `Missing required field(s): ${missingFields.join(", ")}`,
+        missing: missingFields, // Optionally return the list of missing fields
+      });
     }
 
     // Find blog post and verify ownership
@@ -43,26 +54,40 @@ export default async function handler(req, res) {
       .replace(/[^a-zA-Z0-9\s]/g, "")
       .replace(/\s+/g, "-");
 
-    // Update blog post
+    // --- Removed Audio Summary Generation ---
+
+    // Prepare update data (excluding audioSummaryUrl)
+    const updateData = {
+      title,
+      content, // Use the new content from req.body
+      imageUrl,
+      description,
+      slug,
+      category: category ? category.trim() : undefined,
+      // audioSummaryUrl is no longer managed here
+      updatedAt: new Date(),
+    };
+
+    // Update blog post in DB
     const updatedBlog = await Blog.findByIdAndUpdate(
       id,
-      {
-        title,
-        content,
-        imageUrl,
-        description,
-        slug,
-        updatedAt: new Date(),
-      },
-      { new: true, runValidators: true }
+      updateData,
+      { new: true, runValidators: true } // Return the updated document
     );
+
+    if (!updatedBlog) {
+      // Should not happen if findById worked, but good practice
+      return res
+        .status(404)
+        .json({ message: "Blog post not found after update attempt" });
+    }
 
     return res.status(200).json({
       success: true,
-      data: updatedBlog,
+      data: updatedBlog, // Return the final updated blog data
     });
   } catch (error) {
-    console.error("Edit blog error:", error);
+    console.error("Edit blog error (outer catch):", error);
     return res.status(500).json({ message: "Error updating blog post" });
   }
 }

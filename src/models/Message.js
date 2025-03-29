@@ -27,6 +27,10 @@ const MessageSchema = new mongoose.Schema({
   },
 });
 
+// Add indexes
+MessageSchema.index({ createdAt: -1 }); // For sorting by date
+MessageSchema.index({ isRead: 1 }); // For filtering by read status
+
 // Prevent overwriting the model if it exists
 export default mongoose.models.Message ||
   mongoose.model("Message", MessageSchema);

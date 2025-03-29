@@ -40,29 +40,28 @@ const BlogSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    // New fields for AI-generated summary
-    aiSummary: {
+    category: {
+      // New category field
       type: String,
-      default: null,
+      trim: true,
+      index: true, // Add index for faster category filtering
+      default: "Uncategorized", // Optional: Provide a default
     },
-    hasAudioSummary: {
-      type: Boolean,
-      default: false,
-    },
-    audioSummaryUrl: {
-      type: String,
-      default: null,
-    },
-    summaryGeneratedAt: {
-      type: Date,
-      default: null,
-    },
+    // Removed audio-related fields
   },
   { timestamps: true }
 );
 
-// Ensure unique slugs
-BlogSchema.index({ slug: 1 }, { unique: true });
+// Define Indexes
+BlogSchema.index({ slug: 1 }, { unique: true }); // Existing unique index on slug
+BlogSchema.index({ category: 1 }); // Existing index on category (redundant due to inline definition, but harmless)
+BlogSchema.index({ isPublished: 1, createdAt: -1 }); // Compound index for published status and sorting by date (descending)
+BlogSchema.index({ tags: 1 }); // Index for querying by tags
+BlogSchema.index({ author: 1 }); // Index for querying by author
+BlogSchema.index(
+  { title: "text", content: "text", description: "text", tags: "text" },
+  { name: "BlogTextIndex", weights: { title: 10, tags: 5, description: 3, content: 1 } }
+); // Text index for searching, weighted towards title/tags
 
 // Create slug from title
 BlogSchema.pre("save", function (next) {
