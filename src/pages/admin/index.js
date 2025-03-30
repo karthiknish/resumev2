@@ -31,7 +31,7 @@ import ContactsTab from "@/components/admin/tabs/ContactsTab";
 import BytesTab from "@/components/admin/tabs/BytesTab";
 import ApiStatusTab from "@/components/admin/tabs/ApiStatusTab";
 import SubscribersTab from "@/components/admin/tabs/SubscribersTab";
-import MessagesTab from "@/components/admin/tabs/MessagesTab"; // Import MessagesTab
+// Removed MessagesTab import
 
 function AdminDashboard() {
   const { data: session, status } = useSession();
@@ -40,9 +40,9 @@ function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [sessionDebug, setSessionDebug] = useState(null);
 
-  // State specifically for unread messages count (needed by DashboardTab)
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [isLoadingMessagesCount, setIsLoadingMessagesCount] = useState(true);
+  // State specifically for unread count (now for Contacts)
+  const [unreadContactsCount, setUnreadContactsCount] = useState(0);
+  const [isLoadingContactsCount, setIsLoadingContactsCount] = useState(true);
 
   // Check for admin role
   useEffect(() => {
@@ -65,31 +65,34 @@ function AdminDashboard() {
     }
   }, [status, router]);
 
-  // Fetch only the unread message count needed for the dashboard badge
+  // Fetch unread *contacts* count
   useEffect(() => {
     const fetchUnreadCount = async () => {
       if (!isAdmin) return;
-      setIsLoadingMessagesCount(true);
+      setIsLoadingContactsCount(true);
       try {
-        // TODO: Update this API call if the endpoint changes or requires specific parameters
+        // Fetch unread count from the contacts endpoint
         const response = await fetch(
-          "/api/messages?isRead=false&countOnly=true"
+          "/api/contacts?isRead=false&countOnly=true" // Using contacts endpoint
         );
         if (!response.ok) {
-          throw new Error("Failed to fetch unread message count");
+          throw new Error("Failed to fetch unread contact count");
         }
         const data = await response.json();
         if (data.success) {
-          setUnreadCount(data.count || 0);
+          setUnreadContactsCount(data.count || 0);
         } else {
-          console.error("API Error fetching unread count:", data.message);
-          setUnreadCount(0);
+          console.error(
+            "API Error fetching unread contact count:",
+            data.message
+          );
+          setUnreadContactsCount(0);
         }
       } catch (error) {
-        console.error("Error fetching unread message count:", error);
-        setUnreadCount(0);
+        console.error("Error fetching unread contact count:", error);
+        setUnreadContactsCount(0);
       } finally {
-        setIsLoadingMessagesCount(false);
+        setIsLoadingContactsCount(false);
       }
     };
 
@@ -149,8 +152,8 @@ function AdminDashboard() {
               className="mb-8"
             >
               <SlideUp delay={0.4}>
-                {/* Updated grid columns to 8 */}
-                <TabsList className="grid w-full grid-cols-8 mb-4">
+                {/* Changed grid columns back to 7 */}
+                <TabsList className="grid w-full grid-cols-7 mb-4">
                   <TabsTrigger
                     value="dashboard"
                     className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
@@ -164,20 +167,6 @@ function AdminDashboard() {
                     <AiOutlineCalendar className="mr-2" /> Calendar
                   </TabsTrigger>
                   <TabsTrigger
-                    value="messages"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white relative"
-                  >
-                    <AiOutlineMail className="mr-2" /> Messages
-                    {unreadCount > 0 && (
-                      <span className="absolute -top-1 -right-1 flex h-4 w-4">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-xs items-center justify-center">
-                          {unreadCount > 9 ? "9+" : unreadCount}
-                        </span>
-                      </span>
-                    )}
-                  </TabsTrigger>
-                  <TabsTrigger
                     value="chat-history"
                     className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
                   >
@@ -185,9 +174,17 @@ function AdminDashboard() {
                   </TabsTrigger>
                   <TabsTrigger
                     value="contacts"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white relative" // Added relative for badge positioning
                   >
                     <AiOutlineMail className="mr-2" /> Contacts
+                    {unreadContactsCount > 0 && ( // Display unread contacts count here
+                      <span className="absolute -top-1 -right-1 flex h-4 w-4">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-xs items-center justify-center">
+                          {unreadContactsCount > 9 ? "9+" : unreadContactsCount}
+                        </span>
+                      </span>
+                    )}
                   </TabsTrigger>
                   <TabsTrigger
                     value="bytes"
@@ -212,18 +209,17 @@ function AdminDashboard() {
 
               <AnimatePresence mode="wait">
                 <TabsContent value="dashboard" key="dashboard">
+                  {/* Pass unreadContactsCount to DashboardTab */}
                   <DashboardTab
                     unreadCount={
-                      isLoadingMessagesCount ? undefined : unreadCount
+                      isLoadingContactsCount ? undefined : unreadContactsCount
                     }
                   />
                 </TabsContent>
                 <TabsContent value="calendar" key="calendar">
                   <CalendarTab />
                 </TabsContent>
-                <TabsContent value="messages" key="messages">
-                  <MessagesTab />
-                </TabsContent>
+                {/* Removed Messages Tab Content */}
                 <TabsContent value="chat-history" key="chat-history">
                   <ChatHistoryTab />
                 </TabsContent>

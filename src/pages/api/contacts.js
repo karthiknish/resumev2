@@ -1,94 +1,108 @@
 import dbConnect from "@/lib/dbConnect";
 import Contact from "@/models/Contact";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "./auth/[...nextauth]";
+import { authOptions } from "./auth/[...nextauth]"; // Adjust path if needed
+
+// Helper function to check admin status
+async function isAdminUser(req, res) {
+  const session = await getServerSession(req, res, authOptions);
+  return (
+    session?.user?.role === "admin" ||
+    session?.user?.isAdmin === true ||
+    session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL
+  );
+}
 
 export default async function handler(req, res) {
-  // Check for authenticated session
-  const session = await getServerSession(req, res, authOptions);
-  if (!session) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
-  // Connect to database
+  const { method } = req;
   await dbConnect();
 
-  // Handle GET request to fetch all contacts
-  if (req.method === "GET") {
-    try {
-      // Get pagination parameters
-      const page = parseInt(req.query.page, 10) || 1;
-      const limit = parseInt(req.query.limit, 10) || 10;
-      const skip = (page - 1) * limit;
-
-      // Get total count for pagination
-      const total = await Contact.countDocuments();
-
-      // Fetch contacts with pagination and sort by newest first
-      const contacts = await Contact.find({})
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit);
-
-      // Calculate total pages
-      const totalPages = Math.ceil(total / limit);
-
-      return res.status(200).json({
-        success: true,
-        data: contacts,
-        pagination: {
-          total,
-          page,
-          limit,
-          totalPages,
-        },
-      });
-    } catch (error) {
-      console.error("Error fetching contacts:", error);
-      return res.status(500).json({
-        success: false,
-        message: "Error fetching contacts",
-      });
+  // Admin check required for GET (listing) and potentially DELETE later
+  if (req.method === "GET" || req.method === "DELETE") {
+    const isAdmin = await isAdminUser(req, res);
+    if (!isAdmin) {
+      return res
+        .status(403)
+        .json({ success: false, message: "Forbidden: Admin access required" });
     }
   }
 
-  // Handle DELETE request to delete a contact
-  if (req.method === "DELETE") {
-    try {
-      const { id } = req.query;
+  switch (method) {
+    case "GET":
+      try {
+        // Check for countOnly query parameter
+        if (req.query.countOnly === "true") {
+          const filter =
+            req.query.isRead === "false" ? { isRead: { $ne: true } } : {}; // Filter for unread if requested
+          const count = await Contact.countDocuments(filter);
+          return res.status(200).json({ success: true, count });
+        }
 
-      if (!id) {
-        return res.status(400).json({
-          success: false,
-          message: "Contact ID is required",
-        });
+        // Default: Fetch all contacts, sorted by creation date descending
+        const contacts = await Contact.find({}).sort({ createdAt: -1 }).lean();
+        res.status(200).json({ success: true, data: contacts });
+      } catch (error) {
+        console.error("API Contacts GET Error:", error);
+        res
+          .status(500)
+          .json({ success: false, message: "Failed to fetch contacts" });
       }
+      break;
 
-      const deletedContact = await Contact.findByIdAndDelete(id);
+    case "POST": // This was the original contact form submission logic
+      try {
+        const { name, email, message } = req.body;
+        if (!name || !email || !message) {
+          return res
+            .status(400)
+            .json({ success: false, message: "Missing required fields" });
+        }
+        if (!/\S+@\S+\.\S+/.test(email)) {
+          return res
+            .status(400)
+            .json({
+              success: false,
+              message: "Invalid email address provided.",
+            });
+        }
 
-      if (!deletedContact) {
-        return res.status(404).json({
-          success: false,
-          message: "Contact not found",
+        // Save contact message using the service function (assuming it exists and handles validation)
+        // If not using service, create directly:
+        const newContact = await Contact.create({
+          name,
+          email,
+          message,
+          createdAt: new Date(),
+          isRead: false, // Default to unread
         });
-      }
 
-      return res.status(200).json({
-        success: true,
-        message: "Contact deleted successfully",
-      });
-    } catch (error) {
-      console.error("Error deleting contact:", error);
-      return res.status(500).json({
-        success: false,
-        message: "Error deleting contact",
-      });
-    }
+        // TODO: Consider moving email sending logic here if it wasn't moved to a service
+        // For now, just save to DB
+
+        res
+          .status(201)
+          .json({
+            success: true,
+            message: "Contact submission received.",
+            data: newContact,
+          });
+      } catch (error) {
+        console.error("Contact form submission error:", error);
+        res
+          .status(500)
+          .json({
+            success: false,
+            message: "Error processing contact submission",
+          });
+      }
+      break;
+
+    // Add DELETE later if needed (using req.query.id)
+    // case "DELETE": ...
+
+    default:
+      res.setHeader("Allow", ["GET", "POST"]); // Add other methods like DELETE later
+      res.status(405).end(`Method ${method} Not Allowed`);
+      break;
   }
-
-  // Return method not allowed for other request types
-  return res.status(405).json({
-    success: false,
-    message: "Method not allowed",
-  });
 }

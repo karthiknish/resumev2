@@ -8,13 +8,12 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"; // Assuming shadcn/ui accordion
+} from "@/components/ui/accordion";
 
 // Simple date formatter
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
   return new Date(dateString).toLocaleString("en-GB", {
-    // Use UK format with time
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -29,7 +28,6 @@ export default function ChatHistoryTab() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch chat histories on mount
   useEffect(() => {
     const fetchChatHistories = async () => {
       setIsLoading(true);
@@ -57,7 +55,25 @@ export default function ChatHistoryTab() {
       }
     };
     fetchChatHistories();
-  }, []); // Fetch only once on mount
+  }, []);
+
+  // Helper function to render message content safely
+  const renderMessageContent = (msg) => {
+    if (Array.isArray(msg.parts) && msg.parts.length > 0) {
+      return msg.parts.map((part, partIndex) => (
+        <span key={partIndex}>{part?.text ?? ""}</span>
+      ));
+    } else if (typeof msg.text === "string") {
+      return <span>{msg.text}</span>;
+    } else if (typeof msg.content === "string") {
+      return <span>{msg.content}</span>;
+    }
+    return (
+      <span className="italic text-gray-500">
+        [Empty or unreadable message]
+      </span>
+    );
+  };
 
   return (
     <Card className="border-gray-700 bg-gray-900 text-white">
@@ -103,36 +119,39 @@ export default function ChatHistoryTab() {
                 </AccordionTrigger>
                 <AccordionContent className="pt-4 text-gray-300">
                   <div className="space-y-3 max-h-60 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
-                    {history.messages?.map((msg, msgIndex) => (
-                      <div
-                        key={msgIndex}
-                        className={`flex ${
-                          msg.role === "user" ? "justify-end" : "justify-start"
-                        }`}
-                      >
-                        <Badge
-                          variant={
-                            msg.role === "user" ? "default" : "secondary"
-                          }
-                          className={`max-w-[80%] whitespace-normal text-left px-3 py-1.5 ${
-                            msg.role === "user"
-                              ? "bg-blue-600 text-white rounded-br-none"
-                              : "bg-gray-600 text-gray-100 rounded-bl-none"
+                    {history.messages?.map((msg, msgIndex) => {
+                      if (!msg) {
+                        console.warn(
+                          `Skipping null/undefined message at index ${msgIndex} in history ${history._id}`
+                        );
+                        return null;
+                      }
+                      const isUser = msg.role === "user";
+                      return (
+                        <div
+                          key={msgIndex}
+                          className={`flex ${
+                            isUser ? "justify-end" : "justify-start"
                           }`}
                         >
-                          {msg.parts.map((part, partIndex) => (
-                            <span key={partIndex}>{part.text}</span>
-                          ))}
-                        </Badge>
-                      </div>
-                    ))}
+                          <div // Changed Badge to div for more control
+                            className={`max-w-[80%] whitespace-normal text-left px-3 py-1.5 rounded-lg border ${
+                              isUser
+                                ? "bg-green-600 text-white rounded-br-none border-green-500" // User styles
+                                : "bg-gray-700 text-gray-100 rounded-bl-none border-gray-600" // AI styles
+                            }`}
+                          >
+                            {renderMessageContent(msg)}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                   {/* Display metadata if available */}
                   <div className="mt-4 pt-3 border-t border-gray-700 text-xs text-gray-500 space-y-1">
                     {history.device && <div>Device: {history.device}</div>}
                     {history.browser && <div>Browser: {history.browser}</div>}
                     {history.ip && <div>IP: {history.ip}</div>}
-                    {/* Add Location display if needed */}
                   </div>
                 </AccordionContent>
               </AccordionItem>
