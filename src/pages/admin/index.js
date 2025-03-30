@@ -6,6 +6,7 @@ import {
   AiOutlineThunderbolt,
   AiOutlineExperiment,
   AiOutlineUsergroupAdd,
+  AiFillLinkedin, // Added LinkedIn icon
 } from "react-icons/ai";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -31,7 +32,7 @@ import ContactsTab from "@/components/admin/tabs/ContactsTab";
 import BytesTab from "@/components/admin/tabs/BytesTab";
 import ApiStatusTab from "@/components/admin/tabs/ApiStatusTab";
 import SubscribersTab from "@/components/admin/tabs/SubscribersTab";
-// Removed MessagesTab import
+import LinkedInTab from "@/components/admin/tabs/LinkedInTab"; // Import LinkedInTab
 
 function AdminDashboard() {
   const { data: session, status } = useSession();
@@ -71,9 +72,8 @@ function AdminDashboard() {
       if (!isAdmin) return;
       setIsLoadingContactsCount(true);
       try {
-        // Fetch unread count from the contacts endpoint
         const response = await fetch(
-          "/api/contacts?isRead=false&countOnly=true" // Using contacts endpoint
+          "/api/contacts?isRead=false&countOnly=true"
         );
         if (!response.ok) {
           throw new Error("Failed to fetch unread contact count");
@@ -152,8 +152,8 @@ function AdminDashboard() {
               className="mb-8"
             >
               <SlideUp delay={0.4}>
-                {/* Changed grid columns back to 7 */}
-                <TabsList className="grid w-full grid-cols-7 mb-4">
+                {/* Updated grid columns to 8 */}
+                <TabsList className="grid w-full grid-cols-8 mb-4">
                   <TabsTrigger
                     value="dashboard"
                     className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
@@ -174,10 +174,10 @@ function AdminDashboard() {
                   </TabsTrigger>
                   <TabsTrigger
                     value="contacts"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white relative" // Added relative for badge positioning
+                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white relative"
                   >
                     <AiOutlineMail className="mr-2" /> Contacts
-                    {unreadContactsCount > 0 && ( // Display unread contacts count here
+                    {unreadContactsCount > 0 && (
                       <span className="absolute -top-1 -right-1 flex h-4 w-4">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-xs items-center justify-center">
@@ -199,6 +199,13 @@ function AdminDashboard() {
                     <FaUserCheck className="mr-2" /> Subscribers
                   </TabsTrigger>
                   <TabsTrigger
+                    value="linkedin" // Added LinkedIn tab value
+                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                  >
+                    <AiFillLinkedin className="mr-2" /> LinkedIn{" "}
+                    {/* Added LinkedIn icon */}
+                  </TabsTrigger>
+                  <TabsTrigger
                     value="api-status"
                     className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
                   >
@@ -209,7 +216,6 @@ function AdminDashboard() {
 
               <AnimatePresence mode="wait">
                 <TabsContent value="dashboard" key="dashboard">
-                  {/* Pass unreadContactsCount to DashboardTab */}
                   <DashboardTab
                     unreadCount={
                       isLoadingContactsCount ? undefined : unreadContactsCount
@@ -219,7 +225,6 @@ function AdminDashboard() {
                 <TabsContent value="calendar" key="calendar">
                   <CalendarTab />
                 </TabsContent>
-                {/* Removed Messages Tab Content */}
                 <TabsContent value="chat-history" key="chat-history">
                   <ChatHistoryTab />
                 </TabsContent>
@@ -231,6 +236,11 @@ function AdminDashboard() {
                 </TabsContent>
                 <TabsContent value="subscribers" key="subscribers">
                   <SubscribersTab />
+                </TabsContent>
+                <TabsContent value="linkedin" key="linkedin">
+                  {" "}
+                  {/* Added LinkedIn tab content */}
+                  <LinkedInTab />
                 </TabsContent>
                 <TabsContent value="api-status" key="api-status">
                   <ApiStatusTab />
