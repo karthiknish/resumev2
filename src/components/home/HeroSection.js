@@ -32,10 +32,13 @@ const exampleImages = [
 
 export default function HeroSection() {
   return (
-    <div className="bg-black overflow-hidden relative min-h-screen">
+    // Reduced min-height for mobile
+    <div className="bg-black bg-dot-pattern-mobile md:bg-none overflow-hidden relative min-h-[70vh] md:min-h-screen">
+      {/* Keep beams on all sizes */}
       <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
+      {/* Hide complex geometric animation on mobile */}
       <HeroGeometric
-        className="absolute inset-0 -z-0 opacity-30"
+        className="absolute inset-0 -z-0 opacity-30 hidden md:block"
         duration={20}
         speed={2}
       />
@@ -43,7 +46,8 @@ export default function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="relative z-10 min-h-screen py-20 flex flex-col items-center justify-center"
+        // Reduced min-height and padding for mobile
+        className="relative z-10 min-h-[70vh] md:min-h-screen py-12 md:py-20 flex flex-col items-center justify-center"
       >
         <motion.div
           initial={{ x: -100, opacity: 0 }}
@@ -134,10 +138,10 @@ export default function HeroSection() {
           </Floating>
 
           {/* Main Text Content */}
-          <div className="flex flex-col justify-center items-center w-full max-w-[280px] sm:max-w-[350px] md:max-w-[500px] lg:max-w-[700px] z-50 pointer-events-auto mt-10 px-4">
+          <div className="flex flex-col justify-center items-center w-full max-w-[280px] sm:max-w-[350px] md:max-w-[500px] lg:max-w-[700px] z-50 pointer-events-auto mt-8 md:mt-10 px-4">
             <motion.h1
-              // Gradient text on mobile, solid on md+
-              className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-center w-full justify-center items-center flex-col flex whitespace-pre leading-tight font-calendas tracking-tight space-y-1 md:space-y-4 text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400 md:text-white md:bg-none"
+              // Reduced smallest text size
+              className="text-2xl sm:text-5xl md:text-7xl lg:text-8xl text-center w-full justify-center items-center flex-col flex whitespace-pre leading-tight font-calendas tracking-tight space-y-1 md:space-y-4 text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400 md:text-white md:bg-none"
               animate={{ opacity: 1, y: 0 }}
               initial={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.2, ease: "easeOut", delay: 0.3 }}
@@ -168,7 +172,8 @@ export default function HeroSection() {
                       "seamless",
                       "strategic",
                     ]}
-                    mainClassName="overflow-hidden pr-3 text-blue-500 py-0 pb-2 md:pb-4 rounded-xl"
+                    // Reduced bottom padding
+                    mainClassName="overflow-hidden pr-2 text-blue-500 py-0 pb-1 md:pb-4 rounded-xl"
                     staggerDuration={0.03}
                     staggerFrom="last"
                     rotationInterval={3000}
@@ -178,7 +183,6 @@ export default function HeroSection() {
               </LayoutGroup>
             </motion.h1>
             <motion.p
-              // Adjusted text size and color for mobile
               className="text-base sm:text-lg md:text-xl lg:text-2xl text-center font-calendas pt-6 sm:pt-8 md:pt-10 lg:pt-12 text-gray-300 md:text-white"
               animate={{ opacity: 1, y: 0 }}
               initial={{ opacity: 0, y: 20 }}
@@ -189,9 +193,8 @@ export default function HeroSection() {
             </motion.p>
 
             {/* Buttons - Stacked on mobile */}
-            <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4 mt-12 sm:mt-16 md:mt-20 lg:mt-20 w-full md:w-auto">
+            <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4 mt-10 md:mt-12 lg:mt-16 w-full md:w-auto">
               <motion.button
-                // Adjusted size and width for mobile
                 className="w-full md:w-auto text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-blue-500 px-6 py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-2xl hover:bg-blue-600 transition-colors"
                 animate={{ opacity: 1, y: 0 }}
                 initial={{ opacity: 0, y: 20 }}
@@ -204,11 +207,10 @@ export default function HeroSection() {
                 </Link>
               </motion.button>
               <motion.button
-                // Adjusted size and width for mobile
-                className="w-full md:w-auto text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-gray-700 px-6 py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-xl hover:bg-gray-600 transition-colors" // Changed color for secondary button
+                className="w-full md:w-auto text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-gray-700 px-6 py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-xl hover:bg-gray-600 transition-colors"
                 animate={{ opacity: 1, y: 0 }}
                 initial={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.2, ease: "easeOut", delay: 0.8 }} // Slightly later delay
+                transition={{ duration: 0.2, ease: "easeOut", delay: 0.8 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >

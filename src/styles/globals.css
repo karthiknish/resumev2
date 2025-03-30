@@ -2,187 +2,91 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Add custom base styles or components here if needed */
+
 @layer base {
-  html {
-    font-family: 'Calendas', system-ui, -apple-system, sans-serif;
-  }
-  
   :root {
-    --color-primary: #6366f1;
-    --color-primary-rgb: 99, 102, 241;
-    --background: #000000;
-    --foreground: #ffffff;
-    --border: #333333;
-    --ring: #6366f1;
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    /* ... other color variables ... */
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    /* ... */
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    /* ... */
+    --primary: 0 72.2% 50.6%;
+    --primary-foreground: 0 85.7% 97.3%;
+    /* ... */
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    /* ... */
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    /* ... */
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    /* ... */
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    /* ... */
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 72.2% 50.6%;
+     /* ... */
+    --radius: 0.5rem;
   }
-  
-  body {
-    background-color: black !important;
-    color: white;
-    font-family: 'Calendas', system-ui, -apple-system, sans-serif;
-  }
-}
 
-@layer components {
+  /* Add other base styles if necessary */
+  body {
+     @apply bg-black text-gray-100; /* Example base body styles */
+     font-family: var(--font-inter), sans-serif; /* Apply Inter font */
+  }
+
+   /* Add custom font styles */
   .font-calendas {
-    font-family: 'Calendas', system-ui, -apple-system, sans-serif;
+    font-family: 'Calendas', serif; /* Ensure Calendas is defined or imported */
   }
+
 }
 
-.animate-fade-in {
-  animation: fade-in 1s ease-out;
-}
-
-@keyframes fade-in {
-  0% {
-    opacity: 0;
+/* Add custom utilities */
+@layer utilities {
+  /* Subtle dot pattern for mobile hero background */
+  .bg-dot-pattern-mobile {
+    background-image: radial-gradient(theme('colors.gray.700') 1px, transparent 1px);
+    background-size: 12px 12px; /* Adjust size for desired density */
   }
-  100% {
-    opacity: 1;
+
+  /* Hide scrollbar utility (use with caution) */
+  .scrollbar-hide::-webkit-scrollbar {
+      display: none;
   }
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
+  .scrollbar-hide {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
   }
-  body {
-    @apply bg-background text-foreground;
-    background-color: black !important;
+
+   /* Custom scrollbar styles (optional) */
+  .scrollbar-thin {
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: theme('colors.gray.600') theme('colors.gray.800'); /* Firefox */
   }
-}
-
-/* Fix for Spline component */
-canvas {
-  display: block !important;
-}
-
-/* Prevent Spline from causing layout shifts */
-.spline-container {
-  position: relative;
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-}
-
-/* Optimize Spline performance */
-canvas {
-  image-rendering: optimizeSpeed;
-  image-rendering: -webkit-optimize-contrast;
-}
-
-/* Fix for floating elements */
-.floating-container {
-  pointer-events: none;
-}
-.floating-container img {
-  pointer-events: auto;
-}
-
-/* Prevent buffer overflow issues */
-iframe, canvas, video {
-  max-width: 100%;
-  max-height: 100%;
-}
-
-/* Improve performance for animations */
-.motion-reduce {
-  transition: none !important;
-  animation: none !important;
-}
-
-@media (prefers-reduced-motion) {
-  * {
-    transition: none !important;
-    animation: none !important;
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
   }
-}
-
-/* Add padding to account for fixed navigation */
-.page-content {
-  padding-top: 6rem; /* Adjust this value based on your nav height */
-  contain: content; /* Improve paint performance */
-}
-
-/* Ensure the navigation doesn't overlap with content */
-.nav-padding {
-  height: 5rem; /* Adjust this value based on your nav height */
-  width: 100%;
-  contain: strict; /* Improve paint performance */
-}
-
-/* Page transition styles */
-.page-transition-wrapper {
-  position: relative;
-  width: 100%;
-  min-height: calc(100vh - 5rem); /* Adjust based on your nav height */
-  overflow-x: hidden; /* Prevent horizontal scrolling during transitions */
-  contain: content; /* Improve paint performance */
-  will-change: opacity, transform; /* Hint to browser for optimization */
-  isolation: isolate; /* Create a new stacking context */
-  /* transition-duration removed - let framer-motion handle it */
-}
-
-/* Prevent FOUC (Flash of Unstyled Content) during page transitions */
-/* html.js-page-transitioning { */
-  /* overflow: hidden; */ /* Commented out - might clip animations */
-/* } */
-
-/* Improve animation performance */
-.page-transition-wrapper > * {
-  will-change: opacity, transform;
-  backface-visibility: hidden; /* Prevent flickering in some browsers */
-  transform: translateZ(0); /* Force GPU acceleration */
-  -webkit-font-smoothing: antialiased; /* Improve text rendering */
-  /* transition-duration removed - let framer-motion handle it */
-}
-
-/* Performance optimizations for images */
-img, svg, video {
-  content-visibility: auto; /* Improve loading performance */
-  contain: content; /* Improve paint performance */
-}
-
-/* Optimize large components */
-.large-component {
-  content-visibility: auto;
-  contain-intrinsic-size: 0 500px; /* Provide size hint for browser */
-  contain: content;
-}
-
-/* Optimize animations */
-@media (prefers-reduced-motion: no-preference) {
-  .animate-optimized {
-    transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1.0);
-    will-change: opacity, transform;
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: theme('colors.gray.800');
+    border-radius: 3px;
   }
-}
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: theme('colors.gray.600');
+    border-radius: 3px;
+    border: 1px solid theme('colors.gray.800');
+  }
+   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+     background-color: theme('colors.gray.500');
+   }
 
-/* Optimize for reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-  
-  .page-transition-wrapper {
-    transition: none !important;
-    animation: none !important;
-  }
-}
-
-/* Loading animation */
-.loading-pulse {
-  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
 }
