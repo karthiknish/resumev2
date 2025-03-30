@@ -131,7 +131,7 @@ function AdminDashboard() {
             <title>Admin Dashboard</title>
           </Head>
 
-          <PageContainer>
+          <PageContainer className="mt-20">
             <SlideInLeft delay={0.2}>
               <div className="flex justify-between items-center mb-10">
                 <h1 className="text-4xl font-bold text-white font-calendas glow-blue">
