@@ -4,8 +4,9 @@ import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-w
 import { HeroGeometric } from "@/components/ui/shape-landing-hero";
 import { TextRotate } from "@/components/ui/text-rotate";
 import Floating, { FloatingElement } from "@/components/ui/parallax-floating";
+import Image from "next/image";
 
-// Sample images (consider moving to a data file if used elsewhere)
+// Sample images
 const exampleImages = [
   {
     url: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=3270&auto=format&fit=crop",
@@ -27,14 +28,11 @@ const exampleImages = [
     url: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?q=80&w=3276&auto=format&fit=crop",
     title: "Business Analytics",
   },
-]; // Simplified for brevity, add more if needed
+];
 
 export default function HeroSection() {
   return (
-    // Removed the fragment <></> as the outer div serves as the root
     <div className="bg-black overflow-hidden relative min-h-screen">
-      {" "}
-      {/* Ensure min height */}
       <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
       <HeroGeometric
         className="absolute inset-0 -z-0 opacity-30"
@@ -45,76 +43,101 @@ export default function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="relative z-10 min-h-screen py-20 flex flex-col items-center justify-center" // Centering content
+        className="relative z-10 min-h-screen py-20 flex flex-col items-center justify-center"
       >
-        {/* This motion.div was previously unclosed */}
         <motion.div
           initial={{ x: -100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="relative z-10 container mx-auto mb-10 flex flex-col items-center"
         >
-          {/* Floating Images */}
+          {/* Floating Images - Hidden on mobile */}
           <Floating
             sensitivity={-0.5}
-            className="h-full w-full absolute pointer-events-none"
+            className="h-full w-full absolute pointer-events-none hidden md:block"
           >
             <FloatingElement depth={0.5} className="top-[15%] left-[5%]">
-              <motion.img
-                src={exampleImages[0].url}
-                alt={exampleImages[0].title}
-                className="w-24 h-16 object-cover -rotate-[3deg] shadow-2xl rounded-xl"
+              <motion.div
+                className="w-24 h-16 relative shadow-2xl rounded-xl overflow-hidden -rotate-[3deg]"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.5 }}
-              />
+              >
+                <Image
+                  src={exampleImages[0].url}
+                  alt={exampleImages[0].title}
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </motion.div>
             </FloatingElement>
             <FloatingElement depth={1} className="top-[5%] left-[15%]">
-              <motion.img
-                src={exampleImages[1].url}
-                alt={exampleImages[1].title}
-                className="w-48 h-36 object-cover -rotate-12 shadow-2xl rounded-xl"
+              <motion.div
+                className="w-48 h-36 relative shadow-2xl rounded-xl overflow-hidden -rotate-12"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.7 }}
-              />
+              >
+                <Image
+                  src={exampleImages[1].url}
+                  alt={exampleImages[1].title}
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </motion.div>
             </FloatingElement>
             <FloatingElement depth={4} className="top-[80%] left-[10%]">
-              <motion.img
-                src={exampleImages[2].url}
-                alt={exampleImages[2].title}
-                className="w-60 h-60 object-cover -rotate-[4deg] shadow-2xl rounded-xl"
+              <motion.div
+                className="w-60 h-60 relative shadow-2xl rounded-xl overflow-hidden -rotate-[4deg]"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.9 }}
-              />
+              >
+                <Image
+                  src={exampleImages[2].url}
+                  alt={exampleImages[2].title}
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </motion.div>
             </FloatingElement>
             <FloatingElement depth={2} className="top-[5%] right-[5%]">
-              <motion.img
-                src={exampleImages[3].url}
-                alt={exampleImages[3].title}
-                className="w-64 h-56 object-cover rotate-[6deg] shadow-2xl rounded-xl"
+              <motion.div
+                className="w-64 h-56 relative shadow-2xl rounded-xl overflow-hidden rotate-[6deg]"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 1.1 }}
-              />
+              >
+                <Image
+                  src={exampleImages[3].url}
+                  alt={exampleImages[3].title}
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </motion.div>
             </FloatingElement>
             <FloatingElement depth={1} className="top-[70%] right-[10%]">
-              <motion.img
-                src={exampleImages[4].url}
-                alt={exampleImages[4].title}
-                className="w-80 h-80 object-cover rotate-[19deg] shadow-2xl rounded-xl"
+              <motion.div
+                className="w-80 h-80 relative shadow-2xl rounded-xl overflow-hidden rotate-[19deg]"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 1.3 }}
-              />
+              >
+                <Image
+                  src={exampleImages[4].url}
+                  alt={exampleImages[4].title}
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </motion.div>
             </FloatingElement>
           </Floating>
 
           {/* Main Text Content */}
-          <div className="flex flex-col justify-center items-center w-[250px] sm:w-[300px] md:w-[500px] lg:w-[700px] z-50 pointer-events-auto mt-10">
+          <div className="flex flex-col justify-center items-center w-full max-w-[280px] sm:max-w-[350px] md:max-w-[500px] lg:max-w-[700px] z-50 pointer-events-auto mt-10 px-4">
             <motion.h1
-              className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl text-center w-full justify-center items-center flex-col flex whitespace-pre leading-tight font-calendas tracking-tight space-y-1 md:space-y-4 text-white"
+              // Gradient text on mobile, solid on md+
+              className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-center w-full justify-center items-center flex-col flex whitespace-pre leading-tight font-calendas tracking-tight space-y-1 md:space-y-4 text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400 md:text-white md:bg-none"
               animate={{ opacity: 1, y: 0 }}
               initial={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.2, ease: "easeOut", delay: 0.3 }}
@@ -155,7 +178,8 @@ export default function HeroSection() {
               </LayoutGroup>
             </motion.h1>
             <motion.p
-              className="text-sm sm:text-lg md:text-xl lg:text-2xl text-center font-calendas pt-4 sm:pt-8 md:pt-10 lg:pt-12 text-white"
+              // Adjusted text size and color for mobile
+              className="text-base sm:text-lg md:text-xl lg:text-2xl text-center font-calendas pt-6 sm:pt-8 md:pt-10 lg:pt-12 text-gray-300 md:text-white"
               animate={{ opacity: 1, y: 0 }}
               initial={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.2, ease: "easeOut", delay: 0.5 }}
@@ -164,10 +188,11 @@ export default function HeroSection() {
               high-performance web solutions for businesses and individuals.
             </motion.p>
 
-            {/* Buttons */}
-            <div className="flex flex-row justify-center space-x-4 items-center mt-10 sm:mt-16 md:mt-20 lg:mt-20 text-xs">
+            {/* Buttons - Stacked on mobile */}
+            <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4 mt-12 sm:mt-16 md:mt-20 lg:mt-20 w-full md:w-auto">
               <motion.button
-                className="sm:text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-blue-500 px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-2xl hover:bg-blue-600 transition-colors"
+                // Adjusted size and width for mobile
+                className="w-full md:w-auto text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-blue-500 px-6 py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-2xl hover:bg-blue-600 transition-colors"
                 animate={{ opacity: 1, y: 0 }}
                 initial={{ opacity: 0, y: 20 }}
                 transition={{ duration: 0.2, ease: "easeOut", delay: 0.7 }}
@@ -179,10 +204,11 @@ export default function HeroSection() {
                 </Link>
               </motion.button>
               <motion.button
-                className="sm:text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-blue-500 px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-2xl hover:bg-blue-600 transition-colors"
+                // Adjusted size and width for mobile
+                className="w-full md:w-auto text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-gray-700 px-6 py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-xl hover:bg-gray-600 transition-colors" // Changed color for secondary button
                 animate={{ opacity: 1, y: 0 }}
                 initial={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.2, ease: "easeOut", delay: 0.7 }}
+                transition={{ duration: 0.2, ease: "easeOut", delay: 0.8 }} // Slightly later delay
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -196,10 +222,8 @@ export default function HeroSection() {
               </motion.button>
             </div>
           </div>
-        </motion.div>{" "}
-        {/* Closing tag for the inner motion.div */}
-      </motion.div>{" "}
-      {/* Closing tag for the outer motion.div */}
-    </div> // Closing tag for the root div
+        </motion.div>
+      </motion.div>
+    </div>
   );
 }

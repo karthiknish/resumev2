@@ -51,8 +51,11 @@ function BentoGrid({ items = itemsSample }) {
             "border border-white/10 bg-gray-900",
             "hover:shadow-[0_2px_12px_rgba(255,255,255,0.03)]",
             "hover:-translate-y-0.5 will-change-transform",
-            item.colSpan || "col-span-1",
+            // Explicitly set col-span-1 for mobile, apply larger spans only on md+
+            "col-span-1",
             item.colSpan === 2 ? "md:col-span-2" : "",
+            // Add min-h-0 to prevent potential height issues, though less likely in single column
+            "min-h-0",
             {
               "shadow-[0_2px_12px_rgba(255,255,255,0.03)] -translate-y-0.5":
                 item.hasPersistentHover,
