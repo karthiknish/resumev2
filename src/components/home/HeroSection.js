@@ -32,11 +32,9 @@ const exampleImages = [
 
 export default function HeroSection() {
   return (
-    // Reduced min-height for mobile
-    <div className="bg-black bg-dot-pattern-mobile md:bg-none overflow-hidden relative min-h-[70vh] md:min-h-screen">
-      {/* Keep beams on all sizes */}
+    // Removed md:bg-none to show dot pattern on desktop too
+    <div className="bg-black bg-dot-pattern-mobile overflow-hidden relative min-h-[70vh] md:min-h-screen">
       <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
-      {/* Hide complex geometric animation on mobile */}
       <HeroGeometric
         className="absolute inset-0 -z-0 opacity-30 hidden md:block"
         duration={20}
@@ -46,7 +44,6 @@ export default function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        // Reduced min-height and padding for mobile
         className="relative z-10 min-h-[70vh] md:min-h-screen py-12 md:py-20 flex flex-col items-center justify-center"
       >
         <motion.div
@@ -62,7 +59,7 @@ export default function HeroSection() {
           >
             <FloatingElement depth={0.5} className="top-[15%] left-[5%]">
               <motion.div
-                className="w-24 h-16 relative shadow-2xl rounded-xl overflow-hidden -rotate-[3deg]"
+                className="w-24 h-16 relative shadow-2xl rounded-xl overflow-hidden -rotate-[3deg] brightness-50"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.5 }}
@@ -77,7 +74,7 @@ export default function HeroSection() {
             </FloatingElement>
             <FloatingElement depth={1} className="top-[5%] left-[15%]">
               <motion.div
-                className="w-48 h-36 relative shadow-2xl rounded-xl overflow-hidden -rotate-12"
+                className="w-48 h-36 relative shadow-2xl rounded-xl overflow-hidden -rotate-12 brightness-50"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.7 }}
@@ -92,7 +89,7 @@ export default function HeroSection() {
             </FloatingElement>
             <FloatingElement depth={4} className="top-[80%] left-[10%]">
               <motion.div
-                className="w-60 h-60 relative shadow-2xl rounded-xl overflow-hidden -rotate-[4deg]"
+                className="w-60 h-60 relative shadow-2xl rounded-xl overflow-hidden -rotate-[4deg] brightness-50"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.9 }}
@@ -107,7 +104,7 @@ export default function HeroSection() {
             </FloatingElement>
             <FloatingElement depth={2} className="top-[5%] right-[5%]">
               <motion.div
-                className="w-64 h-56 relative shadow-2xl rounded-xl overflow-hidden rotate-[6deg]"
+                className="w-64 h-56 relative shadow-2xl rounded-xl overflow-hidden rotate-[6deg] brightness-50"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 1.1 }}
@@ -122,7 +119,7 @@ export default function HeroSection() {
             </FloatingElement>
             <FloatingElement depth={1} className="top-[70%] right-[10%]">
               <motion.div
-                className="w-80 h-80 relative shadow-2xl rounded-xl overflow-hidden rotate-[19deg]"
+                className="w-80 h-80 relative shadow-2xl rounded-xl overflow-hidden rotate-[19deg] brightness-50"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 1.3 }}
@@ -140,7 +137,6 @@ export default function HeroSection() {
           {/* Main Text Content */}
           <div className="flex flex-col justify-center items-center w-full max-w-[280px] sm:max-w-[350px] md:max-w-[500px] lg:max-w-[700px] z-50 pointer-events-auto mt-8 md:mt-10 px-4">
             <motion.h1
-              // Reduced smallest text size
               className="text-2xl sm:text-5xl md:text-7xl lg:text-8xl text-center w-full justify-center items-center flex-col flex whitespace-pre leading-tight font-calendas tracking-tight space-y-1 md:space-y-4 text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400 md:text-white md:bg-none"
               animate={{ opacity: 1, y: 0 }}
               initial={{ opacity: 0, y: 20 }}
@@ -172,7 +168,6 @@ export default function HeroSection() {
                       "seamless",
                       "strategic",
                     ]}
-                    // Reduced bottom padding
                     mainClassName="overflow-hidden pr-2 text-blue-500 py-0 pb-1 md:pb-4 rounded-xl"
                     staggerDuration={0.03}
                     staggerFrom="last"
