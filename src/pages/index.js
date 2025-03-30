@@ -1,17 +1,15 @@
 import Head from "next/head";
-import React from "react"; // Keep React import if needed elsewhere or for context
+import React from "react";
 import { motion } from "framer-motion";
 
-// Import the extracted section components
+// Import section components
 import HeroSection from "@/components/home/HeroSection";
 import WhyFreelancerSection from "@/components/home/WhyFreelancerSection";
 import TechStackSection from "@/components/home/TechStackSection";
 import FeaturedProjectsSection from "@/components/home/FeaturedProjectsSection";
-
-// Import existing components used on the page
-import Services from "@/components/Services";
-import ContactForm from "@/components/Form";
-import Faq from "@/components/Faq";
+import Services from "@/components/Services"; // Assuming this is a section-level component
+import ContactForm from "@/components/Form"; // Assuming this is a section-level component
+import Faq from "@/components/Faq"; // Assuming this is a section-level component
 
 // FAQ items data (can be moved to a data file if preferred)
 const faqItems = [
@@ -47,10 +45,10 @@ const faqItems = [
   },
 ];
 
+
 const HomeScreen = () => {
   return (
     <>
-      {/* Keep Head component for page-specific metadata */}
       <Head>
         <title>
           Karthik Nishanth - Freelance Full Stack Developer | Liverpool, UK
@@ -95,27 +93,44 @@ const HomeScreen = () => {
         <meta name="googlebot" content="index, follow" />
         <meta name="theme-color" content="#000000" />
         <meta name="msapplication-TileColor" content="#000000" />
-        {/* Preconnect links might be better placed in _document.js */}
       </Head>
-      {/* Render the extracted sections */}
-      <HeroSection />
-      <WhyFreelancerSection />
-      <TechStackSection />
-      <FeaturedProjectsSection />
-      {/* Render existing components */}
-      <Faq items={faqItems} /> {/* Pass FAQ items */}
-      {/* Wrap Services in a section for consistent spacing/background if needed */}
-      <div className="bg-black mx-auto px-8 py-16">
+
+      {/* Reordered Sections */}
+      <section id="hero">
+        <HeroSection />
+      </section>
+
+      {/* Wrap Services in a section for consistent structure */}
+      <section id="services" className="bg-black py-16 md:py-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }} // Use whileInView for scroll-triggered animation
-          viewport={{ once: true }} // Trigger animation only once
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <Services />
         </motion.div>
-      </div>
-      <ContactForm />
+      </section>
+
+      <section id="tech-stack">
+        <TechStackSection />
+      </section>
+
+      <section id="projects">
+        <FeaturedProjectsSection />
+      </section>
+
+      <section id="why-freelancer">
+        <WhyFreelancerSection />
+      </section>
+
+      <section id="faq" className="bg-black py-16 md:py-24">
+        <Faq items={faqItems} />
+      </section>
+
+      <section id="contact">
+        <ContactForm />
+      </section>
     </>
   );
 };

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { BiSend, BiMessageSquareDots, BiX } from "react-icons/bi";
 import { FaEnvelope } from "react-icons/fa";
 import Modal from "react-modal";
@@ -6,9 +6,9 @@ import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge"; // Import Badge
-import Image from "next/image"; // Import next/image
-import { Loader2 } from "lucide-react"; // Import Loader2
+import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
+import { Loader2 } from "lucide-react";
 
 // Only initialize Modal in browser environment
 if (typeof window !== "undefined") {
@@ -40,24 +40,21 @@ function Chatbot() {
 
   // Scroll lock effect
   useEffect(() => {
-    if (!isBrowser) return; // Only run in browser
+    if (!isBrowser) return;
 
     const body = document.body;
-    const isMobile = window.innerWidth < 768; // md breakpoint
+    const isMobile = window.innerWidth < 768;
 
     if (isOpen && isMobile) {
-      // Store original overflow style
       const originalStyle = window.getComputedStyle(body).overflow;
       body.style.overflow = "hidden";
-      // Return cleanup function
       return () => {
         body.style.overflow = originalStyle;
       };
     } else {
-      // Ensure overflow is reset if modal closes or not mobile
       body.style.overflow = "";
     }
-  }, [isOpen, isBrowser]); // Rerun on open/close and browser check
+  }, [isOpen, isBrowser]);
 
   useEffect(() => {
     if (chatEndRef.current) {
@@ -250,7 +247,6 @@ function Chatbot() {
     const looksLikeMarkdown = /[*_\[#]/.test(content);
 
     if (looksLikeMarkdown && msg.user === "bot") {
-      // Only render markdown for bot
       return (
         <ReactMarkdown
           components={{
@@ -281,22 +277,22 @@ function Chatbot() {
 
   // Animation variants
   const modalVariants = {
-    hidden: { opacity: 0, y: "100vh", scale: 0.9 }, // Start from bottom
+    hidden: { opacity: 0, y: "100vh", scale: 0.9 },
     visible: { opacity: 1, y: 0, scale: 1 },
-    exit: { opacity: 0, y: "100vh", scale: 0.9 }, // Exit to bottom
+    exit: { opacity: 0, y: "100vh", scale: 0.9 },
   };
 
   const messageVariants = {
-    hidden: { opacity: 0, y: 20, scale: 0.95 }, // Increased y offset, added scale
+    hidden: { opacity: 0, y: 20, scale: 0.95 },
     visible: { opacity: 1, y: 0, scale: 1 },
   };
 
   return (
     <>
-      {/* Chat button */}
+      {/* Chat button - Always fixed bottom-right */}
       <button
         className={`fixed z-[1100] right-5 p-3 rounded-full bg-blue-600 text-white flex items-center shadow-lg hover:bg-blue-700 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black ${
-          // Adjust bottom based on open state for mobile overlap prevention
+          // Adjust bottom only for mobile overlap prevention when open
           isOpen ? "bottom-[70px] md:bottom-5" : "bottom-5"
         }`}
         onClick={() => setIsOpen(!isOpen)}
@@ -323,14 +319,15 @@ function Chatbot() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            key="chat-modal" // Add key for AnimatePresence
-            variants={modalVariants} // Use new variants
+            key="chat-modal"
+            variants={modalVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
-            transition={{ type: "spring", stiffness: 400, damping: 35 }} // Adjusted spring
-            // Full screen on mobile, corner pop-up on desktop, high z-index
-            className="fixed inset-0 z-[1000] flex flex-col bg-gray-900 shadow-2xl md:absolute md:bottom-20 md:right-5 md:inset-auto md:w-[375px] md:max-h-[70vh] md:h-auto md:rounded-xl md:overflow-hidden border border-gray-700/50"
+            transition={{ type: "spring", stiffness: 400, damping: 35 }}
+            // Use fixed positioning, apply responsive styles for placement/size
+            className="fixed inset-0 z-[1000] flex flex-col bg-gray-900 shadow-2xl border border-gray-700/50
+                       md:inset-auto md:bottom-20 md:right-5 md:w-[375px] md:max-h-[70vh] md:h-auto md:rounded-xl md:overflow-hidden"
           >
             {/* Chat header */}
             <div className="flex justify-between items-center p-3 border-b border-gray-700 bg-gray-800 flex-shrink-0">
@@ -354,7 +351,7 @@ function Chatbot() {
                   }`}
                 >
                   <motion.div
-                    variants={messageVariants} // Apply message variants
+                    variants={messageVariants}
                     initial="hidden"
                     animate="visible"
                     transition={{
@@ -362,11 +359,11 @@ function Chatbot() {
                       type: "spring",
                       stiffness: 500,
                       damping: 30,
-                    }} // Staggered spring
+                    }}
                     className={`max-w-[85%] px-4 py-2 rounded-lg shadow-md text-sm md:text-base border ${
                       msg.user === "bot"
-                        ? "bg-gray-700 text-gray-100 rounded-bl-none border-gray-600" // AI style
-                        : "bg-green-600 text-white rounded-br-none border-green-500" // User style
+                        ? "bg-gray-700 text-gray-100 rounded-bl-none border-gray-600"
+                        : "bg-green-600 text-white rounded-br-none border-green-500"
                     }`}
                   >
                     {renderMessageContent(msg)}
