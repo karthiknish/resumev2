@@ -16,7 +16,8 @@ import { CalendarIcon, ClockIcon, TagIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState, useRef } from "react";
 import { toast } from "sonner";
 import RelatedPosts from "@/components/RelatedPosts";
-import CommentsSection from "@/components/CommentsSection"; // Import the Comments component
+import CommentsSection from "@/components/CommentsSection";
+import JsonLd, { createBlogPostingSchema } from "@/components/JsonLd"; // Import JsonLd and schema function
 
 function Id({ data, relatedPosts }) {
   // Add relatedPosts to props destructuring
@@ -146,10 +147,16 @@ function Id({ data, relatedPosts }) {
   }
 
   // Debug log for audio URL
-  // console.log("[Blog Page] data.audioSummaryUrl:", data?.audioSummaryUrl); // Can re-enable if needed
+  // console.log("[Blog Page] data.audioSummaryUrl:", data?.audioSummaryUrl);
+
+  // Generate BlogPosting schema
+  const blogPostingSchema = data ? createBlogPostingSchema(data) : null;
 
   return (
     <>
+      {/* Add JsonLd component */}
+      {blogPostingSchema && <JsonLd data={blogPostingSchema} />}
+
       <Head>
         <title>{data.title} - Karthik Nishanth | Full Stack Developer</title>
         <meta name="description" content={data.description || data.title} />
