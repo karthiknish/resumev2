@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { toast } from "sonner"; // Using sonner for notifications
 import { Input } from "@/components/ui/input"; // Assuming shadcn/ui input
-import { Button } from "@/components/ui/button"; // Assuming shadcn/ui button
-import { Loader2 } from "lucide-react"; // Loading icon
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/router"; // Import useRouter
 
 export default function NewsletterSignup() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState(""); // For success/error messages inline
+  const [message, setMessage] = useState("");
+  const router = useRouter(); // Initialize router
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,11 +35,12 @@ export default function NewsletterSignup() {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success(data.message || "Successfully subscribed!");
-        setEmail(""); // Clear input on success
-        setMessage("Thanks for subscribing!"); // Optional inline success message
+        // Redirect on success
+        router.push("/newsletter/thank-you");
+        // Optionally clear email here if needed, though redirect makes it less critical
+        // setEmail("");
       } else {
-        // Handle specific errors like 'already subscribed' or validation errors
+        // Keep error handling
         toast.error(data.message || "Subscription failed. Please try again.");
         setMessage(data.message || "Subscription failed.");
       }

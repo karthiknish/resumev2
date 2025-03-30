@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/router"; // Import useRouter
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -9,14 +10,14 @@ const ContactForm = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
+  // Removed submitSuccess state
+  const router = useRouter(); // Initialize router
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.id]: e.target.value,
     });
-    // Clear error when user starts typing again
     if (submitError) {
       setSubmitError(null);
     }
@@ -26,7 +27,7 @@ const ContactForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitError(null);
-    setSubmitSuccess(false);
+    // Removed setSubmitSuccess(false);
 
     try {
       const response = await fetch("/api/contact", {
@@ -43,13 +44,11 @@ const ContactForm = () => {
         throw new Error(data.message || "Failed to submit contact form");
       }
 
-      // Reset form on success
-      setFormData({
-        name: "",
-        email: "",
-        message: "",
-      });
-      setSubmitSuccess(true);
+      // Reset form fields (optional, as we redirect)
+      setFormData({ name: "", email: "", message: "" });
+
+      // Redirect to success page
+      router.push("/success");
     } catch (error) {
       console.error("Error submitting contact form:", error);
       setSubmitError(
@@ -98,12 +97,7 @@ const ContactForm = () => {
               </div>
             )}
 
-            {/* Display success message */}
-            {submitSuccess && (
-              <div className="bg-green-500 text-white p-4 rounded-md text-center">
-                Thank you for your message! I'll get back to you soon.
-              </div>
-            )}
+            {/* Removed success message div */}
 
             <motion.form
               onSubmit={handleSubmit}
@@ -182,4 +176,3 @@ const ContactForm = () => {
 };
 
 export default ContactForm;
-
