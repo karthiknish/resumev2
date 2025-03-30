@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,8 +10,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Linkedin, Loader2, Copy, Check } from "lucide-react";
+import {
+  Linkedin,
+  Loader2,
+  Copy,
+  Check,
+  Sparkles,
+  RefreshCw, // Keep RefreshCw if needed elsewhere, otherwise remove
+  ExternalLink,
+} from "lucide-react";
 import { toast } from "sonner";
+import TrendingNewsFeed from "@/components/admin/shared/TrendingNewsFeed"; // Import from shared location
 
 // --- Post Suggestion Generator Component ---
 const PostSuggestionGenerator = () => {
@@ -22,14 +31,14 @@ const PostSuggestionGenerator = () => {
   const [ideas, setIdeas] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [copiedIndex, setCopiedIndex] = useState(null); // Track which idea is copied
+  const [copiedIndex, setCopiedIndex] = useState(null);
 
   const handleGenerateIdeas = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
-    setIdeas([]); // Clear previous ideas
-    setCopiedIndex(null); // Reset copied state
+    setIdeas([]);
+    setCopiedIndex(null);
 
     try {
       const response = await fetch("/api/ai/linkedin-post-ideas", {
@@ -40,22 +49,17 @@ const PostSuggestionGenerator = () => {
           keywords: keywords
             .split(",")
             .map((k) => k.trim())
-            .filter((k) => k), // Split and trim keywords
+            .filter((k) => k),
           tone,
           numIdeas,
         }),
       });
-
       const data = await response.json();
-
-      if (!response.ok || !data.success) {
+      if (!response.ok || !data.success)
         throw new Error(data.message || "Failed to generate ideas");
-      }
-
       setIdeas(data.ideas || []);
-      if (!data.ideas || data.ideas.length === 0) {
-        toast.info("No ideas generated for this input.");
-      }
+      if (!data.ideas || data.ideas.length === 0)
+        toast.info("No ideas generated.");
     } catch (err) {
       setError(err.message);
       toast.error(err.message || "Failed to generate ideas.");
@@ -69,7 +73,7 @@ const PostSuggestionGenerator = () => {
       () => {
         setCopiedIndex(index);
         toast.success("Copied to clipboard!");
-        setTimeout(() => setCopiedIndex(null), 2000); // Reset icon after 2s
+        setTimeout(() => setCopiedIndex(null), 2000);
       },
       (err) => {
         toast.error("Failed to copy text.");
@@ -96,7 +100,7 @@ const PostSuggestionGenerator = () => {
               id="topic"
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              placeholder="e.g., Benefits of Cloud Migration, React Tips"
+              placeholder="e.g., Benefits of Cloud Migration"
               disabled={isLoading}
               className="bg-gray-700 border-gray-600"
             />
@@ -112,7 +116,7 @@ const PostSuggestionGenerator = () => {
               id="keywords"
               value={keywords}
               onChange={(e) => setKeywords(e.target.value)}
-              placeholder="e.g., aws, serverless, webdev"
+              placeholder="e.g., aws, serverless"
               disabled={isLoading}
               className="bg-gray-700 border-gray-600"
             />
@@ -170,9 +174,7 @@ const PostSuggestionGenerator = () => {
             {isLoading ? "Generating..." : "Generate Ideas"}
           </Button>
         </form>
-
         {error && <p className="mt-4 text-red-400 text-sm">Error: {error}</p>}
-
         {ideas.length > 0 && (
           <div className="mt-6 space-y-4">
             <h4 className="text-md font-semibold text-gray-200">
@@ -233,13 +235,23 @@ const CarouselGenerator = () => (
         Feature coming soon: Generate LinkedIn carousels using Canva API
         (Requires setup).
       </p>
-      {/* TODO: Add UI for generating carousels */}
     </CardContent>
   </Card>
 );
 
 // --- Main LinkedIn Tab Component ---
 export default function LinkedInTab() {
+  // Optional: Handler if clicking news should populate the generator
+  const handleNewsSelectForIdeas = (headline, summary) => {
+    // Example: You could set the 'topic' state of PostSuggestionGenerator
+    // This would require lifting state up or using context/zustand
+    console.log("News selected in LinkedIn Tab:", headline);
+    toast.info(
+      `Selected news: "${headline}". You can use this as input for the idea generator.`
+    );
+    // Maybe set topic state here if PostSuggestionGenerator state is lifted up
+  };
+
   return (
     <div className="space-y-6">
       <Card className="border-gray-700 bg-gray-900 text-white">
@@ -252,10 +264,16 @@ export default function LinkedInTab() {
           <p className="text-gray-400">
             Tools to help generate content and manage your LinkedIn presence.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <PostSuggestionGenerator />
-            <CarouselGenerator />
-            {/* Add more LinkedIn related tools here */}
+          {/* Updated Grid Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <PostSuggestionGenerator />
+            </div>
+            <div className="space-y-6">
+              {/* Use shared component, pass handler (optional) */}
+              <TrendingNewsFeed onNewsSelect={handleNewsSelectForIdeas} />
+              <CarouselGenerator />
+            </div>
           </div>
         </CardContent>
       </Card>

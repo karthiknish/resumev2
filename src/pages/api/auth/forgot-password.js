@@ -1,7 +1,7 @@
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
 import crypto from "crypto";
-import nodemailer from "nodemailer";
+import { sendEmail } from "@/lib/mailer"; // Import the new sendEmail function
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -18,7 +18,8 @@ export default async function handler(req, res) {
 
     const user = await User.findOne({ email });
     if (!user) {
-      // Do not reveal if a user exists or not.
+      // Still return success to prevent email enumeration
+      console.log(`Forgot password attempt for non-existent email: ${email}`);
       return res.status(200).json({
         message:
           "If a matching account was found, a password reset email has been sent.",
@@ -31,68 +32,74 @@ export default async function handler(req, res) {
 
     // Update user with reset token
     try {
-      await User.findOneAndUpdate(
-        { email },
+      // Use await with findOneAndUpdate to ensure it completes
+      const updatedUser = await User.findOneAndUpdate(
+        { _id: user._id }, // Use _id for reliability
         {
           resetPasswordToken: resetToken,
           resetPasswordExpires: resetTokenExpiry,
         },
-        { runValidators: false }
+        { new: true, runValidators: false } // Return updated doc, skip validators for this update
       );
+
+      if (!updatedUser) {
+        // This shouldn't happen if findOne found the user, but good to check
+        console.error(`Failed to update user ${user.email} with reset token.`);
+        throw new Error("Error saving reset token");
+      }
+      console.log(`Reset token saved for user: ${user.email}`);
     } catch (error) {
       console.error("Error saving reset token:", error);
-      return res.status(500).json({ message: "Error saving reset token" });
-    }
-
-    // Create transporter
-    let transporter;
-    try {
-      transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_SERVER_HOST,
-        port: process.env.EMAIL_SERVER_PORT,
-        secure: false, // true for 465, false for other ports
-        auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD,
-        },
-      });
-    } catch (transporterError) {
-      console.error("Transporter creation error:", transporterError);
       return res
         .status(500)
-        .json({ message: "Error creating email transporter" });
+        .json({ message: "Error preparing password reset" });
     }
 
-    // Reset link
-    const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password?token=${resetToken}`;
+    // Construct Reset URL
+    // Ensure NEXTAUTH_URL is set correctly in your environment (.env.local or production env)
+    const resetUrl = `${
+      process.env.NEXTAUTH_URL || "http://localhost:3000"
+    }/reset-password?token=${resetToken}`;
 
     // Email content
-    const mailOptions = {
-      from: process.env.EMAIL_FROM,
-      to: user.email,
-      subject: "Password Reset Request",
-      html: `
-        <p>You requested a password reset.</p>
-        <p>Click this link to reset your password:</p>
-        <a href="${resetUrl}">${resetUrl}</a>
-        <p>If you didn't request this, please ignore this email.</p>
-        <p>This link will expire in 1 hour.</p>
-      `,
-    };
+    const emailHtml = `
+        <p>Hi ${user.name || "there"},</p>
+        <p>You requested a password reset for your account associated with ${
+          user.email
+        }.</p>
+        <p>Click this link within the next hour to reset your password:</p>
+        <p><a href="${resetUrl}" style="color: #3b82f6; text-decoration: underline;">Reset Password</a></p>
+        <p>If you didn't request this, please ignore this email. Your password will remain unchanged.</p>
+        <p>Link: ${resetUrl}</p>
+      `;
 
+    // Send email using the mailer utility
     try {
-      await transporter.sendMail(mailOptions);
+      console.log(`Attempting to send password reset email to: ${user.email}`);
+      await sendEmail({
+        to: user.email,
+        subject: "Password Reset Request - Karthik Nishanth",
+        html: emailHtml,
+      });
+      console.log(`Password reset email sent successfully to: ${user.email}`);
     } catch (sendMailError) {
-      console.error("Error sending email:", sendMailError);
-      return res.status(500).json({ message: "Error sending reset email" });
+      console.error("Error sending password reset email:", sendMailError);
+      // Don't reveal specific email errors to the client
+      return res
+        .status(500)
+        .json({
+          message:
+            "Could not send password reset email. Please try again later.",
+        });
     }
 
+    // Return generic success message regardless of user existence or email success
     return res.status(200).json({
       message:
         "If a matching account was found, a password reset email has been sent.",
     });
   } catch (error) {
-    console.error("Forgot password error:", error);
+    console.error("Forgot password general error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 }

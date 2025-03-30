@@ -145,6 +145,7 @@ function AdminDashboard() {
               <Separator className="my-6 bg-gray-800" />
             </FadeIn>
 
+            {/* Reverted Tabs structure */}
             <Tabs
               defaultValue="dashboard"
               value={activeTab}
@@ -152,31 +153,32 @@ function AdminDashboard() {
               className="mb-8"
             >
               <SlideUp delay={0.4}>
-                {/* Updated grid columns to 8 */}
-                <TabsList className="grid w-full grid-cols-8 mb-4">
+                {/* Reverted to flex row with horizontal scroll */}
+                <TabsList className="flex w-full overflow-x-auto pb-2 scrollbar-thin mb-4 space-x-1">
                   <TabsTrigger
                     value="dashboard"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0"
                   >
-                    <AiOutlineRead className="mr-2" /> Blogs
+                    <AiOutlineRead /> <span className="ml-1.5">Blogs</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="calendar"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0"
                   >
-                    <AiOutlineCalendar className="mr-2" /> Calendar
+                    <AiOutlineCalendar />{" "}
+                    <span className="ml-1.5">Calendar</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="chat-history"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0"
                   >
-                    <FaComments className="mr-2" /> Chat History
+                    <FaComments /> <span className="ml-1.5">Chat History</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="contacts"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white relative"
+                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white relative flex-shrink-0"
                   >
-                    <AiOutlineMail className="mr-2" /> Contacts
+                    <AiOutlineMail /> <span className="ml-1.5">Contacts</span>
                     {unreadContactsCount > 0 && (
                       <span className="absolute -top-1 -right-1 flex h-4 w-4">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
@@ -188,32 +190,34 @@ function AdminDashboard() {
                   </TabsTrigger>
                   <TabsTrigger
                     value="bytes"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0"
                   >
-                    <AiOutlineThunderbolt className="mr-2" /> Bytes
+                    <AiOutlineThunderbolt />{" "}
+                    <span className="ml-1.5">Bytes</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="subscribers"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0"
                   >
-                    <FaUserCheck className="mr-2" /> Subscribers
+                    <FaUserCheck /> <span className="ml-1.5">Subscribers</span>
                   </TabsTrigger>
                   <TabsTrigger
-                    value="linkedin" // Added LinkedIn tab value
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                    value="linkedin"
+                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0"
                   >
-                    <AiFillLinkedin className="mr-2" /> LinkedIn{" "}
-                    {/* Added LinkedIn icon */}
+                    <AiFillLinkedin /> <span className="ml-1.5">LinkedIn</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="api-status"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0"
                   >
-                    <AiOutlineExperiment className="mr-2" /> API Status
+                    <AiOutlineExperiment />{" "}
+                    <span className="ml-1.5">API Status</span>
                   </TabsTrigger>
                 </TabsList>
               </SlideUp>
 
+              {/* Reverted Content Area structure */}
               <AnimatePresence mode="wait">
                 <TabsContent value="dashboard" key="dashboard">
                   <DashboardTab
@@ -223,27 +227,32 @@ function AdminDashboard() {
                   />
                 </TabsContent>
                 <TabsContent value="calendar" key="calendar">
-                  <CalendarTab />
+                  {" "}
+                  <CalendarTab />{" "}
                 </TabsContent>
                 <TabsContent value="chat-history" key="chat-history">
-                  <ChatHistoryTab />
+                  {" "}
+                  <ChatHistoryTab />{" "}
                 </TabsContent>
                 <TabsContent value="contacts" key="contacts">
-                  <ContactsTab />
+                  {" "}
+                  <ContactsTab />{" "}
                 </TabsContent>
                 <TabsContent value="bytes" key="bytes">
-                  <BytesTab />
+                  {" "}
+                  <BytesTab />{" "}
                 </TabsContent>
                 <TabsContent value="subscribers" key="subscribers">
-                  <SubscribersTab />
+                  {" "}
+                  <SubscribersTab />{" "}
                 </TabsContent>
                 <TabsContent value="linkedin" key="linkedin">
                   {" "}
-                  {/* Added LinkedIn tab content */}
-                  <LinkedInTab />
+                  <LinkedInTab />{" "}
                 </TabsContent>
                 <TabsContent value="api-status" key="api-status">
-                  <ApiStatusTab />
+                  {" "}
+                  <ApiStatusTab />{" "}
                 </TabsContent>
               </AnimatePresence>
             </Tabs>
