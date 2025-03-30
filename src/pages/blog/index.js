@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useState, useMemo } from "react";
 import Head from "next/head";
-// import limitCharacters from "limit-characters"; // Removed library import
 import Router from "next/router";
 import Link from "next/link";
+import Image from "next/image"; // Import next/image
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import ReactMarkdown from "react-markdown";
+// Removed ReactMarkdown import as we'll render plain text snippet
 import { FaSearch } from "react-icons/fa";
 import PageContainer from "@/components/PageContainer";
 
@@ -24,83 +24,60 @@ function Index({ initialPosts = [], categories = [] }) {
   const [sortOrder, setSortOrder] = useState("desc");
   const [allPosts, setAllPosts] = useState([]);
 
-  // Process initial data once on mount using substring
   useEffect(() => {
     const processedData = initialPosts.map((post) => {
       const originalContent = post.content || "";
-      const limit = 250; // Define the character limit
+      console.log("originalContent:", originalContent);
+      const limit = 250;
       let limitedContentWithEllipsis = originalContent;
 
       if (originalContent.length > limit) {
-        // Find the last space within the limit to avoid cutting words
         let lastSpace = originalContent.substring(0, limit).lastIndexOf(" ");
-        if (lastSpace === -1) lastSpace = limit; // If no space found, cut at limit
-        limitedContentWithEllipsis = originalContent.substring(0, lastSpace) + "...";
+        if (lastSpace === -1) lastSpace = limit;
+        limitedContentWithEllipsis =
+          originalContent.substring(0, lastSpace) + "...";
       }
 
       return {
         ...post,
-        limitedContent: limitedContentWithEllipsis, // Use the version with ellipsis
+        // Ensure description exists, fallback to limited content if needed for display
+        description:
+          post.description ||
+          limitedContentWithEllipsis.substring(0, 160) +
+            (originalContent.length > 160 ? "..." : ""), // Use actual description or shorter snippet
+        limitedContent: limitedContentWithEllipsis, // Keep the potentially longer snippet for display
         createdAtDate: new Date(post.createdAt),
       };
     });
     setAllPosts(processedData);
   }, [initialPosts]);
 
-  // Memoized calculation for filtered and sorted posts
   const filteredAndSortedContent = useMemo(() => {
     let filtered = [...allPosts];
-
-    // Filter by Category
     if (selectedCategory !== "All") {
       filtered = filtered.filter((post) => post.category === selectedCategory);
     }
-
-    // Filter by Search Term
     if (searchTerm.trim() !== "") {
       const lowerSearchTerm = searchTerm.toLowerCase();
       filtered = filtered.filter(
         (post) =>
           post.title.toLowerCase().includes(lowerSearchTerm) ||
+          (post.description &&
+            post.description.toLowerCase().includes(lowerSearchTerm)) || // Search description
           (post.content && post.content.toLowerCase().includes(lowerSearchTerm))
       );
     }
-
-    // Sort by Date
     filtered.sort((a, b) => {
-      if (sortOrder === "asc") {
-        return a.createdAtDate - b.createdAtDate;
-      } else {
-        return b.createdAtDate - a.createdAtDate;
-      }
+      return sortOrder === "asc"
+        ? a.createdAtDate - b.createdAtDate
+        : b.createdAtDate - a.createdAtDate;
     });
-
     return filtered;
   }, [allPosts, searchTerm, selectedCategory, sortOrder]);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    // Redirect to the new unified search page/API
-    if (searchTerm.trim()) {
-      // Assuming you might want a dedicated search results page later
-      // For now, this might just filter the current list via state,
-      // but the form still points to the old blog-specific search.
-      // Let's keep the filtering logic via state for now.
-      // Router.push(`/search?q=${encodeURIComponent(searchTerm)}`); // Example for dedicated page
-    }
-  };
-
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
-  };
-
-  const handleSortChange = (value) => {
-    setSortOrder(value);
-  };
+  const handleSearchChange = (e) => setSearchTerm(e.target.value);
+  const handleCategoryChange = (category) => setSelectedCategory(category);
+  const handleSortChange = (value) => setSortOrder(value);
 
   return (
     <>
@@ -108,11 +85,11 @@ function Index({ initialPosts = [], categories = [] }) {
         <title>Blog - Karthik Nishanth | Full Stack Developer</title>
         <meta
           name="description"
-          content="Read the latest articles on web development, technology, and more."
+          content="Read the latest articles on web development, technology, and more by Karthik Nishanth."
         />
         <meta
           name="keywords"
-          content="blog, web development, technology, karthik, nishanth"
+          content="blog, web development, technology, full stack, cloud, react, nodejs, karthik, nishanth, liverpool, uk"
         />
         <meta name="author" content="Karthik Nishanth" />
       </Head>
@@ -167,23 +144,21 @@ function Index({ initialPosts = [], categories = [] }) {
               <div className="flex-grow"></div> {/* Spacer */}
               {/* Search and Sort */}
               <div className="flex flex-col md:flex-row gap-4 items-center w-full md:w-auto">
-                {/* Search Form (Filters list, doesn't submit to API here) */}
-                <form onSubmit={(e) => e.preventDefault()} className="flex w-full md:w-auto">
+                <form
+                  onSubmit={(e) => e.preventDefault()}
+                  className="flex w-full md:w-auto"
+                >
                   <input
                     type="text"
                     value={searchTerm}
                     onChange={handleSearchChange}
-                    placeholder="Filter posts..." // Changed placeholder
+                    placeholder="Filter posts..."
                     className="px-3 py-2 bg-black/40 border border-gray-700 rounded-l-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500 w-full md:w-auto flex-grow"
                   />
-                  <div // Changed button to div as it doesn't submit
-                    className="bg-gray-600 text-white px-3 py-2 rounded-r-md flex items-center justify-center"
-                  >
+                  <div className="bg-gray-600 text-white px-3 py-2 rounded-r-md flex items-center justify-center">
                     <FaSearch />
                   </div>
                 </form>
-
-                {/* Sort Dropdown */}
                 <Select
                   onValueChange={handleSortChange}
                   defaultValue={sortOrder}
@@ -202,11 +177,12 @@ function Index({ initialPosts = [], categories = [] }) {
             {/* Display Search/Filter Status */}
             {(searchTerm.trim() !== "" || selectedCategory !== "All") && (
               <div className="mb-6 text-gray-400 text-sm">
-                Showing {filteredAndSortedContent.length} posts
-                {searchTerm.trim() !== "" && ` matching "${searchTerm}"`}
+                {" "}
+                Showing {filteredAndSortedContent.length} posts{" "}
+                {searchTerm.trim() !== "" && ` matching "${searchTerm}"`}{" "}
                 {selectedCategory !== "All" &&
                   ` in category "${selectedCategory}"`}
-                .
+                .{" "}
               </div>
             )}
 
@@ -216,17 +192,22 @@ function Index({ initialPosts = [], categories = [] }) {
                 {filteredAndSortedContent.map((post) => (
                   <div
                     key={post._id}
-                    onClick={() => Router.push(`/blog/${post.slug}`)}
                     className="cursor-pointer group block"
+                    onClick={() => Router.push(`/blog/${post.slug}`)}
                   >
                     <Link href={`/blog/${post.slug}`} passHref legacyBehavior>
                       <a className="block">
                         <div className="flex flex-col lg:flex-row items-center gap-8">
-                          <div className="w-full lg:w-1/2 h-64 lg:h-96 overflow-hidden rounded-lg">
-                            <img
+                          <div className="w-full lg:w-1/2 h-64 lg:h-96 overflow-hidden rounded-lg relative">
+                            {" "}
+                            {/* Added relative positioning */}
+                            {/* Use next/image */}
+                            <Image
                               src={post.imageUrl}
                               alt={post.title}
-                              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                              layout="fill"
+                              objectFit="cover"
+                              className="transition-transform duration-300 group-hover:scale-105"
                             />
                           </div>
                           <div className="lg:w-1/2">
@@ -239,11 +220,12 @@ function Index({ initialPosts = [], categories = [] }) {
                             <h2 className="text-2xl font-semibold text-white mb-4 group-hover:text-blue-500 transition-colors font-calendas">
                               {post.title}
                             </h2>
-                            {/* Display the limited content snippet */}
-                            <div className="text-gray-300 mb-4 font-calendas prose prose-invert max-w-none prose-p:text-gray-300 prose-a:text-blue-400 line-clamp-3"> {/* Added line-clamp */}
-                              {/* Render plain text snippet, not Markdown */}
+                            {/* Render plain text snippet */}
+                            <p className="text-gray-300 mb-4 font-calendas line-clamp-3">
+                              {" "}
+                              {/* Use line-clamp for CSS truncation */}
                               {post.limitedContent}
-                            </div>
+                            </p>
                             <div className="flex justify-between items-center mt-4">
                               <span className="text-blue-500 font-calendas underline group-hover:text-blue-400 transition-colors">
                                 Read more
@@ -282,7 +264,9 @@ export async function getServerSideProps() {
   const baseUrl = process.env.URL || "http://localhost:3000";
   try {
     const [postsRes, categoriesRes] = await Promise.all([
-      fetch(`${baseUrl}/api/blog?publishedOnly=true`),
+      fetch(
+        `${baseUrl}/api/blog?publishedOnly=true&select=title,slug,imageUrl,createdAt,isPublished,content,description,category,tags`
+      ), // Ensure needed fields are selected
       fetch(`${baseUrl}/api/blog/categories`),
     ]);
 

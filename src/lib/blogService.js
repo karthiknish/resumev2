@@ -46,8 +46,9 @@ export async function getPaginatedBlogs(page = 1, limit = 10, filter = {}) {
   const total = await Blog.countDocuments(filter);
 
   // Define the fields to select for the list view
+  // IMPORTANT: Added 'content' here
   const selection =
-    "title slug imageUrl createdAt isPublished description category tags";
+    "title slug imageUrl createdAt isPublished description category tags content";
 
   const blogs = await Blog.find(filter)
     .select(selection)

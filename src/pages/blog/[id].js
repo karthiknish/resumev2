@@ -242,10 +242,14 @@ function Id({ data, relatedPosts }) {
             <div className="flex flex-col">
               <motion.div variants={fadeInUpVariants} className="relative">
                 <div className="relative w-full h-[300px] md:h-[450px] mb-8 rounded-lg shadow-md overflow-hidden">
-                  <img
+                  {/* Use next/image */}
+                  <Image
                     src={data.imageUrl}
                     alt={data.title}
-                    className="w-full h-full object-cover"
+                    layout="fill" // Fill the container
+                    objectFit="cover" // Cover the container, cropping if needed
+                    priority // Load this image eagerly as it's likely LCP
+                    className="transition-transform duration-300 group-hover:scale-105" // Optional: Keep hover effect if desired
                   />
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black "></div>
                 </div>
