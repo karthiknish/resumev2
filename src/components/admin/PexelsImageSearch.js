@@ -99,7 +99,8 @@ function PexelsImageSearch({ onImageSelect }) {
   ); // Dependency: searchTerm
 
   const handleSearchSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission
+    e.stopPropagation(); // Stop event from bubbling up
     console.log("[PexelsSearch] handleSearchSubmit triggered.");
     setPage(1); // Reset page on new search
     searchPexels(1);
@@ -136,11 +137,10 @@ function PexelsImageSearch({ onImageSelect }) {
   const hasMore = photos.length < totalResults;
 
   return (
-    // Remove max-height and overflow from here
     <div className="space-y-4 p-4 bg-gray-800 border border-gray-700 rounded-lg">
       <form
         onSubmit={handleSearchSubmit}
-        className="flex gap-2 sticky top-0 bg-gray-800 py-2 z-10" // Removed comment from className
+        className="flex gap-2 sticky top-0 bg-gray-800 py-2 z-10"
       >
         <Input
           type="text"
@@ -171,7 +171,6 @@ function PexelsImageSearch({ onImageSelect }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            // Removed max-h and overflow from here, moved to parent div
             className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"
           >
             {photos.map((photo) => (
@@ -181,10 +180,10 @@ function PexelsImageSearch({ onImageSelect }) {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.2 }}
                 className="aspect-video rounded overflow-hidden cursor-pointer relative group"
-                onClick={() => handleImageClick(photo)} // Updated onClick handler
+                onClick={() => handleImageClick(photo)}
               >
                 <img
-                  src={photo.src.landscape || photo.src.medium} // Prefer landscape, fallback to medium
+                  src={photo.src.landscape || photo.src.medium}
                   alt={photo.alt}
                   loading="lazy"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
@@ -194,12 +193,11 @@ function PexelsImageSearch({ onImageSelect }) {
                     Select
                   </p>
                 </div>
-                {/* Pexels Attribution */}
                 <a
                   href={photo.photographer_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()} // Prevent image selection when clicking link
+                  onClick={(e) => e.stopPropagation()}
                   className="absolute bottom-1 right-1 text-white text-[10px] bg-black/60 px-1 py-0.5 rounded opacity-80 hover:opacity-100 transition-opacity text-decoration-none"
                   title={`Photo by ${photo.photographer} on Pexels`}
                 >
@@ -226,11 +224,11 @@ function PexelsImageSearch({ onImageSelect }) {
         </div>
       )}
 
-      {/* Basic Load More Button - Can be enhanced later */}
       {hasMore && !isLoading && (
         <div className="text-center mt-4">
           <Button
-            onClick={handleLoadMore} // Use specific handler
+            type="button"
+            onClick={handleLoadMore}
             variant="outline"
             size="sm"
           >

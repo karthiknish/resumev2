@@ -29,16 +29,27 @@ export default async function handler(req, res) {
         // Check for admin privileges before creating
         const isAdmin = await isAdminUser(req, res);
         if (!isAdmin) {
-          return res
-            .status(403)
-            .json({
-              success: false,
-              message: "Forbidden: Admin access required",
-            });
+          return res.status(403).json({
+            success: false,
+            message: "Forbidden: Admin access required",
+          });
         }
+
+        // Log the received body data
+        console.log(
+          "[API /api/bytes POST] Received body:",
+          JSON.stringify(req.body, null, 2)
+        ); // Log stringified body
 
         // Create a new byte using the service function (validation happens inside)
         const newByte = await createByte(req.body);
+
+        // Log the created byte data returned from service
+        console.log(
+          "[API /api/bytes POST] Byte created by service:",
+          JSON.stringify(newByte, null, 2)
+        ); // Log stringified result
+
         res.status(201).json({ success: true, data: newByte });
         break;
 

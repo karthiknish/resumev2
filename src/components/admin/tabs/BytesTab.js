@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
 import {
   Loader2,
@@ -8,6 +8,9 @@ import {
   FileText,
   CalendarDays,
   Sparkles,
+  Search,
+  Edit,
+  XCircle,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,6 +19,13 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import PexelsImageSearch from "@/components/admin/PexelsImageSearch";
 import TrendingNewsFeed from "@/components/admin/shared/TrendingNewsFeed";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 // Simple date formatter
 const formatDate = (dateString) => {
@@ -41,11 +51,18 @@ export default function BytesTab() {
   const [newImageUrl, setNewImageUrl] = useState("");
   const [newLink, setNewLink] = useState("");
 
+  // Edit State
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingByteId, setEditingByteId] = useState(null);
+
   // AI Suggestion State
   const [headlineSuggestions, setHeadlineSuggestions] = useState([]);
   const [bodySuggestions, setBodySuggestions] = useState([]);
   const [isSuggestingHeadline, setIsSuggestingHeadline] = useState(false);
   const [isSuggestingBody, setIsSuggestingBody] = useState(false);
+
+  // Pexels Modal State
+  const [isPexelsModalOpen, setIsPexelsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchBytes();
@@ -75,39 +92,63 @@ export default function BytesTab() {
     }
   };
 
-  const handleCreateByte = async (e) => {
+  // Combined Create/Update Handler
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (!newHeadline.trim() || !newBody.trim()) {
       toast.error("Headline and Body are required.");
       return;
     }
     setIsSubmitting(true);
+
+    const byteData = {
+      headline: newHeadline,
+      body: newBody,
+      imageUrl: newImageUrl || undefined,
+      link: newLink || undefined,
+    };
+
+    Object.keys(byteData).forEach(
+      (key) => byteData[key] === undefined && delete byteData[key]
+    );
+
+    const url = isEditing ? `/api/bytes/${editingByteId}` : "/api/bytes";
+    const method = isEditing ? "PUT" : "POST";
+
     try {
-      const response = await fetch("/api/bytes", {
-        method: "POST",
+      console.log(`Submitting Byte Data (${method}) to ${url}:`, byteData);
+
+      const response = await fetch(url, {
+        method: method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          headline: newHeadline,
-          body: newBody,
-          imageUrl: newImageUrl || undefined,
-          link: newLink || undefined,
-        }),
+        body: JSON.stringify(byteData),
       });
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to create byte");
+        throw new Error(
+          errorData.message ||
+            `Failed to ${isEditing ? "update" : "create"} byte`
+        );
       }
-      const newData = await response.json();
-      setBytes((prev) => [newData.data, ...prev]);
-      toast.success("Byte created successfully!");
-      setNewHeadline("");
-      setNewBody("");
-      setNewImageUrl("");
-      setNewLink("");
-      setHeadlineSuggestions([]);
-      setBodySuggestions([]);
+
+      const resultData = await response.json();
+
+      if (isEditing) {
+        setBytes((prev) =>
+          prev.map((b) => (b._id === editingByteId ? resultData.data : b))
+        );
+        toast.success("Byte updated successfully!");
+      } else {
+        setBytes((prev) => [resultData.data, ...prev]);
+        toast.success("Byte created successfully!");
+      }
+      resetForm();
     } catch (err) {
-      toast.error(err.message || "Failed to create byte.");
+      toast.error(
+        err.message || `Failed to ${isEditing ? "update" : "create"} byte.`
+      );
+      console.error("Byte form submission error:", err);
     } finally {
       setIsSubmitting(false);
     }
@@ -187,23 +228,55 @@ export default function BytesTab() {
 
   // --- Pexels Image Selection Handler ---
   const handlePexelsSelect = (url, alt) => {
-    // The Pexels component calls this with the URL and alt text
+    console.log("[BytesTab] Pexels image selected:", url);
     setNewImageUrl(url);
-    // Optionally use alt text for headline/body if empty
-    // if (!newHeadline && alt) setNewHeadline(alt);
+    setIsPexelsModalOpen(false);
+  };
+
+  // --- Edit Handling ---
+  const handleEditClick = (byte) => {
+    setIsEditing(true);
+    setEditingByteId(byte._id);
+    setNewHeadline(byte.headline);
+    setNewBody(byte.body);
+    setNewImageUrl(byte.imageUrl || "");
+    setNewLink(byte.link || "");
+    setHeadlineSuggestions([]);
+    setBodySuggestions([]);
+    const formCard = document.getElementById("byte-form-card");
+    if (formCard) {
+      formCard.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const resetForm = () => {
+    setIsEditing(false);
+    setEditingByteId(null);
+    setNewHeadline("");
+    setNewBody("");
+    setNewImageUrl("");
+    setNewLink("");
+    setHeadlineSuggestions([]);
+    setBodySuggestions([]);
+    setIsSubmitting(false);
   };
 
   return (
     <div className="space-y-6">
-      {/* Top Section: Create Form + News Feed */}
+      {/* Top Section: Create/Edit Form + News Feed */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <Card className="border-gray-700 bg-gray-900 text-white h-full">
+          <Card
+            id="byte-form-card"
+            className="border-gray-700 bg-gray-900 text-white h-full"
+          >
             <CardHeader>
-              <CardTitle>Create New Byte</CardTitle>
+              <CardTitle>
+                {isEditing ? "Edit Byte" : "Create New Byte"}
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleCreateByte} className="space-y-4">
+              <form onSubmit={handleFormSubmit} className="space-y-4">
                 {/* Headline */}
                 <div className="space-y-1">
                   <div className="flex justify-between items-center">
@@ -213,6 +286,7 @@ export default function BytesTab() {
                     >
                       Headline*
                     </label>
+                    {/* AI Suggest Button - Always visible */}
                     <Button
                       type="button"
                       size="sm"
@@ -239,6 +313,7 @@ export default function BytesTab() {
                     disabled={isSubmitting}
                     className="bg-gray-800 border-gray-600"
                   />
+                  {/* Headline Suggestions - Always visible if available */}
                   {headlineSuggestions.length > 0 && (
                     <div className="flex flex-wrap gap-1 pt-1">
                       {headlineSuggestions.map((s, i) => (
@@ -266,6 +341,7 @@ export default function BytesTab() {
                     >
                       Body*
                     </label>
+                    {/* AI Suggest Button - Always visible */}
                     <Button
                       type="button"
                       size="sm"
@@ -295,6 +371,7 @@ export default function BytesTab() {
                     disabled={isSubmitting}
                     className="bg-gray-800 border-gray-600"
                   />
+                  {/* Body Suggestions - Always visible if available */}
                   {bodySuggestions.length > 0 && (
                     <div className="flex flex-wrap gap-1 pt-1">
                       {bodySuggestions.map((s, i) => (
@@ -313,37 +390,33 @@ export default function BytesTab() {
                   )}
                 </div>
 
-                {/* Image Search & Display */}
+                {/* Image Display Area (Inside Form) */}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-300 mb-1">
                     Image (Optional)
                   </label>
-                  {/* Pass the correct prop */}
-                  <PexelsImageSearch
-                    onImageSelect={handlePexelsSelect}
-                    disabled={isSubmitting}
-                  />
-                  {/* Display selected image URL */}
                   {newImageUrl && (
-                    <div className="mt-2">
+                    <div className="mb-2">
                       <label className="block text-xs font-medium text-gray-400">
                         Selected Image URL:
                       </label>
-                      <Input
-                        type="text"
-                        value={newImageUrl}
-                        readOnly
-                        className="mt-1 text-xs bg-gray-700 border-gray-600 text-gray-300"
-                      />
-                      <Button
-                        type="button"
-                        size="xs"
-                        variant="ghost"
-                        className="text-red-400 text-xs mt-1"
-                        onClick={() => setNewImageUrl("")}
-                      >
-                        Clear
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="text"
+                          value={newImageUrl}
+                          readOnly
+                          className="mt-1 text-xs bg-gray-700 border-gray-600 text-gray-300 flex-grow"
+                        />
+                        <Button
+                          type="button"
+                          size="xs"
+                          variant="ghost"
+                          className="text-red-400 text-xs mt-1 flex-shrink-0"
+                          onClick={() => setNewImageUrl("")}
+                        >
+                          Clear
+                        </Button>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -366,22 +439,69 @@ export default function BytesTab() {
                   />
                 </div>
 
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="bg-blue-600 hover:bg-blue-700"
-                >
-                  {isSubmitting ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : null}
-                  {isSubmitting ? "Creating..." : "Create Byte"}
-                </Button>
+                {/* Submit/Update Button */}
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    {isSubmitting ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : null}
+                    {isEditing
+                      ? isSubmitting
+                        ? "Updating..."
+                        : "Update Byte"
+                      : isSubmitting
+                      ? "Creating..."
+                      : "Create Byte"}
+                  </Button>
+                  {isEditing && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={resetForm}
+                      disabled={isSubmitting}
+                    >
+                      <XCircle className="w-4 h-4 mr-1" /> Cancel Edit
+                    </Button>
+                  )}
+                </div>
               </form>
+
+              {/* Pexels Modal Trigger */}
+              <div className="mt-4 pt-4 border-t border-gray-700">
+                <Dialog
+                  open={isPexelsModalOpen}
+                  onOpenChange={setIsPexelsModalOpen}
+                >
+                  <DialogTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full justify-start text-left font-normal"
+                    >
+                      <Search className="w-4 h-4 mr-2" />
+                      {newImageUrl
+                        ? "Change Pexels Image"
+                        : "Search Pexels Image"}
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[80vw] max-h-[90vh] overflow-y-auto bg-gray-900 border-gray-700 text-white">
+                    <DialogHeader>
+                      <DialogTitle>Search Pexels Images</DialogTitle>
+                    </DialogHeader>
+                    <PexelsImageSearch onImageSelect={handlePexelsSelect} />
+                  </DialogContent>
+                </Dialog>
+              </div>
             </CardContent>
           </Card>
         </div>
         <div className="lg:col-span-1">
-          <TrendingNewsFeed onNewsSelect={handleNewsSelect} />
+          {/* Only show news feed when *not* editing */}
+          {!isEditing && <TrendingNewsFeed onNewsSelect={handleNewsSelect} />}
         </div>
       </div>
 
@@ -441,7 +561,16 @@ export default function BytesTab() {
                         )}
                       </div>
                     </div>
-                    <div className="flex-shrink-0 flex flex-col md:items-end justify-start pt-1">
+                    {/* Action Buttons */}
+                    <div className="flex-shrink-0 flex flex-col md:flex-row md:items-start gap-2 pt-1">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEditClick(byte)}
+                        className="border-yellow-500 text-yellow-500 hover:bg-yellow-500/10 hover:text-yellow-400"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
                       <Button
                         variant="destructive"
                         size="sm"

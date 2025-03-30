@@ -1,286 +1,194 @@
-// src/components/admin/tabs/ApiStatusTab.js
-import React, { useState, useCallback } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Loader2,
-  CheckCircle,
-  XCircle,
-  AlertTriangle,
-  DatabaseZap, // Keep for Gemini
-  Image as ImageIcon,
-  Mic2,
-  Database, // Icon for MongoDB
-} from "lucide-react";
+import { useState, useEffect } from "react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Loader2, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
+import { toast } from "sonner";
 
-// Structure to hold results for each service
-const initialApiStatus = {
-  mongodb: { loading: false, result: null, error: null },
-  gemini: { loading: false, results: [], error: null },
-  pexels: { loading: false, result: null, error: null },
-  // elevenlabs: { loading: false, result: null, error: null }, // Removed ElevenLabs
-};
+// Helper component for individual API status
+const ApiStatusCard = ({ title, testEndpoint, usageEndpoint }) => {
+  const [status, setStatus] = useState("pending"); // 'pending', 'success', 'error'
+  const [message, setMessage] = useState("Checking...");
+  const [usage, setUsage] = useState(null); // { count: number, limit: number } | null
+  const [isLoadingUsage, setIsLoadingUsage] = useState(false);
 
-function ApiStatusTab() {
-  const [apiStatus, setApiStatus] = useState(initialApiStatus);
-  const [isLoading, setIsLoading] = useState(false); // Overall loading state for the button
-
-  const testApi = useCallback(async (endpoint, serviceKey) => {
-    setApiStatus((prev) => ({
-      ...prev,
-      [serviceKey]: {
-        ...prev[serviceKey],
-        loading: true,
-        error: null,
-        result: null,
-        results: serviceKey === "gemini" ? [] : undefined,
-      },
-    }));
+  const checkStatus = async () => {
+    setStatus("pending");
+    setMessage("Checking...");
     try {
-      const response = await fetch(endpoint, { method: "POST" });
-      const data = await response.json(); // Assuming all test endpoints return JSON
-
-      if (!response.ok && !data.success) {
-        // Handle non-200 or success=false responses gracefully
-        throw new Error(
-          data.error ||
-            data.message ||
-            `API test failed with status ${response.status}`
-        );
-      }
-
-      // Update state based on service
-      if (serviceKey === "gemini") {
-        setApiStatus((prev) => ({
-          ...prev,
-          [serviceKey]: {
-            loading: false,
-            results: data.results || [],
-            error: data.success ? null : "Received non-success response",
-          },
-        }));
+      // Use GET for GNews test, POST for others
+      const method = title.startsWith("GNews") ? "GET" : "POST";
+      const response = await fetch(testEndpoint, { method });
+      const data = await response.json();
+      if (response.ok && data.success !== false) {
+        setStatus("success");
+        setMessage(data.message || "API Operational");
       } else {
-        setApiStatus((prev) => ({
-          ...prev,
-          [serviceKey]: {
-            loading: false,
-            result: data,
-            error: data.success ? null : data.error || "Test failed",
-          },
-        }));
+        setStatus("error");
+        setMessage(data.message || `Test failed (Status: ${response.status})`);
       }
-    } catch (e) {
-      console.error(`Error testing ${serviceKey} API:`, e);
-      setApiStatus((prev) => ({
-        ...prev,
-        [serviceKey]: {
-          ...prev[serviceKey],
-          loading: false,
-          error: e.message || `Failed to test ${serviceKey}`,
-        },
-      }));
+    } catch (error) {
+      setStatus("error");
+      setMessage(`Network error or API unreachable: ${error.message}`);
     }
-  }, []);
-
-  const handleRunAllTests = useCallback(async () => {
-    setIsLoading(true);
-    setApiStatus(initialApiStatus); // Reset status before running tests
-
-    // Run tests sequentially or in parallel
-    await Promise.all([
-      testApi("/api/admin/test-mongodb", "mongodb"),
-      testApi("/api/admin/test-gemini-models", "gemini"),
-      testApi("/api/admin/test-pexels", "pexels"),
-      // testApi("/api/admin/test-elevenlabs", "elevenlabs"), // Removed ElevenLabs test call
-    ]);
-
-    setIsLoading(false);
-  }, [testApi]);
-
-  // Helper to render status icon and text
-  const renderStatus = (statusData, serviceKey) => {
-    // Added serviceKey parameter
-    if (statusData.loading) {
-      return <Loader2 className="h-5 w-5 animate-spin text-gray-400" />;
-    }
-    if (statusData.error) {
-      return (
-        <div
-          className="flex items-center text-red-400"
-          title={statusData.error}
-        >
-          <XCircle className="mr-2 h-5 w-5 flex-shrink-0" />
-          <span className="text-sm truncate">Error: {statusData.error}</span>
-        </div>
-      );
-    }
-    if (statusData.result?.success === false) {
-      // Handle explicit failure from API
-      return (
-        <div
-          className="flex items-center text-red-400"
-          title={statusData.result.error}
-        >
-          <XCircle className="mr-2 h-5 w-5 flex-shrink-0" />
-          <span className="text-sm truncate">
-            Failed: {statusData.result.error}
-          </span>
-        </div>
-      );
-    }
-    if (
-      statusData.result?.success === true ||
-      (statusData.results &&
-        statusData.results.every((r) => r.status === "success"))
-    ) {
-      return (
-        <div className="flex items-center text-green-400">
-          <CheckCircle className="mr-2 h-5 w-5 flex-shrink-0" />
-          <span className="text-sm">Success</span>
-        </div>
-      );
-    }
-    // Handle Gemini partial success/failure
-    if (serviceKey === "gemini" && statusData.results?.length > 0) {
-      const failedModels = statusData.results.filter(
-        (r) => r.status !== "success"
-      );
-      if (failedModels.length > 0) {
-        return (
-          <div
-            className="flex items-center text-yellow-400"
-            title={`Models failed: ${failedModels
-              .map((m) => m.model)
-              .join(", ")}`}
-          >
-            <AlertTriangle className="mr-2 h-5 w-5 flex-shrink-0" />
-            <span className="text-sm">Partial Success</span>
-          </div>
-        );
-      }
-      // If no failures and some results, it's a success (covered above)
-    }
-
-    return <span className="text-sm text-gray-500">-</span>; // Default/initial state
   };
 
-  // Helper to render Gemini specific results
-  const renderGeminiResults = (geminiStatus) => {
-    if (
-      geminiStatus.loading ||
-      !geminiStatus.results ||
-      geminiStatus.results.length === 0
-    )
-      return null;
+  const fetchUsage = async () => {
+    if (!usageEndpoint) return;
+    setIsLoadingUsage(true);
+    setUsage(null);
+    try {
+      const response = await fetch(usageEndpoint);
+      const data = await response.json();
+      if (response.ok && data.success && data.data) {
+        const usageData = data.data;
+        if (usageData && typeof usageData.count === "number") {
+          const limit = usageData.apiName === "gnews" ? 100 : null;
+          setUsage({ count: usageData.count, limit });
+        } else {
+          if (usageEndpoint.includes("gnews")) {
+            setUsage({ count: 0, limit: 100 });
+          } else {
+            setUsage(null);
+          }
+          console.warn("No usage data found for today, assuming 0.", data.data);
+        }
+      } else {
+        console.error("Failed to fetch usage:", data.message);
+        toast.error(
+          `Could not fetch usage for ${title}: ${
+            data.message || "Unknown error"
+          }`
+        );
+        setUsage(null);
+      }
+    } catch (error) {
+      console.error(`Error fetching API usage for ${title}:`, error);
+      toast.error(`Error fetching usage for ${title}.`);
+      setUsage(null);
+    } finally {
+      setIsLoadingUsage(false);
+    }
+  };
 
-    return (
-      <ul className="mt-2 space-y-1 pl-6 text-xs list-disc list-inside">
-        {geminiStatus.results.map((result) => (
-          <li
-            key={result.model}
-            className={`flex items-center ${
-              result.status === "success" ? "text-green-300" : "text-red-300"
-            }`}
-          >
-            {result.status === "success" ? (
-              <CheckCircle className="h-3 w-3 mr-1.5 flex-shrink-0" />
-            ) : (
-              <XCircle className="h-3 w-3 mr-1.5 flex-shrink-0" />
-            )}
-            <span className="font-medium mr-1">{result.model}:</span>
-            <span
-              className="truncate"
-              title={result.status === "error" ? result.error : "OK"}
-            >
-              {result.status === "success" ? "OK" : `Error - ${result.error}`}
-            </span>
-          </li>
-        ))}
-      </ul>
-    );
+  useEffect(() => {
+    checkStatus();
+    fetchUsage();
+  }, [testEndpoint, usageEndpoint]);
+
+  const getStatusColor = () => {
+    switch (status) {
+      case "success":
+        return "text-white"; // Brighter green
+      case "error":
+        return "text-red-500"; // Brighter red
+      default:
+        return "text-gray-400";
+    }
+  };
+
+  const getBadgeVariant = () => {
+    switch (status) {
+      case "success":
+        return "success";
+      case "error":
+        return "destructive";
+      default:
+        return "secondary";
+    }
+  };
+
+  const getStatusIcon = () => {
+    switch (status) {
+      case "success":
+        return <CheckCircle className="w-4 h-4" />;
+      case "error":
+        return <XCircle className="w-4 h-4" />;
+      default:
+        return <Loader2 className="w-4 h-4 animate-spin" />;
+    }
   };
 
   return (
-    <div className="p-6 bg-gray-900 text-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-4 text-gray-100">
-        API Service Status
+    <Card className="border-gray-700 bg-gray-800/50">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg flex items-center justify-between">
+          <span>{title}</span>
+          <Badge
+            variant={getBadgeVariant()}
+            className={`ml-2 ${getStatusColor()}`}
+          >
+            {getStatusIcon()}
+            <span className="ml-1.5">
+              {status.charAt(0).toUpperCase() + status.slice(1)}
+            </span>
+          </Badge>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {/* Make message text brighter on success/error */}
+        <p className={`text-sm ${getStatusColor()} mb-2`}>{message}</p>
+        {usageEndpoint && (
+          <div className="mt-2 pt-2 border-t border-gray-700/50 text-xs text-gray-400">
+            {isLoadingUsage ? (
+              <span className="flex items-center">
+                <Loader2 className="w-3 h-3 mr-1 animate-spin" /> Loading
+                usage...
+              </span>
+            ) : usage !== null && usage.limit !== null ? (
+              <span>
+                Usage Today: {usage.count} / {usage.limit} requests
+              </span>
+            ) : usage !== null && usage.count !== null ? (
+              <span>Usage Today: {usage.count} requests</span>
+            ) : (
+              <span>Usage data unavailable.</span>
+            )}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
+export default function ApiStatusTab() {
+  // Define API test endpoints here, separating Gemini models
+  const apiEndpoints = [
+    {
+      title: "Gemini Flash",
+      testEndpoint:
+        "/api/admin/test-gemini-models?model=gemini-1.5-flash-latest",
+    },
+    {
+      title: "Gemini Pro",
+      testEndpoint: "/api/admin/test-gemini-models?model=gemini-pro",
+    }, // Assuming 'gemini-pro' is the identifier
+    { title: "Pexels API", testEndpoint: "/api/admin/test-pexels" },
+    {
+      title: "GNews API",
+      testEndpoint: "/api/ai/get-trending-news",
+      usageEndpoint: "/api/admin/api-usage?apiName=gnews",
+    },
+    { title: "MongoDB Connection", testEndpoint: "/api/admin/test-mongodb" },
+  ];
+
+  return (
+    <div className="space-y-4">
+      <h2 className="text-2xl font-semibold text-white mb-4">
+        API Status Dashboard
       </h2>
       <p className="text-gray-400 mb-6">
-        Click the button below to run simple tests against configured external
-        APIs (Gemini, Pexels, ElevenLabs) to check their status and key
-        validity.
+        Check the operational status and usage of integrated third-party APIs.
       </p>
-
-      <Button
-        onClick={handleRunAllTests}
-        disabled={isLoading}
-        className="mb-6 bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
-      >
-        {isLoading ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Running Tests...
-          </>
-        ) : (
-          "Run All API Tests"
-        )}
-      </Button>
-
-      {/* Results Section */}
-      <div className="space-y-4">
-        {/* MongoDB */}
-        <div className="p-4 rounded-md border border-gray-700 bg-gray-800">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Database className="h-5 w-5 text-green-400" />{" "}
-              {/* MongoDB Icon */}
-              <span className="font-semibold text-gray-100">
-                MongoDB Connection
-              </span>
-            </div>
-            {renderStatus(apiStatus.mongodb, "mongodb")}
-          </div>
-          {/* Optionally display specific success/error message */}
-          {apiStatus.mongodb.result?.message && !apiStatus.mongodb.error && (
-            <p className="mt-1 pl-7 text-xs text-gray-400">
-              {apiStatus.mongodb.result.message}
-            </p>
-          )}
-          {apiStatus.mongodb.error && (
-            <p className="mt-1 pl-7 text-xs text-red-400">
-              {apiStatus.mongodb.error}
-            </p>
-          )}
-        </div>
-
-        {/* Gemini */}
-        <div className="p-4 rounded-md border border-gray-700 bg-gray-800">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <DatabaseZap className="h-5 w-5 text-purple-400" />
-              <span className="font-semibold text-gray-100">
-                Google Gemini Models
-              </span>
-            </div>
-            {renderStatus(apiStatus.gemini, "gemini")} {/* Pass serviceKey */}
-          </div>
-          {renderGeminiResults(apiStatus.gemini)}
-        </div>
-
-        {/* Pexels */}
-        <div className="p-4 rounded-md border border-gray-700 bg-gray-800">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <ImageIcon className="h-5 w-5 text-green-400" />
-              <span className="font-semibold text-gray-100">Pexels API</span>
-            </div>
-            {renderStatus(apiStatus.pexels, "pexels")} {/* Pass serviceKey */}
-          </div>
-        </div>
-
-        {/* ElevenLabs - REMOVED */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {apiEndpoints.map((api) => (
+          <ApiStatusCard
+            key={api.title}
+            title={api.title}
+            testEndpoint={api.testEndpoint}
+            usageEndpoint={api.usageEndpoint}
+          />
+        ))}
       </div>
     </div>
   );
 }
-
-export default ApiStatusTab;

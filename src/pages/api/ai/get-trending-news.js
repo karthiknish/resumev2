@@ -1,6 +1,8 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
-import axios from "axios"; // Import axios
+import axios from "axios";
+import dbConnect from "@/lib/dbConnect"; // Import dbConnect
+import ApiUsage from "@/models/ApiUsage"; // Import the new model
 
 // Helper function to check admin status
 async function isAdminUser(req, res) {
@@ -12,8 +14,16 @@ async function isAdminUser(req, res) {
   );
 }
 
+// Helper function to get today's date in YYYY-MM-DD format
+function getTodayDateString() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+  const day = String(today.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 export default async function handler(req, res) {
-  // Check if user is authenticated and is an admin
   const session = await getServerSession(req, res, authOptions);
   if (!session) {
     return res
@@ -25,7 +35,6 @@ export default async function handler(req, res) {
     return res.status(403).json({ success: false, message: "Not authorized" });
   }
 
-  // Allow GET requests for fetching news
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);
     return res
@@ -41,19 +50,41 @@ export default async function handler(req, res) {
       .json({ success: false, message: "News API configuration error." });
   }
 
-  // GNews API parameters
-  const query =
-    '("web development" OR technology OR software OR AI OR cloud OR programming)'; // Broad tech query
-  const lang = "en";
-  const country = "gb"; // Focus on UK news primarily
-  const max = 5; // Number of articles
-  const sortBy = "publishedAt"; // Get the latest
+  await dbConnect(); // Connect to DB
 
-  const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(
-    query
-  )}&lang=${lang}&country=${country}&max=${max}&sortby=${sortBy}&apikey=${apiKey}`;
+  const today = getTodayDateString();
+  const apiName = "gnews";
+  const dailyLimit = 100;
 
   try {
+    // --- Check Usage Limit ---
+    const usage = await ApiUsage.findOne({ apiName, date: today });
+    const currentCount = usage ? usage.count : 0;
+
+    if (currentCount >= dailyLimit) {
+      console.warn(
+        `GNews API limit reached for today (${today}). Count: ${currentCount}`
+      );
+      return res
+        .status(429)
+        .json({
+          success: false,
+          message: `Daily API limit (${dailyLimit}) reached for GNews.`,
+        });
+    }
+    // --- End Usage Limit Check ---
+
+    // GNews API parameters
+    const query =
+      '("web development" OR technology OR software OR AI OR cloud OR programming)';
+    const lang = "en";
+    const country = "gb";
+    const max = 5;
+    const sortBy = "publishedAt";
+    const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(
+      query
+    )}&lang=${lang}&country=${country}&max=${max}&sortby=${sortBy}&apikey=${apiKey}`;
+
     const response = await axios.get(url);
 
     if (response.status !== 200 || !response.data || !response.data.articles) {
@@ -63,11 +94,24 @@ export default async function handler(req, res) {
       );
     }
 
+    // --- Increment Usage Count ---
+    await ApiUsage.findOneAndUpdate(
+      { apiName, date: today },
+      { $inc: { count: 1 } },
+      { upsert: true, new: true } // Create if doesn't exist, return new doc (optional)
+    );
+    console.log(
+      `GNews API count incremented for ${today}. New count approx: ${
+        currentCount + 1
+      }`
+    );
+    // --- End Increment Usage Count ---
+
     // Map GNews articles to the desired format
     const newsItems = response.data.articles.map((article) => ({
       headline: article.title,
-      summary: article.description, // Use description as summary
-      url: article.url, // Include the source URL
+      summary: article.description,
+      url: article.url,
     }));
 
     return res.status(200).json({
@@ -79,7 +123,6 @@ export default async function handler(req, res) {
       "Error fetching trending news from GNews:",
       error.response?.data || error.message
     );
-    // Check for specific GNews error messages if available
     const errorMessage =
       error.response?.data?.errors?.join(", ") ||
       error.message ||

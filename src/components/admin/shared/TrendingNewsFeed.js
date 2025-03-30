@@ -7,7 +7,7 @@ import {
   RefreshCw,
   CopyPlus,
   ExternalLink as LinkIcon,
-} from "lucide-react"; // Added LinkIcon
+} from "lucide-react";
 
 // Accept onNewsSelect prop
 export default function TrendingNewsFeed({ onNewsSelect }) {
@@ -20,7 +20,6 @@ export default function TrendingNewsFeed({ onNewsSelect }) {
     setError(null);
     setNews([]);
     try {
-      // Changed to GET request as per updated API
       const response = await fetch("/api/ai/get-trending-news", {
         method: "GET",
       });
@@ -67,6 +66,11 @@ export default function TrendingNewsFeed({ onNewsSelect }) {
         </Button>
       </CardHeader>
       <CardContent>
+        {/* GNews Usage Note */}
+        <p className="text-xs text-gray-500 mb-3 italic">
+          Powered by GNews (Free tier: 100 requests/day). Click refresh
+          sparingly.
+        </p>
         {isLoading && (
           <div className="flex justify-center py-4">
             <Loader2 className="w-5 h-5 animate-spin" />
