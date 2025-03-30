@@ -1,4 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
+const { projectsData } = require("./src/lib/projectsData"); // Import project data
+
 module.exports = {
   siteUrl: process.env.SITE_URL || "https://karthiknish.com", // Your production site URL
   generateRobotsTxt: false, // Keep this as false
@@ -14,14 +16,16 @@ module.exports = {
     "/reset-password",
     "/jostec.php", // Exclude specific non-Next.js files if present
     "/services.php",
+    "/newsletter/thank-you", // Exclude newsletter thank you page
   ],
-  // Function to generate dynamic paths for blog posts
+  // Function to generate dynamic paths for blog posts and projects
   additionalPaths: async (config) => {
     const paths = [];
     const baseUrl = process.env.SITE_URL || "https://karthiknish.com"; // Use the same base URL
 
     try {
-      // Fetch published blog posts (only need slug and updatedAt)
+      // --- Fetch Blog Posts ---
+      console.log("Sitemap: Fetching blog posts...");
       const blogResponse = await fetch(
         `${baseUrl}/api/blog?publishedOnly=true&select=slug,updatedAt`
       );
@@ -30,17 +34,19 @@ module.exports = {
         if (blogData.success && Array.isArray(blogData.data)) {
           blogData.data.forEach((post) => {
             paths.push({
-              loc: `/blog/${post.slug}`, // Construct the full URL path
+              loc: `/blog/${post.slug}`,
               lastmod: post.updatedAt
                 ? new Date(post.updatedAt).toISOString()
                 : new Date().toISOString(),
-              changefreq: "weekly", // How often content might change
-              priority: 0.7, // Priority relative to other pages (0.0 to 1.0)
+              changefreq: "weekly",
+              priority: 0.7,
             });
           });
+          console.log(`Sitemap: Added ${blogData.data.length} blog paths.`);
         } else {
           console.warn(
-            "Sitemap: Failed to fetch or parse blog posts from API."
+            "Sitemap: Failed to fetch or parse blog posts from API.",
+            blogData
           );
         }
       } else {
@@ -49,15 +55,29 @@ module.exports = {
         );
       }
 
-      // TODO: Add fetching for dynamic project paths if /projects/[id] uses dynamic data
-      // Example:
-      // const projectResponse = await fetch(`${baseUrl}/api/projects?select=id,updatedAt`); // Adjust API endpoint
-      // if (projectResponse.ok) { ... similar logic ... }
+      // --- Add Project Paths ---
+      console.log("Sitemap: Adding project paths...");
+      if (projectsData && Array.isArray(projectsData)) {
+        projectsData.forEach((project) => {
+          // Assuming projectsData has an 'id' and maybe an 'updatedAt' or similar field
+          // If no date field exists, use the current date
+          const lastModified = project.updatedAt || new Date();
+          paths.push({
+            loc: `/projects/${project.id}`, // Use project ID for the path
+            lastmod: new Date(lastModified).toISOString(),
+            changefreq: "monthly", // Projects might change less often than blog posts
+            priority: 0.6,
+          });
+        });
+        console.log(`Sitemap: Added ${projectsData.length} project paths.`);
+      } else {
+        console.warn("Sitemap: projectsData not found or not an array.");
+      }
     } catch (error) {
       console.error("Sitemap: Error fetching additional paths:", error);
     }
 
-    console.log(`Sitemap: Generated ${paths.length} additional paths.`);
+    console.log(`Sitemap: Generated total ${paths.length} additional paths.`);
     return paths;
   },
 };

@@ -1,71 +1,115 @@
-// src/pages/api/ai/suggest-keywords.js
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
-import { callGemini } from "@/lib/gemini"; // Import the utility function
+import { callGemini } from "@/lib/gemini";
 
-export default async function handler(req, res) {
-  // Check for authenticated session
+// Helper function to check admin status
+async function isAdminUser(req, res) {
   const session = await getServerSession(req, res, authOptions);
-  if (!session) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
-  // Basic admin check
-  const isAdmin =
+  return (
     session?.user?.role === "admin" ||
     session?.user?.isAdmin === true ||
-    session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+    session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL
+  );
+}
 
+export default async function handler(req, res) {
+  const session = await getServerSession(req, res, authOptions);
+  if (!session) {
+    return res
+      .status(401)
+      .json({ success: false, message: "Not authenticated" });
+  }
+  const isAdmin = await isAdminUser(req, res);
   if (!isAdmin) {
-    return res.status(403).json({ message: "Forbidden" });
+    return res.status(403).json({ success: false, message: "Not authorized" });
   }
 
   if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method not allowed" });
+    res.setHeader("Allow", ["POST"]);
+    return res
+      .status(405)
+      .json({ success: false, message: "Method not allowed" });
+  }
+
+  const { title, contentSnippet } = req.body;
+
+  if (!title && !contentSnippet) {
+    return res
+      .status(400)
+      .json({
+        success: false,
+        message: "Title or content snippet is required.",
+      });
   }
 
   try {
-    const { topic } = req.body;
-
-    if (!topic || typeof topic !== "string" || !topic.trim()) {
-      return res.status(400).json({
-        success: false,
-        message: "Topic is required to suggest keywords.",
-      });
-    }
-
-    // Construct the improved prompt for Gemini
     const prompt = `
-      Act as an SEO specialist. For the blog post topic "${topic}", suggest 7-10 relevant SEO keywords and keyphrases.
-      Include a mix of short-tail (e.g., "web development") and long-tail keywords (e.g., "best practices for Next.js SEO").
-      Focus on terms that have reasonable search volume and relevance to the topic.
+      Based on the following blog post title and content snippet, suggest 5-7 relevant keywords or tags suitable for SEO and categorization.
+      Focus on specific technologies, concepts, and the main topic. Avoid overly generic terms unless highly relevant.
 
-      Return the keywords strictly as a simple comma-separated list, with no extra text, explanations, numbering, or formatting.
-      Example: keyword1, keyword phrase 2, keyword3, long tail keyword phrase 4
+      Title: "${title || "Untitled Post"}"
+      Content Snippet: "${(contentSnippet || "").substring(0, 500)}..."
+
+      Output Format: Provide the keywords/tags as a JSON array of strings. Example: ["react", "nextjs", "server components", "web development", "tutorial"]
+      Output *only* the JSON array.
     `;
 
-    // Use the utility function
     const generationConfig = {
-      temperature: 0.5, // More focused for keyword suggestion
-      maxOutputTokens: 250, // Allow slightly more tokens for longer phrases
+      temperature: 0.6,
+      maxOutputTokens: 256,
     };
-    const suggestedKeywordsText = await callGemini(prompt, generationConfig);
 
-    // Split into an array, trim whitespace, and filter empty strings
-    const keywordsArray = suggestedKeywordsText
-      .split(",")
-      .map((k) => k.trim())
-      .filter((k) => k.length > 0);
+    const keywordsJsonString = await callGemini(
+      prompt,
+      generationConfig,
+      "application/json"
+    );
 
-    return res.status(200).json({
-      success: true,
-      keywords: keywordsArray,
-    });
+    try {
+      const keywords = JSON.parse(keywordsJsonString);
+      if (
+        !Array.isArray(keywords) ||
+        keywords.some((k) => typeof k !== "string")
+      ) {
+        throw new Error(
+          "API did not return a valid JSON array of strings for keywords."
+        );
+      }
+      res.status(200).json({ success: true, suggestions: keywords });
+    } catch (parseError) {
+      console.error(
+        "Failed to parse Gemini keyword response as JSON:",
+        keywordsJsonString,
+        parseError
+      );
+      // Fallback: Try to extract comma-separated values or lines if JSON fails
+      const lines = keywordsJsonString
+        .split(/[\n,]/)
+        .map((k) =>
+          k
+            .trim()
+            .replace(/^["'-]/, "")
+            .replace(/["'-]$/, "")
+        )
+        .filter((k) => k && k.length < 50);
+      if (lines.length > 0) {
+        console.warn(
+          "Could not parse JSON, using extracted lines/CSV as keyword suggestions."
+        );
+        res.status(200).json({ success: true, suggestions: lines.slice(0, 7) }); // Limit fallback results
+      } else {
+        throw new Error(
+          "Response from AI model was not valid JSON or extractable keywords."
+        );
+      }
+    }
   } catch (error) {
-    console.error("Keyword suggestion error:", error);
-    return res.status(500).json({
-      success: false,
-      message: error.message || "Error suggesting keywords",
-    });
+    console.error("Error calling Gemini for keyword suggestions:", error);
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: error.message || "Failed to generate keyword suggestions.",
+      });
   }
 }

@@ -14,6 +14,7 @@ import {
 } from "react-icons/fa";
 import { FadeIn, HoverCard } from "../components/animations/MotionComponents";
 import PageContainer from "@/components/PageContainer";
+import JsonLd, { createServiceSchema } from "@/components/JsonLd"; // Import JsonLd and schema helper
 
 export default function Services() {
   const [expandedFaq, setExpandedFaq] = React.useState(null);
@@ -131,6 +132,11 @@ export default function Services() {
     },
   ];
 
+  // Generate Service schema for each service
+  const serviceSchemas = services.map((service) =>
+    createServiceSchema(service)
+  );
+
   return (
     <>
       <Head>
@@ -155,7 +161,7 @@ export default function Services() {
         <meta property="og:url" content="https://karthiknish.com/services" />
         <meta
           property="og:image"
-          content="https://karthiknish.com/images/og-image.jpg"
+          content="https://karthiknish.com/images/og-image.jpg" // Consider updating this OG image
         />
         <meta property="og:site_name" content="Karthik Nishanth" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -169,11 +175,16 @@ export default function Services() {
         />
         <meta
           name="twitter:image"
-          content="https://karthiknish.com/images/og-image.jpg"
+          content="https://karthiknish.com/images/og-image.jpg" // Consider updating this OG image
         />
         <meta name="robots" content="index, follow" />
         <meta name="googlebot" content="index, follow" />
         <link rel="canonical" href="https://karthiknish.com/services" />
+
+        {/* Add Service JSON-LD Schemas */}
+        {serviceSchemas.map((schema, index) => (
+          <JsonLd key={`service-schema-${index}`} data={schema} />
+        ))}
       </Head>
       <PageContainer>
         <div className="min-h-screen p-8 md:p-16 max-w-6xl mx-auto">

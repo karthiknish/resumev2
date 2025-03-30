@@ -7,11 +7,15 @@ import HeroSection from "@/components/home/HeroSection";
 import WhyFreelancerSection from "@/components/home/WhyFreelancerSection";
 import TechStackSection from "@/components/home/TechStackSection";
 import FeaturedProjectsSection from "@/components/home/FeaturedProjectsSection";
-import Services from "@/components/Services"; // Assuming this is a section-level component
-import ContactForm from "@/components/Form"; // Assuming this is a section-level component
-import Faq from "@/components/Faq"; // Assuming this is a section-level component
+import Services from "@/components/Services";
+import ContactForm from "@/components/Form";
+import Faq from "@/components/Faq";
+import JsonLd, {
+  createWebsiteSchema,
+  createPersonSchema,
+} from "@/components/JsonLd"; // Import JsonLd and schema helpers
 
-// FAQ items data (can be moved to a data file if preferred)
+// FAQ items data
 const faqItems = [
   {
     id: "1",
@@ -45,8 +49,11 @@ const faqItems = [
   },
 ];
 
-
 const HomeScreen = () => {
+  // Generate schemas
+  const websiteSchema = createWebsiteSchema();
+  const personSchema = createPersonSchema(); // Uses default name "Karthik Nishanth"
+
   return (
     <>
       <Head>
@@ -93,6 +100,10 @@ const HomeScreen = () => {
         <meta name="googlebot" content="index, follow" />
         <meta name="theme-color" content="#000000" />
         <meta name="msapplication-TileColor" content="#000000" />
+
+        {/* Add JSON-LD Schemas */}
+        <JsonLd data={websiteSchema} />
+        <JsonLd data={personSchema} />
       </Head>
 
       {/* Reordered Sections */}
@@ -100,7 +111,6 @@ const HomeScreen = () => {
         <HeroSection />
       </section>
 
-      {/* Wrap Services in a section for consistent structure */}
       <section id="services" className="bg-black py-16 md:py-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

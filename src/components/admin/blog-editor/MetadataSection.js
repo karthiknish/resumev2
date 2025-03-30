@@ -6,13 +6,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Loader2, Sparkles, Wand2 } from "lucide-react";
-import { Switch } from "@/components/ui/switch"; // Ensure Switch is imported
+import { Switch } from "@/components/ui/switch";
 
 function MetadataSection({
   formData,
   onFormChange,
-  isPublished, // Receive isPublished state
-  onPublishChange, // Receive handler for switch change
+  isPublished,
+  onPublishChange,
 }) {
   // State for Description Suggestions
   const [isSuggestingDesc, setIsSuggestingDesc] = useState(false);
@@ -29,6 +29,11 @@ function MetadataSection({
   const [titleSuggestionError, setTitleSuggestionError] = useState("");
   const [titleSuggestions, setTitleSuggestions] = useState([]);
 
+  // State for Keyword/Tag Suggestions
+  const [isSuggestingKeywords, setIsSuggestingKeywords] = useState(false);
+  const [keywordSuggestionError, setKeywordSuggestionError] = useState("");
+  const [keywordSuggestions, setKeywordSuggestions] = useState([]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     const fieldName = name === "description" ? "excerpt" : name;
@@ -36,11 +41,15 @@ function MetadataSection({
   };
 
   const handleTagsChange = (e) => {
-    const tags = e.target.value.split(",").map((tag) => tag.trim());
+    const tags = e.target.value
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean);
     onFormChange({ ...formData, tags });
   };
 
-  // AI Suggestion Handlers (Keep existing logic)
+  // --- AI Suggestion Handlers ---
+
   const handleSuggestDescriptions = useCallback(async () => {
     if (!formData.title && !formData.content) {
       setDescSuggestionError("Please enter a title or some content first.");
@@ -67,7 +76,7 @@ function MetadataSection({
     } finally {
       setIsSuggestingDesc(false);
     }
-  }, [formData.title, formData.content, onFormChange]);
+  }, [formData.title, formData.content]);
 
   const handleSuggestCategories = useCallback(async () => {
     if (!formData.title && !formData.content) {
@@ -95,7 +104,7 @@ function MetadataSection({
     } finally {
       setIsSuggestingCat(false);
     }
-  }, [formData.title, formData.content, onFormChange]);
+  }, [formData.title, formData.content]);
 
   const handleSuggestTitles = useCallback(async () => {
     if (!formData.title && !formData.content) {
@@ -125,7 +134,44 @@ function MetadataSection({
     } finally {
       setIsSuggestingTitle(false);
     }
-  }, [formData.title, formData.content, onFormChange]);
+  }, [formData.title, formData.content]);
+
+  // New handler for suggesting keywords/tags
+  const handleSuggestKeywords = useCallback(async () => {
+    if (!formData.title && !formData.content) {
+      setKeywordSuggestionError("Please enter a title or some content first.");
+      return;
+    }
+    setIsSuggestingKeywords(true);
+    setKeywordSuggestionError("");
+    setKeywordSuggestions([]);
+    try {
+      const response = await axios.post("/api/ai/suggest-keywords", {
+        title: formData.title,
+        contentSnippet: formData.content, // Send content snippet
+      });
+      if (response.data.success && response.data.suggestions) {
+        setKeywordSuggestions(response.data.suggestions);
+      } else {
+        setKeywordSuggestionError("Could not fetch keyword suggestions.");
+      }
+    } catch (err) {
+      console.error("Keyword suggestion error:", err);
+      setKeywordSuggestionError(
+        err.response?.data?.error || err.message || "Failed to get suggestions."
+      );
+    } finally {
+      setIsSuggestingKeywords(false);
+    }
+  }, [formData.title, formData.content]);
+
+  // Function to add a suggested tag if not already present
+  const addSuggestedTag = (tagToAdd) => {
+    const currentTags = formData.tags || [];
+    if (!currentTags.includes(tagToAdd)) {
+      onFormChange({ ...formData, tags: [...currentTags, tagToAdd] });
+    }
+  };
 
   return (
     <div className="space-y-6 border-y border-gray-700 py-6">
@@ -146,7 +192,9 @@ function MetadataSection({
             variant="ghost"
             size="icon"
             onClick={handleSuggestTitles}
-            disabled={isSuggestingTitle || !formData.title}
+            disabled={
+              isSuggestingTitle || (!formData.title && !formData.content)
+            }
             className="text-purple-400 hover:text-purple-300 disabled:text-gray-500 flex-shrink-0"
             title="Suggest better titles (AI)"
           >
@@ -157,7 +205,6 @@ function MetadataSection({
             )}
           </Button>
         </div>
-        {/* Display Title Suggestions */}
         {titleSuggestionError && (
           <p className="text-xs text-red-500 mt-1">{titleSuggestionError}</p>
         )}
@@ -206,9 +253,11 @@ function MetadataSection({
           </div>
           <Textarea
             id="description"
-            name="description" // Use 'description' here
-            value={formData.excerpt || ""} // Bind to excerpt state
-            onChange={(e) => handleFormChange({ excerpt: e.target.value })} // Update excerpt state
+            name="description"
+            value={formData.excerpt || ""}
+            onChange={(e) =>
+              onFormChange({ ...formData, excerpt: e.target.value })
+            }
             className="bg-gray-800 border-gray-700 focus:border-blue-500 focus:ring-blue-500"
             placeholder="A short summary for previews and SEO (120-155 chars recommended)..."
             rows={3}
@@ -224,8 +273,8 @@ function MetadataSection({
                 <button
                   key={index}
                   type="button"
-                  onClick={
-                    () => onFormChange({ ...formData, excerpt: suggestion }) // Update excerpt state
+                  onClick={() =>
+                    onFormChange({ ...formData, excerpt: suggestion })
                   }
                   className="px-1.5 py-0.5 text-xs text-left bg-gray-700 text-gray-300 rounded hover:bg-blue-600 hover:text-white transition-colors"
                 >
@@ -293,31 +342,70 @@ function MetadataSection({
 
         {/* Tags */}
         <div className="space-y-2">
-          <Label htmlFor="tags" className="text-gray-400">
-            Tags (comma-separated)
-          </Label>
+          <div className="flex justify-between items-center">
+            <Label htmlFor="tags" className="text-gray-400">
+              Tags (comma-separated)
+            </Label>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={handleSuggestKeywords}
+              disabled={
+                isSuggestingKeywords || (!formData.title && !formData.content)
+              }
+              className="text-purple-400 hover:text-purple-300 disabled:text-gray-500 px-2 py-1 text-xs"
+              title="Suggest Keywords/Tags (uses Title/Content)"
+            >
+              {isSuggestingKeywords ? (
+                <Loader2 className="h-3 w-3 animate-spin mr-1" />
+              ) : (
+                <Sparkles className="h-3 w-3 mr-1" />
+              )}
+              Suggest
+            </Button>
+          </div>
           <Input
             id="tags"
             name="tags"
-            value={formData.tags.join(", ")}
+            value={formData.tags?.join(", ") || ""} // Join array for display
             onChange={handleTagsChange}
             type="text"
             className="bg-gray-800 border-gray-700 focus:border-blue-500 focus:ring-blue-500"
             placeholder="e.g., react, nextjs, tutorial"
           />
+          {keywordSuggestionError && (
+            <p className="text-xs text-red-500 mt-1">
+              {keywordSuggestionError}
+            </p>
+          )}
+          {keywordSuggestions.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-1">
+              <span className="text-xs text-gray-400 w-full mb-1">
+                Suggestions (click to add):
+              </span>
+              {keywordSuggestions.map((suggestion, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => addSuggestedTag(suggestion)} // Use add function
+                  className="px-1.5 py-0.5 text-xs bg-gray-700 text-gray-300 rounded hover:bg-blue-600 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={(formData.tags || []).includes(suggestion)} // Disable if already added
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Publish Switch */}
         <div className="md:col-span-2 pt-4 border-t border-gray-700">
-          {" "}
-          {/* Ensure it spans columns and has top padding/border */}
-          {/* Removed debug markers and forceful styling */}
           <div className="flex items-center space-x-2">
             <Switch
               id="isPublished"
-              checked={isPublished} // Use prop
-              onCheckedChange={onPublishChange} // Use prop handler
-              // Removed debug styling
+              checked={isPublished}
+              onCheckedChange={onPublishChange}
             />
             <Label
               htmlFor="isPublished"
@@ -327,9 +415,8 @@ function MetadataSection({
             </Label>
           </div>
         </div>
-      </div>{" "}
-      {/* End Metadata Grid */}
-    </div> // End Main Container Div
+      </div>
+    </div>
   );
 }
 
