@@ -156,7 +156,6 @@ function Id({ data, relatedPosts }) {
     <>
       {/* Add JsonLd component */}
       {blogPostingSchema && <JsonLd data={blogPostingSchema} />}
-
       <Head>
         <title>{data.title} - Karthik Nishanth | Full Stack Developer</title>
         <meta name="description" content={data.description || data.title} />
@@ -201,8 +200,6 @@ function Id({ data, relatedPosts }) {
           href={`https://www.karthiknish.com/blog/${data.slug || data._id}`}
         />
       </Head>
-
-      {/* Reading progress bar - moved to top */}
       <div className="fixed top-0 left-0 w-full h-2 z-[9999] bg-gray-700">
         {" "}
         {/* Increased height and z-index, adjusted bg */}
@@ -213,10 +210,9 @@ function Id({ data, relatedPosts }) {
             transformOrigin: "left",
           }}
         />
-      </div>
-
-      <PageContainer className="pt-16 space-y-8 font-calendas max-w-4xl mx-auto">
-        {" "}
+      </div>{" "}
+      {/* Reading progress bar - moved to top */}
+      <PageContainer className="pt-16 mt-10  space-y-8 font-calendas max-w-4xl mx-auto">
         {/* Added padding-top */}
         <Link href="/blog">
           <motion.div
@@ -229,6 +225,7 @@ function Id({ data, relatedPosts }) {
           </motion.div>
         </Link>
         {/* Assign the ref to the Card component */}
+
         <Card
           ref={contentRef}
           className="border-none bg-black/60 backdrop-blur-sm p-8 rounded-xl shadow-lg"

@@ -16,6 +16,12 @@ import { FadeIn, HoverCard } from "../components/animations/MotionComponents";
 import PageContainer from "@/components/PageContainer";
 import JsonLd, { createServiceSchema } from "@/components/JsonLd"; // Import JsonLd and schema helper
 
+// Helper function to generate slugs
+const generateSlug = (title) => {
+  return title.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-');
+};
+
+
 export default function Services() {
   const [expandedFaq, setExpandedFaq] = React.useState(null);
 
@@ -65,7 +71,7 @@ export default function Services() {
     },
     {
       icon: <FaDatabase className="text-5xl" style={{ color: "#FF9900" }} />,
-      title: "Database Design",
+      title: "Database Design", // Note: Slug will be database-design
       description:
         "Designing and implementing efficient database solutions using SQL and NoSQL technologies.",
       features: [
@@ -205,42 +211,70 @@ export default function Services() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                {services.map((service, index) => (
-                  <HoverCard key={index}>
-                    <div className="bg-gradient-to-br from-gray-900 to-black p-8 rounded-xl shadow-2xl border border-blue-500/20 h-full flex flex-col">
-                      <div className="mb-4">{service.icon}</div>
-                      <h2 className="text-2xl font-bold text-blue-400 mb-3">
-                        {service.title}
-                      </h2>
-                      <p className="text-gray-300 mb-4 flex-grow">
-                        {service.description}
-                      </p>
-                      <ul className="space-y-2 mt-2">
-                        {service.features.map((feature, idx) => (
-                          <li key={idx} className="flex items-start">
-                            <div className="bg-blue-500 p-1 rounded-full mr-3 mt-1">
-                              <svg
-                                className="w-4 h-4 text-white"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M5 13l4 4L19 7"
-                                ></path>
-                              </svg>
-                            </div>
-                            <p className="text-gray-300">{feature}</p>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </HoverCard>
-                ))}
+                {services.map((service, index) => {
+                  const slug = generateSlug(service.title);
+                  const href = `/services/${slug}`;
+
+                  return (
+                    <HoverCard key={index}>
+                      <Link href={href} className="block h-full group">
+                        {" "}
+                        {/* Added group class */}
+                        <div className="bg-gradient-to-br from-gray-900 to-black p-8 rounded-xl shadow-2xl border border-blue-500/20 h-full flex flex-col transition-transform duration-300 ease-in-out hover:scale-[1.02] hover:shadow-blue-500/30">
+                          <div className="mb-4">{service.icon}</div>
+                          <h2 className="text-2xl font-bold text-blue-400 mb-3">
+                            {service.title}
+                          </h2>
+                          <p className="text-gray-300 mb-4 flex-grow">
+                            {service.description}
+                          </p>
+                          <ul className="space-y-2 mt-2 mb-4">
+                            {" "}
+                            {/* Added mb-4 */}
+                            {service.features.slice(0, 3).map(
+                              (
+                                feature,
+                                idx // Show only first 3 features
+                              ) => (
+                                <li key={idx} className="flex items-start">
+                                  <div className="bg-blue-500 p-1 rounded-full mr-3 mt-1 flex-shrink-0">
+                                    {" "}
+                                    {/* Added flex-shrink-0 */}
+                                    <svg
+                                      className="w-4 h-4 text-white"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M5 13l4 4L19 7"
+                                      ></path>
+                                    </svg>
+                                  </div>
+                                  <p className="text-gray-300 text-sm">
+                                    {feature}
+                                  </p>{" "}
+                                  {/* Made text smaller */}
+                                </li>
+                              )
+                            )}
+                          </ul>
+                          <div className="mt-auto pt-4 border-t border-gray-800/50">
+                            {" "}
+                            {/* Added border top */}
+                            <span className="text-blue-400 font-semibold group-hover:underline">
+                              Learn More →
+                            </span>
+                          </div>
+                        </div>
+                      </Link>
+                    </HoverCard>
+                  );
+                })}
               </div>
             </div>
           </FadeIn>

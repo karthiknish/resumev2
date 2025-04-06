@@ -7,6 +7,7 @@ import {
   AiOutlineExperiment,
   AiOutlineUsergroupAdd,
   AiFillLinkedin, // Added LinkedIn icon
+  AiOutlineClockCircle, // Added Clock icon for Pomodoro
 } from "react-icons/ai";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -33,6 +34,7 @@ import BytesTab from "@/components/admin/tabs/BytesTab";
 import ApiStatusTab from "@/components/admin/tabs/ApiStatusTab";
 import SubscribersTab from "@/components/admin/tabs/SubscribersTab";
 import LinkedInTab from "@/components/admin/tabs/LinkedInTab"; // Import LinkedInTab
+import PomodoroTab from "@/components/admin/tabs/PomodoroTab"; // Import PomodoroTab
 
 function AdminDashboard() {
   const { data: session, status } = useSession();
@@ -214,6 +216,14 @@ function AdminDashboard() {
                     <AiOutlineExperiment />{" "}
                     <span className="ml-1.5">API Status</span>
                   </TabsTrigger>
+                  {/* Add Pomodoro Tab Trigger */}
+                  <TabsTrigger
+                    value="pomodoro"
+                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0"
+                  >
+                    <AiOutlineClockCircle />{" "}
+                    <span className="ml-1.5">Pomodoro</span>
+                  </TabsTrigger>
                 </TabsList>
               </SlideUp>
 
@@ -253,6 +263,11 @@ function AdminDashboard() {
                 <TabsContent value="api-status" key="api-status">
                   {" "}
                   <ApiStatusTab />{" "}
+                </TabsContent>
+                {/* Add Pomodoro Tab Content */}
+                <TabsContent value="pomodoro" key="pomodoro">
+                  {" "}
+                  <PomodoroTab />{" "}
                 </TabsContent>
               </AnimatePresence>
             </Tabs>

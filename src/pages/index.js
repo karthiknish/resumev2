@@ -111,7 +111,8 @@ const HomeScreen = () => {
         <HeroSection />
       </section>
 
-      <section id="services" className="bg-black py-16 md:py-24">
+      {/* Added horizontal padding px-4 md:px-8 */}
+      <section id="services" className="bg-black py-16 md:py-24 px-4 md:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

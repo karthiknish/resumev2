@@ -93,7 +93,7 @@ function Index({ initialPosts = [], categories = [] }) {
         />
         <meta name="author" content="Karthik Nishanth" />
       </Head>
-      <PageContainer>
+      <PageContainer className="mt-10">
         <Card className="border-none bg-black/60 backdrop-blur-sm p-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
