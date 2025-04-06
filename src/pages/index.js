@@ -7,6 +7,7 @@ import HeroSection from "@/components/home/HeroSection";
 import WhyFreelancerSection from "@/components/home/WhyFreelancerSection";
 import TechStackSection from "@/components/home/TechStackSection";
 import FeaturedProjectsSection from "@/components/home/FeaturedProjectsSection";
+import MyProcessSection from "@/components/home/MyProcessSection"; // Import the new section
 import Services from "@/components/Services";
 import ContactForm from "@/components/Form";
 import Faq from "@/components/Faq";
@@ -129,6 +130,11 @@ const HomeScreen = () => {
 
       <section id="projects">
         <FeaturedProjectsSection />
+      </section>
+
+      {/* Add the new My Process Section */}
+      <section id="process">
+        <MyProcessSection />
       </section>
 
       <section id="why-freelancer">

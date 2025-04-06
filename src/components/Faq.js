@@ -4,16 +4,35 @@ import {
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-} from "./ui/accordion";
+} from "./ui/accordion"; // Assuming this is Shadcn UI Accordion
+import { ChevronDown } from "lucide-react"; // Import icon for trigger
 
-export default function Faq() {
+export default function Faq({ items = [] }) {
+  // Accept items as a prop
+  // Fallback if no items are passed (optional)
+  const faqItems =
+    items.length > 0
+      ? items
+      : [
+          {
+            id: "fallback-1",
+            title: "Default Question 1?",
+            content: "Default answer 1.",
+          },
+          {
+            id: "fallback-2",
+            title: "Default Question 2?",
+            content: "Default answer 2.",
+          },
+        ];
+
   return (
     <motion.section
       initial={{ x: -100, opacity: 0 }}
       whileInView={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.8 }}
       viewport={{ once: true }}
-      className="bg-black text-white py-12"
+      className="bg-black text-white py-8"
     >
       <div className="container mx-auto px-4">
         <motion.h2
@@ -21,65 +40,34 @@ export default function Faq() {
           whileInView={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
           viewport={{ once: true }}
-          className="text-3xl text-center font-bold sm:text-4xl mb-8 font-calendas"
+          className="text-3xl text-center font-bold sm:text-4xl mb-12 md:mb-16 font-calendas" // Increased bottom margin
         >
           Frequently Asked Questions
         </motion.h2>
+        {/* Apply new styling to the Accordion container and items */}
         <Accordion
           type="single"
           collapsible
-          className="w-full max-w-3xl mx-auto"
+          className="w-full max-w-3xl mx-auto space-y-4" // Added space between items
         >
-          <AccordionItem value="item-1">
-            <AccordionTrigger className="text-lg font-medium font-calendas">
-              What technologies do you specialize in?
-            </AccordionTrigger>
-            <AccordionContent className="text-gray-300 font-calendas">
-              I specialize in modern web technologies including React, Next.js,
-              Node.js, and TypeScript. I'm also experienced with cloud platforms
-              like AWS and Azure, and have extensive knowledge of database
-              systems including MongoDB and PostgreSQL.
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="item-2">
-            <AccordionTrigger className="text-lg font-medium font-calendas">
-              How do you approach new projects?
-            </AccordionTrigger>
-            <AccordionContent className="text-gray-300 font-calendas">
-              I begin with a thorough analysis of your requirements and
-              objectives. Then, I develop a strategic roadmap that outlines
-              technical solutions, timelines, and deliverables. Throughout the
-              project, I maintain clear communication and adapt to changing
-              needs while ensuring high-quality code and optimal performance.
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="item-3">
-            <AccordionTrigger className="text-lg font-medium font-calendas">
-              What sets you apart from other developers?
-            </AccordionTrigger>
-            <AccordionContent className="text-gray-300 font-calendas">
-              My unique combination of technical expertise and focus on client
-              needs allows me to not just code solutions, but to truly
-              understand and solve your challenges. I focus on delivering
-              scalable, maintainable code while keeping your objectives at the
-              forefront.
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="item-4">
-            <AccordionTrigger className="text-lg font-medium font-calendas">
-              How do you handle project deadlines and communication?
-            </AccordionTrigger>
-            <AccordionContent className="text-gray-300 font-calendas">
-              I maintain transparent communication through regular updates and
-              status reports. I use agile methodologies to ensure timely
-              delivery and adapt quickly to changes. My project management
-              skills help me balance multiple priorities while maintaining high
-              quality standards.
-            </AccordionContent>
-          </AccordionItem>
+          {faqItems.map((item) => (
+            <AccordionItem
+              key={item.id}
+              value={`item-${item.id}`}
+              className="bg-gradient-to-r from-gray-800/60 to-gray-900/80 border border-gray-700 rounded-lg overflow-hidden transition-all duration-300 hover:border-blue-600/50" // Card-like styling
+            >
+              <AccordionTrigger className="flex justify-between items-center w-full px-6 py-4 text-left text-lg font-medium text-white hover:no-underline hover:bg-gray-700/30 transition-colors">
+                <span className="font-calendas">{item.title}</span>
+                {/* Custom icon - rotates on open */}
+                {/* <ChevronDown className="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200" /> */}
+              </AccordionTrigger>
+              <AccordionContent className="px-6 pt-0 pb-4 text-gray-300 text-base leading-relaxed font-calendas">
+                {" "}
+                {/* Adjusted padding and text size */}
+                {item.content}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
         </Accordion>
       </div>
     </motion.section>
