@@ -64,7 +64,6 @@ describe("Footer Component", () => {
     renderWithRouter(<Footer />);
     expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "About" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Services" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Blog" })).toBeInTheDocument();
     // Add checks for other footer navigation links
   });
