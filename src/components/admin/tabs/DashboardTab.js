@@ -41,6 +41,7 @@ import {
   StaggerContainer,
   StaggerItem,
 } from "@/components/animations/MotionComponents";
+import RecentContactsWidget from "@/components/admin/widgets/RecentContactsWidget"; // Import the new widget
 
 // Simple date formatter
 const formatDate = (dateString) => {
@@ -208,196 +209,218 @@ export default function DashboardTab({ unreadCount }) {
         </StaggerItem>
       </div>
 
-      {/* Recent Blog Posts Table */}
-      <StaggerItem index={1}>
-        <Card className="border-gray-700 bg-gray-900 text-white">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-            <CardTitle>Recent Blog Posts</CardTitle>
-            <div className="flex space-x-2">
-              <Button
-                size="sm"
-                asChild
-                className="bg-green-600 hover:bg-green-700"
-              >
-                <Link href="/admin/blog/ai-create">
-                  <Bot className="mr-2 h-4 w-4" /> AI Generator
-                </Link>
-              </Button>
-              <Button size="sm" asChild>
-                <Link href="/admin/blog/create">
-                  <FilePlus className="mr-2 h-4 w-4" /> Create New
-                </Link>
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {isLoading && (
-              <div className="flex justify-center items-center py-10">
-                <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+      {/* Main Content Area - Grid Layout */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Recent Blog Posts Table */}
+        <StaggerItem index={1} className="lg:col-span-1">
+          {" "}
+          {/* Adjust grid span if needed */}
+          <Card className="border-gray-700 bg-gray-900 text-white h-full">
+            {" "}
+            {/* Added h-full */}
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+              <CardTitle>Recent Blog Posts</CardTitle>
+              <div className="flex space-x-2">
+                <Button
+                  size="sm"
+                  asChild
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  <Link href="/admin/blog/ai-create">
+                    <Bot className="mr-2 h-4 w-4" /> AI Generator
+                  </Link>
+                </Button>
+                <Button size="sm" asChild>
+                  <Link href="/admin/blog/create">
+                    <FilePlus className="mr-2 h-4 w-4" /> Create New
+                  </Link>
+                </Button>
               </div>
-            )}
-            {error && !isLoading && (
-              <p className="text-red-400 text-center py-10">Error: {error}</p>
-            )}
-            {!isLoading && !error && blogPosts.length === 0 && (
-              <p className="text-gray-400 text-center py-10">
-                No blog posts found.
-              </p>
-            )}
-            {!isLoading && !error && blogPosts.length > 0 && (
-              <>
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="border-gray-700 hover:bg-gray-800">
-                        <TableHead className="text-gray-300">Title</TableHead>
-                        <TableHead className="text-gray-300">Status</TableHead>
-                        <TableHead className="text-gray-300">
-                          Created At
-                        </TableHead>
-                        <TableHead className="text-right text-gray-300">
-                          Actions
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {blogPosts.map((post) => (
-                        <TableRow
-                          key={post._id}
-                          className="border-gray-800 hover:bg-gray-800/50"
-                        >
-                          <TableCell className="font-medium">
-                            {post.title}
-                          </TableCell>
-                          <TableCell>
-                            <Badge
-                              variant={post.isPublished ? "success" : "warning"}
-                              className={
-                                post.isPublished
-                                  ? "bg-green-900 text-green-300"
-                                  : "bg-yellow-900 text-yellow-300"
-                              }
-                            >
-                              {post.isPublished ? "Published" : "Draft"}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>{formatDate(post.createdAt)}</TableCell>
-                          <TableCell className="text-right space-x-2">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              asChild
-                              className="text-white hover:text-white hover:bg-gray-600"
-                            >
-                              <Link href={`/admin/blog/edit/${post._id}`}>
-                                Edit
-                              </Link>
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              asChild
-                              className="text-white border-gray-600 hover:text-white hover:bg-gray-600"
-                            >
-                              <Link href={`/blog/${post.slug}`} target="_blank">
-                                View
-                              </Link>
-                            </Button>
-                            {/* Delete Button wrapped in AlertDialogTrigger */}
-                            <AlertDialog
-                              onOpenChange={(open) =>
-                                !open && setPostToDelete(null)
-                              }
-                            >
-                              {" "}
-                              {/* Reset state when dialog closes */}
-                              <AlertDialogTrigger asChild>
-                                {/* Use a normal button, AlertDialogTrigger handles opening */}
-                                <Button
-                                  variant="destructive"
-                                  size="sm"
-                                  className="text-red-400 hover:bg-red-700 hover:text-white"
-                                  onClick={() => handleDeleteClick(post._id)}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </AlertDialogTrigger>
-                              {/* Render content only when this specific post is targeted */}
-                              {postToDelete === post._id && (
-                                <AlertDialogContent className="bg-gray-900 border-gray-700 text-white">
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle className="flex items-center gap-2">
-                                      <AlertTriangle className="text-red-500" />{" "}
-                                      Are you absolutely sure?
-                                    </AlertDialogTitle>
-                                    <AlertDialogDescription className="text-gray-400">
-                                      This action cannot be undone. This will
-                                      permanently delete the blog post titled "
-                                      {blogPosts.find(
-                                        (p) => p._id === postToDelete
-                                      )?.title || "this post"}
-                                      ".
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel
-                                      className="bg-gray-600 hover:bg-gray-700 border-gray-600"
-                                      onClick={() => setPostToDelete(null)}
-                                    >
-                                      Cancel
-                                    </AlertDialogCancel>
-                                    <AlertDialogAction
-                                      onClick={confirmDelete}
-                                      disabled={isDeleting}
-                                      className="bg-red-600 hover:bg-red-700"
-                                    >
-                                      {isDeleting ? (
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                      ) : null}
-                                      Yes, delete post
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              )}
-                            </AlertDialog>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+            </CardHeader>
+            <CardContent>
+              {isLoading && (
+                <div className="flex justify-center items-center py-10">
+                  <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
                 </div>
-                {/* Pagination Controls */}
-                {totalPages > 1 && (
-                  <div className="flex items-center justify-end space-x-2 py-4">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handlePreviousPage}
-                      disabled={currentPage <= 1 || isLoading}
-                      className="border-gray-600 hover:bg-gray-700 disabled:opacity-50"
-                    >
-                      <ChevronLeft className="h-4 w-4 mr-1" /> Previous
-                    </Button>
-                    <span className="text-sm text-gray-400">
-                      {" "}
-                      Page {currentPage} of {totalPages}{" "}
-                    </span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleNextPage}
-                      disabled={currentPage >= totalPages || isLoading}
-                      className="border-gray-600 hover:bg-gray-700 disabled:opacity-50"
-                    >
-                      Next <ChevronRight className="h-4 w-4 ml-1" />
-                    </Button>
+              )}
+              {error && !isLoading && (
+                <p className="text-red-400 text-center py-10">Error: {error}</p>
+              )}
+              {!isLoading && !error && blogPosts.length === 0 && (
+                <p className="text-gray-400 text-center py-10">
+                  No blog posts found.
+                </p>
+              )}
+              {!isLoading && !error && blogPosts.length > 0 && (
+                <>
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow className="border-gray-700 hover:bg-gray-800">
+                          <TableHead className="text-gray-300">Title</TableHead>
+                          <TableHead className="text-gray-300">
+                            Status
+                          </TableHead>
+                          <TableHead className="text-gray-300">
+                            Created At
+                          </TableHead>
+                          <TableHead className="text-right text-gray-300">
+                            Actions
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {blogPosts.map((post) => (
+                          <TableRow
+                            key={post._id}
+                            className="border-gray-800 hover:bg-gray-800/50"
+                          >
+                            <TableCell className="font-medium">
+                              {post.title}
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                variant={
+                                  post.isPublished ? "success" : "warning"
+                                }
+                                className={
+                                  post.isPublished
+                                    ? "bg-green-900 text-green-300"
+                                    : "bg-yellow-900 text-yellow-300"
+                                }
+                              >
+                                {post.isPublished ? "Published" : "Draft"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{formatDate(post.createdAt)}</TableCell>
+                            <TableCell className="text-right space-x-2">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                asChild
+                                className="text-white hover:text-white hover:bg-gray-600"
+                              >
+                                <Link href={`/admin/blog/edit/${post._id}`}>
+                                  Edit
+                                </Link>
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                asChild
+                                className="text-white border-gray-600 hover:text-white hover:bg-gray-600"
+                              >
+                                <Link
+                                  href={`/blog/${post.slug}`}
+                                  target="_blank"
+                                >
+                                  View
+                                </Link>
+                              </Button>
+                              {/* Delete Button wrapped in AlertDialogTrigger */}
+                              <AlertDialog
+                                onOpenChange={(open) =>
+                                  !open && setPostToDelete(null)
+                                }
+                              >
+                                {" "}
+                                {/* Reset state when dialog closes */}
+                                <AlertDialogTrigger asChild>
+                                  {/* Use a normal button, AlertDialogTrigger handles opening */}
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    className="text-red-400 hover:bg-red-700 hover:text-white"
+                                    onClick={() => handleDeleteClick(post._id)}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                {/* Render content only when this specific post is targeted */}
+                                {postToDelete === post._id && (
+                                  <AlertDialogContent className="bg-gray-900 border-gray-700 text-white">
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle className="flex items-center gap-2">
+                                        <AlertTriangle className="text-red-500" />{" "}
+                                        Are you absolutely sure?
+                                      </AlertDialogTitle>
+                                      <AlertDialogDescription className="text-gray-400">
+                                        This action cannot be undone. This will
+                                        permanently delete the blog post titled
+                                        "
+                                        {blogPosts.find(
+                                          (p) => p._id === postToDelete
+                                        )?.title || "this post"}
+                                        ".
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel
+                                        className="bg-gray-600 hover:bg-gray-700 border-gray-600"
+                                        onClick={() => setPostToDelete(null)}
+                                      >
+                                        Cancel
+                                      </AlertDialogCancel>
+                                      <AlertDialogAction
+                                        onClick={confirmDelete}
+                                        disabled={isDeleting}
+                                        className="bg-red-600 hover:bg-red-700"
+                                      >
+                                        {isDeleting ? (
+                                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        ) : null}
+                                        Yes, delete post
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                )}
+                              </AlertDialog>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
                   </div>
-                )}
-              </>
-            )}
-          </CardContent>
-        </Card>
-      </StaggerItem>
+                  {/* Pagination Controls */}
+                  {totalPages > 1 && (
+                    <div className="flex items-center justify-end space-x-2 py-4">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handlePreviousPage}
+                        disabled={currentPage <= 1 || isLoading}
+                        className="border-gray-600 hover:bg-gray-700 disabled:opacity-50"
+                      >
+                        <ChevronLeft className="h-4 w-4 mr-1" /> Previous
+                      </Button>
+                      <span className="text-sm text-gray-400">
+                        {" "}
+                        Page {currentPage} of {totalPages}{" "}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleNextPage}
+                        disabled={currentPage >= totalPages || isLoading}
+                        className="border-gray-600 hover:bg-gray-700 disabled:opacity-50"
+                      >
+                        Next <ChevronRight className="h-4 w-4 ml-1" />
+                      </Button>
+                    </div>
+                  )}
+                </>
+              )}
+            </CardContent>
+          </Card>
+        </StaggerItem>
+
+        {/* Recent Contacts Widget */}
+        <StaggerItem index={2} className="lg:col-span-1">
+          {" "}
+          {/* Adjust grid span if needed */}
+          <RecentContactsWidget />
+        </StaggerItem>
+      </div>
     </StaggerContainer>
   );
 }

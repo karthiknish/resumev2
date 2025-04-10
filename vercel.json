@@ -8,5 +8,11 @@
     "deploymentEnabled": {
       "main": true
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/ai/auto-generate-news-blog",
+      "schedule": "0 10 * * *"
+    }
+  ]
 }

@@ -38,8 +38,16 @@ export default async function handler(req, res) {
           return res.status(200).json({ success: true, count });
         }
 
-        // Default: Fetch all contacts, sorted by creation date descending
-        const contacts = await Contact.find({}).sort({ createdAt: -1 }).lean();
+        // Default: Fetch contacts, sorted by creation date descending
+        const limit = parseInt(req.query.limit, 10); // Get limit from query
+        let query = Contact.find({}).sort({ createdAt: -1 });
+
+        if (!isNaN(limit) && limit > 0) {
+          query = query.limit(limit); // Apply limit if valid number provided
+        }
+
+        const contacts = await query.lean(); // Execute query
+
         res.status(200).json({ success: true, data: contacts });
       } catch (error) {
         console.error("API Contacts GET Error:", error);
