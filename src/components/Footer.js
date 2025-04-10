@@ -29,6 +29,7 @@ export default function Footer() {
                     href="https://github.com/karthiknish"
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label="GitHub"
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     {/* Reduced icon size */}
@@ -40,6 +41,7 @@ export default function Footer() {
                     href="https://www.linkedin.com/in/karthik-nishanth/"
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label="LinkedIn"
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     {/* Reduced icon size */}
