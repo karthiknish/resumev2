@@ -2,11 +2,15 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Head from "next/head";
+import Link from "next/link"; // Import Link
 import { motion } from "framer-motion";
 import { projectsData } from "../../lib/projectsData";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge"; // Import Badge
+import { Button } from "@/components/ui/button"; // Import Button
+import { MessageSquareQuote } from "lucide-react"; // Import Icon
 
 function Id() {
   const router = useRouter();
@@ -102,21 +106,124 @@ function Id() {
                   <h2 className="text-5xl font-bold text-white mb-6">
                     {project.title}
                   </h2>
-                  <Separator className="my-6 bg-gray-800" />
-                  <div className="prose prose-lg prose-invert">
-                    <p className="text-gray-300 text-xl leading-relaxed">
-                      {project.description}
+                  {/* Display Meta/Key Result */}
+                  {project.meta && (
+                    <p className="text-lg text-blue-400 font-medium mb-4">
+                      {project.meta}
                     </p>
-                  </div>
+                  )}
+                  <Separator className="my-6 bg-gray-700" />
 
-                  <motion.button
-                    className="mt-8 bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => window.open(project.extlink)}
-                  >
-                    View Live Project →
-                  </motion.button>
+                  {/* --- Key Achievement Highlight --- */}
+                  {project.meta && (
+                    <div className="bg-blue-900/30 border border-blue-700 p-6 rounded-lg mb-8 shadow-lg">
+                      <h3 className="text-xl font-semibold text-blue-300 mb-2">
+                        Key Achievement
+                      </h3>
+                      <p className="text-3xl font-bold text-white">
+                        {project.meta}
+                      </p>
+                      {/* Optional: Add a subtitle if meta needs context */}
+                      {/* <p className="text-sm text-blue-400 mt-1">Context for the achievement</p> */}
+                    </div>
+                  )}
+
+                  <h3 className="text-2xl font-semibold text-blue-400 mb-3 mt-8">
+                    Project Overview
+                  </h3>
+                  <p className="text-gray-300 mb-8 text-lg leading-relaxed">
+                    {project.description}
+                  </p>
+
+                  {/* --- Challenges Section --- */}
+                  {project.challenges && project.challenges.length > 0 && (
+                    <>
+                      <h3 className="text-2xl font-semibold text-blue-400 mt-8 mb-3">
+                        Challenges Faced
+                      </h3>
+                      <ul className="list-disc list-inside space-y-2 text-gray-300 mb-8 text-lg">
+                        {project.challenges.map((challenge, i) => (
+                          <li key={i}>{challenge}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+
+                  {/* --- Solutions Section --- */}
+                  {project.solutions && project.solutions.length > 0 && (
+                    <>
+                      <h3 className="text-2xl font-semibold text-blue-400 mt-8 mb-3">
+                        Solutions Implemented
+                      </h3>
+                      <ul className="list-disc list-inside space-y-2 text-gray-300 mb-8 text-lg">
+                        {project.solutions.map((solution, i) => (
+                          <li key={i}>{solution}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+
+                  {/* --- Results Section --- */}
+                  {project.results && project.results.length > 0 && (
+                    <>
+                      <h3 className="text-2xl font-semibold text-blue-400 mt-8 mb-3">
+                        Key Results
+                      </h3>
+                      <ul className="list-disc list-inside space-y-2 text-gray-300 mb-12 text-lg">
+                        {project.results.map((result, i) => (
+                          <li key={i}>{result}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+
+                  {/* --- Client Testimonial Section --- */}
+                  {project.testimonial && (
+                    <div className="bg-gray-800/50 border border-gray-700 p-6 rounded-lg my-12 shadow-md">
+                      <MessageSquareQuote className="w-8 h-8 text-blue-400 mb-3" />
+                      <h3 className="text-xl font-semibold text-blue-300 mb-2">
+                        Client Feedback
+                      </h3>
+                      <blockquote className="text-gray-300 italic text-lg border-l-4 border-blue-500 pl-4">
+                        "{project.testimonial.quote}"
+                      </blockquote>
+                      <p className="text-right text-gray-400 mt-3">
+                        - {project.testimonial.author}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* --- Action Buttons --- */}
+                  <div className="mt-12 flex flex-wrap gap-4">
+                    {project.extlink && (
+                      <Button
+                        variant="default" // Use Button component
+                        size="lg"
+                        className="bg-blue-500 hover:bg-blue-600"
+                        onClick={() => window.open(project.extlink)}
+                      >
+                        View Live Project →
+                      </Button>
+                    )}
+                    <Link href="/contact" passHref legacyBehavior>
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        className="border-green-600 text-green-400 hover:bg-green-900/30 hover:text-green-300"
+                      >
+                        Discuss Your Project →
+                      </Button>
+                    </Link>
+                    <Link href="/projects" passHref legacyBehavior>
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        className="border-gray-700 text-gray-300 hover:bg-gray-800/50"
+                      >
+                        ← Back to Projects
+                      </Button>
+                    </Link>
+                  </div>
                 </motion.div>
               </Card>
             </motion.div>

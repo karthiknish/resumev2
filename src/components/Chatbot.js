@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { BiSend, BiMessageSquareDots, BiX } from "react-icons/bi";
-import { FaEnvelope } from "react-icons/fa";
+import { BiSend, BiMessageSquareDots, BiX, BiUserCircle } from "react-icons/bi"; // Added BiUserCircle
+import { FaEnvelope, FaCheck } from "react-icons/fa"; // Added FaCheck
 import Modal from "react-modal";
 import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
@@ -70,9 +70,10 @@ function Chatbot() {
   }, [isOpen]);
 
   const handleWelcomeMessage = () => {
+    // Friendlier welcome, explains email purpose
     const welcomeMsg = isCollectingEmail
-      ? "Hi there! Before we start, could you please provide your email so I can better assist you?"
-      : `Thanks for providing your email! How can I help you today?`;
+      ? "Hello! I'm Cline, Karthik's AI assistant. To save our chat and follow up if needed, could you please share your email?"
+      : `Thanks! I've got your email. How can I help you today?`; // This case might not be hit if email is always collected first
     setMessages([
       { user: "bot", content: welcomeMsg, timestamp: new Date().toISOString() },
     ]);
@@ -127,20 +128,22 @@ function Chatbot() {
     setIsCollectingEmail(false);
     const userMsg = {
       user: "user",
-      content: email,
+      content: email, // Store the email as user message for history context
       timestamp: new Date().toISOString(),
     };
+    // Slightly friendlier welcome after email
     const botWelcome = {
       user: "bot",
-      content: `Thanks for your email ${email}! How can I help you today?`,
+      content: `Great, thanks ${email}! How can I assist you today? Feel free to ask about Karthik's services, projects, or blog posts.`,
       timestamp: new Date().toISOString(),
     };
     const updatedMessages = [...messages, userMsg, botWelcome];
     setMessages(updatedMessages);
     setMessage("");
-    storeChatHistory(updatedMessages, email);
+    storeChatHistory(updatedMessages, email); // Store history with the provided email
   };
 
+  // Keep generateHelpfulResponse as is for now
   const generateHelpfulResponse = (content) => {
     const lowerContent = content.toLowerCase();
     if (
@@ -207,7 +210,7 @@ function Chatbot() {
       };
       const updatedMessages = [...newMessages, botMessage];
       setMessages(updatedMessages);
-      storeChatHistory(updatedMessages);
+      storeChatHistory(updatedMessages); // Uses userEmail state set previously
     } catch (error) {
       console.error("Error communicating with Gemini API:", error);
       const errorMsg = {
@@ -244,6 +247,7 @@ function Chatbot() {
         <span className="italic text-gray-500">[Invalid message format]</span>
       );
     }
+    // Simple check for markdown characters
     const looksLikeMarkdown = /[*_\[#]/.test(content);
 
     if (looksLikeMarkdown && msg.user === "bot") {
@@ -258,12 +262,14 @@ function Chatbot() {
                 {...props}
               />
             ),
+            // Add other components if needed (e.g., for lists, code blocks)
           }}
         >
           {content}
         </ReactMarkdown>
       );
     } else {
+      // Render plain text, preserving line breaks
       return content.split("\n").map((line, i, arr) => (
         <React.Fragment key={i}>
           {line}
@@ -289,9 +295,9 @@ function Chatbot() {
 
   return (
     <>
-      {/* Chat button - Always fixed bottom-right */}
+      {/* Chat button - Slightly larger, softer shadow */}
       <button
-        className={`fixed z-[1100] right-5 p-3 rounded-full bg-blue-600 text-white flex items-center shadow-lg hover:bg-blue-700 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black ${
+        className={`fixed z-[1100] right-5 p-3.5 rounded-full bg-blue-600 text-white flex items-center shadow-md hover:shadow-lg hover:bg-blue-700 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black ${
           // Adjust bottom only for mobile overlap prevention when open
           isOpen ? "bottom-[70px] md:bottom-5" : "bottom-5"
         }`}
@@ -329,9 +335,11 @@ function Chatbot() {
             className="fixed inset-0 z-[1000] flex flex-col bg-gray-900 shadow-2xl border border-gray-700/50
                        md:inset-auto md:bottom-20 md:right-5 md:w-[375px] md:max-h-[70vh] md:h-auto md:rounded-xl md:overflow-hidden"
           >
-            {/* Chat header */}
-            <div className="flex justify-between items-center p-3 border-b border-gray-700 bg-gray-800 flex-shrink-0">
-              <h3 className="text-white font-medium text-lg">Chat Assistant</h3>
+            {/* Chat header - Added subtle gradient */}
+            <div className="flex justify-between items-center p-3 border-b border-gray-700 bg-gradient-to-r from-gray-800 to-gray-700 flex-shrink-0">
+              <h3 className="text-white font-semibold text-lg">
+                Chat Assistant
+              </h3>
               <button
                 onClick={() => setIsOpen(false)}
                 className="text-gray-400 hover:text-white transition-colors"
@@ -346,10 +354,19 @@ function Chatbot() {
               {messages.map((msg, index) => (
                 <div
                   key={index}
-                  className={`flex ${
+                  className={`flex items-end gap-2 ${
+                    // Added gap and items-end
                     msg.user === "bot" ? "justify-start" : "justify-end"
                   }`}
                 >
+                  {/* Bot Avatar */}
+                  {msg.user === "bot" && (
+                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center mb-1">
+                      {/* Placeholder Icon - Replace with Image if desired */}
+                      <BiUserCircle className="text-gray-300 w-4 h-4" />
+                    </div>
+                  )}
+
                   <motion.div
                     variants={messageVariants}
                     initial="hidden"
@@ -375,6 +392,10 @@ function Chatbot() {
               ))}
               {isLoading && (
                 <div className="flex justify-start">
+                  {/* Bot Avatar for loading */}
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center mr-2 mb-1">
+                    <BiUserCircle className="text-gray-300 w-4 h-4" />
+                  </div>
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -403,41 +424,58 @@ function Chatbot() {
             {/* Chat input area */}
             <form
               onSubmit={handleSubmit}
-              className="border-t border-gray-700 p-3 bg-gray-800 flex-shrink-0 flex items-center gap-2"
+              className="border-t border-gray-700 p-3 bg-gray-800 flex-shrink-0" // Removed flex items-center gap-2 here
             >
-              {isCollectingEmail ? (
-                <>
-                  <FaEnvelope className="text-gray-400 flex-shrink-0" />
+              {/* Added descriptive text for email collection */}
+              {isCollectingEmail && (
+                <p className="text-xs text-gray-400 mb-1.5 px-1">
+                  Please enter your email to continue:
+                </p>
+              )}
+              <div className="flex items-center gap-2">
+                {" "}
+                {/* Added inner flex container */}
+                {isCollectingEmail ? (
+                  <>
+                    <FaEnvelope className="text-gray-400 flex-shrink-0" />
+                    <Input
+                      className="flex-grow bg-gray-700 border-gray-600 text-white placeholder-gray-400 text-sm"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      placeholder="your.email@example.com" // More specific placeholder
+                      type="email"
+                      required
+                      aria-label="Enter your email"
+                    />
+                  </>
+                ) : (
                   <Input
                     className="flex-grow bg-gray-700 border-gray-600 text-white placeholder-gray-400 text-sm"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Enter your email..."
-                    type="email"
-                    required
-                    aria-label="Enter your email"
+                    placeholder="Type your message..."
+                    aria-label="Type your message"
                   />
-                </>
-              ) : (
-                <Input
-                  className="flex-grow bg-gray-700 border-gray-600 text-white placeholder-gray-400 text-sm"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Type your message..."
-                  aria-label="Type your message"
-                />
-              )}
-              <Button
-                type="submit"
-                size="icon"
-                className="bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex-shrink-0"
-                disabled={!message.trim() || isLoading}
-                aria-label="Send message"
-              >
-                <BiSend className="w-5 h-5" />
-              </Button>
+                )}
+                <Button
+                  type="submit"
+                  size="icon"
+                  className="bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex-shrink-0"
+                  disabled={!message.trim() || isLoading}
+                  aria-label={
+                    isCollectingEmail ? "Submit email" : "Send message"
+                  }
+                >
+                  {/* Conditional Icon */}
+                  {isCollectingEmail ? (
+                    <FaCheck className="w-5 h-5" />
+                  ) : (
+                    <BiSend className="w-5 h-5" />
+                  )}
+                </Button>
+              </div>
             </form>
           </motion.div>
         )}

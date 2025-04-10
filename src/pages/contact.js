@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // Import useEffect
 import Head from "next/head";
 import { motion } from "framer-motion";
+import Cal, { getCalApi } from "@calcom/embed-react"; // Import Cal.com component
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { useRouter } from "next/router";
 import Services from "@/components/Services";
@@ -16,6 +17,26 @@ export default function Contact() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Add useEffect for Cal.com API interaction
+  useEffect(() => {
+    (async function () {
+      try {
+        const cal = await getCalApi({ namespace: "15min" });
+        if (cal) {
+          cal("ui", {
+            hideEventTypeDetails: false,
+            layout: "month_view",
+            // Optional: Add theme and styles if needed
+            // theme: "dark",
+            // styles: { branding: { brandColor: "#000000" } }
+          });
+        }
+      } catch (e) {
+        console.error("Failed to load Cal.com API", e);
+      }
+    })();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -92,6 +113,34 @@ export default function Contact() {
             {/* Services Section */}
             <Services />
           </FadeIn>
+
+          {/* --- Booking Section Start --- */}
+          <FadeIn delay={0.3}>
+            <section className="mt-16 bg-gradient-to-br from-gray-900 to-black p-8 rounded-xl shadow-2xl border border-blue-500/20">
+              <h2 className="text-3xl font-bold text-white mb-6 bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
+                Schedule a Consultation
+              </h2>
+              <p className="text-gray-300 mb-6">
+                Ready to discuss your project? Pick a time that works best for
+                you using the scheduler below.
+              </p>
+              <div className="min-h-[400px] bg-gray-800/50 rounded-lg flex items-center justify-center border border-gray-700">
+                {/* Cal.com Embed */}
+                <Cal
+                  namespace="15min"
+                  calLink="karthik-nish/15min"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    overflow: "scroll",
+                    minHeight: "500px",
+                  }} // Added minHeight
+                  config={{ layout: "month_view" }}
+                />
+              </div>
+            </section>
+          </FadeIn>
+          {/* --- Booking Section End --- */}
 
           <FadeIn delay={0.4}>
             {/* Contact Form Section */}

@@ -37,7 +37,8 @@ export default function Nav() {
     { href: "/resources", label: "Resources", delay: 0.5 },
     { href: "/blog", label: "Blog", delay: 0.6 },
     { href: "/bytes", label: "Bytes", delay: 0.7 },
-    { href: "/contact", label: "Contact", delay: 0.9 },
+    // { href: "/notes", label: "Notes", delay: 0.8 }, // Removed Notes link
+    { href: "/contact", label: "Contact", delay: 0.8 }, // Adjusted delay back
   ];
 
   // Close mobile menu when clicking outside
