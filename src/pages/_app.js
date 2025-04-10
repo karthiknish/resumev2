@@ -8,6 +8,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SessionProvider } from "next-auth/react";
+import { ThemeProvider } from 'next-themes'; // Import ThemeProvider
 import dynamic from "next/dynamic";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "@/components/ui/sonner";
@@ -175,14 +176,27 @@ export default function App({
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
-        <main className={`${inter.variable} font-sans`}>
-          {/* Google Analytics - load with higher priority */}
-          <Script
-            strategy="beforeInteractive"
-            src="https://www.googletagmanager.com/gtag/js?id=G-LSLF7F9MS0"
-          />
-          <Script id="google-analytics" strategy="beforeInteractive">
-            {`
+        {/* Wrap with ThemeProvider */}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark-hacker" // Set a default theme
+          enableSystem={false} // Disable system theme preference if defining specific themes
+          themes={[
+            "minimal",
+            "playful",
+            "dark-hacker",
+            "neon-cyberpunk",
+            "studio-ghibli",
+          ]} // List your themes
+        >
+          <main className={`${inter.variable} font-sans`}>
+            {/* Google Analytics - load with higher priority */}
+            <Script
+              strategy="beforeInteractive"
+              src="https://www.googletagmanager.com/gtag/js?id=G-LSLF7F9MS0"
+            />
+            <Script id="google-analytics" strategy="beforeInteractive">
+              {`
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
@@ -191,33 +205,34 @@ export default function App({
                 send_page_view: true
               });
             `}
-          </Script>
+            </Script>
 
-          <Nav />
-          {domLoaded ? (
-            <Suspense fallback={<LoadingFallback />}>
-              <PageTransitionWrapper transitionType={transitionType}>
-                {getLayout(<Component {...pageProps} />)}
-              </PageTransitionWrapper>
-            </Suspense>
-          ) : (
-            <LoadingFallback />
-          )}
-          {/* Added toastOptions for styling */}
-          <Toaster
-            toastOptions={{
-              classNames: {
-                toast: "bg-gray-800 border-gray-700 text-white", // Dark background, border, light text
-                success: "text-green-400",
-                error: "text-red-400",
-                // Add other types if needed (info, warning, etc.)
-              },
-            }}
-          />
-          <Footer />
-          <ChatBot />
-          <Analytics />
-        </main>
+            <Nav />
+            {domLoaded ? (
+              <Suspense fallback={<LoadingFallback />}>
+                <PageTransitionWrapper transitionType={transitionType}>
+                  {getLayout(<Component {...pageProps} />)}
+                </PageTransitionWrapper>
+              </Suspense>
+            ) : (
+              <LoadingFallback />
+            )}
+            {/* Added toastOptions for styling */}
+            <Toaster
+              toastOptions={{
+                classNames: {
+                  toast: "bg-gray-800 border-gray-700 text-white", // Dark background, border, light text
+                  success: "text-green-400",
+                  error: "text-red-400",
+                  // Add other types if needed (info, warning, etc.)
+                },
+              }}
+            />
+            <Footer />
+            <ChatBot />
+            <Analytics />
+          </main>
+        </ThemeProvider>
       </SessionProvider>
     </QueryClientProvider>
   );

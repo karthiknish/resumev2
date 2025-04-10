@@ -14,6 +14,7 @@ import {
   // MotionDiv, // Not used directly here anymore
 } from "./animations/MotionComponents";
 import { Loader2 } from "lucide-react";
+
 export default function Nav() {
   const [isOpen, setIsOpen] = useState(false); // Mobile menu state
   const [isSearchOpen, setIsSearchOpen] = useState(false); // Search overlay state
@@ -258,7 +259,7 @@ export default function Nav() {
               </motion.button>
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button & Theme Switcher */}
             <motion.div className="md:hidden flex items-center space-x-4">
               {/* Search Icon (Mobile) */}
               <motion.button
@@ -273,6 +274,8 @@ export default function Nav() {
               <button onClick={toggleMenu} className="text-white text-2xl p-1">
                 {isOpen ? <FaTimes /> : <FaBars />}
               </button>
+              {/* Theme Switcher (Mobile - Optional, could also go in mobile menu) */}
+              {/* <div className="ml-2"><ThemeSwitcher /></div> */}
             </motion.div>
           </div>
         </div>
@@ -289,7 +292,9 @@ export default function Nav() {
             exit={{ opacity: 0, x: "100%" }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex flex-col h-full pt-4">
+            <div className="flex flex-col h-full pt-4 items-center">
+              {" "}
+              {/* Centered items */}
               {navLinks.map((link) => (
                 <motion.a
                   key={link.href}
@@ -310,7 +315,6 @@ export default function Nav() {
                   {link.label}
                 </motion.a>
               ))}
-
               {/* Authentication Mobile Links */}
               {session && (
                 <>
@@ -340,6 +344,10 @@ export default function Nav() {
                   </motion.a>
                 </>
               )}
+              {/* Theme Switcher (Inside Mobile Menu) */}
+              <div className="mt-6">
+                <ThemeSwitcher />
+              </div>
             </div>
           </motion.div>
         )}
