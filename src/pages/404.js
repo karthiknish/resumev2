@@ -17,10 +17,10 @@ export default function FourOhFour() {
         />
       </Head>
       <PageContainer>
-        <div className="min-h-screen p-8 md:p-16 max-w-6xl mx-auto relative">
+        <div className="min-h-screen p-8 md:p-16 max-w-6xl mx-auto relative flex items-center">
           <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
 
-          <FadeIn>
+          <FadeIn className="w-full">
             <div className="text-center mb-10">
               <h1 className="text-6xl font-bold text-white mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
                 404 Error
