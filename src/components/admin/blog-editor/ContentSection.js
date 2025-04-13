@@ -3,7 +3,7 @@ import React, { useState, useCallback } from "react";
 import Markdown from "@/components/Markdown"; // Adjust path if necessary
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Loader2, AudioWaveform, Sparkles } from "lucide-react"; // Added Sparkles
+import { Loader2, Sparkles } from "lucide-react";
 import { AiOutlineFormatPainter, AiOutlineEye } from "react-icons/ai";
 import axios from "axios";
 
@@ -13,14 +13,10 @@ function ContentSection({
   onFormatContent,
   isFormatting,
   onTogglePreview,
-  onGenerateAudio,
-  isGeneratingAudio,
-  audioError,
-  audioUrl,
-  blogTitle, // Added blogTitle prop to pass to API
+  blogTitle,
 }) {
-  const [isGeneratingContent, setIsGeneratingContent] = useState(false); // State for content generation
-  const [contentGenError, setContentGenError] = useState(""); // Error state for content generation
+  const [isGeneratingContent, setIsGeneratingContent] = useState(false);
+  const [contentGenError, setContentGenError] = useState("");
 
   // Handler for generating content draft
   const handleGenerateContent = useCallback(async () => {
@@ -92,20 +88,6 @@ function ContentSection({
             <AiOutlineEye className="mr-1 h-4 w-4" />
             Preview
           </Button>
-          <Button
-            onClick={onGenerateAudio}
-            disabled={isGeneratingAudio || !content?.trim()}
-            variant="secondary"
-            size="sm"
-            className="flex items-center bg-teal-600 hover:bg-teal-700 text-white disabled:bg-gray-600"
-          >
-            {isGeneratingAudio ? (
-              <Loader2 className="mr-1 h-4 w-4 animate-spin" />
-            ) : (
-              <AudioWaveform className="mr-1 h-4 w-4" />
-            )}
-            {isGeneratingAudio ? "Generating..." : "Audio Summary"}
-          </Button>
           {/* Generate Content Button */}
           <Button
             onClick={handleGenerateContent}
@@ -127,22 +109,6 @@ function ContentSection({
       {/* Display Content Generation Error */}
       {contentGenError && (
         <p className="text-sm text-red-500 mt-1">{contentGenError}</p>
-      )}
-      {/* Display Audio Error */}
-      {audioError && <p className="text-sm text-red-500 mt-1">{audioError}</p>}
-      {/* Display Existing Audio URL */}
-      {audioUrl && !isGeneratingAudio && (
-        <div className="mt-2 text-sm text-gray-400">
-          Current Audio:{" "}
-          <a
-            href={audioUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-400 hover:underline break-all"
-          >
-            {audioUrl}
-          </a>
-        </div>
       )}
       <div className="bg-gray-700 rounded-lg p-1 border border-gray-600 min-h-[300px]">
         <Markdown

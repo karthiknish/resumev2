@@ -263,6 +263,18 @@ export default function BytesTab() {
 
   return (
     <div className="space-y-6">
+      {/* Byte Generator Link */}
+      <div className="flex justify-end mb-4">
+        <Button size="sm" asChild className="bg-green-600 hover:bg-green-700">
+          <a
+            href="/admin/bytes/ai-create"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Sparkles className="mr-2 h-4 w-4" /> Byte Generator
+          </a>
+        </Button>
+      </div>
       {/* Top Section: Create/Edit Form + News Feed */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">

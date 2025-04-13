@@ -1,117 +1,78 @@
-# Karthik Nishanth's Portfolio Website
+# ResumeV2 – Features Overview
 
-This project is a personal portfolio website built with Next.js, showcasing my skills, achievements, and projects as a full-stack developer and digital marketer.
+This project is a full-stack portfolio, blog, and admin dashboard platform built with Next.js, MongoDB, and a modern UI stack. It is designed for creators, freelancers, and professionals who want a powerful, AI-enhanced content and project management system.
 
-## Features
+---
 
-- Modern, responsive design using TailwindCSS
-- Interactive UI components with Framer Motion animations
-- Integration with Google PageSpeed Insights API for website performance analysis
-- Showcase of skills, projects, and achievements
-- Contact form for potential clients or employers
+## Key Features
 
-## Technologies Used
+### ✨ AI-Powered Content Creation
+- **AI Blog Generation:** Generate high-quality blog posts from a topic, outline, or even a pasted article link, using Gemini AI.
+- **AI Markdown Formatting:** Instantly format blog content into clean, readable markdown.
+- **AI Suggestions:** Get AI-powered suggestions for blog titles, categories, keywords, and descriptions.
 
-- Next.js
-- React
-- TailwindCSS
-- Framer Motion
-- Google PageSpeed Insights API
+### 📝 Blog & Content Management
+- **Rich Markdown Support:** Write and edit blogs in markdown with live preview.
+- **Draft/Publish Toggle:** Easily switch blog posts between draft and published status.
+- **Pagination & Filtering:** Paginated blog lists with category, keyword, and search filters.
+- **SEO & Accessibility:** Built-in SEO best practices and accessible UI components.
 
-## Getting Started
+### 📸 Media Integration
+- **Pexels Image Search:** Search and select high-quality images from Pexels for blog banners, with real-time search and pagination.
+- **Image Optimization:** Automatic image optimization for fast loading and responsive display.
 
-To run this project locally:
+### 🛠️ Admin Dashboard
+- **Blog Management:** Edit, delete, and manage all blog posts from a single dashboard.
+- **User & Subscriber Management:** Manage users, roles, and newsletter subscribers.
+- **Status Controls:** Toggle blog post status directly from the dashboard.
+- **Analytics & Stats:** View blog, message, and subscriber stats at a glance.
 
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Set up environment variables:
-   Create a `.env.local` file in the root directory and add your Google PageSpeed API key:
-   ```
-   NEXT_PUBLIC_GOOGLE_SPEED=your_api_key_here
-   ```
-4. Run the development server:
-   ```bash
-   npm run dev
-   ```
-5. Open [http://localhost:3000](http://localhost:3000) in your browser to view the website
+### 🔗 LinkedIn & Social Tools
+- **LinkedIn Post Generator:** AI-powered LinkedIn post suggestions and analytics.
+- **Post Scheduling & Reminders:** Tools to help plan and optimize social content.
 
-## Deployment
+### 🔒 Authentication & Security
+- **Role-Based Access:** Secure admin features with NextAuth.js and role-based permissions.
+- **Robust Validation:** All forms and API endpoints include strong validation and clear error messages.
 
-This project is configured for easy deployment on Vercel. Simply connect your GitHub repository to Vercel for automatic deployments on every push to the main branch.
+### ⚡ Modern UI & Experience
+- **Responsive Design:** Fully responsive, mobile-friendly layout.
+- **Dark Mode:** Consistent dark theme with accessible color contrast.
+- **Framer Motion Animations:** Smooth transitions and interactive UI elements.
+- **Toast Notifications:** User feedback with styled, backgrounded toasts for all actions.
 
-## Contributing
+---
 
-While this is a personal portfolio project, suggestions and feedback are always welcome. Feel free to open an issue or submit a pull request.
+## Project Structure
+
+- **/src/pages** – All Next.js pages (blog, admin, API routes, etc.)
+- **/src/components** – Reusable UI and admin components
+- **/src/models** – Mongoose models for MongoDB
+- **/src/lib** – Utility libraries (AI, image, mail, etc.)
+- **/public** – Static assets and images
+
+---
+
+## Notable Integrations
+
+- **Next.js** – React framework for SSR and SSG
+- **MongoDB** – Database for blogs, users, and subscribers
+- **NextAuth.js** – Authentication and role management
+- **Gemini AI** – Content generation and formatting
+- **Pexels API** – Image search and selection
+- **Tailwind CSS** – Utility-first styling
+- **Framer Motion** – Animations and transitions
+
+---
+
+## Usage
+
+This project is intended for developers and creators who want a feature-rich, AI-powered portfolio and blog platform. It is ready for deployment and customization.
+
+For environment setup, deployment, and advanced configuration, see the codebase and `.env.example`.
+
+---
 
 ## License
 
-This project is open source and available under the [MIT License](LICENSE).
-
-# Resume Builder Application
-
-This is a Resume Builder application built with Next.js, MongoDB, and NextAuth.js.
-
-## Admin Setup Instructions
-
-This application uses role-based access control to protect admin features. Follow these steps to set up admin access:
-
-### 1. Set Environment Variables
-
-Make sure your `.env.local` file contains the following environment variables:
-
-```
-MONGODB_URI=your_mongodb_connection_string
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your_nextauth_secret
-ADMIN_EMAIL=your_admin_email@example.com
-ADMIN_SECRET_KEY=your_admin_secret_key
-```
-
-The `ADMIN_SECRET_KEY` is used to authorize admin promotion requests, and should be a strong, randomly generated string.
-
-### 2. Create a Regular User Account
-
-First, register a normal user account through the signup page.
-
-### 3. Promote a User to Admin
-
-There are two ways to make a user an admin:
-
-#### Option 1: Use the Admin Setup Page
-
-1. Navigate to `/admin/setup-admin` in your browser
-2. Enter the email of the user you want to promote
-3. Enter your `ADMIN_SECRET_KEY` 
-4. Click "Make Admin"
-
-#### Option 2: Manual API Request
-
-You can also make a direct API request:
-
-```bash
-curl -X POST http://localhost:3000/api/auth/make-admin \
-  -H "Content-Type: application/json" \
-  -d '{"email": "user@example.com", "adminSecret": "your_admin_secret_key"}'
-```
-
-### 4. Access Admin Dashboard
-
-Once promoted to admin, you can access the admin dashboard at `/admin`.
-
-## Authentication Debugging
-
-If you're experiencing authentication issues:
-
-1. Make sure all environment variables are correctly set
-2. Check that users have a `role` field in the database
-3. The Admin Dashboard logs authentication details in the console for debugging
-4. Ensure that NextAuth.js is properly including the user's role in the session
-
-## Role Field
-
-Users in the database have a `role` field that can be either:
-- `"user"` - Regular user (default)
-- `"admin"` - Administrator with special privileges
+MIT License. See [LICENSE](LICENSE) for details.

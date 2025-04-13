@@ -13,29 +13,23 @@ function PexelsImageSearch({ onImageSelect }) {
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1); // For potential pagination later
   const [totalResults, setTotalResults] = useState(0);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const searchPexels = useCallback(
     async (searchPage = 1) => {
       if (!searchTerm.trim()) {
-        console.log("[PexelsSearch] Search term empty, returning.");
         setError("Please enter a search term.");
         return;
       }
-      console.log(
-        `[PexelsSearch] Starting search for: "${searchTerm}", Page: ${searchPage}`
-      );
+
       setIsLoading(true);
       setError(null);
       if (searchPage === 1) {
-        console.log("[PexelsSearch] Resetting photos for new search (page 1).");
         setPhotos([]);
         setTotalResults(0);
-      } else {
-        console.log("[PexelsSearch] Loading more results (page > 1).");
       }
 
       try {
-        console.log("[PexelsSearch] Making API call to /api/pexels/search...");
         const url = `/api/pexels/search?query=${encodeURIComponent(
           searchTerm
         )}&page=${searchPage}&per_page=12`;
@@ -52,6 +46,7 @@ function PexelsImageSearch({ onImageSelect }) {
           );
           setPage(data.page);
           setTotalResults(data.total_results);
+          setHasSearched(true);
           if (newPhotos.length === 0 && searchPage === 1) {
             setError("No images found for this search term.");
           }
@@ -74,35 +69,21 @@ function PexelsImageSearch({ onImageSelect }) {
   const handleSearchSubmit = (e) => {
     e.preventDefault(); // Prevent default form submission
     e.stopPropagation(); // Stop event from bubbling up
-    console.log("[PexelsSearch] handleSearchSubmit triggered.");
     setPage(1); // Reset page on new search
     searchPexels(1);
   };
 
   const handleImageClick = (photo) => {
-    console.log(
-      "[PexelsSearch] handleImageClick START. Photo data:",
-      JSON.stringify(photo)
-    ); // Log stringified data
     if (photo && photo.src && photo.src.large) {
       const url = photo.src.large;
       const alt = photo.alt;
-      console.log(`[PexelsSearch] Valid photo data. URL: ${url}, Alt: ${alt}`);
-      console.log("[PexelsSearch] Calling onImageSelect...");
       onImageSelect(url, alt);
-      console.log("[PexelsSearch] onImageSelect called.");
     } else {
-      console.error(
-        "[PexelsSearch] Clicked photo data is missing src.large property:",
-        JSON.stringify(photo) // Log stringified data
-      );
-      setError("Selected image data is invalid."); // Inform user
+      setError("Selected image data is invalid.");
     }
-    console.log("[PexelsSearch] handleImageClick END.");
   };
 
   const handleLoadMore = () => {
-    console.log("[PexelsSearch] handleLoadMore triggered.");
     searchPexels(page + 1);
   };
 
@@ -188,7 +169,7 @@ function PexelsImageSearch({ onImageSelect }) {
         </div>
       )}
 
-      {!isLoading && photos.length === 0 && !error && searchTerm && (
+      {!isLoading && photos.length === 0 && !error && hasSearched && (
         <div className="text-center py-6 text-gray-500 flex flex-col items-center">
           <ImageOff className="w-10 h-10 mb-2" />
           <span>
