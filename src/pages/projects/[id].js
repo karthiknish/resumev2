@@ -4,7 +4,7 @@ import Image from "next/image";
 import Head from "next/head";
 import Link from "next/link"; // Import Link
 import { motion } from "framer-motion";
-import { projectsData } from "../../lib/projectsData";
+import { projectsData } from "../../lib/projectsDataForComponents";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";

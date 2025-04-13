@@ -28,7 +28,6 @@ const BlogSchema = new mongoose.Schema(
     ],
     slug: {
       type: String,
-      unique: true,
       required: true,
     },
     author: {
@@ -44,7 +43,6 @@ const BlogSchema = new mongoose.Schema(
       // New category field
       type: String,
       trim: true,
-      index: true, // Add index for faster category filtering
       default: "Uncategorized", // Optional: Provide a default
     },
     // Removed audio-related fields
@@ -54,7 +52,7 @@ const BlogSchema = new mongoose.Schema(
 
 // Define Indexes
 BlogSchema.index({ slug: 1 }, { unique: true }); // Existing unique index on slug
-BlogSchema.index({ category: 1 }); // Existing index on category (redundant due to inline definition, but harmless)
+BlogSchema.index({ category: 1 }); // Index on category (now this is the only definition)
 BlogSchema.index({ isPublished: 1, createdAt: -1 }); // Compound index for published status and sorting by date (descending)
 BlogSchema.index({ tags: 1 }); // Index for querying by tags
 BlogSchema.index({ author: 1 }); // Index for querying by author

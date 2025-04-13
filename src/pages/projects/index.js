@@ -3,7 +3,7 @@ import { useState } from "react";
 import Head from "next/head";
 import { motion } from "framer-motion";
 import Router from "next/router";
-import { projectsData } from "../../lib/projectsData";
+import { projectsData } from "../../lib/projectsDataForComponents";
 import Image from "next/image";
 import Link from "next/link"; // Import Link
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
