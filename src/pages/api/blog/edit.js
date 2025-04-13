@@ -36,17 +36,18 @@ export default async function handler(req, res) {
     }
 
     // Verify ownership or admin status (using existingBlog data)
-    if (existingBlog.author.toString() !== session.user.id) {
-      // Add admin check here if admins should be allowed to edit any post
-      const isAdmin =
-        session.user.role === "admin" ||
-        session.user.isAdmin === true ||
-        session.user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-      if (!isAdmin) {
-        return res
-          .status(403)
-          .json({ message: "Not authorized to edit this post" });
-      }
+    let isOwner = false;
+    if (existingBlog.author) {
+      isOwner = existingBlog.author.toString() === session.user.id;
+    }
+    const isAdmin =
+      session.user.role === "admin" ||
+      session.user.isAdmin === true ||
+      session.user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+    if (!isOwner && !isAdmin) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to edit this post" });
     }
 
     // --- Prepare Update Data (Handle slug generation if title changes) ---

@@ -36,62 +36,35 @@ function PexelsImageSearch({ onImageSelect }) {
 
       try {
         console.log("[PexelsSearch] Making API call to /api/pexels/search...");
-        const response = await axios.get("/api/pexels/search", {
-          params: {
-            query: searchTerm,
-            page: searchPage,
-            per_page: 12, // Load 12 images per page
-          },
+        const url = `/api/pexels/search?query=${encodeURIComponent(
+          searchTerm
+        )}&page=${searchPage}&per_page=12`;
+        const response = await fetch(url, {
+          method: "GET",
+          headers: { Accept: "application/json" },
         });
+        const data = await response.json();
 
-        console.log("[PexelsSearch] API Response Status:", response.status);
-        console.log("[PexelsSearch] API Response Data:", response.data); // Log full data
-
-        if (response.data.success) {
-          console.log("[PexelsSearch] Success branch entered."); // Log success branch
-          const newPhotos = response.data.photos || [];
-          console.log(
-            `[PexelsSearch] Success: Received ${newPhotos.length} photos.`
+        if (response.ok && data.success) {
+          const newPhotos = data.photos || [];
+          setPhotos((prevPhotos) =>
+            searchPage === 1 ? newPhotos : [...prevPhotos, ...newPhotos]
           );
-          setPhotos((prevPhotos) => {
-            const updatedPhotos =
-              searchPage === 1 ? newPhotos : [...prevPhotos, ...newPhotos];
-            console.log(
-              "[PexelsSearch] Updating photos state. New count:",
-              updatedPhotos.length
-            );
-            return updatedPhotos;
-          });
-          setPage(response.data.page);
-          setTotalResults(response.data.total_results);
-          console.log(
-            `[PexelsSearch] State updated: page=${response.data.page}, totalResults=${response.data.total_results}`
-          );
+          setPage(data.page);
+          setTotalResults(data.total_results);
           if (newPhotos.length === 0 && searchPage === 1) {
-            console.log("[PexelsSearch] No results found for the search term.");
             setError("No images found for this search term.");
           }
         } else {
-          console.error(
-            "[PexelsSearch] API call reported !success:",
-            response.data.message
-          );
-          throw new Error(response.data.message || "Failed to fetch images");
+          setError(data.message || "Failed to fetch images");
+          setPhotos([]);
+          setTotalResults(0);
         }
       } catch (err) {
-        console.error(
-          "[PexelsSearch] Caught error during API call or processing:",
-          err
-        );
-        setError(
-          err.response?.data?.message ||
-            err.message ||
-            "Error searching images."
-        );
+        setError(err.message || "Error searching images.");
         setPhotos([]); // Clear photos on error
         setTotalResults(0);
       } finally {
-        console.log("[PexelsSearch] Setting isLoading to false.");
         setIsLoading(false);
       }
     },

@@ -22,8 +22,16 @@ export async function callGemini(prompt, generationConfigOverride = {}) {
   if (!process.env.GEMINI_API_KEY) {
     throw new Error("GEMINI_API_KEY environment variable is not set.");
   }
-  if (!prompt || typeof prompt !== "string" || !prompt.trim()) {
-    throw new Error("Prompt cannot be empty.");
+  // Robust check: ensure prompt is a non-empty string and contains at least one alphanumeric character after trimming
+  if (
+    !prompt ||
+    typeof prompt !== "string" ||
+    !prompt.trim() ||
+    !/[a-zA-Z0-9]/.test(prompt) // Check for at least one letter or number
+  ) {
+    throw new Error(
+      "Prompt cannot be empty and must contain alphanumeric characters."
+    );
   }
 
   let lastError = null;
@@ -91,6 +99,11 @@ export async function callGemini(prompt, generationConfigOverride = {}) {
         );
         lastError = new Error(
           `Invalid response structure from AI model ${model}.`
+        );
+        // Log the problematic data structure when text is missing/invalid
+        console.error(
+          `Problematic Gemini Response Data (${model}):`,
+          JSON.stringify(data, null, 2)
         );
         // Continue to next model, maybe it was a temporary issue or model specific format change
       }

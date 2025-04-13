@@ -210,7 +210,7 @@ export default function DashboardTab({ unreadCount }) {
       </div>
 
       {/* Main Content Area - Grid Layout */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-1">
         {/* Recent Blog Posts Table */}
         <StaggerItem index={1} className="lg:col-span-1">
           {" "}
@@ -239,8 +239,8 @@ export default function DashboardTab({ unreadCount }) {
             </CardHeader>
             <CardContent>
               {isLoading && (
-                <div className="flex justify-center items-center py-10">
-                  <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+                  <Loader2 className="h-16 w-16 animate-spin text-blue-500" />
                 </div>
               )}
               {error && !isLoading && (
@@ -280,15 +280,53 @@ export default function DashboardTab({ unreadCount }) {
                             </TableCell>
                             <TableCell>
                               <Badge
+                                as="button"
+                                disabled={isLoading}
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+                                  setIsLoading(true);
+                                  try {
+                                    const res = await fetch(`/api/blog/edit`, {
+                                      method: "PUT",
+                                      headers: {
+                                        "Content-Type": "application/json",
+                                      },
+                                      body: JSON.stringify({
+                                        id: post._id,
+                                        isPublished: !post.isPublished,
+                                      }),
+                                    });
+                                    if (!res.ok) {
+                                      toast.error("Failed to update status");
+                                    } else {
+                                      toast.success(
+                                        `Status changed to ${
+                                          !post.isPublished
+                                            ? "Published"
+                                            : "Draft"
+                                        }`
+                                      );
+                                      fetchPosts(currentPage);
+                                    }
+                                  } catch (err) {
+                                    toast.error("Failed to update status");
+                                  } finally {
+                                    setIsLoading(false);
+                                  }
+                                }}
                                 variant={
                                   post.isPublished ? "success" : "warning"
                                 }
-                                className={
+                                className={`cursor-pointer transition-colors ${
                                   post.isPublished
-                                    ? "bg-green-900 text-green-300"
-                                    : "bg-yellow-900 text-yellow-300"
-                                }
+                                    ? "bg-green-900 text-green-300 hover:bg-green-800"
+                                    : "bg-yellow-900 text-yellow-300 hover:bg-yellow-800"
+                                }`}
+                                title="Click to toggle status"
                               >
+                                {isLoading && (
+                                  <Loader2 className="h-3 w-3 animate-spin mr-1 inline" />
+                                )}
                                 {post.isPublished ? "Published" : "Draft"}
                               </Badge>
                             </TableCell>
@@ -304,19 +342,21 @@ export default function DashboardTab({ unreadCount }) {
                                   Edit
                                 </Link>
                               </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                asChild
-                                className="text-white border-gray-600 hover:text-white hover:bg-gray-600"
-                              >
-                                <Link
-                                  href={`/blog/${post.slug}`}
-                                  target="_blank"
+                              {post.isPublished && (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  asChild
+                                  className="text-white border-gray-600 hover:text-white hover:bg-gray-600"
                                 >
-                                  View
-                                </Link>
-                              </Button>
+                                  <Link
+                                    href={`/blog/${post.slug}`}
+                                    target="_blank"
+                                  >
+                                    View
+                                  </Link>
+                                </Button>
+                              )}
                               {/* Delete Button wrapped in AlertDialogTrigger */}
                               <AlertDialog
                                 onOpenChange={(open) =>
@@ -412,13 +452,6 @@ export default function DashboardTab({ unreadCount }) {
               )}
             </CardContent>
           </Card>
-        </StaggerItem>
-
-        {/* Recent Contacts Widget */}
-        <StaggerItem index={2} className="lg:col-span-1">
-          {" "}
-          {/* Adjust grid span if needed */}
-          <RecentContactsWidget />
         </StaggerItem>
       </div>
     </StaggerContainer>

@@ -44,15 +44,6 @@ function ActionButtons({
           {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
           {isLoading ? "Saving..." : "Save Changes"}
         </Button>
-
-        <Button
-          type="button" // Ensure this doesn't submit the form
-          variant="outline"
-          className="w-full sm:w-auto"
-          onClick={onToggleJsonEditor}
-        >
-          {showJsonEditor ? "Hide JSON Editor" : "Show JSON Editor"}
-        </Button>
       </div>
     </>
   );

@@ -6,6 +6,7 @@ import PageContainer from "@/components/PageContainer"; // Ensure single import
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 // Switch import is removed as it's handled in MetadataSection
 
 // Import the refactored components
@@ -40,9 +41,7 @@ function Edit() {
 
   // State for specific features
   const [isFormatting, setIsFormatting] = useState(false);
-  const [isGeneratingAudio, setIsGeneratingAudio] = useState(false);
-  const [audioError, setAudioError] = useState("");
-  const [audioUrl, setAudioUrl] = useState("");
+  // Audio summary feature removed
 
   // State for modals/toggles
   const [showPreview, setShowPreview] = useState(false);
@@ -72,11 +71,11 @@ function Edit() {
               imageUrl: d.data.imageUrl || "",
               content: d.data.content || "",
               description: d.data.description || "",
+              excerpt: d.data.description || "", // Map backend description to excerpt for the UI
               category: d.data.category || "",
               tags: Array.isArray(d.data.tags) ? d.data.tags : [],
               isPublished: d.data.isPublished || false, // Fetch isPublished status
             });
-            setAudioUrl(d.data.audioSummaryUrl || "");
             setJsonInput(
               JSON.stringify(
                 {
@@ -87,7 +86,6 @@ function Edit() {
                   category: d.data.category || "",
                   tags: Array.isArray(d.data.tags) ? d.data.tags : [],
                   isPublished: d.data.isPublished || false,
-                  audioSummaryUrl: d.data.audioSummaryUrl || "",
                 },
                 null,
                 2
@@ -116,7 +114,17 @@ function Edit() {
 
   // --- State Update Handlers ---
   const handleFormChange = (updatedData) => {
-    setFormData((prev) => ({ ...prev, ...updatedData }));
+    setFormData((prev) => {
+      // If description or excerpt is updated, keep them in sync
+      let next = { ...prev, ...updatedData };
+      if ("excerpt" in updatedData) {
+        next.description = updatedData.excerpt;
+      }
+      if ("description" in updatedData) {
+        next.excerpt = updatedData.description;
+      }
+      return next;
+    });
     setSubmitStatus([]);
     setError("");
   };
@@ -164,87 +172,7 @@ function Edit() {
     }
   };
 
-  const handleGenerateAudio = async () => {
-    setIsGeneratingAudio(true);
-    setAudioError("");
-    setSubmitStatus([]);
-    setError("");
-
-    if (!blogId) {
-      setAudioError("Blog post ID is missing.");
-      setIsGeneratingAudio(false);
-      return;
-    }
-    if (!formData.content?.trim()) {
-      setAudioError("Blog content is needed to generate a summary.");
-      setIsGeneratingAudio(false);
-      return;
-    }
-
-    try {
-      console.log("Fetching summary for audio generation...");
-      const summaryRes = await axios.post("/api/ai/blog-summarize", {
-        content: formData.content,
-      });
-      if (!summaryRes.data || !summaryRes.data.summary)
-        throw new Error("Failed to generate text summary.");
-      const textSummary = summaryRes.data.summary;
-      console.log("Summary fetched:", textSummary.substring(0, 100) + "...");
-
-      console.log("Generating audio from summary...");
-      const ttsRes = await axios.post("/api/ai/text-to-speech", {
-        text: textSummary,
-        blogId,
-      });
-      if (!ttsRes.data || !ttsRes.data.success || !ttsRes.data.audioUrl)
-        throw new Error(
-          ttsRes.data.message || "Failed to generate audio file."
-        );
-      const generatedAudioUrl = ttsRes.data.audioUrl;
-      console.log("Audio generated:", generatedAudioUrl);
-
-      console.log("Updating blog post with summary and audio URL...");
-      const updateData = {
-        id: blogId,
-        aiSummary: textSummary,
-        audioSummaryUrl: generatedAudioUrl,
-        hasAudioSummary: true,
-        summaryGeneratedAt: new Date(),
-      };
-      const updateRes = await fetch(`/api/blog/edit`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updateData),
-      });
-      const updateResult = await updateRes.json();
-      if (!updateResult.success) {
-        const errorDetail =
-          updateResult.message ||
-          (updateResult.error
-            ? JSON.stringify(updateResult.error)
-            : "Unknown error updating blog post.");
-        throw new Error(
-          `Failed to update blog post with audio details: ${errorDetail}`
-        );
-      }
-
-      setAudioUrl(generatedAudioUrl); // Update local state
-      setSubmitStatus([
-        true,
-        "Audio summary generated and saved successfully!",
-      ]);
-    } catch (err) {
-      console.error("Error generating audio summary:", err);
-      const errorMsg =
-        err.response?.data?.message ||
-        err.message ||
-        "Failed to generate audio summary.";
-      setAudioError(errorMsg);
-      setSubmitStatus([false, errorMsg]);
-    } finally {
-      setIsGeneratingAudio(false);
-    }
-  };
+  // Audio summary feature removed
 
   // --- Main Form Submission ---
   const handleSubmit = async (e) => {
@@ -268,12 +196,27 @@ function Edit() {
       return;
     }
 
+    // Strip leading/trailing triple backticks and language specifiers from markdown content
+    let cleanedContent = formData.content || "";
+    cleanedContent = cleanedContent.trim();
+    if (cleanedContent.startsWith("```markdown")) {
+      cleanedContent = cleanedContent.slice(10);
+    }
+    if (cleanedContent.startsWith("```")) {
+      cleanedContent = cleanedContent.slice(3);
+    }
+    if (cleanedContent.endsWith("```")) {
+      cleanedContent = cleanedContent.slice(0, -3);
+    }
+    cleanedContent = cleanedContent.trim();
+
     const dataToUpdate = {
       id: blogId,
       title: formData.title,
       imageUrl: formData.imageUrl,
-      content: formData.content,
+      content: cleanedContent,
       description: formData.description,
+      excerpt: formData.excerpt, // Also send excerpt for backend compatibility
       category: formData.category,
       tags: formData.tags.filter((tag) => tag),
       isPublished: formData.isPublished, // Include publish status
@@ -289,6 +232,7 @@ function Edit() {
 
       if (result.success) {
         setSubmitStatus([true, "Blog post updated successfully!"]);
+        router.push("/blog");
       } else {
         const apiErrorMsg = result.message || "Failed to update blog post";
         setError(apiErrorMsg);
@@ -301,34 +245,6 @@ function Edit() {
       console.error(err);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  // --- JSON Editor Logic ---
-  const handleJsonInputChange = (e) => {
-    setJsonInput(e.target.value);
-  };
-
-  const handleApplyJsonChanges = () => {
-    try {
-      const json = JSON.parse(jsonInput);
-      setFormData({
-        title: json.title || "",
-        imageUrl: json.imageUrl || "",
-        content: json.content || "",
-        description: json.description || "",
-        category: json.category || "",
-        tags: Array.isArray(json.tags) ? json.tags : [],
-        isPublished: json.isPublished || false, // Apply isPublished from JSON
-      });
-      setAudioUrl(json.audioSummaryUrl || ""); // Update audio URL from JSON too
-      setShowJsonInput(false); // Close editor on successful apply
-      setError(""); // Clear errors
-      setSubmitStatus([]);
-    } catch (err) {
-      console.error("Invalid JSON input", err);
-      setError("Invalid JSON format. Please check your input.");
-      setSubmitStatus([false, "Invalid JSON format."]);
     }
   };
 
@@ -373,7 +289,7 @@ function Edit() {
         <title>Edit Blog Post</title>
       </Head>
       <div className="min-h-screen bg-black text-white">
-        <PageContainer>
+        <PageContainer className="mt-10">
           <h1 className="text-4xl font-bold text-white font-calendas text-center mb-8 pt-8">
             Edit Blog Post
           </h1>
@@ -402,12 +318,23 @@ function Edit() {
               onFormatContent={handleFormatContent}
               isFormatting={isFormatting}
               onTogglePreview={togglePreview} // Pass the toggle function
-              onGenerateAudio={handleGenerateAudio}
-              isGeneratingAudio={isGeneratingAudio}
-              audioError={audioError}
-              audioUrl={audioUrl}
               blogTitle={formData.title} // Pass title for content generation button
             />
+
+            {/* Publish/Draft Toggle - moved above Save Changes */}
+            <div className="flex items-center space-x-2 pt-4 border-t border-gray-700">
+              <Switch
+                id="isPublished"
+                checked={formData.isPublished}
+                onCheckedChange={handlePublishChange}
+              />
+              <Label
+                htmlFor="isPublished"
+                className="text-gray-300 cursor-pointer"
+              >
+                {formData.isPublished ? "Published" : "Draft"}
+              </Label>
+            </div>
 
             <ActionButtons
               isLoading={isLoading}
@@ -418,35 +345,10 @@ function Edit() {
                 !formData.description
               }
               onSubmit={handleSubmit}
-              onToggleJsonEditor={toggleJsonInput}
-              showJsonEditor={showJsonInput}
+              // Removed JSON editor button and related props
               submitStatus={submitStatus}
               error={error}
             />
-
-            {/* JSON Editor (Conditional Rendering) */}
-            {showJsonInput && (
-              <div className="space-y-4 pt-4 border-t border-gray-700">
-                <Label htmlFor="jsonInput" className="block text-white">
-                  Edit JSON
-                </Label>
-                <Textarea
-                  id="jsonInput"
-                  value={jsonInput}
-                  onChange={handleJsonInputChange}
-                  className="block w-full h-48 px-4 py-2 text-gray-300 bg-gray-900 border border-gray-600 rounded-lg focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none font-mono text-sm"
-                  placeholder='{"title": "...", "imageUrl": "...", ...}'
-                />
-                <Button
-                  type="button"
-                  variant="secondary"
-                  className="w-full sm:w-auto"
-                  onClick={handleApplyJsonChanges}
-                >
-                  Apply JSON Changes
-                </Button>
-              </div>
-            )}
           </form>
         </PageContainer>
       </div>

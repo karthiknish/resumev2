@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useMemo } from "react";
 import Head from "next/head";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image"; // Import next/image
 import { motion } from "framer-motion";
@@ -23,6 +23,17 @@ function Index({ initialPosts = [], categories = [] }) {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortOrder, setSortOrder] = useState("desc");
   const [allPosts, setAllPosts] = useState([]);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [selectedSlug, setSelectedSlug] = useState(null);
+
+  // Pagination state
+  const router = useRouter();
+  const initialPage =
+    typeof window !== "undefined" && router.query.page
+      ? Math.max(1, parseInt(router.query.page, 10) || 1)
+      : 1;
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  const POSTS_PER_PAGE = 10;
 
   useEffect(() => {
     const processedData = initialPosts.map((post) => {
@@ -75,9 +86,69 @@ function Index({ initialPosts = [], categories = [] }) {
     return filtered;
   }, [allPosts, searchTerm, selectedCategory, sortOrder]);
 
+  // Paginated posts
+  const totalPages = Math.ceil(
+    filteredAndSortedContent.length / POSTS_PER_PAGE
+  );
+  const paginatedPosts = filteredAndSortedContent.slice(
+    (currentPage - 1) * POSTS_PER_PAGE,
+    currentPage * POSTS_PER_PAGE
+  );
+
+  // Sync currentPage with ?page= param in URL
+  useEffect(() => {
+    const pageParam = parseInt(router.query.page, 10);
+    if (!isNaN(pageParam) && pageParam > 0 && pageParam <= totalPages) {
+      setCurrentPage(pageParam);
+    } else {
+      setCurrentPage(1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.query.page, totalPages]);
+
+  // Update URL when page changes
+  useEffect(() => {
+    if (router.query.page !== String(currentPage)) {
+      router.push(
+        {
+          pathname: router.pathname,
+          query: { ...router.query, page: currentPage },
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
+
+  // Reset to page 1 when filters/search change (and update URL)
+  useEffect(() => {
+    setCurrentPage(1);
+    router.push(
+      {
+        pathname: router.pathname,
+        query: { ...router.query, page: 1 },
+      },
+      undefined,
+      { shallow: true }
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm, selectedCategory, sortOrder]);
+
   const handleSearchChange = (e) => setSearchTerm(e.target.value);
   const handleCategoryChange = (category) => setSelectedCategory(category);
   const handleSortChange = (value) => setSortOrder(value);
+
+  // Handle card click with loader
+  const handleCardClick = (slug) => {
+    setSelectedSlug(slug);
+    setIsTransitioning(true);
+    Router.push(`/blog/${slug}`).then(() => {
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      }
+    });
+  };
 
   return (
     <>
@@ -108,38 +179,27 @@ function Index({ initialPosts = [], categories = [] }) {
 
             {/* Filters and Sorting Controls */}
             <div className="flex flex-col md:flex-row gap-4 mb-8 items-center">
-              {/* Category Filters */}
-              <div className="flex flex-wrap gap-2 items-center">
-                <span className="text-gray-400 text-sm mr-2">Filter by:</span>
-                <Button
-                  variant={selectedCategory === "All" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => handleCategoryChange("All")}
-                  className={` ${
-                    selectedCategory === "All"
-                      ? "bg-blue-600 text-white hover:bg-blue-700"
-                      : "text-gray-300 border-gray-600 hover:bg-gray-700 hover:text-white"
-                  }`}
+              {/* Category Filter Dropdown */}
+              <div className="w-full md:w-auto flex items-center gap-2">
+                <span className="text-gray-400 text-sm mr-2 whitespace-nowrap">
+                  Filter by:
+                </span>
+                <Select
+                  value={selectedCategory}
+                  onValueChange={handleCategoryChange}
                 >
-                  All
-                </Button>
-                {categories.map((category) => (
-                  <Button
-                    key={category}
-                    variant={
-                      selectedCategory === category ? "default" : "outline"
-                    }
-                    size="sm"
-                    onClick={() => handleCategoryChange(category)}
-                    className={` ${
-                      selectedCategory === category
-                        ? "bg-blue-600 text-white hover:bg-blue-700"
-                        : "text-gray-300 border-gray-600 hover:bg-gray-700 hover:text-white"
-                    }`}
-                  >
-                    {category}
-                  </Button>
-                ))}
+                  <SelectTrigger className="w-48 bg-black/40 border-gray-700 text-white">
+                    <SelectValue placeholder="All Categories" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-800 border-gray-700 text-white">
+                    <SelectItem value="All">All</SelectItem>
+                    {categories.map((category) => (
+                      <SelectItem key={category} value={category}>
+                        {category}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex-grow"></div> {/* Spacer */}
               {/* Search and Sort */}
@@ -188,66 +248,155 @@ function Index({ initialPosts = [], categories = [] }) {
 
             {/* Post List */}
             {filteredAndSortedContent.length > 0 ? (
-              <div className="space-y-12">
-                {filteredAndSortedContent.map((post) => (
-                  <div
-                    key={post._id}
-                    className="cursor-pointer group block"
-                    onClick={() => Router.push(`/blog/${post.slug}`)}
-                  >
-                    <Link href={`/blog/${post.slug}`} passHref legacyBehavior>
-                      <a className="block">
-                        <div className="flex flex-col lg:flex-row items-center gap-8">
-                          <div className="w-full lg:w-1/2 h-64 lg:h-96 overflow-hidden rounded-lg relative">
-                            {" "}
-                            {/* Added relative positioning */}
-                            {/* Use next/image */}
-                            <Image
-                              src={post.imageUrl}
-                              alt={post.title}
-                              layout="fill"
-                              objectFit="cover"
-                              className="transition-transform duration-300 group-hover:scale-105"
-                            />
-                          </div>
-                          <div className="lg:w-1/2">
-                            {post.category &&
-                              post.category !== "Uncategorized" && (
-                                <p className="text-sm text-purple-400 mb-2 font-semibold uppercase tracking-wider">
-                                  {post.category}
-                                </p>
-                              )}
-                            <h2 className="text-2xl font-semibold text-white mb-4 group-hover:text-blue-500 transition-colors font-calendas">
-                              {post.title}
-                            </h2>
-                            {/* Render plain text snippet */}
-                            <p className="text-gray-300 mb-4 font-calendas line-clamp-3">
-                              {" "}
-                              {/* Use line-clamp for CSS truncation */}
-                              {post.limitedContent}
-                            </p>
-                            <div className="flex justify-between items-center mt-4">
-                              <span className="text-blue-500 font-calendas underline group-hover:text-blue-400 transition-colors">
-                                Read more
-                              </span>
-                              <span className="text-xs text-gray-500">
-                                {post.createdAtDate.toLocaleDateString(
-                                  "en-US",
-                                  {
-                                    year: "numeric",
-                                    month: "long",
-                                    day: "numeric",
-                                  }
+              <>
+                <div className="space-y-12">
+                  {paginatedPosts.map((post) => (
+                    <div
+                      key={post._id}
+                      className="cursor-pointer group block"
+                      onClick={() => handleCardClick(post.slug)}
+                    >
+                      <Link href={`/blog/${post.slug}`} passHref legacyBehavior>
+                        <a className="block">
+                          <div className="flex flex-col lg:flex-row items-center gap-8 bg-gradient-to-br from-gray-900/80 to-black/80 rounded-2xl shadow-xl border border-gray-800 hover:shadow-2xl transition-shadow duration-300">
+                            <div className="w-full lg:w-1/2 h-64 lg:h-96 overflow-hidden rounded-xl relative shadow-lg">
+                              <Image
+                                src={post.imageUrl}
+                                alt={post.title}
+                                layout="fill"
+                                objectFit="cover"
+                                className="transition-transform duration-300 group-hover:scale-105"
+                              />
+                              {post.category &&
+                                post.category !== "Uncategorized" && (
+                                  <span className="absolute top-4 left-4 bg-purple-700/80 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md uppercase tracking-wider z-10">
+                                    {post.category}
+                                  </span>
                                 )}
-                              </span>
+                            </div>
+                            <div className="lg:w-1/2 flex flex-col justify-between h-full py-4">
+                              <div>
+                                <h2 className="text-2xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors font-calendas leading-tight">
+                                  {post.title}
+                                </h2>
+                                <p className="text-gray-300 mb-4 font-calendas line-clamp-3 text-base leading-relaxed">
+                                  {post.description}
+                                </p>
+                              </div>
+                              <div className="flex flex-col gap-2 mt-2">
+                                <span className="text-xs text-gray-400 flex items-center gap-2">
+                                  <svg
+                                    className="w-4 h-4 text-blue-400"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M8 7V3m8 4V3m-9 8h10m-12 8a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v12z"
+                                    />
+                                  </svg>
+                                  {post.createdAtDate.toLocaleDateString(
+                                    "en-US",
+                                    {
+                                      year: "numeric",
+                                      month: "short",
+                                      day: "numeric",
+                                    }
+                                  )}
+                                </span>
+                                <div className="flex flex-wrap items-center gap-2 mt-1">
+                                  {post.tags &&
+                                    post.tags.slice(0, 3).map((tag) => (
+                                      <span
+                                        key={tag}
+                                        className="bg-gray-700 text-xs text-gray-200 px-2 py-0.5 rounded-full font-medium"
+                                      >
+                                        {tag}
+                                      </span>
+                                    ))}
+                                </div>
+                                <span>
+                                  <span className="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold shadow hover:bg-blue-700 transition-colors text-sm">
+                                    Read more →
+                                  </span>
+                                </span>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </a>
-                    </Link>
+                        </a>
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+                {isTransitioning && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+                    <svg
+                      className="animate-spin h-16 w-16 text-blue-500"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v8z"
+                      ></path>
+                    </svg>
                   </div>
-                ))}
-              </div>
+                )}
+                {console.log(totalPages)}
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="flex justify-center items-center gap-2 mt-10">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="px-5 py-2 rounded-full font-semibold text-base border-2 border-blue-600"
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    >
+                      Previous
+                    </Button>
+                    {Array.from({ length: totalPages }, (_, i) => (
+                      <Button
+                        key={i + 1}
+                        size="lg"
+                        variant={currentPage === i + 1 ? "default" : "outline"}
+                        className={`px-5 py-2 rounded-full font-semibold text-base border-2 ${
+                          currentPage === i + 1
+                            ? "bg-blue-600 text-white border-blue-600"
+                            : "text-gray-300 border-gray-600 hover:bg-gray-700 hover:text-white"
+                        }`}
+                        onClick={() => setCurrentPage(i + 1)}
+                      >
+                        {i + 1}
+                      </Button>
+                    ))}
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="px-5 py-2 rounded-full font-semibold text-base border-2 border-blue-600"
+                      disabled={currentPage === totalPages}
+                      onClick={() =>
+                        setCurrentPage((p) => Math.min(totalPages, p + 1))
+                      }
+                    >
+                      Next
+                    </Button>
+                  </div>
+                )}
+              </>
             ) : (
               <div className="text-center py-12 text-gray-400">
                 No posts found matching your criteria.
@@ -265,8 +414,8 @@ export async function getServerSideProps() {
   try {
     const [postsRes, categoriesRes] = await Promise.all([
       fetch(
-        `${baseUrl}/api/blog?publishedOnly=true&select=title,slug,imageUrl,createdAt,isPublished,content,description,category,tags`
-      ), // Ensure needed fields are selected
+        `${baseUrl}/api/blog?publishedOnly=true&select=title,slug,imageUrl,createdAt,isPublished,content,description,category,tags&limit=1000`
+      ), // Ensure needed fields are selected, fetch up to 1000 blogs
       fetch(`${baseUrl}/api/blog/categories`),
     ]);
 

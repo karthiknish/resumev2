@@ -384,36 +384,27 @@ function MetadataSection({
               <span className="text-xs text-gray-400 w-full mb-1">
                 Suggestions (click to add):
               </span>
-              {keywordSuggestions.map((suggestion, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => addSuggestedTag(suggestion)} // Use add function
-                  className="px-1.5 py-0.5 text-xs bg-gray-700 text-gray-300 rounded hover:bg-blue-600 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={(formData.tags || []).includes(suggestion)} // Disable if already added
-                >
-                  {suggestion}
-                </button>
-              ))}
+              {keywordSuggestions
+                .filter(
+                  (suggestion) =>
+                    suggestion &&
+                    typeof suggestion === "string" &&
+                    !suggestion.trim().startsWith("```") &&
+                    suggestion.trim() !== ""
+                )
+                .map((suggestion, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => addSuggestedTag(suggestion)} // Use add function
+                    className="px-1.5 py-0.5 text-xs bg-gray-700 text-gray-300 rounded hover:bg-blue-600 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={(formData.tags || []).includes(suggestion)} // Disable if already added
+                  >
+                    {suggestion}
+                  </button>
+                ))}
             </div>
           )}
-        </div>
-
-        {/* Publish Switch */}
-        <div className="md:col-span-2 pt-4 border-t border-gray-700">
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="isPublished"
-              checked={isPublished}
-              onCheckedChange={onPublishChange}
-            />
-            <Label
-              htmlFor="isPublished"
-              className="text-gray-300 cursor-pointer"
-            >
-              {isPublished ? "Published" : "Draft"}
-            </Label>
-          </div>
         </div>
       </div>
     </div>

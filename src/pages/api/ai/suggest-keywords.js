@@ -66,7 +66,20 @@ export default async function handler(req, res) {
     );
 
     try {
-      const keywords = JSON.parse(keywordsJsonString);
+      // Remove code block markers if present
+      let cleaned = keywordsJsonString.trim();
+      if (cleaned.startsWith("```json")) {
+        cleaned = cleaned.slice(7);
+      }
+      if (cleaned.startsWith("```")) {
+        cleaned = cleaned.slice(3);
+      }
+      if (cleaned.endsWith("```")) {
+        cleaned = cleaned.slice(0, -3);
+      }
+      cleaned = cleaned.trim();
+
+      let keywords = JSON.parse(cleaned);
       if (
         !Array.isArray(keywords) ||
         keywords.some((k) => typeof k !== "string")
@@ -75,6 +88,16 @@ export default async function handler(req, res) {
           "API did not return a valid JSON array of strings for keywords."
         );
       }
+      // Filter out invalid suggestions (code block markers, empty, whitespace)
+      keywords = keywords.filter(
+        (k) =>
+          k &&
+          typeof k === "string" &&
+          !k.trim().startsWith("```") &&
+          k.trim() !== "" &&
+          k.trim() !== "[" &&
+          k.trim() !== "]"
+      );
       res.status(200).json({ success: true, suggestions: keywords });
     } catch (parseError) {
       console.error(
@@ -96,7 +119,19 @@ export default async function handler(req, res) {
         console.warn(
           "Could not parse JSON, using extracted lines/CSV as keyword suggestions."
         );
-        res.status(200).json({ success: true, suggestions: lines.slice(0, 7) }); // Limit fallback results
+        // Filter out invalid suggestions (code block markers, empty, whitespace)
+        const filteredLines = lines.filter(
+          (k) =>
+            k &&
+            typeof k === "string" &&
+            !k.trim().startsWith("```") &&
+            k.trim() !== "" &&
+            k.trim() !== "[" &&
+            k.trim() !== "]"
+        );
+        res
+          .status(200)
+          .json({ success: true, suggestions: filteredLines.slice(0, 7) }); // Limit fallback results
       } else {
         throw new Error(
           "Response from AI model was not valid JSON or extractable keywords."

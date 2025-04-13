@@ -18,11 +18,21 @@ import { toast } from "sonner";
 import RelatedPosts from "@/components/RelatedPosts";
 import CommentsSection from "@/components/CommentsSection";
 import JsonLd, { createBlogPostingSchema } from "@/components/JsonLd"; // Import JsonLd and schema function
+import { useSession } from "next-auth/react"; // Import useSession for admin check
 
 function Id({ data, relatedPosts }) {
   // Add relatedPosts to props destructuring
   // Ref for the main content card
   const contentRef = useRef(null);
+
+  // Admin session check
+  const { data: session } = useSession();
+  const isAdmin =
+    session &&
+    (session.user?.role === "admin" ||
+      (Array.isArray(session.user?.roles) &&
+        session.user.roles.includes("admin")));
+
   // Calculate estimated reading time
   const estimateReadingTime = (content) => {
     const wordsPerMinute = 200;
@@ -271,6 +281,18 @@ function Id({ data, relatedPosts }) {
                 >
                   {data.title}
                 </motion.h1>
+                {/* Admin-only Edit Button */}
+                {isAdmin && (
+                  <Link
+                    href={`/admin/blog/edit/${data._id}`}
+                    passHref
+                    legacyBehavior
+                  >
+                    <a className="inline-block mb-4 px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-800 transition-colors font-semibold">
+                      Edit
+                    </a>
+                  </Link>
+                )}
 
                 <motion.div
                   variants={fadeInUpVariants}

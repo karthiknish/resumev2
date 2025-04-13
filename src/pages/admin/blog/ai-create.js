@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
@@ -46,9 +46,15 @@ export default function AICreateBlog() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const pexelsDebounceRef = useRef();
 
   const [isFormatting, setIsFormatting] = useState(false);
   const [formatSuccess, setFormatSuccess] = useState(false);
+
+  // Blog-from-link states
+  const [articleUrl, setArticleUrl] = useState("");
+  const [styleInstructions, setStyleInstructions] = useState("");
+  const [isConvertingLink, setIsConvertingLink] = useState(false);
 
   // Keyword suggestion states
   const [isSuggestingKeywords, setIsSuggestingKeywords] = useState(false);
@@ -261,6 +267,59 @@ export default function AICreateBlog() {
     setIsEditing(!isEditing);
   };
 
+  // Handler for converting article link to blog
+  const handleConvertLink = async () => {
+    if (!articleUrl.trim()) {
+      setError("Please enter an article URL");
+      return;
+    }
+    setError("");
+    setIsConvertingLink(true);
+    setGeneratedContent(null);
+    setSelectedImage(null);
+
+    try {
+      const response = await fetch("/api/ai/blog-from-link", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          url: articleUrl.trim(),
+          styleInstructions: styleInstructions.trim(),
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        // Show a more user-friendly error for extraction/model issues
+        if (
+          result.error &&
+          (result.error.includes("Prompt cannot be empty") ||
+            result.error.includes(
+              "Could not extract sufficient article content"
+            ))
+        ) {
+          setError(
+            "Could not extract enough content from the provided link. Please check the URL or try a different article."
+          );
+        } else {
+          setError(result.error || "Failed to convert article link");
+        }
+        return;
+      }
+      setGeneratedContent({ title: result.title, content: result.content });
+      setEditedTitle(result.title);
+      setEditedContent(result.content);
+      setArticleUrl("");
+      setStyleInstructions("");
+      // Optionally, auto-suggest keywords from the new content
+      handleSuggestKeywords(result.title);
+    } catch (error) {
+      console.error("Error converting article link:", error);
+      setError(error.message || "Failed to convert article link");
+    } finally {
+      setIsConvertingLink(false);
+    }
+  };
+
   // Function to suggest keywords
   const handleSuggestKeywords = async (currentTopic = topic) => {
     // Accept topic override
@@ -277,7 +336,12 @@ export default function AICreateBlog() {
       const response = await fetch("/api/ai/suggest-keywords", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic: currentTopic }), // Use passed topic
+        body: JSON.stringify({
+          title: currentTopic,
+          contentSnippet: editedContent
+            ? editedContent.substring(0, 800)
+            : undefined,
+        }),
       });
       const result = await response.json();
       if (!response.ok) {
@@ -446,7 +510,7 @@ export default function AICreateBlog() {
         <title>{editedTitle || "AI Blog Creator"}</title>
       </Head>
       {/* Wrap content with PageContainer */}
-      <PageContainer>
+      <PageContainer className="mt-10">
         <div className="max-w-6xl mx-auto">
           {" "}
           {/* Removed min-h-screen bg-black p-8 */}
@@ -485,6 +549,64 @@ export default function AICreateBlog() {
               <h2 className="text-xl font-medium mb-6 text-white font-calendas">
                 Generate Blog Content
               </h2>
+
+              {/* --- Convert Article Link to Blog --- */}
+              <div className="mb-8 p-4 bg-gray-900 border border-gray-700 rounded-lg">
+                <h3 className="text-lg font-semibold text-white mb-2">
+                  Convert Article Link to Blog
+                </h3>
+                <label className="block text-gray-300 mb-1">Article URL*</label>
+                <input
+                  type="text"
+                  value={articleUrl}
+                  onChange={(e) => setArticleUrl(e.target.value)}
+                  placeholder="Paste article link (https://...)"
+                  className="w-full px-4 py-2 mb-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled={
+                    isConvertingLink || isGenerating || isGeneratingOutline
+                  }
+                />
+                <label className="block text-gray-300 mb-1">
+                  Style Instructions (optional)
+                </label>
+                <input
+                  type="text"
+                  value={styleInstructions}
+                  onChange={(e) => setStyleInstructions(e.target.value)}
+                  placeholder="e.g., Write in a casual, humorous tone"
+                  className="w-full px-4 py-2 mb-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled={
+                    isConvertingLink || isGenerating || isGeneratingOutline
+                  }
+                />
+                <button
+                  onClick={handleConvertLink}
+                  disabled={
+                    isConvertingLink ||
+                    !articleUrl.trim() ||
+                    isGenerating ||
+                    isGeneratingOutline
+                  }
+                  className="w-full flex items-center justify-center px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
+                >
+                  {isConvertingLink ? (
+                    <>
+                      <AiOutlineLoading3Quarters className="animate-spin mr-2" />
+                      Converting Link...
+                    </>
+                  ) : (
+                    <>
+                      <AiOutlineRobot className="mr-2" />
+                      Convert Link to Blog
+                    </>
+                  )}
+                </button>
+                <p className="text-xs text-gray-400 mt-2">
+                  Paste a link to any article and instantly convert it into a
+                  blog post in your style.
+                </p>
+              </div>
+              {/* --- End Convert Article Link to Blog --- */}
 
               <div className="space-y-4">
                 <div>
@@ -950,7 +1072,19 @@ export default function AICreateBlog() {
                 <input
                   type="text"
                   value={imageSearchQuery}
-                  onChange={(e) => setImageSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setImageSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                    if (pexelsDebounceRef.current) {
+                      clearTimeout(pexelsDebounceRef.current);
+                    }
+                    const value = e.target.value;
+                    pexelsDebounceRef.current = setTimeout(() => {
+                      if (value.trim()) {
+                        handleSearchImages(1);
+                      }
+                    }, 400);
+                  }}
                   placeholder="Search for images..."
                   className="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-l-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                   onKeyDown={(e) => e.key === "Enter" && handleSearchImages()}
@@ -1008,7 +1142,13 @@ export default function AICreateBlog() {
               <div className="p-4 border-t border-gray-700 flex justify-center">
                 <div className="flex space-x-2">
                   <button
-                    onClick={() => handleSearchImages(currentPage - 1)}
+                    onClick={() => {
+                      setCurrentPage((p) => {
+                        const nextPage = Math.max(1, p - 1);
+                        handleSearchImages(nextPage);
+                        return nextPage;
+                      });
+                    }}
                     disabled={currentPage === 1 || isSearchingImages}
                     className="px-3 py-1 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors disabled:bg-gray-800 disabled:text-gray-500"
                   >
@@ -1018,7 +1158,13 @@ export default function AICreateBlog() {
                     {currentPage} of {totalPages}
                   </span>
                   <button
-                    onClick={() => handleSearchImages(currentPage + 1)}
+                    onClick={() => {
+                      setCurrentPage((p) => {
+                        const nextPage = Math.min(totalPages, p + 1);
+                        handleSearchImages(nextPage);
+                        return nextPage;
+                      });
+                    }}
                     disabled={currentPage === totalPages || isSearchingImages}
                     className="px-3 py-1 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors disabled:bg-gray-800 disabled:text-gray-500"
                   >
