@@ -53,6 +53,23 @@ export default function App({
   const router = useRouter();
   const [domLoaded, setDomLoaded] = useState(false);
   const [transitionType, setTransitionType] = useState("default");
+  const [isPageLoading, setIsPageLoading] = useState(false);
+
+  // Universal loading indicator for page transitions
+  useEffect(() => {
+    const handleStart = () => setIsPageLoading(true);
+    const handleStop = () => setIsPageLoading(false);
+
+    router.events.on("routeChangeStart", handleStart);
+    router.events.on("routeChangeComplete", handleStop);
+    router.events.on("routeChangeError", handleStop);
+
+    return () => {
+      router.events.off("routeChangeStart", handleStart);
+      router.events.off("routeChangeComplete", handleStop);
+      router.events.off("routeChangeError", handleStop);
+    };
+  }, [router]);
 
   // Initialize react-axe for development only
   useEffect(() => {
@@ -208,6 +225,31 @@ export default function App({
             </Script>
 
             <Nav />
+            {/* Universal loading overlay for page transitions */}
+            {isPageLoading && (
+              <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/70">
+                <svg
+                  className="animate-spin h-16 w-16 text-blue-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8z"
+                  ></path>
+                </svg>
+              </div>
+            )}
             {domLoaded ? (
               <Suspense fallback={<LoadingFallback />}>
                 <PageTransitionWrapper transitionType={transitionType}>

@@ -224,9 +224,9 @@ function Id({ data, relatedPosts }) {
       {/* Reading progress bar - moved to top */}
       <PageContainer className="pt-16 mt-10  space-y-8 font-calendas max-w-4xl mx-auto">
         {/* Added padding-top */}
-        <div className="mb-8">
+        <div className="mb-8 flex">
           <Link href="/blog" passHref legacyBehavior>
-            <a className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-900/80 text-blue-200 hover:bg-blue-800 hover:text-white font-semibold shadow transition-colors border border-blue-700">
+            <a className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-blue-800 via-blue-700 to-blue-900 text-white hover:bg-blue-800 hover:text-white font-semibold shadow-lg border border-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -240,7 +240,7 @@ function Id({ data, relatedPosts }) {
                   d="M15 19l-7-7 7-7"
                 />
               </svg>
-              Back to all articles
+              <span className="text-base">Back to all articles</span>
             </a>
           </Link>
         </div>
