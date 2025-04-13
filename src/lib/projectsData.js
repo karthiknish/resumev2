@@ -1,7 +1,7 @@
-import { FaReact, FaNode, FaPython } from "react-icons/fa";
+import { FaReact, FaNode, FaPython } from "react-icons/fa/index.js";
 
-import { DiJavascript1, DiDatabase } from "react-icons/di";
-import { TbBrandNextjs } from "react-icons/tb";
+import { DiJavascript1, DiDatabase } from "react-icons/di/index.js";
+import { TbBrandNextjs } from "react-icons/tb/index.js";
 import {
   SiTailwindcss,
   SiPandas,
@@ -15,7 +15,7 @@ import {
   SiTypescript,
   SiGooglesearchconsole,
   SiStyledcomponents,
-} from "react-icons/si";
+} from "react-icons/si/index.js";
 export const projectsData = [
   {
     id: "medblocks",
