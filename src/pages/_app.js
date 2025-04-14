@@ -8,7 +8,6 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SessionProvider } from "next-auth/react";
-import { ThemeProvider } from 'next-themes'; // Import ThemeProvider
 import dynamic from "next/dynamic";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "@/components/ui/sonner";
@@ -56,7 +55,8 @@ const toastOptions = {
     },
     classNames: {
       // Preserve existing classNames if any, or define default ones
-      toast: "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
+      toast:
+        "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
       description: "group-[.toast]:text-muted-foreground",
       actionButton:
         "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
@@ -64,7 +64,7 @@ const toastOptions = {
         "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
       // Add specific classNames for success/error if desired, or rely on style
       success: "group-[.toast]:text-green-400", // Example: Tailwind text color
-      error: "group-[.toast]:text-red-400",     // Example: Tailwind text color
+      error: "group-[.toast]:text-red-400", // Example: Tailwind text color
     },
   },
   // Define specific styles for success/error if classNames aren't enough
@@ -232,79 +232,65 @@ export default function App({
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
-        {/* Wrap with ThemeProvider */}
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark-hacker" // Set a default theme
-          enableSystem={false} // Disable system theme preference if defining specific themes
-          themes={[
-            "minimal",
-            "playful",
-            "dark-hacker",
-            "neon-cyberpunk",
-            "studio-ghibli",
-          ]} // List your themes
-        >
-          <main className={`${inter.variable} font-sans`}>
-            {/* Google Analytics - load with higher priority */}
-            <Script
-              strategy="beforeInteractive"
-              src="https://www.googletagmanager.com/gtag/js?id=G-LSLF7F9MS0"
-            />
-            <Script id="google-analytics" strategy="beforeInteractive">
-              {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-LSLF7F9MS0', {
-                page_path: window.location.pathname,
-                send_page_view: true
-              });
-            `}
-            </Script>
+        <main className={`${inter.variable} font-sans`}>
+          {/* Google Analytics - load with higher priority */}
+          <Script
+            strategy="beforeInteractive"
+            src="https://www.googletagmanager.com/gtag/js?id=G-LSLF7F9MS0"
+          />
+          <Script id="google-analytics" strategy="beforeInteractive">
+            {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-LSLF7F9MS0', {
+              page_path: window.location.pathname,
+              send_page_view: true
+            });
+          `}
+          </Script>
 
-            <Nav />
-            {/* Universal loading overlay for page transitions */}
-            {isPageLoading && (
-              <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/70">
-                <svg
-                  className="animate-spin h-16 w-16 text-blue-500"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v8z"
-                  ></path>
-                </svg>
-              </div>
-            )}
-            {domLoaded ? (
-              <Suspense fallback={<LoadingFallback />}>
-                <PageTransitionWrapper transitionType={transitionType}>
-                  {getLayout(<Component {...pageProps} />)}
-                </PageTransitionWrapper>
-              </Suspense>
-            ) : (
-              <LoadingFallback />
-            )}
-            {/* Pass centralized toast options to Toaster */}
-            <Toaster {...toastOptions} />
-            <Footer />
-            <ChatBot />
-            <Analytics />
-          </main>
-        </ThemeProvider>
+          <Nav />
+          {/* Universal loading overlay for page transitions */}
+          {isPageLoading && (
+            <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/70">
+              <svg
+                className="animate-spin h-16 w-16 text-blue-500"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8z"
+                ></path>
+              </svg>
+            </div>
+          )}
+          {domLoaded ? (
+            <Suspense fallback={<LoadingFallback />}>
+              <PageTransitionWrapper transitionType={transitionType}>
+                {getLayout(<Component {...pageProps} />)}
+              </PageTransitionWrapper>
+            </Suspense>
+          ) : (
+            <LoadingFallback />
+          )}
+          {/* Pass centralized toast options to Toaster */}
+          <Toaster {...toastOptions} />
+          <Footer />
+          <ChatBot />
+          <Analytics />
+        </main>
       </SessionProvider>
     </QueryClientProvider>
   );

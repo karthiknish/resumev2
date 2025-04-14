@@ -2,7 +2,7 @@
 // This endpoint saves chat sessions to MongoDB
 
 import clientPromise from "@/lib/mongodb";
-import { CHAT_COLLECTION, createChatRecord } from "@/models/ChatHistory";
+import ChatHistory, { createChatRecord } from "@/models/ChatHistory";
 
 export default async function handler(req, res) {
   // Only allow POST requests
@@ -25,7 +25,7 @@ export default async function handler(req, res) {
     // Connect to MongoDB
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB || "resume-chatbot");
-    const collection = db.collection(CHAT_COLLECTION);
+    const collection = db.collection(ChatHistory.collection.name);
 
     // Try to find an existing chat record with the same email
     const existingChat = await collection.findOne({ email });
@@ -47,12 +47,10 @@ export default async function handler(req, res) {
     }
 
     // Return success message
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "Chat history saved successfully to MongoDB",
-      });
+    return res.status(200).json({
+      success: true,
+      message: "Chat history saved successfully to MongoDB",
+    });
   } catch (error) {
     console.error("Error saving chat history to MongoDB:", error);
     return res

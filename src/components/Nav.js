@@ -344,10 +344,6 @@ export default function Nav() {
                   </motion.a>
                 </>
               )}
-              {/* Theme Switcher (Inside Mobile Menu) */}
-              <div className="mt-6">
-                <ThemeSwitcher />
-              </div>
             </div>
           </motion.div>
         )}
