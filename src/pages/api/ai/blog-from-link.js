@@ -4,6 +4,77 @@ import axios from "axios";
 import unfluff from "unfluff";
 import { callGemini } from "@/lib/gemini";
 
+// Helper to parse structured AI response
+const parseStructuredResponse = (responseText) => {
+  const output = {
+    title: "AI Generated Post", // Default title
+    keywords: [],
+    descriptions: [],
+    categories: [],
+    body: "",
+  };
+
+  const sections = {
+    KEYWORDS: "keywords",
+    DESCRIPTIONS: "descriptions",
+    CATEGORIES: "categories",
+    BODY: "body",
+  };
+
+  let currentSection = "body"; // Assume body content starts first if no delimiters found initially
+  const lines = responseText.split('\n');
+
+  lines.forEach(line => {
+    const trimmedLine = line.trim();
+    let sectionFound = false;
+    for (const [key, sectionName] of Object.entries(sections)) {
+      if (trimmedLine.startsWith(key + ":")) {
+        currentSection = sectionName;
+        const value = trimmedLine.substring(key.length + 1).trim();
+        if (value) {
+          // For list sections, split by comma or add directly if single item
+          if (['keywords', 'categories'].includes(currentSection)) {
+            output[currentSection].push(...value.split(',').map(s => s.trim()).filter(Boolean));
+          } else if (currentSection === 'descriptions') {
+            output[currentSection].push(value); // Each description on its own line
+          } else if (currentSection === 'body') {
+             // This case shouldn't happen if BODY is handled below, but as fallback
+             output.body += value + '\n'; 
+          }
+        }
+        sectionFound = true;
+        break;
+      }
+    }
+
+    // If no section delimiter found, append to the current section (likely body)
+    if (!sectionFound) {
+      if (currentSection === 'body') {
+        output.body += line + '\n'; // Append the raw line including original spacing/newlines
+      } else if (currentSection === 'descriptions') {
+         // If still in descriptions, treat subsequent lines as part of the last description or new ones
+         // For simplicity, let's just push subsequent non-empty lines as new descriptions
+         if (trimmedLine) {
+             output.descriptions.push(trimmedLine);
+         }
+      } 
+      // Ignore lines if currentSection is keywords/categories without delimiter
+    }
+  });
+
+  // Final cleanup
+  output.body = output.body.trim();
+  output.keywords = [...new Set(output.keywords)]; // Deduplicate
+  output.categories = [...new Set(output.categories)]; // Deduplicate
+  
+   // Add fallback suggestions if arrays are empty
+   if (output.keywords.length === 0) output.keywords = ["Generated"];
+   if (output.descriptions.length === 0) output.descriptions = [output.body.substring(0, 160) + "..."];
+   if (output.categories.length === 0) output.categories = ["General"];
+
+  return output;
+};
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -28,7 +99,7 @@ export default async function handler(req, res) {
 
     // Extract main content using unfluff
     const data = unfluff(response.data);
-    const { title, text, author, date } = data;
+    const { title: originalTitle, text, author, date } = data;
 
     // Require at least 200 non-whitespace characters
     if (!text || text.replace(/\s/g, "").length < 200) {
@@ -51,29 +122,44 @@ export default async function handler(req, res) {
 
     // Compose prompt for AI model using sanitized text
     const prompt = `
-You are an expert blogger, analyst, and thought leader writing for Karthik Nishanth's website. Your task is to read the following article and create a new, original, and highly insightful blog post in the user's style.
+You are an expert blogger, analyst, and content strategist writing for Karthik Nishanth's website. Your task is to read the source article content and generate a new, original blog post, along with metadata suggestions.
 
-**Instructions:**
-- Do NOT copy or paraphrase sentences directly; instead, use the article as inspiration for structure, facts, and flow.
-- Write in a tone and style consistent with the user's previous blog posts.
-- Go beyond summarization: deeply analyze the article's content, context, and implications.
-- Critically evaluate the arguments, evidence, and perspectives presented in the article.
-- Synthesize information from the article with your own knowledge, experience, and unique perspective.
-- Highlight the broader significance, potential impact, and real-world applications of the topic.
-- Identify any gaps, biases, or limitations in the original article and address them in your post.
-- Provide actionable takeaways, recommendations, or next steps for readers.
-- Use HTML formatting (headings <h2>, paragraphs <p>, lists <ul><li>, bold <strong>, etc.) where appropriate.
-- Do not reference the original article or its author.
-- Output only the HTML blog post content. Do not include any preamble or extra text. **Do not wrap the output in \`\`\`html ... \`\`\` or any other code blocks.**
-${styleInstructions ? `- Style instructions: ${styleInstructions}` : ""}
+**Instructions for Blog Post:**
+- Write in a tone and style consistent with the user's previous blog posts.${
+      styleInstructions
+        ? ` Specific style instructions: ${styleInstructions}`
+        : ""
+    }
+- Analyze the source content, don't just summarize. Provide unique insights, critical evaluation, and practical takeaways.
+- Structure the post logically (Introduction, Key Insights, Implications, Conclusion).
+- Use standard HTML formatting (<h2>, <p>, <ul><li>, <strong>, etc.).
+- Do not reference the source article directly.
 
-**Metadata:**
-- Article Title: ${title || "Untitled"}
+**Instructions for Metadata:**
+- Suggest 3-5 relevant keywords (comma-separated).
+- Suggest 2-3 concise meta descriptions (120-155 chars each, suitable for SEO, each on a new line).
+- Suggest 2-4 relevant categories (comma-separated).
+
+**Source Article Metadata:**
+- Title: ${originalTitle || "Untitled"}
 ${author ? `- Author: ${author}` : ""}
 ${date ? `- Date: ${date}` : ""}
 
 **Source Article Content:**
+---
 ${sanitizedText}
+---
+
+**OUTPUT FORMAT (Strictly follow this structure):**
+
+KEYWORDS: [comma-separated keywords]
+DESCRIPTIONS:
+[suggested description 1]
+[suggested description 2]
+[suggested description 3]
+CATEGORIES: [comma-separated categories]
+BODY:
+[full HTML blog post content starts here, without any wrapping \`\`\`html or other fences]
 `;
 
     // Explicitly trim the final prompt before sending
@@ -104,27 +190,22 @@ ${sanitizedText}
         .json({ error: "AI model returned empty content." });
     }
 
-    // Clean potential markdown code block fences
-    let content = aiResponse
-      .replace(/^\s*```(?:html)?\s*\n?|\s*\n?```\s*$/g, "")
-      .trim();
-    // if (content.startsWith("```html")) {
-    //   content = content.slice(7);
-    //   if (content.endsWith("```")) {
-    //     content = content.slice(0, -3);
-    //   }
-    // } else if (content.startsWith("```")) { // Handle generic ```
-    //     content = content.slice(3);
-    //     if (content.endsWith("```")) {
-    //         content = content.slice(0, -3);
-    //     }
-    // }
-    // content = content.trim(); // Trim again -- Handled by regex replace + trim()
+    // Parse the structured response
+    const parsedData = parseStructuredResponse(aiResponse);
 
+    // Clean the HTML Body
+    const cleanedBody = parsedData.body
+      .replace(/^\s*```(?:html)?\s*\n?|\s*\n?```\s*$/g, "") // Remove fences
+      .trim();
+
+    // Return parsed data
     return res.status(200).json({
       success: true,
-      title: title || "",
-      content: content, // Use the cleaned content
+      title: originalTitle || parsedData.title, // Use original extracted title, fallback to AI if needed
+      content: cleanedBody,
+      keywords: parsedData.keywords,
+      descriptions: parsedData.descriptions,
+      categories: parsedData.categories,
     });
   } catch (error) {
     console.error("Error in blog-from-link:", error);

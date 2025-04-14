@@ -44,6 +44,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { Loader2, Wand2, Settings, Link, BookOpen } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const toneOptions = [
   { value: "professional", label: "Professional" },
@@ -75,9 +76,6 @@ export default function AICreateBlog() {
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedTitle, setEditedTitle] = useState("");
-  const [editedContent, setEditedContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
   const [showImageSearch, setShowImageSearch] = useState(false);
@@ -98,6 +96,8 @@ export default function AICreateBlog() {
 
   const [isSuggestingKeywords, setIsSuggestingKeywords] = useState(false);
   const [suggestedKeywords, setSuggestedKeywords] = useState([]);
+  const [suggestedDescriptions, setSuggestedDescriptions] = useState([]);
+  const [suggestedCategories, setSuggestedCategories] = useState([]);
 
   const [isGeneratingOutline, setIsGeneratingOutline] = useState(false);
   const [generatedOutline, setGeneratedOutline] = useState(null);
@@ -210,6 +210,8 @@ export default function AICreateBlog() {
     setGeneratedContent(null);
     setGeneratedOutline(null);
     setSuggestedKeywords([]);
+    setSuggestedDescriptions([]);
+    setSuggestedCategories([]);
 
     try {
       const response = await fetch("/api/ai/blog-from-link", {
@@ -219,10 +221,18 @@ export default function AICreateBlog() {
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Failed");
-      setTopic(result.title);
-      setGeneratedContent({ title: result.title, content: result.content });
-      handleSuggestKeywords(result.content);
-      toast.success("Content generated from link!");
+
+      setTopic(result.title || "");
+      setGeneratedContent({
+        title: result.title || "Generated Post",
+        content: result.content || "",
+      });
+      setKeywords(result.keywords?.join(", ") || "");
+      setSuggestedKeywords(result.keywords || []);
+      setSuggestedDescriptions(result.descriptions || []);
+      setSuggestedCategories(result.categories || []);
+
+      toast.success("Content and suggestions generated from link!");
     } catch (err) {
       setError(`Link Conversion Failed: ${err.message}`);
       toast.error(`Link Conversion Failed: ${err.message}`);
@@ -311,6 +321,14 @@ export default function AICreateBlog() {
     toast.info("Cleared generated content.");
   };
 
+  const addCategory = (categoryToAdd) => {
+    toast.info(`Selected category: ${categoryToAdd}`);
+  };
+
+  const useDescription = (descriptionToUse) => {
+    toast.info(`Selected description: ${descriptionToUse.substring(0, 50)}...`);
+  };
+
   if (status === "loading") {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
@@ -328,7 +346,7 @@ export default function AICreateBlog() {
       <Head>
         <title>AI Blog Post Generator</title>
       </Head>
-      <PageContainer className="py-12">
+      <PageContainer className="mt-20 py-12">
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -367,7 +385,7 @@ export default function AICreateBlog() {
                     className="bg-gray-700 border-gray-600 text-white placeholder-gray-500"
                   />
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-2">
                   <Button
                     onClick={() => handleSuggestTopics()}
                     variant="outline"
@@ -463,6 +481,91 @@ export default function AICreateBlog() {
                     Generate from URL
                   </Button>
                 </div>
+
+                <AnimatePresence>
+                  {(suggestedKeywords.length > 0 ||
+                    suggestedDescriptions.length > 0 ||
+                    suggestedCategories.length > 0) &&
+                    loadingSection !== "link" && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="pt-4 space-y-3 border-t border-gray-700 mt-4"
+                      >
+                        <h4 className="text-sm font-medium text-gray-400">
+                          Suggestions from Link:
+                        </h4>
+
+                        {suggestedKeywords.length > 0 && (
+                          <div>
+                            <Label className="text-xs text-gray-500">
+                              Keywords
+                            </Label>
+                            <div className="flex flex-wrap gap-1.5 mt-1">
+                              {suggestedKeywords.map((kw, index) => (
+                                <Button
+                                  key={`link-kw-${index}`}
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => addKeyword(kw)}
+                                  className="text-xs border-gray-600 text-gray-300 hover:bg-gray-700 h-auto py-0.5 px-1.5"
+                                >
+                                  {kw}
+                                </Button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {suggestedDescriptions.length > 0 && (
+                          <div>
+                            <Label className="text-xs text-gray-500">
+                              Descriptions
+                            </Label>
+                            <div className="space-y-1.5 mt-1">
+                              {suggestedDescriptions.map((desc, index) => (
+                                <Button
+                                  key={`link-desc-${index}`}
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => useDescription(desc)}
+                                  className="text-xs border-gray-600 text-gray-300 hover:bg-gray-700 h-auto py-1 px-2 w-full text-left justify-start truncate"
+                                  title={desc}
+                                >
+                                  {desc}
+                                </Button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {suggestedCategories.length > 0 && (
+                          <div>
+                            <Label className="text-xs text-gray-500">
+                              Categories
+                            </Label>
+                            <div className="flex flex-wrap gap-1.5 mt-1">
+                              {suggestedCategories.map((cat, index) => (
+                                <Button
+                                  key={`link-cat-${index}`}
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => addCategory(cat)}
+                                  className="text-xs border-gray-600 text-gray-300 hover:bg-gray-700 h-auto py-0.5 px-1.5"
+                                >
+                                  {cat}
+                                </Button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
+                </AnimatePresence>
               </CardContent>
             </Card>
 
@@ -550,32 +653,33 @@ export default function AICreateBlog() {
                     className="bg-gray-700 border-gray-600 text-white placeholder-gray-500"
                   />
                   <AnimatePresence>
-                    {suggestedKeywords.length > 0 && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="pt-3 space-y-1"
-                      >
-                        <h4 className="text-xs font-medium text-gray-400">
-                          Suggestions:
-                        </h4>
-                        <div className="flex flex-wrap gap-1.5">
-                          {suggestedKeywords.map((kw, index) => (
-                            <Button
-                              key={index}
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => addKeyword(kw)}
-                              className="text-xs border-gray-600 text-gray-300 hover:bg-gray-700 h-auto py-0.5 px-1.5"
-                            >
-                              {kw}
-                            </Button>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
+                    {suggestedKeywords.length > 0 &&
+                      loadingSection === "keywords" && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="pt-3 space-y-1"
+                        >
+                          <h4 className="text-xs font-medium text-gray-400">
+                            Suggestions:
+                          </h4>
+                          <div className="flex flex-wrap gap-1.5">
+                            {suggestedKeywords.map((kw, index) => (
+                              <Button
+                                key={index}
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => addKeyword(kw)}
+                                className="text-xs border-gray-600 text-gray-300 hover:bg-gray-700 h-auto py-0.5 px-1.5"
+                              >
+                                {kw}
+                              </Button>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
                   </AnimatePresence>
                 </div>
               </CardContent>
@@ -586,140 +690,167 @@ export default function AICreateBlog() {
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
-            className="lg:col-span-2 space-y-6"
+            className="lg:col-span-2 space-y-6 flex flex-col"
           >
-            {!generatedContent && (generatedOutline || topic) && (
-              <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card">
-                <CardContent className="pt-6">
-                  <Button
-                    onClick={handleGenerate}
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg py-3"
-                    disabled={loadingSection === "full"}
-                  >
-                    {loadingSection === "full" ? (
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    ) : (
-                      <AiOutlineRobot className="mr-2 h-5 w-5" />
-                    )}
-                    Generate Full Blog Post
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
-
-            <AnimatePresence>
-              {generatedOutline && !generatedContent && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                >
-                  <Card className="bg-gray-750 border-gray-600 text-white">
-                    <CardHeader>
-                      <CardTitle className="text-lg font-medium text-blue-300">
-                        Generated Outline
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-1 text-sm">
-                      <p>
-                        <strong>Title:</strong> {generatedOutline.title}
-                      </p>
-                      <div>
-                        <strong>Headings:</strong>
-                        <ul className="list-disc list-inside ml-4 text-gray-300">
-                          {generatedOutline.headings.map((h, i) => (
-                            <li key={i}>{h}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <AnimatePresence>
-              {generatedContent && (
-                <motion.div
-                  key="content-card"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                >
-                  <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card">
-                    <CardHeader>
-                      <CardTitle className="flex items-center justify-between text-xl font-semibold text-blue-400">
-                        <span>Generated Content Preview</span>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={clearGeneratedContent}
-                          className="text-gray-400 hover:text-red-500"
-                        >
-                          <AiOutlineClose />
-                        </Button>
-                      </CardTitle>
-                      <CardDescription>
-                        Review the generated HTML content below.
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <h2 className="text-2xl font-bold mb-4 pb-2 border-b border-gray-700">
-                        {generatedContent.title}
-                      </h2>
-                      <div className="prose prose-invert max-w-none prose-p:my-2 prose-h2:mt-4 prose-h2:mb-1 prose-h3:mt-3 prose-h3:mb-1 prose-ul:my-2 prose-li:my-0.5">
-                        <TipTapRenderer content={generatedContent.content} />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <AnimatePresence>
-              {generatedContent && (
-                <motion.div
-                  key="actions-card"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
-                >
-                  <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card">
-                    <CardHeader>
-                      <CardTitle className="text-xl font-semibold text-blue-400">
-                        Actions
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <Button
-                        onClick={handleSaveDraft}
-                        className="w-full bg-green-600 hover:bg-green-700"
-                        disabled={
-                          loadingSection === "save" ||
-                          saveStatus.state === "success"
-                        }
-                      >
-                        {loadingSection === "save" ? (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : saveStatus.state === "success" ? (
-                          <AiOutlineCheck className="mr-2 h-4 w-4" />
-                        ) : (
-                          <AiOutlineSave className="mr-2 h-4 w-4" />
-                        )}
-                        {saveStatus.state === "success"
-                          ? "Draft Saved!"
-                          : "Save as Draft"}
-                      </Button>
-                      {saveStatus.state === "error" && (
-                        <p className="mt-2 text-sm text-red-500">
-                          Error: {saveStatus.message}
-                        </p>
+            <div className="space-y-6 flex-shrink-0">
+              {!generatedContent && (generatedOutline || topic) && (
+                <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card">
+                  <CardContent className="pt-6">
+                    <Button
+                      onClick={handleGenerate}
+                      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg py-3"
+                      disabled={loadingSection === "full"}
+                    >
+                      {loadingSection === "full" ? (
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      ) : (
+                        <AiOutlineRobot className="mr-2 h-5 w-5" />
                       )}
-                    </CardContent>
-                  </Card>
-                </motion.div>
+                      Generate Full Blog Post
+                    </Button>
+                  </CardContent>
+                </Card>
               )}
-            </AnimatePresence>
+
+              <AnimatePresence>
+                {generatedOutline && !generatedContent && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                  >
+                    <Card className="bg-gray-750 border-gray-600 text-white">
+                      <CardHeader>
+                        <CardTitle className="text-lg font-medium text-blue-300">
+                          Generated Outline
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-1 text-sm">
+                        <p>
+                          <strong>Title:</strong> {generatedOutline.title}
+                        </p>
+                        <div>
+                          <strong>Headings:</strong>
+                          <ul className="list-disc list-inside ml-4 text-gray-300">
+                            {generatedOutline.headings.map((h, i) => (
+                              <li key={i}>{h}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <div className="flex-grow flex flex-col min-h-0">
+              <AnimatePresence>
+                {generatedContent && (
+                  <motion.div
+                    key="content-card"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="flex flex-col flex-grow min-h-0"
+                  >
+                    <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card flex flex-col flex-grow min-h-0">
+                      <CardHeader className="flex-shrink-0">
+                        <CardTitle className="flex items-center justify-between text-xl font-semibold text-blue-400">
+                          <span>Generated Content Preview</span>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={clearGeneratedContent}
+                            className="text-gray-400 hover:text-red-500"
+                          >
+                            <AiOutlineClose />
+                          </Button>
+                        </CardTitle>
+                        <CardDescription>
+                          Review the generated HTML content below.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="flex-grow overflow-hidden p-0">
+                        <ScrollArea className="h-full p-4">
+                          <h2 className="text-2xl font-bold mb-4 pb-2 border-b border-gray-700 flex-shrink-0">
+                            {generatedContent.title}
+                          </h2>
+                          <div className="prose prose-invert max-w-none prose-p:my-2 prose-h2:mt-4 prose-h2:mb-1 prose-h3:mt-3 prose-h3:mb-1 prose-ul:my-2 prose-li:my-0.5">
+                            <TipTapRenderer
+                              content={generatedContent.content}
+                            />
+                          </div>
+                        </ScrollArea>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              {!generatedContent && !loadingSection && !generatedOutline && (
+                <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card flex-grow flex items-center justify-center">
+                  <div className="text-center text-gray-500 p-8">
+                    <AiOutlineRobot size={48} className="mx-auto mb-4" />
+                    <p>Generated content will appear here.</p>
+                  </div>
+                </Card>
+              )}
+              {loadingSection === "full" && (
+                <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card flex-grow flex items-center justify-center">
+                  <div className="text-center text-gray-400 p-8">
+                    <Loader2 size={48} className="mx-auto mb-4 animate-spin" />
+                    <p>Generating blog post...</p>
+                  </div>
+                </Card>
+              )}
+            </div>
+
+            <div className="flex-shrink-0">
+              <AnimatePresence>
+                {generatedContent && (
+                  <motion.div
+                    key="actions-card"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                  >
+                    <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card">
+                      <CardHeader>
+                        <CardTitle className="text-xl font-semibold text-blue-400">
+                          Actions
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <Button
+                          onClick={handleSaveDraft}
+                          className="w-full bg-green-600 hover:bg-green-700"
+                          disabled={
+                            loadingSection === "save" ||
+                            saveStatus.state === "success"
+                          }
+                        >
+                          {loadingSection === "save" ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          ) : saveStatus.state === "success" ? (
+                            <AiOutlineCheck className="mr-2 h-4 w-4" />
+                          ) : (
+                            <AiOutlineSave className="mr-2 h-4 w-4" />
+                          )}
+                          {saveStatus.state === "success"
+                            ? "Draft Saved!"
+                            : "Save as Draft"}
+                        </Button>
+                        {saveStatus.state === "error" && (
+                          <p className="mt-2 text-sm text-red-500">
+                            Error: {saveStatus.message}
+                          </p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             {error && (
               <motion.div
