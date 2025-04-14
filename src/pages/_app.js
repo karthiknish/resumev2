@@ -13,9 +13,11 @@ import { SessionProvider } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "@/components/ui/sonner";
-import ChatBot from "@/components/Chatbot";
 import CookieConsentBanner from "@/components/CookieConsentBanner"; // Import the banner
 import { AnimatePresence } from "framer-motion"; // Import AnimatePresence
+
+// Dynamically import ChatBot
+const ChatBot = dynamic(() => import("@/components/Chatbot"), { ssr: false });
 
 // Dynamically import PageTransitionWrapper with no SSR
 const PageTransitionWrapper = dynamic(
@@ -330,7 +332,7 @@ export default function App({
           {/* Pass centralized toast options to Toaster */}
           <Toaster {...toastOptions} />
           <Footer />
-          {/* Conditionally render Chatbot */}
+          {/* Render dynamic Chatbot */}
           {showChatbot && <ChatBot />}
           <Analytics />
 
