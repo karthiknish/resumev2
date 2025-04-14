@@ -75,7 +75,11 @@ function Chatbot() {
       ? "Hello! I'm Cline, Karthik's AI assistant. To save our chat and follow up if needed, could you please share your email?"
       : `Thanks! I've got your email. How can I help you today?`; // This case might not be hit if email is always collected first
     setMessages([
-      { user: "bot", content: welcomeMsg, timestamp: new Date().toISOString() },
+      {
+        role: "assistant",
+        content: welcomeMsg,
+        timestamp: new Date().toISOString(),
+      },
     ]);
   };
 
@@ -110,14 +114,14 @@ function Chatbot() {
   const handleEmailSubmit = () => {
     if (!isValidEmail(message)) {
       const errorMsg = {
-        user: "bot",
+        role: "assistant",
         content:
           "That doesn't look like a valid email. Please provide a valid email address.",
         timestamp: new Date().toISOString(),
       };
       setMessages((prev) => [
         ...prev,
-        { user: "user", content: message, timestamp: new Date().toISOString() },
+        { role: "user", content: message, timestamp: new Date().toISOString() },
         errorMsg,
       ]);
       setMessage("");
@@ -127,13 +131,13 @@ function Chatbot() {
     setUserEmail(email);
     setIsCollectingEmail(false);
     const userMsg = {
-      user: "user",
-      content: email, // Store the email as user message for history context
+      role: "user",
+      content: email,
       timestamp: new Date().toISOString(),
     };
     // Slightly friendlier welcome after email
     const botWelcome = {
-      user: "bot",
+      role: "assistant",
       content: `Great, thanks ${email}! How can I assist you today? Feel free to ask about Karthik's services, projects, or blog posts.`,
       timestamp: new Date().toISOString(),
     };
@@ -169,7 +173,7 @@ function Chatbot() {
   const sendMessage = async (content) => {
     if (!content.trim()) return;
     const userMessage = {
-      user: "user",
+      role: "user",
       content,
       timestamp: new Date().toISOString(),
     };
@@ -191,7 +195,7 @@ function Chatbot() {
           body: JSON.stringify({
             prompt: content,
             chatHistory: messages.map((msg) => ({
-              role: msg.user === "user" ? "user" : "model",
+              role: msg.role === "user" ? "user" : "model",
               parts: [{ text: msg.content || "" }],
             })),
           }),
@@ -204,7 +208,7 @@ function Chatbot() {
       }
 
       const botMessage = {
-        user: "bot",
+        role: "assistant",
         content: botResponseContent,
         timestamp: new Date().toISOString(),
       };
@@ -214,7 +218,7 @@ function Chatbot() {
     } catch (error) {
       console.error("Error communicating with Gemini API:", error);
       const errorMsg = {
-        user: "bot",
+        role: "assistant",
         content: "Sorry, I encountered an error. Please try again later.",
         timestamp: new Date().toISOString(),
       };
@@ -250,7 +254,7 @@ function Chatbot() {
     // Simple check for markdown characters
     const looksLikeMarkdown = /[*_\[#]/.test(content);
 
-    if (looksLikeMarkdown && msg.user === "bot") {
+    if (looksLikeMarkdown && msg.role === "assistant") {
       return (
         <ReactMarkdown
           components={{
@@ -356,11 +360,11 @@ function Chatbot() {
                   key={index}
                   className={`flex items-end gap-2 ${
                     // Added gap and items-end
-                    msg.user === "bot" ? "justify-start" : "justify-end"
+                    msg.role === "assistant" ? "justify-start" : "justify-end"
                   }`}
                 >
                   {/* Bot Avatar */}
-                  {msg.user === "bot" && (
+                  {msg.role === "assistant" && (
                     <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center mb-1">
                       {/* Placeholder Icon - Replace with Image if desired */}
                       <BiUserCircle className="text-gray-300 w-4 h-4" />
@@ -378,7 +382,7 @@ function Chatbot() {
                       damping: 30,
                     }}
                     className={`max-w-[85%] px-4 py-2 rounded-lg shadow-md text-sm md:text-base border ${
-                      msg.user === "bot"
+                      msg.role === "assistant"
                         ? "bg-gray-700 text-gray-100 rounded-bl-none border-gray-600"
                         : "bg-green-600 text-white rounded-br-none border-green-500"
                     }`}

@@ -95,6 +95,9 @@ export default function App({
   const [transitionType, setTransitionType] = useState("default");
   const [isPageLoading, setIsPageLoading] = useState(false);
 
+  // Determine if chatbot should be shown
+  const showChatbot = !router.pathname.startsWith("/admin");
+
   // Universal loading indicator for page transitions
   useEffect(() => {
     const handleStart = () => setIsPageLoading(true);
@@ -289,7 +292,8 @@ export default function App({
           {/* Pass centralized toast options to Toaster */}
           <Toaster {...toastOptions} />
           <Footer />
-          <ChatBot />
+          {/* Conditionally render Chatbot */}
+          {showChatbot && <ChatBot />}
           <Analytics />
         </main>
       </SessionProvider>
