@@ -9,6 +9,7 @@ import {
   updateBlog,
   deleteBlog,
 } from "@/lib/blogService"; // Import service functions
+import '@/models/User'; // Import User model to ensure schema is registered
 
 export default async function handler(req, res) {
   const { method } = req;
