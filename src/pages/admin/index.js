@@ -12,7 +12,7 @@ import {
 } from "react-icons/ai";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import { FaComments, FaUserCheck } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -44,6 +44,7 @@ import SubscribersTab from "@/components/admin/tabs/SubscribersTab";
 import LinkedInTab from "@/components/admin/tabs/LinkedInTab"; // Import LinkedInTab
 import PomodoroTab from "@/components/admin/tabs/PomodoroTab"; // Import PomodoroTab
 import HackerNewsFeed from "@/components/admin/tabs/HackerNewsFeed"; // Import HackerNewsFeed
+import { checkAdminStatus } from "@/lib/authUtils"; // Import the utility
 
 // Define tab configuration data
 const adminTabs = [
@@ -77,24 +78,18 @@ function AdminDashboard() {
 
   // Check for admin role
   useEffect(() => {
-    if (session?.user) {
-      const isUserAdmin =
-        session.user.role === "admin" ||
-        session.user.isAdmin === true ||
-        session.user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-      setIsAdmin(isUserAdmin);
-      setSessionDebug(session);
-    } else {
-      setIsAdmin(false);
-    }
-  }, [session]);
-
-  // Handle redirect
-  useEffect(() => {
+    if (status === "loading") return; // Do nothing while loading
     if (status === "unauthenticated") {
-      router.push("/signin");
+      signIn(); // Redirect to signin if unauthenticated
+      return;
     }
-  }, [status, router]);
+
+    // Use the utility function for the check
+    const isAdmin = checkAdminStatus(session);
+    if (!isAdmin) {
+      router.push("/"); // Redirect non-admins to homepage
+    }
+  }, [session, status, router]);
 
   // Fetch unread *contacts* count
   useEffect(() => {

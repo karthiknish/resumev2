@@ -19,11 +19,17 @@ import CommentsSection from "@/components/CommentsSection";
 import JsonLd, { createBlogPostingSchema } from "@/components/JsonLd"; // Import JsonLd and schema function
 import { useSession } from "next-auth/react"; // Import useSession for admin check
 import TipTapRenderer from "@/components/TipTapRenderer"; // Import TipTapRenderer
+import { useRouter } from "next/router";
+import { formatDistanceToNow } from "date-fns";
+import useSWR from "swr";
+import { fetcher } from "@/lib/fetcher";
 
 function Id({ data, relatedPosts }) {
   // Add relatedPosts to props destructuring
   // Ref for the main content card
   const contentRef = useRef(null);
+  const router = useRouter();
+  const { id } = router.query;
 
   // Admin session check
   const { data: session } = useSession();
@@ -44,6 +50,13 @@ function Id({ data, relatedPosts }) {
 
   // Reading progress state
   const [readingProgress, setReadingProgress] = useState(0);
+
+  // Fetch post data using SWR
+  const {
+    data: post,
+    error,
+    isLoading,
+  } = useSWR(id ? `/api/blog/${id}` : null, fetcher);
 
   // Handle scroll to update reading progress using content ref
   useEffect(() => {
@@ -94,6 +107,24 @@ function Id({ data, relatedPosts }) {
     };
     // Rerun effect if data changes, ensuring ref is attached to the new content
   }, [data]);
+
+  // Add useEffect for gtag tracking
+  useEffect(() => {
+    if (post && typeof window.gtag === "function") {
+      window.gtag("event", "view_item", {
+        event_category: "blog",
+        event_label: post.title, // Use post title as label
+        items: [
+          {
+            item_id: post._id, // Use post ID
+            item_name: post.title, // Use post title
+            item_category: post.category || "Uncategorized",
+            // Add other relevant item parameters if available
+          },
+        ],
+      });
+    }
+  }, [post]); // Trigger when post data is available
 
   // Share functionality
   const shareArticle = (platform) => {
@@ -146,6 +177,22 @@ function Id({ data, relatedPosts }) {
   };
 
   // Fallback if data is somehow null client-side (though getServerSideProps should handle it)
+  if (isLoading) {
+    return (
+      <PageContainer>
+        <div className="text-center text-gray-400 py-20">Loading...</div>
+      </PageContainer>
+    );
+  }
+  if (error) {
+    return (
+      <PageContainer>
+        <div className="text-center text-gray-400 py-20">
+          Error loading post.
+        </div>
+      </PageContainer>
+    );
+  }
   if (!data) {
     return (
       <PageContainer>

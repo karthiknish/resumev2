@@ -45,6 +45,7 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { Loader2, Wand2, Settings, Link, BookOpen } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { checkAdminStatus } from "@/lib/authUtils";
 
 const toneOptions = [
   { value: "professional", label: "Professional" },
@@ -112,17 +113,13 @@ export default function AICreateBlog() {
   useEffect(() => {
     if (status === "loading") return;
     if (status === "unauthenticated") {
+      toast.error("Authentication required. Redirecting to signin...");
       router.push("/signin");
-    } else if (session) {
-      const isUserAdmin =
-        session.user.role === "admin" ||
-        session.user.isAdmin === true ||
-        session.user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-
-      if (!isUserAdmin) {
-        toast.error("Access Denied: Admin required.");
-        router.push("/");
-      }
+      return;
+    }
+    if (session && !checkAdminStatus(session)) {
+      toast.error("Access Denied: Admin privileges required.");
+      router.push("/");
     }
   }, [status, session, router]);
 
@@ -187,6 +184,16 @@ export default function AICreateBlog() {
       });
       toast.success("Draft saved successfully! Redirecting to editor...");
 
+      // --- Add gtag event tracking ---
+      if (typeof window.gtag === "function") {
+        window.gtag("event", "save_draft", {
+          event_category: "ai_generator",
+          event_label: generatedContent?.title || "Untitled Draft",
+          value: 1,
+        });
+      }
+      // --- End gtag ---
+
       setTimeout(() => {
         router.push(`/admin/blog/edit/${result.data._id}`);
       }, 1500);
@@ -233,6 +240,16 @@ export default function AICreateBlog() {
       setSuggestedCategories(result.categories || []);
 
       toast.success("Content and suggestions generated from link!");
+
+      // --- Add gtag event tracking ---
+      if (typeof window.gtag === "function") {
+        window.gtag("event", "generate_from_link", {
+          event_category: "ai_generator",
+          event_label: articleUrl, // Send the URL
+          value: 1,
+        });
+      }
+      // --- End gtag ---
     } catch (err) {
       setError(`Link Conversion Failed: ${err.message}`);
       toast.error(`Link Conversion Failed: ${err.message}`);
@@ -301,6 +318,17 @@ export default function AICreateBlog() {
 
   const addKeyword = (keywordToAdd) => {
     setKeywords((prev) => (prev ? `${prev}, ${keywordToAdd}` : keywordToAdd));
+    toast.info(`Added keyword: ${keywordToAdd}`);
+
+    // --- Add gtag event tracking ---
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "suggestion_used", {
+        event_category: "ai_generator",
+        event_label: `keyword: ${keywordToAdd}`,
+        value: 1,
+      });
+    }
+    // --- End gtag ---
   };
 
   const useSuggestedTopic = (suggestedTopic) => {
@@ -323,10 +351,72 @@ export default function AICreateBlog() {
 
   const addCategory = (categoryToAdd) => {
     toast.info(`Selected category: ${categoryToAdd}`);
+
+    // --- Add gtag event tracking ---
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "suggestion_used", {
+        event_category: "ai_generator",
+        event_label: `category: ${categoryToAdd}`,
+        value: 1,
+      });
+    }
+    // --- End gtag ---
   };
 
   const useDescription = (descriptionToUse) => {
     toast.info(`Selected description: ${descriptionToUse.substring(0, 50)}...`);
+
+    // --- Add gtag event tracking ---
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "suggestion_used", {
+        event_category: "ai_generator",
+        event_label: `description: ${descriptionToUse.substring(0, 30)}...`,
+        value: 1,
+      });
+    }
+    // --- End gtag ---
+  };
+
+  const handleGenerateFullPost = async () => {
+    if (!topic.trim()) {
+      toast.error("Please enter a topic first");
+      return;
+    }
+    setLoadingSection("generate");
+    setError("");
+    setGeneratedContent(null);
+
+    try {
+      const response = await fetch("/api/ai/generate-full-post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Failed");
+
+      setGeneratedContent({
+        title: result.title || "Generated Post",
+        content: result.content || "",
+      });
+
+      toast.success("Blog post generated!");
+
+      // --- Add gtag event tracking ---
+      if (typeof window.gtag === "function") {
+        window.gtag("event", "generate_full_post", {
+          event_category: "ai_generator",
+          event_label: topic || result.title || "Generated Post",
+          value: 1,
+        });
+      }
+      // --- End gtag ---
+    } catch (err) {
+      setError(`Generation Failed: ${err.message}`);
+      toast.error(`Generation Failed: ${err.message}`);
+    } finally {
+      setLoadingSection(null);
+    }
   };
 
   if (status === "loading") {
@@ -697,7 +787,7 @@ export default function AICreateBlog() {
                 <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card">
                   <CardContent className="pt-6">
                     <Button
-                      onClick={handleGenerate}
+                      onClick={handleGenerateFullPost}
                       className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg py-3"
                       disabled={loadingSection === "full"}
                     >

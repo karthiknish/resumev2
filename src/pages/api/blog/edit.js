@@ -5,12 +5,22 @@ import Blog from "@/models/Blog";
 import Subscriber from "@/models/Subscriber"; // Import Subscriber model
 import nodemailer from "nodemailer"; // Import nodemailer
 import mongoose from "mongoose"; // Import mongoose for ID validation
+import { checkAdminStatus } from "@/lib/authUtils"; // Import the utility
 
 export default async function handler(req, res) {
   // Check for authenticated session
   const session = await getServerSession(req, res, authOptions);
   if (!session) {
     return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  // Use the utility function for the check
+  const isAdmin = checkAdminStatus(session);
+
+  if (!isAdmin) {
+    return res
+      .status(403)
+      .json({ message: "Forbidden: Admin privileges required" });
   }
 
   if (req.method !== "PUT") {
@@ -40,10 +50,6 @@ export default async function handler(req, res) {
     if (existingBlog.author) {
       isOwner = existingBlog.author.toString() === session.user.id;
     }
-    const isAdmin =
-      session.user.role === "admin" ||
-      session.user.isAdmin === true ||
-      session.user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
     if (!isOwner && !isAdmin) {
       return res
         .status(403)
@@ -64,12 +70,10 @@ export default async function handler(req, res) {
         _id: { $ne: id },
       }).lean();
       if (conflictingBlog) {
-        return res
-          .status(409)
-          .json({
-            success: false,
-            message: `Slug "${updateData.slug}" derived from title is already in use.`,
-          });
+        return res.status(409).json({
+          success: false,
+          message: `Slug "${updateData.slug}" derived from title is already in use.`,
+        });
       }
     }
     updateData.updatedAt = new Date(); // Manually set updatedAt
