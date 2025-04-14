@@ -41,8 +41,8 @@ export default function ChatHistoryTab() {
           );
         }
         const data = await response.json();
-        if (data.success && data.chatHistories) {
-          setChatHistories(data.chatHistories);
+        if (data.success && data.data && Array.isArray(data.data)) {
+          setChatHistories(data.data);
         } else {
           setChatHistories([]);
           setError("No chat histories found or invalid response format");

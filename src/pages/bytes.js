@@ -3,7 +3,13 @@ import Head from "next/head";
 import Link from "next/link";
 import { format } from "date-fns";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, ExternalLink, ChevronUp, ChevronDown } from "lucide-react";
+import {
+  Loader2,
+  ExternalLink,
+  ChevronUp,
+  ChevronDown,
+  Zap,
+} from "lucide-react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -89,18 +95,40 @@ function ByteSlide({ byte, isActive }) {
   );
 }
 
+// New Intro Slide Component
+function IntroSlide() {
+  return (
+    <div className="flex flex-col items-center justify-center h-full p-8 text-center text-white">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6, delay: 0.2, ease: "backOut" }}
+        className="max-w-lg"
+      >
+        <Zap className="w-16 h-16 mx-auto mb-6 text-blue-400 glow-blue-icon" />
+        <h1 className="text-5xl md:text-6xl font-bold mb-4 text-white font-calendas glow-text-blue">
+          Bytes
+        </h1>
+        <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
+          Quick updates, bite-sized thoughts, interesting links, and news snippets.
+        </p>
+        <p className="text-sm text-gray-500 mt-6">
+          (Scroll or use arrow keys to navigate)
+        </p>
+      </motion.div>
+    </div>
+  );
+}
+
 function BytesPage() {
   const [bytes, setBytes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const swiperRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [showHint, setShowHint] = useState(true);
 
   useEffect(() => {
     fetchBytes();
-    const hintTimer = setTimeout(() => setShowHint(false), 5000);
-    return () => clearTimeout(hintTimer);
   }, []);
 
   const fetchBytes = async () => {
@@ -187,46 +215,45 @@ function BytesPage() {
               modules={[Mousewheel, Keyboard]}
               className="h-full w-full"
             >
+              {/* --- Intro Slide --- */}
+              <SwiperSlide
+                key="intro-slide"
+                className="h-full w-full bg-gradient-to-br from-gray-900 via-black to-gray-900"
+              >
+                <IntroSlide />
+              </SwiperSlide>
+
+              {/* --- Map over actual bytes --- */}
               {bytes.map((byte, index) => (
                 <SwiperSlide
                   key={byte._id}
                   className="h-full w-full bg-gradient-to-br from-gray-900 via-black to-gray-900"
                 >
-                  <ByteSlide byte={byte} isActive={index === activeIndex} />
+                  {/* Pass isActive based on index + 1 because of the intro slide */}
+                  <ByteSlide byte={byte} isActive={index + 1 === activeIndex} />
                 </SwiperSlide>
               ))}
             </Swiper>
 
-            <div className="absolute top-1/2 right-5 transform -translate-y-1/2 z-10 hidden md:flex flex-col space-y-3">
-              <button
-                onClick={goPrev}
-                className="p-2.5 rounded-full bg-white/10 hover:bg-white/25 text-white backdrop-blur-md transition-all duration-200 hover:scale-110 border border-white/20"
-                aria-label="Previous Byte"
-              >
-                <ChevronUp className="w-6 h-6" />
-              </button>
-              <button
-                onClick={goNext}
-                className="p-2.5 rounded-full bg-white/10 hover:bg-white/25 text-white backdrop-blur-md transition-all duration-200 hover:scale-110 border border-white/20"
-                aria-label="Next Byte"
-              >
-                <ChevronDown className="w-6 h-6" />
-              </button>
-            </div>
-
-            <AnimatePresence>
-              {showHint && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ delay: 0.5, duration: 0.5 }}
-                  className="absolute bottom-5 left-1/2 transform -translate-x-1/2 z-10 text-xs text-gray-400 bg-black/50 px-3 py-1 rounded-full backdrop-blur-sm pointer-events-none"
+            {/* Desktop Navigation Arrows - Show only if there are bytes */}
+            {bytes.length > 0 && (
+              <div className="absolute top-1/2 right-5 transform -translate-y-1/2 z-10 hidden md:flex flex-col space-y-3">
+                <button
+                  onClick={goPrev}
+                  className="p-2.5 rounded-full bg-white/10 hover:bg-white/25 text-white backdrop-blur-md transition-all duration-200 hover:scale-110 border border-white/20"
+                  aria-label="Previous"
                 >
-                  Scroll or use keyboard arrows to navigate
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  <ChevronUp className="w-6 h-6" />
+                </button>
+                <button
+                  onClick={goNext}
+                  className="p-2.5 rounded-full bg-white/10 hover:bg-white/25 text-white backdrop-blur-md transition-all duration-200 hover:scale-110 border border-white/20"
+                  aria-label="Next"
+                >
+                  <ChevronDown className="w-6 h-6" />
+                </button>
+              </div>
+            )}
           </>
         ) : (
           <div className="h-full w-full flex items-center justify-center text-gray-400">

@@ -8,8 +8,20 @@ export default async function handler(req, res) {
   await dbConnect();
   const session = await getServerSession(req, res, authOptions);
 
+  // --- Add Logging ---
+  console.log(
+    "[/api/chat-histories] Session object:",
+    JSON.stringify(session, null, 2)
+  );
+  console.log(
+    "[/api/chat-histories] NEXT_PUBLIC_ADMIN_EMAIL:",
+    process.env.NEXT_PUBLIC_ADMIN_EMAIL
+  );
+  // --- End Logging ---
+
   // Use the utility function for the check
   const isAdmin = checkAdminStatus(session);
+  console.log("[/api/chat-histories] Admin check result:", isAdmin); // Log check result
 
   if (!session || !isAdmin) {
     return res
