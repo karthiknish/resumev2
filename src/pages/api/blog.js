@@ -20,7 +20,15 @@ export default async function handler(req, res) {
       case "GET":
         // Handle fetching single blog by slug or ID, or paginated list
         if (req.query.slug) {
+          console.log(
+            `[/api/blog] Attempting to fetch blog with slug: ${req.query.slug}`
+          ); // Log requested slug
           const blog = await getBlogBySlug(req.query.slug);
+          console.log(
+            `[/api/blog] Data returned by getBlogBySlug for slug '${req.query.slug}':`,
+            JSON.stringify(blog, null, 2)
+          ); // Log the result
+
           if (!blog)
             return res
               .status(404)
