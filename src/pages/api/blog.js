@@ -33,7 +33,11 @@ export default async function handler(req, res) {
             return res
               .status(404)
               .json({ success: false, message: "Blog not found" });
-          return res.status(200).json({ success: true, data: blog });
+          return res.status(200).json({
+            success: true,
+            message: "Blog post retrieved successfully",
+            data: blog,
+          });
         }
         if (req.query.id) {
           if (!mongoose.Types.ObjectId.isValid(req.query.id)) {
@@ -46,7 +50,11 @@ export default async function handler(req, res) {
             return res
               .status(404)
               .json({ success: false, message: "Blog not found" });
-          return res.status(200).json({ success: true, data: blog });
+          return res.status(200).json({
+            success: true,
+            message: "Blog post retrieved successfully",
+            data: blog,
+          });
         }
         // Handle general fetching with potential filters from query
         const page = parseInt(req.query.page, 10) || 1;
@@ -62,13 +70,11 @@ export default async function handler(req, res) {
               ...JSON.parse(decodeURIComponent(req.query.find)),
             };
           } catch (e) {
-            return res
-              .status(400)
-              .json({
-                success: false,
-                message:
-                  "Invalid 'find' query parameter format. Must be URL-encoded JSON.",
-              });
+            return res.status(400).json({
+              success: false,
+              message:
+                "Invalid 'find' query parameter format. Must be URL-encoded JSON.",
+            });
           }
         }
 
@@ -90,7 +96,12 @@ export default async function handler(req, res) {
           sort
         );
 
-        return res.status(200).json({ success: true, data: blogs, pagination });
+        return res.status(200).json({
+          success: true,
+          message: "Blog posts retrieved successfully",
+          data: blogs,
+          pagination,
+        });
 
       case "POST":
         // Handle blog creation
@@ -112,18 +123,20 @@ export default async function handler(req, res) {
         }
 
         const newBlog = await createBlog(req.body);
-        return res.status(201).json({ success: true, data: newBlog });
+        return res.status(201).json({
+          success: true,
+          message: "Blog post created successfully",
+          data: newBlog,
+        });
 
       case "PUT":
         // Handle blog update
         const { id, ...updateFields } = req.body;
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-          return res
-            .status(400)
-            .json({
-              success: false,
-              message: "Valid Blog ID is required for update.",
-            });
+          return res.status(400).json({
+            success: false,
+            message: "Valid Blog ID is required for update.",
+          });
         }
 
         // Determine if it's a status-only update
@@ -135,12 +148,10 @@ export default async function handler(req, res) {
         if (!isStatusUpdateOnly) {
           const validationResultUpdate = validateBlogData(updateFields);
           if (!validationResultUpdate.isValid) {
-            return res
-              .status(400)
-              .json({
-                success: false,
-                message: validationResultUpdate.message,
-              });
+            return res.status(400).json({
+              success: false,
+              message: validationResultUpdate.message,
+            });
           }
         }
 
@@ -149,26 +160,32 @@ export default async function handler(req, res) {
           return res
             .status(404)
             .json({ success: false, message: "Blog not found for update" });
-        return res.status(200).json({ success: true, data: updatedBlog });
+        return res.status(200).json({
+          success: true,
+          message: "Blog post updated successfully",
+          data: updatedBlog,
+        });
 
       case "DELETE":
         // Handle blog deletion
         const deleteId = req.query.id;
         if (!deleteId || !mongoose.Types.ObjectId.isValid(deleteId)) {
-          return res
-            .status(400)
-            .json({
-              success: false,
-              message:
-                "Valid Blog ID is required in query parameter for deletion.",
-            });
+          return res.status(400).json({
+            success: false,
+            message:
+              "Valid Blog ID is required in query parameter for deletion.",
+          });
         }
         const deletedBlog = await deleteBlog(deleteId);
         if (!deletedBlog)
           return res
             .status(404)
             .json({ success: false, message: "Blog not found for deletion" });
-        return res.status(200).json({ success: true, data: deletedBlog }); // Consider returning 204 No Content
+        return res.status(200).json({
+          success: true,
+          message: "Blog post deleted successfully",
+          data: deletedBlog,
+        }); // Consider returning 204 No Content
 
       default:
         res.setHeader("Allow", ["GET", "POST", "PUT", "DELETE"]);
