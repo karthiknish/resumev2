@@ -511,7 +511,7 @@ export default function AICreateBlog() {
         <title>{editedTitle || "AI Blog Creator"}</title>
       </Head>
       {/* Wrap content with PageContainer */}
-      <PageContainer className="mt-10">
+      <PageContainer className="mt-20">
         <div className="max-w-6xl mx-auto">
           {" "}
           {/* Removed min-h-screen bg-black p-8 */}

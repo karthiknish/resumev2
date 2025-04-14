@@ -105,20 +105,21 @@ ${sanitizedText}
     }
 
     // Clean potential markdown code block fences
-    let content = aiResponse.trim();
-    if (content.startsWith("```html")) {
-      content = content.slice(7);
-      if (content.endsWith("```")) {
-        content = content.slice(0, -3);
-      }
-    } else if (content.startsWith("```")) {
-      // Handle generic ```
-      content = content.slice(3);
-      if (content.endsWith("```")) {
-        content = content.slice(0, -3);
-      }
-    }
-    content = content.trim(); // Trim again
+    let content = aiResponse
+      .replace(/^\s*```(?:html)?\s*\n?|\s*\n?```\s*$/g, "")
+      .trim();
+    // if (content.startsWith("```html")) {
+    //   content = content.slice(7);
+    //   if (content.endsWith("```")) {
+    //     content = content.slice(0, -3);
+    //   }
+    // } else if (content.startsWith("```")) { // Handle generic ```
+    //     content = content.slice(3);
+    //     if (content.endsWith("```")) {
+    //         content = content.slice(0, -3);
+    //     }
+    // }
+    // content = content.trim(); // Trim again -- Handled by regex replace + trim()
 
     return res.status(200).json({
       success: true,

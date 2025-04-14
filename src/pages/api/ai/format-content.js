@@ -79,14 +79,19 @@ export default async function handler(req, res) {
       maxOutputTokens: 8192,
     };
 
-    const formattedContent = await callGemini(
+    const formattedContentRaw = await callGemini(
       formattingPrompt,
       generationConfig
     );
 
-    if (!formattedContent) {
-      throw new Error("Failed to format content");
+    if (!formattedContentRaw) {
+      throw new Error("AI failed to return formatted content.");
     }
+
+    // More robust cleanup using regex to remove potential ```html ... ``` fences
+    const formattedContent = formattedContentRaw
+      .replace(/^\s*```(?:html)?\s*\n?|\s*\n?```\s*$/g, "")
+      .trim();
 
     return res.status(200).json({
       success: true,

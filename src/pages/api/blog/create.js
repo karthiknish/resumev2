@@ -128,12 +128,6 @@ export default async function handler(req, res) {
       return res.status(400).json({ message: "Invalid field types" });
     }
 
-    // Convert HTML content to markdown if needed
-    let processedContent = content;
-    if (isHTML(content)) {
-      processedContent = htmlToMarkdown(content);
-    }
-
     // Create slug from title
     const slug = title
       .toLowerCase()
@@ -152,7 +146,7 @@ export default async function handler(req, res) {
     // Create new blog post
     const blog = await Blog.create({
       title: title.trim(),
-      content: processedContent,
+      content: content, // Save the original content (HTML)
       description: excerpt.trim(),
       imageUrl: imageUrl.trim(),
       tags: Array.isArray(tags) ? tags : [],

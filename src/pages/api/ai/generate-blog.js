@@ -115,19 +115,19 @@ export default async function handler(req, res) {
     let rawContent = generatedText.trim();
 
     // Clean potential markdown code block fences
-    let content = rawContent;
-    if (content.startsWith("```html")) {
-      content = content.slice(7);
-      if (content.endsWith("```")) {
-        content = content.slice(0, -3);
-      }
-    } else if (content.startsWith("```")) { // Handle generic ``` if ```html wasn't found
-        content = content.slice(3);
-        if (content.endsWith("```")) {
-            content = content.slice(0, -3);
-        }
-    }
-    content = content.trim(); // Trim again after potential removal
+    let content = rawContent.replace(/^\s*```(?:html)?\s*\n?|\s*\n?```\s*$/g, '').trim();
+    // if (content.startsWith("```html")) {
+    //   content = content.slice(7);
+    //   if (content.endsWith("```")) {
+    //     content = content.slice(0, -3);
+    //   }
+    // } else if (content.startsWith("```")) { // Handle generic ``` if ```html wasn't found
+    //     content = content.slice(3);
+    //     if (content.endsWith("```")) {
+    //         content = content.slice(0, -3);
+    //     }
+    // }
+    // content = content.trim(); // Trim again after potential removal -- Already handled by regex replace + trim()
 
     // If generated from outline, the AI might have included the title again
     if (outline) {

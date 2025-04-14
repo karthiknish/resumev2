@@ -246,19 +246,12 @@ export default async function handler(req, res) {
     const parsedData = parseAIResponse(aiResponseText);
 
     // Clean potential markdown code block fences from the body
-    if (parsedData.body?.startsWith("```html")) {
-      parsedData.body = parsedData.body.slice(7);
-      if (parsedData.body.endsWith("```")) {
-        parsedData.body = parsedData.body.slice(0, -3);
-      }
-    } else if (parsedData.body?.startsWith("```")) {
-      // Handle generic ```
-      parsedData.body = parsedData.body.slice(3);
-      if (parsedData.body.endsWith("```")) {
-        parsedData.body = parsedData.body.slice(0, -3);
-      }
+    if (parsedData.body) {
+      // Check if body exists before cleaning
+      parsedData.body = parsedData.body
+        .replace(/^\s*```(?:html)?\s*\n?|\s*\n?```\s*$/g, "")
+        .trim();
     }
-    parsedData.body = parsedData.body?.trim(); // Trim again
 
     // --- Save as Draft Blog Post ---
     const newBlogPost = new Blog({
