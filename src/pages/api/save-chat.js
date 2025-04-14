@@ -1,7 +1,6 @@
 // src/pages/api/save-chat.js
 // This endpoint saves chat sessions to MongoDB
 import dbConnect from "@/lib/dbConnect";
-import clientPromise from "@/lib/mongodb";
 import ChatHistory, { createChatRecord } from "@/models/ChatHistory";
 // Import mongoose for findOneAndUpdate options
 import mongoose from "mongoose";
