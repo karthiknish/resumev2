@@ -1,6 +1,6 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import TextStyle from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -32,6 +32,7 @@ import Highlight from "@tiptap/extension-highlight";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import TextAlign from "@tiptap/extension-text-align";
+import { toast } from "sonner";
 
 const MenuBar = ({ editor }) => {
   if (!editor) {
@@ -320,42 +321,112 @@ const MenuBar = ({ editor }) => {
 };
 
 const TipTapEditor = ({ content, onUpdate }) => {
+  const [isCompleting, setIsCompleting] = useState(false);
+
   const editor = useEditor({
     extensions: [
       StarterKit,
       TextStyle,
       Color,
       UnderlineExtension,
-      Highlight,
-      Link,
+      Highlight.configure({ multicolor: true }),
+      Link.configure({
+        openOnClick: true,
+        autolink: true,
+        defaultProtocol: "https",
+      }),
       Image,
       TextAlign.configure({
         types: ["heading", "paragraph"],
       }),
       Placeholder.configure({
-        placeholder: "Write your blog post content here...",
+        placeholder:
+          "Start writing your blog post here... Press Tab for AI completion.",
       }),
     ],
-    content,
+    content: content,
+    editorProps: {
+      attributes: {
+        class:
+          "prose prose-invert max-w-none focus:outline-none min-h-[400px] bg-gray-900 text-white border border-gray-700 rounded-b-md p-4",
+      },
+      handleKeyDown: (view, event) => {
+        if (event.key === "Tab" && !event.shiftKey) {
+          event.preventDefault();
+
+          handleSentenceCompletion();
+
+          return true;
+        }
+        return false;
+      },
+    },
     onUpdate: ({ editor }) => {
-      onUpdate(editor.getHTML());
+      const html = editor.getHTML();
+      onUpdate(html);
     },
   });
 
-  // Update content when it changes externally
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
-      editor.commands.setContent(content);
+      editor.commands.setContent(content, false);
     }
-  }, [editor, content]);
+  }, [content, editor]);
+
+  const handleSentenceCompletion = async () => {
+    if (!editor || isCompleting) return;
+
+    const { state } = editor;
+    const { from } = state.selection;
+
+    const textBeforeCursor = state.doc.textBetween(
+      Math.max(0, from - 500),
+      from,
+      "\n"
+    );
+
+    if (!textBeforeCursor.trim()) {
+      toast.info("Not enough context before cursor for AI completion.");
+      return;
+    }
+
+    setIsCompleting(true);
+    toast.loading("AI is completing...", { id: "completion-toast" });
+
+    try {
+      const response = await fetch("/api/ai/complete-sentence", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ textBeforeCursor }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success && data.completion) {
+        editor.chain().focus().insertContent(data.completion).run();
+        toast.success("AI completion inserted!", { id: "completion-toast" });
+      } else {
+        throw new Error(data.message || "Failed to get AI completion.");
+      }
+    } catch (error) {
+      console.error("Error fetching sentence completion:", error);
+      toast.error(`AI Completion Failed: ${error.message}`, {
+        id: "completion-toast",
+      });
+    } finally {
+      setIsCompleting(false);
+    }
+  };
 
   return (
-    <div className="border border-gray-700 rounded-md bg-gray-900 text-gray-200">
+    <div className="bg-gray-900 border border-gray-700 rounded-md">
       <MenuBar editor={editor} />
-      <EditorContent
-        editor={editor}
-        className="p-4 min-h-[300px] prose prose-invert max-w-none prose-headings:text-white prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:text-gray-300 prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-ul:text-gray-300 prose-ol:text-gray-300 prose-li:my-1 font-calendas prose-blockquote:border-blue-500 prose-blockquote:bg-blue-900/20 prose-blockquote:p-4 prose-blockquote:rounded-md prose-img:rounded-lg prose-img:shadow-md prose-table:bg-gray-800 prose-table:text-gray-200 prose-th:bg-gray-700 prose-td:bg-gray-800 prose-code:bg-gray-900 prose-code:text-blue-400 prose-pre:bg-gray-900 prose-pre:text-blue-300 prose-pre:rounded prose-pre:p-4 prose-pre:overflow-x-auto"
-      />
+      {isCompleting && (
+        <div className="absolute top-0 right-0 p-2 text-xs text-blue-400 animate-pulse">
+          AI thinking...
+        </div>
+      )}
+      <EditorContent editor={editor} />
     </div>
   );
 };

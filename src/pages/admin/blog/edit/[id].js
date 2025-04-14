@@ -187,25 +187,11 @@ function Edit() {
       return;
     }
 
-    // Strip leading/trailing triple backticks and language specifiers from markdown content
-    let cleanedContent = formData.content || "";
-    cleanedContent = cleanedContent.trim();
-    if (cleanedContent.startsWith("```markdown")) {
-      cleanedContent = cleanedContent.slice(10);
-    }
-    if (cleanedContent.startsWith("```")) {
-      cleanedContent = cleanedContent.slice(3);
-    }
-    if (cleanedContent.endsWith("```")) {
-      cleanedContent = cleanedContent.slice(0, -3);
-    }
-    cleanedContent = cleanedContent.trim();
-
     const dataToUpdate = {
       id: blogId,
       title: formData.title,
       imageUrl: formData.imageUrl,
-      content: cleanedContent,
+      content: formData.content || "", // Use content directly
       description: formData.description,
       excerpt: formData.excerpt, // Also send excerpt for backend compatibility
       category: formData.category,

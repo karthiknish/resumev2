@@ -78,24 +78,24 @@ export default async function handler(req, res) {
             : "Optimize for relevant keywords related to the topic naturally within the content."
         }
         ${outlineInstructions}
-        - **Readability:** Ensure paragraphs are well-structured and sentences flow logically. Use transition words where appropriate. Use markdown formatting effectively (bold, lists, code blocks).
-        - **Output:** Return the entire response, starting *directly* with the markdown title (# Title), as a single block of valid, well-formatted markdown text. Do not include any preamble, notes, disclaimers, or explanations before or after the markdown content itself.
+        - **Readability:** Ensure paragraphs are well-structured and sentences flow logically. Use transition words where appropriate. Use HTML formatting effectively (`<h2>`, `<p>`, `<strong>`, `<ul>`, `<li>`, etc.).
+        - **Output:** Return the entire response, starting *directly* with the HTML title (`<h1>Title</h1>`), as a single block of valid, well-formatted HTML. Do not include any preamble, notes, disclaimers, or explanations before or after the HTML content itself.
       `;
       // Keep default maxOutputTokens for full post generation
     } else {
       // --- Prompt for generating DRAFT from TITLE only ---
       prompt = `
-        Act as a content writer. Generate a draft blog post in markdown format based *only* on the provided title.
+        Act as a content writer. Generate a draft blog post in simple HTML format based *only* on the provided title.
 
         **Title:** "${effectiveTopic}"
 
         **Instructions:**
-        - Create a reasonable introduction (1-2 paragraphs).
-        - Develop 2-4 body paragraphs discussing potential aspects related to the title.
-        - Write a brief conclusion (1 paragraph).
-        - Use standard markdown formatting (paragraphs, maybe one or two ## subheadings if appropriate). Keep it relatively simple.
+        - Create a reasonable introduction (1-2 paragraphs using `<p>` tags).
+        - Develop 2-4 body paragraphs discussing potential aspects related to the title (using `<p>` tags).
+        - Write a brief conclusion (1 paragraph using `<p>` tags).
+        - Use basic HTML formatting (paragraphs `<p>`, maybe one or two `<h2>` subheadings if appropriate). Keep it relatively simple.
         - Focus on generating coherent text relevant to the title.
-        - Output *only* the generated markdown content. Do not include the title itself (like '# Title') in the output. Do not add any preamble, notes, or explanations.
+        - Output *only* the generated HTML content (starting with `<p>` or `<h2>`). Do not include the title itself (like `<h1>Title</h1>`) in the output. Do not add any preamble, notes, or explanations.
       `;
       generationConfig.maxOutputTokens = 2048; // Use fewer tokens for a draft
     }
@@ -116,13 +116,14 @@ export default async function handler(req, res) {
 
     // If generated from outline, the AI might have included the title again
     if (outline) {
-      const titleMatch = content.match(/^#\s+(.+?)(\r?\n|$)/m);
+      // Match HTML H1 tag
+      const titleMatch = content.match(/^<h1>\s*(.+?)\s*<\/h1>(\r?\n|$)/im);
       if (titleMatch && titleMatch[1]) {
         // If AI included a title matching the outline/topic, remove it from content
         if (
           titleMatch[1].trim().toLowerCase() === effectiveTopic.toLowerCase()
         ) {
-          console.log("AI included title, removing it from content.");
+          console.log("AI included HTML title, removing it from content.");
           content = content.replace(titleMatch[0], "").trimStart();
         } else {
           // If AI generated a different title, maybe use it? For now, stick to effectiveTopic.

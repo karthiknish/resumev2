@@ -62,15 +62,9 @@ You are an expert blogger, analyst, and thought leader writing for Karthik Nisha
 - Highlight the broader significance, potential impact, and real-world applications of the topic.
 - Identify any gaps, biases, or limitations in the original article and address them in your post.
 - Provide actionable takeaways, recommendations, or next steps for readers.
-- Use a clear, logical structure with the following sections:
-  - **Introduction:** Set the stage, explain why the topic matters, and preview your unique angle.
-  - **Key Insights & Analysis:** Present the most important points, your critical analysis, and any new connections or implications.
-  - **Implications & Applications:** Discuss the broader impact, relevance to the reader, and potential future developments.
-  - **Actionable Takeaways:** Offer practical advice, recommendations, or next steps.
-  - **Conclusion:** Summarize your perspective and leave the reader with a thought-provoking closing.
-- Use markdown formatting (headings, lists, bold, etc.) where appropriate.
+- Use HTML formatting (headings <h2>, paragraphs <p>, lists <ul><li>, bold <strong>, etc.) where appropriate.
 - Do not reference the original article or its author.
-- Output only the markdown content.
+- Output only the HTML blog post content. Do not include any preamble or extra text.
 ${styleInstructions ? `- Style instructions: ${styleInstructions}` : ""}
 
 **Metadata:**

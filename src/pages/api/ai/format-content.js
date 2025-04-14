@@ -29,60 +29,75 @@ export default async function handler(req, res) {
     const { content } = req.body;
 
     if (!content || typeof content !== "string" || !content.trim()) {
-      return res
-        .status(400)
-        .json({
-          error: "Blog content is required and must be a non-empty string",
-        });
+      return res.status(400).json({
+        error: "Blog content is required and must be a non-empty string",
+      });
     }
 
-    // Step 1: Basic cleaning (optional, but can help)
+    // Step 1: Basic cleaning
     let cleanedContent = content
       .replace(/\r\n/g, "\n") // Normalize line breaks
       .replace(/\\{2,}/g, "\\") // Reduce multiple backslashes
       .replace(/ +\n/g, "\n") // Trim trailing spaces on lines
       .trim();
 
+    // Define HTML examples as constants to avoid parsing issues
+    const h2Example = "<h2>";
+    const pExample = "<p>";
+    const ulExample = "<ul><li>";
+    const olExample = "<ol><li>";
+    const strongExample = "<strong>";
+    const emExample = "<em>";
+    const codeExample = "<code>";
+    const preCodeExample = "<pre><code>";
+    const aExample = "<a>";
+    const imgExample = "<img>";
+
     // Step 2: Call Gemini API for formatting refinement
     const formattingPrompt = `
-      Act as a markdown formatting expert. Review the following markdown text and improve its formatting for readability, structure, and consistency according to standard markdown best practices.
+      Act as an HTML formatting expert. Review the following potentially messy HTML text and improve its formatting for readability, structure, and consistency according to standard HTML best practices.
 
       **Formatting Rules to Apply:**
-      - **Headings:** Ensure headings (#, ##, ###) are used logically and consistently. Add headings if sections lack them. Ensure proper spacing before and after headings (one blank line). Correct malformed headings (e.g., #Heading without space).
-      - **Paragraphs:** Break down long paragraphs (more than 5-6 sentences) into shorter, more readable ones. Ensure single blank lines separate paragraphs.
-      - **Lists:** Convert sequences of related items into bulleted (-) or numbered (1.) lists where appropriate. Ensure correct list item indentation and spacing.
-      - **Emphasis:** Apply **bold text** to key terms, concepts, or phrases for emphasis, but use it sparingly and strategically. Do not bold entire sentences or paragraphs. Use *italic text* for minor emphasis if needed.
-      - **Code Blocks:** Ensure code snippets are enclosed in proper markdown code blocks (\`\`\`language\\ncode\\n\`\`\`) with language identifiers if possible.
-      - **Links & Images:** Ensure markdown links \`[text](url)\` and images \`![alt](url)\` are correctly formatted.
-      - **Whitespace:** Remove excessive blank lines (more than one consecutive blank line). Ensure consistent spacing around punctuation. Trim leading/trailing whitespace from lines.
+      - **Headings:** Ensure headings (e.g., ${h2Example}, <h3>) are used logically and consistently. Add appropriate heading tags if sections lack them. Ensure proper structure.
+      - **Paragraphs:** Ensure text content is wrapped in ${pExample} tags. Break down overly long paragraphs into shorter ones. Ensure proper spacing between paragraphs.
+      - **Lists:** Convert sequences of related items into unordered (${ulExample}) or ordered (${olExample}) lists where appropriate. Ensure correct list item structure with closing tags.
+      - **Emphasis:** Apply ${strongExample} tags for strong emphasis and ${emExample} tags for emphasis, but use them sparingly and semantically.
+      - **Code Blocks:** Ensure code snippets are enclosed in ${codeExample} tags for inline code or ${preCodeExample} blocks for multi-line code.
+      - **Links & Images:** Ensure links (${aExample}) and images (${imgExample}) are correctly formatted with necessary attributes (href, src, alt).
+      - **Whitespace:** Remove excessive whitespace within the HTML structure.
+      - **Validity & Structure:** Ensure tags are properly nested and closed. Clean up potentially malformed or invalid HTML snippets.
       - **Consistency:** Maintain a consistent style throughout the document.
 
-      **Input Markdown:**
-      ---
+      **Input HTML:**
       ${cleanedContent}
-      ---
 
-      **Output:** Return *only* the fully reformatted markdown text. Do not add any commentary, explanations, or preamble before or after the markdown content.
-    `;
+      **Output:** Return only the fully reformatted HTML text without any additional commentary.
+    `.trim();
 
-    // Use the utility function
     const generationConfig = {
-      temperature: 0.2, // Low temperature for deterministic formatting
-      maxOutputTokens: 8192, // Allow for potentially large content
+      temperature: 0.2,
+      maxOutputTokens: 8192,
     };
-    const formattedMarkdown = await callGemini(
+
+    const formattedContent = await callGemini(
       formattingPrompt,
       generationConfig
     );
 
+    if (!formattedContent) {
+      throw new Error("Failed to format content");
+    }
+
     return res.status(200).json({
       success: true,
-      data: formattedMarkdown,
+      data: formattedContent,
     });
   } catch (error) {
     console.error("Error formatting content:", error);
-    return res
-      .status(500)
-      .json({ error: "Internal server error", message: error.message });
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error",
+      message: error.message,
+    });
   }
 }
