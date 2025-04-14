@@ -1,6 +1,6 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import TextStyle from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -26,12 +26,21 @@ import {
   AlignRight,
   Link as LinkIcon,
   Image as ImageIcon,
+  Palette,
+  Superscript as SuperscriptIcon,
+  Subscript as SubscriptIcon,
+  ListTodo,
+  RemoveFormatting,
 } from "lucide-react";
 import UnderlineExtension from "@tiptap/extension-underline";
 import Highlight from "@tiptap/extension-highlight";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import TextAlign from "@tiptap/extension-text-align";
+import Superscript from "@tiptap/extension-superscript";
+import Subscript from "@tiptap/extension-subscript";
+import TaskList from "@tiptap/extension-task-list";
+import TaskItem from "@tiptap/extension-task-item";
 import { toast } from "sonner";
 
 const MenuBar = ({ editor }) => {
@@ -56,6 +65,62 @@ const MenuBar = ({ editor }) => {
       </span>
     </div>
   );
+
+  // Color Picker Component
+  const ColorPickerButton = ({ editor }) => {
+    const [showPicker, setShowPicker] = useState(false);
+    const colors = [
+      "#9CA3AF", // Gray
+      "#EF4444", // Red
+      "#F59E0B", // Amber
+      "#10B981", // Green
+      "#3B82F6", // Blue
+      "#8B5CF6", // Violet
+    ];
+
+    const handleColorClick = (color) => {
+      editor.chain().focus().setColor(color).run();
+      setShowPicker(false);
+    };
+
+    return (
+      <div className="relative">
+        <MenuButton
+          onClick={() => setShowPicker(!showPicker)}
+          className={`p-1 px-2 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-50`}
+          title="Text Color"
+        >
+          <Palette className="w-4 h-4" />
+        </MenuButton>
+        {showPicker && (
+          <div className="absolute z-10 top-full mt-1 p-2 bg-gray-800 border border-gray-700 rounded shadow-lg flex gap-1">
+            {colors.map((color) => (
+              <button
+                key={color}
+                type="button"
+                onClick={() => handleColorClick(color)}
+                className="w-5 h-5 rounded-full border border-gray-600 hover:scale-110 transition-transform"
+                style={{ backgroundColor: color }}
+                title={`Set color to ${color}`}
+              />
+            ))}
+            <button
+              key="unset"
+              type="button"
+              onClick={() => {
+                editor.chain().focus().unsetColor().run();
+                setShowPicker(false);
+              }}
+              className="w-5 h-5 rounded-full border border-gray-600 bg-white text-black flex items-center justify-center text-xs hover:scale-110 transition-transform"
+              title="Remove Color"
+            >
+              X
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="flex flex-wrap gap-2 mb-4 p-2 bg-gray-800 rounded-md">
@@ -316,6 +381,57 @@ const MenuBar = ({ editor }) => {
       >
         <Minus className="w-4 h-4" />
       </MenuButton>
+
+      {/* Superscript/Subscript */}
+      <MenuButton
+        onClick={() => editor.chain().focus().toggleSuperscript().run()}
+        disabled={!editor.can().chain().focus().toggleSuperscript().run()}
+        className={`p-1 px-2 rounded ${
+          editor.isActive("superscript")
+            ? "bg-blue-600"
+            : "bg-gray-700 hover:bg-gray-600"
+        } disabled:opacity-50`}
+        title="Superscript"
+      >
+        <SuperscriptIcon className="w-4 h-4" />
+      </MenuButton>
+      <MenuButton
+        onClick={() => editor.chain().focus().toggleSubscript().run()}
+        disabled={!editor.can().chain().focus().toggleSubscript().run()}
+        className={`p-1 px-2 rounded ${
+          editor.isActive("subscript")
+            ? "bg-blue-600"
+            : "bg-gray-700 hover:bg-gray-600"
+        } disabled:opacity-50`}
+        title="Subscript"
+      >
+        <SubscriptIcon className="w-4 h-4" />
+      </MenuButton>
+
+      {/* Color Picker */}
+      <ColorPickerButton editor={editor} />
+
+      {/* Clear Formatting */}
+      <MenuButton
+        onClick={() => editor.chain().focus().unsetAllMarks().run()}
+        className="p-1 px-2 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-50"
+        title="Clear Formatting"
+      >
+        <RemoveFormatting className="w-4 h-4" />
+      </MenuButton>
+
+      {/* Task List Button */}
+      <MenuButton
+        onClick={() => editor.chain().focus().toggleTaskList().run()}
+        className={`p-1 px-2 rounded ${
+          editor.isActive("taskList")
+            ? "bg-blue-600"
+            : "bg-gray-700 hover:bg-gray-600"
+        } disabled:opacity-50`}
+        title="Task List"
+      >
+        <ListTodo className="w-4 h-4" />
+      </MenuButton>
     </div>
   );
 };
@@ -342,6 +458,12 @@ const TipTapEditor = ({ content, onUpdate }) => {
       Placeholder.configure({
         placeholder:
           "Start writing your blog post here... Press Tab for AI completion.",
+      }),
+      Superscript,
+      Subscript,
+      TaskList,
+      TaskItem.configure({
+        nested: true, // Allow nested task lists
       }),
     ],
     content: content,
