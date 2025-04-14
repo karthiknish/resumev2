@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   AiOutlineLoading3Quarters,
   AiOutlineRobot,
@@ -12,34 +12,74 @@ import {
   AiOutlineCheck,
   AiOutlinePicture,
   AiOutlineFormatPainter,
-  AiOutlineBulb, // Icon for keyword suggestions
-  AiOutlineTags, // Icon for topic suggestions
-  AiOutlineGlobal, // Icon for trending news
+  AiOutlineBulb,
+  AiOutlineTags,
+  AiOutlineGlobal,
+  AiOutlineClose,
 } from "react-icons/ai";
 import { FiRefreshCw, FiPlus } from "react-icons/fi";
-import { IoMdClose } from "react-icons/io";
-import PageContainer from "@/components/PageContainer"; // Import PageContainer
-import TipTapRenderer from "@/components/TipTapRenderer"; // Import TipTapRenderer
-import TipTapEditor from "@/components/TipTapEditor"; // Import TipTapEditor
+import PageContainer from "@/components/PageContainer";
+import TipTapRenderer from "@/components/TipTapRenderer";
+import TipTapEditor from "@/components/TipTapEditor";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
+import { Loader2, Wand2, Settings, Link, BookOpen } from "lucide-react";
+
+const toneOptions = [
+  { value: "professional", label: "Professional" },
+  { value: "casual", label: "Casual" },
+  { value: "informative", label: "Informative" },
+  { value: "conversational", label: "Conversational" },
+  { value: "enthusiastic", label: "Enthusiastic" },
+  { value: "technical", label: "Technical" },
+];
+
+const lengthOptions = [
+  { value: "500", label: "Short (~500 words)" },
+  { value: "800", label: "Medium (~800 words)" },
+  { value: "1200", label: "Long (~1200 words)" },
+  { value: "1500", label: "Very Long (~1500 words)" },
+  { value: "2000", label: "Epic (~2000 words)" },
+];
 
 export default function AICreateBlog() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
   const [topic, setTopic] = useState("");
-  const [tone, setTone] = useState("professional");
-  const [length, setLength] = useState("800");
+  const [tone, setTone] = useState(toneOptions[0].value);
+  const [length, setLength] = useState(lengthOptions[1].value);
   const [keywords, setKeywords] = useState("");
-  const [isGenerating, setIsGenerating] = useState(false);
   const [generatedContent, setGeneratedContent] = useState(null);
   const [error, setError] = useState("");
+  const [saveSuccess, setSaveSuccess] = useState(false);
+
+  const [isGenerating, setIsGenerating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedContent, setEditedContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false);
 
-  // Pexels image search states
   const [showImageSearch, setShowImageSearch] = useState(false);
   const [imageSearchQuery, setImageSearchQuery] = useState("");
   const [isSearchingImages, setIsSearchingImages] = useState(false);
@@ -52,45 +92,40 @@ export default function AICreateBlog() {
   const [isFormatting, setIsFormatting] = useState(false);
   const [formatSuccess, setFormatSuccess] = useState(false);
 
-  // Blog-from-link states
   const [articleUrl, setArticleUrl] = useState("");
   const [styleInstructions, setStyleInstructions] = useState("");
   const [isConvertingLink, setIsConvertingLink] = useState(false);
 
-  // Keyword suggestion states
   const [isSuggestingKeywords, setIsSuggestingKeywords] = useState(false);
   const [suggestedKeywords, setSuggestedKeywords] = useState([]);
 
-  // Outline generation states
   const [isGeneratingOutline, setIsGeneratingOutline] = useState(false);
-  const [generatedOutline, setGeneratedOutline] = useState(null); // { title: string, headings: string[] }
+  const [generatedOutline, setGeneratedOutline] = useState(null);
 
-  // Topic suggestion states
   const [isSuggestingTopics, setIsSuggestingTopics] = useState(false);
   const [suggestedTopics, setSuggestedTopics] = useState([]);
 
-  // Trending news states
-  const [isLoadingNews, setIsLoadingNews] = useState(false);
-  const [trendingNews, setTrendingNews] = useState([]); // Array of { headline: string, summary: string }
+  const [loadingSection, setLoadingSection] = useState(null);
 
-  const toneOptions = [
-    "professional",
-    "casual",
-    "informative",
-    "conversational",
-    "enthusiastic",
-    "technical",
-  ];
-
-  const lengthOptions = ["500", "800", "1200", "1500", "2000"];
+  const [saveStatus, setSaveStatus] = useState({ state: "idle", message: "" });
 
   useEffect(() => {
+    if (status === "loading") return;
     if (status === "unauthenticated") {
       router.push("/signin");
-    }
-  }, [status, router]);
+    } else if (session) {
+      const isUserAdmin =
+        session.user.role === "admin" ||
+        session.user.isAdmin === true ||
+        session.user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
-  // Set initial image search query based on topic or keywords
+      if (!isUserAdmin) {
+        toast.error("Access Denied: Admin required.");
+        router.push("/");
+      }
+    }
+  }, [status, session, router]);
+
   useEffect(() => {
     if (generatedContent && !imageSearchQuery) {
       if (keywords) {
@@ -101,236 +136,108 @@ export default function AICreateBlog() {
     }
   }, [generatedContent, keywords, topic, imageSearchQuery]);
 
-  const handleGenerate = async () => {
-    if (!topic.trim()) {
-      setError("Please enter a topic");
+  const handleSaveDraft = useCallback(async () => {
+    if (
+      !generatedContent?.title?.trim() ||
+      !generatedContent?.content?.trim()
+    ) {
+      setError("Generated title and content are required to save draft.");
+      toast.error("Generated title and content are required to save draft.");
       return;
     }
 
+    setLoadingSection("save");
+    setSaveStatus({ state: "loading", message: "" });
     setError("");
-    setIsGenerating(true);
-    setGeneratedContent(null); // Clear previous full content
-    setSelectedImage(null);
-    // Keep suggested keywords, but clear outline if generating full post directly
-    // setSuggestedKeywords([]);
-    // setGeneratedOutline(null); // Clear outline if generating full post without using outline first
 
     try {
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = generatedContent.content;
+      const excerpt =
+        tempDiv.textContent?.substring(0, 160) + "..." ||
+        generatedContent.title;
+
       const keywordsArray = keywords
         .split(",")
         .map((k) => k.trim())
         .filter((k) => k);
 
-      const response = await fetch("/api/ai/generate-blog", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          topic: generatedOutline?.title || topic, // Use outline title if available
-          tone,
-          length: parseInt(length),
-          keywords: keywordsArray.length > 0 ? keywordsArray : undefined,
-          outline: generatedOutline, // Pass the generated outline
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Failed to generate content");
-      }
-
-      setGeneratedContent(result.data);
-      setEditedTitle(result.data.title);
-      setEditedContent(result.data.content);
-
-      // Auto-search for images based on the first keyword or topic
-      if (keywordsArray.length > 0) {
-        setImageSearchQuery(keywordsArray[0]);
-      } else {
-        setImageSearchQuery(topic);
-      }
-      // Suggest keywords based on the final topic/title used
-      handleSuggestKeywords(generatedOutline?.title || topic);
-    } catch (error) {
-      console.error("Error generating content:", error);
-      setError(error.message || "Failed to generate content");
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  const handleSearchImages = async (page = 1) => {
-    if (!imageSearchQuery.trim()) {
-      setError("Please enter an image search query");
-      return;
-    }
-
-    setError("");
-    setIsSearchingImages(true);
-
-    try {
-      // NOTE: Assuming you have a Pexels API endpoint set up
-      const response = await fetch(
-        `/api/pexels/search?query=${encodeURIComponent(
-          imageSearchQuery
-        )}&page=${page}&per_page=12`
-      );
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Failed to search for images");
-      }
-
-      setSearchResults(result.data.photos);
-      setTotalPages(Math.ceil(result.data.total_results / 12));
-      setCurrentPage(page);
-    } catch (error) {
-      console.error("Error searching for images:", error);
-      setError(error.message || "Failed to search for images");
-    } finally {
-      setIsSearchingImages(false);
-    }
-  };
-
-  const handleSelectImage = (image) => {
-    setSelectedImage(image);
-    setShowImageSearch(false);
-  };
-
-  const handleSaveBlog = async () => {
-    if (!editedTitle.trim() || !editedContent.trim()) {
-      setError("Title and content are required");
-      return;
-    }
-
-    setError("");
-    setIsSaving(true);
-
-    try {
-      // Extract a brief excerpt from the content
-      const excerpt =
-        editedContent
-          .replace(/[#*_]/g, "") // Remove markdown formatting for excerpt
-          .split("\n")
-          .filter((line) => line.trim().length > 0)[0] // Get first non-empty line
-          ?.substring(0, 150) + "..." || // Take first 150 chars
-        editedTitle; // Fallback to title if content is empty
-
-      // Use selected image URL or fallback to placeholder
-      const imageUrl = selectedImage
-        ? selectedImage.src.large
-        : `https://source.unsplash.com/random/1200x630/?${encodeURIComponent(
-            topic || "blog"
-          )}`; // Use topic for random image
-
       const response = await fetch("/api/blog/create", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: editedTitle,
-          content: editedContent,
+          title: generatedContent.title,
+          content: generatedContent.content,
           excerpt,
-          imageUrl,
-          tags: keywords
-            .split(",")
-            .map((k) => k.trim())
-            .filter((k) => k),
-          isPublished: false, // Save as draft by default
+          imageUrl: `https://source.unsplash.com/random/1200x630/?${encodeURIComponent(
+            topic || "ai blog"
+          )}`,
+          tags: keywordsArray,
+          isPublished: false,
+          category: "AI Generated",
         }),
       });
-
       const result = await response.json();
+      if (!response.ok)
+        throw new Error(result.message || "Failed to save draft");
 
-      if (!response.ok) {
-        throw new Error(result.message || "Failed to save blog post");
-      }
+      setSaveStatus({
+        state: "success",
+        message: "Draft saved! Redirecting...",
+      });
+      toast.success("Draft saved successfully! Redirecting to editor...");
 
-      setSaveSuccess(true);
-
-      // Redirect to edit page after a short delay
       setTimeout(() => {
-        router.push(`/admin/blog/edit/${result.data._id}`); // Use correct edit path
+        router.push(`/admin/blog/edit/${result.data._id}`);
       }, 1500);
-    } catch (error) {
-      console.error("Error saving blog post:", error);
-      setError(error.message || "Failed to save blog post");
+    } catch (err) {
+      const errorMsg = `Save Draft Failed: ${err.message}`;
+      setError(errorMsg);
+      setSaveStatus({ state: "error", message: err.message });
+      toast.error(errorMsg);
     } finally {
-      setIsSaving(false);
+      setLoadingSection(null);
     }
-  };
+  }, [generatedContent, keywords, topic, router]);
 
-  const toggleEditMode = () => {
-    setIsEditing(!isEditing);
-  };
-
-  // Handler for converting article link to blog
   const handleConvertLink = async () => {
-    if (!articleUrl.trim()) {
-      setError("Please enter an article URL");
+    if (!articleUrl.trim() || !articleUrl.startsWith("http")) {
+      toast.error("Please enter a valid URL");
       return;
     }
+    setLoadingSection("link");
     setError("");
-    setIsConvertingLink(true);
     setGeneratedContent(null);
-    setSelectedImage(null);
+    setGeneratedOutline(null);
+    setSuggestedKeywords([]);
 
     try {
       const response = await fetch("/api/ai/blog-from-link", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          url: articleUrl.trim(),
-          styleInstructions: styleInstructions.trim(),
-        }),
+        body: JSON.stringify({ url: articleUrl }),
       });
       const result = await response.json();
-      if (!response.ok) {
-        // Show a more user-friendly error for extraction/model issues
-        if (
-          result.error &&
-          (result.error.includes("Prompt cannot be empty") ||
-            result.error.includes(
-              "Could not extract sufficient article content"
-            ))
-        ) {
-          setError(
-            "Could not extract enough content from the provided link. Please check the URL or try a different article."
-          );
-        } else {
-          setError(result.error || "Failed to convert article link");
-        }
-        return;
-      }
+      if (!response.ok) throw new Error(result.error || "Failed");
+      setTopic(result.title);
       setGeneratedContent({ title: result.title, content: result.content });
-      setEditedTitle(result.title);
-      setEditedContent(result.content);
-      setArticleUrl("");
-      setStyleInstructions("");
-      // Optionally, auto-suggest keywords from the new content
-      handleSuggestKeywords(result.title);
-    } catch (error) {
-      console.error("Error converting article link:", error);
-      setError(error.message || "Failed to convert article link");
+      handleSuggestKeywords(result.content);
+      toast.success("Content generated from link!");
+    } catch (err) {
+      setError(`Link Conversion Failed: ${err.message}`);
+      toast.error(`Link Conversion Failed: ${err.message}`);
     } finally {
-      setIsConvertingLink(false);
+      setLoadingSection(null);
     }
   };
 
-  // Function to suggest keywords
-  const handleSuggestKeywords = async (currentTopic = topic) => {
-    // Accept topic override
-    if (!currentTopic.trim()) {
-      // Don't show error if topic is empty, just don't suggest
-      // setError("Please enter a topic first to suggest keywords.");
+  const handleSuggestKeywords = async (contentToAnalyze) => {
+    if (!topic && !contentToAnalyze) {
+      toast.info("Need a topic or content to suggest keywords.");
       return;
     }
+    setLoadingSection("keywords");
     setError("");
-    setIsSuggestingKeywords(true);
     setSuggestedKeywords([]);
 
     try {
@@ -338,34 +245,30 @@ export default function AICreateBlog() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: currentTopic,
-          contentSnippet: editedContent
-            ? editedContent.substring(0, 800)
-            : undefined,
+          title: topic,
+          contentSnippet: contentToAnalyze?.substring(0, 500),
         }),
       });
       const result = await response.json();
-      if (!response.ok) {
-        throw new Error(result.message || "Failed to suggest keywords");
-      }
+      if (!response.ok) throw new Error(result.message || "Failed");
       setSuggestedKeywords(result.keywords || []);
-    } catch (error) {
-      console.error("Error suggesting keywords:", error);
-      setError(error.message || "Failed to suggest keywords");
+      toast.success("Keywords suggested!");
+    } catch (err) {
+      setError(`Keyword Suggestion Failed: ${err.message}`);
+      toast.error(`Keyword Suggestion Failed: ${err.message}`);
     } finally {
-      setIsSuggestingKeywords(false);
+      setLoadingSection(null);
     }
   };
 
-  // Function to generate outline
   const handleGenerateOutline = async () => {
     if (!topic.trim()) {
-      setError("Please enter a topic first to generate an outline.");
+      toast.error("Please enter a topic first");
       return;
     }
+    setLoadingSection("outline");
     setError("");
-    setIsGeneratingOutline(true);
-    setGeneratedOutline(null); // Clear previous outline
+    setGeneratedOutline(null);
 
     try {
       const response = await fetch("/api/ai/generate-outline", {
@@ -374,808 +277,462 @@ export default function AICreateBlog() {
         body: JSON.stringify({ topic }),
       });
       const result = await response.json();
-      if (!response.ok) {
-        throw new Error(result.message || "Failed to generate outline");
-      }
-      setGeneratedOutline(result.outline);
-      // Suggest keywords based on the new outline/topic
-      handleSuggestKeywords(result.outline?.title || topic);
-    } catch (error) {
-      console.error("Error generating outline:", error);
-      setError(error.message || "Failed to generate outline");
+      if (!response.ok) throw new Error(result.message || "Failed");
+      setGeneratedOutline(result.data);
+      setTopic(result.data.title);
+      toast.success("Outline generated!");
+    } catch (err) {
+      setError(`Outline Generation Failed: ${err.message}`);
+      toast.error(`Outline Generation Failed: ${err.message}`);
     } finally {
-      setIsGeneratingOutline(false);
+      setLoadingSection(null);
     }
   };
 
-  // Function to add a suggested keyword to the input field
   const addKeyword = (keywordToAdd) => {
-    const currentKeywords = keywords
-      .split(",")
-      .map((k) => k.trim())
-      .filter((k) => k);
-    if (!currentKeywords.includes(keywordToAdd)) {
-      setKeywords([...currentKeywords, keywordToAdd].join(", "));
-    }
-    // Remove the keyword from suggestions after adding
-    setSuggestedKeywords(suggestedKeywords.filter((k) => k !== keywordToAdd));
+    setKeywords((prev) => (prev ? `${prev}, ${keywordToAdd}` : keywordToAdd));
   };
 
-  // Function to suggest topics
-  const handleSuggestTopics = async () => {
-    setError("");
-    setIsSuggestingTopics(true);
-    setSuggestedTopics([]);
-    try {
-      const response = await fetch("/api/ai/suggest-topics", {
-        method: "POST",
-      });
-      const result = await response.json();
-      if (!response.ok) {
-        throw new Error(result.message || "Failed to suggest topics");
-      }
-      setSuggestedTopics(result.topics || []);
-    } catch (error) {
-      console.error("Error suggesting topics:", error);
-      setError(error.message || "Failed to suggest topics");
-    } finally {
-      setIsSuggestingTopics(false);
-    }
-  };
-
-  // Function to use a suggested topic
   const useSuggestedTopic = (suggestedTopic) => {
     setTopic(suggestedTopic);
-    setSuggestedTopics([]); // Clear suggestions after selection
-    // Optionally clear other fields like keywords/outline
+    setGeneratedOutline(null);
+    setGeneratedContent(null);
+    setSuggestedTopics([]);
+    toast.info(`Using topic: "${suggestedTopic}"`);
+  };
+
+  const clearGeneratedContent = () => {
+    setGeneratedContent(null);
+    setTopic("");
+    setGeneratedOutline(null);
     setKeywords("");
     setSuggestedKeywords([]);
-    setGeneratedOutline(null);
-  };
-
-  // Function to fetch trending news
-  const handleFetchNews = async () => {
     setError("");
-    setIsLoadingNews(true);
-    setTrendingNews([]);
-    try {
-      const response = await fetch("/api/ai/get-trending-news", {
-        method: "POST",
-      });
-      const result = await response.json();
-      if (!response.ok) {
-        throw new Error(result.message || "Failed to fetch trending news");
-      }
-      setTrendingNews(result.news || []);
-    } catch (error) {
-      console.error("Error fetching trending news:", error);
-      setError(error.message || "Failed to fetch trending news");
-    } finally {
-      setIsLoadingNews(false);
-    }
-  };
-
-  const formatContent = async () => {
-    if (!editedContent.trim()) {
-      setError("Content is required for formatting");
-      return;
-    }
-
-    setIsFormatting(true);
-    setError("");
-
-    try {
-      const response = await fetch("/api/ai/format-content", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ content: editedContent }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Failed to format content");
-      }
-
-      setEditedContent(result.data);
-
-      // Show success message
-      setFormatSuccess(true);
-      setTimeout(() => setFormatSuccess(false), 2000);
-    } catch (error) {
-      console.error("Error formatting content:", error);
-      setError(error.message || "Failed to format content");
-    } finally {
-      setIsFormatting(false);
-    }
+    toast.info("Cleared generated content.");
   };
 
   if (status === "loading") {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
+        <Loader2 className="h-12 w-12 animate-spin text-blue-500" />
       </div>
     );
   }
 
   if (!session) {
-    // Should be redirected by useEffect, but good to have a fallback
     return null;
   }
 
   return (
     <>
       <Head>
-        <title>{editedTitle || "AI Blog Creator"}</title>
+        <title>AI Blog Post Generator</title>
       </Head>
-      {/* Wrap content with PageContainer */}
-      <PageContainer className="mt-20">
-        <div className="max-w-6xl mx-auto">
-          {" "}
-          {/* Removed min-h-screen bg-black p-8 */}
-          <div className="flex items-center justify-between mb-8">
-            <h1 className="text-3xl md:text-4xl font-medium text-white font-calendas">
-              <span className="flex items-center">
-                <AiOutlineRobot className="mr-3 text-blue-500" />
-                {editedTitle ? editedTitle : "AI Blog Creator"}
-              </span>
-            </h1>
-            <button
-              onClick={() => router.back()}
-              className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
-            >
-              Back
-            </button>
-          </div>
-          {error && (
-            <div className="mb-6 p-4 bg-red-900/30 border border-red-500 text-red-500 rounded-lg">
-              {error}
-            </div>
-          )}
-          {saveSuccess && (
-            <div className="mb-6 p-4 bg-green-900/30 border border-green-500 text-green-500 rounded-lg">
-              Blog post saved successfully! Redirecting to editor...
-            </div>
-          )}
-          {formatSuccess && (
-            <div className="mb-6 p-4 bg-green-900/30 border border-green-500 text-green-500 rounded-lg">
-              Content formatted successfully!
-            </div>
-          )}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Input Form */}
-            <div className="lg:col-span-1 bg-gray-800 border border-gray-700 rounded-lg p-6">
-              <h2 className="text-xl font-medium mb-6 text-white font-calendas">
-                Generate Blog Content
-              </h2>
+      <PageContainer className="py-12">
+        <motion.h1
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-4xl font-bold text-center mb-10 text-white font-calendas glow-blue"
+        >
+          AI Blog Post Generator
+        </motion.h1>
 
-              {/* --- Convert Article Link to Blog --- */}
-              <div className="mb-8 p-4 bg-gray-900 border border-gray-700 rounded-lg">
-                <h3 className="text-lg font-semibold text-white mb-2">
-                  Convert Article Link to Blog
-                </h3>
-                <label className="block text-gray-300 mb-1">Article URL*</label>
-                <input
-                  type="text"
-                  value={articleUrl}
-                  onChange={(e) => setArticleUrl(e.target.value)}
-                  placeholder="Paste article link (https://...)"
-                  className="w-full px-4 py-2 mb-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  disabled={
-                    isConvertingLink || isGenerating || isGeneratingOutline
-                  }
-                />
-                <label className="block text-gray-300 mb-1">
-                  Style Instructions (optional)
-                </label>
-                <input
-                  type="text"
-                  value={styleInstructions}
-                  onChange={(e) => setStyleInstructions(e.target.value)}
-                  placeholder="e.g., Write in a casual, humorous tone"
-                  className="w-full px-4 py-2 mb-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  disabled={
-                    isConvertingLink || isGenerating || isGeneratingOutline
-                  }
-                />
-                <button
-                  onClick={handleConvertLink}
-                  disabled={
-                    isConvertingLink ||
-                    !articleUrl.trim() ||
-                    isGenerating ||
-                    isGeneratingOutline
-                  }
-                  className="w-full flex items-center justify-center px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
-                >
-                  {isConvertingLink ? (
-                    <>
-                      <AiOutlineLoading3Quarters className="animate-spin mr-2" />
-                      Converting Link...
-                    </>
-                  ) : (
-                    <>
-                      <AiOutlineRobot className="mr-2" />
-                      Convert Link to Blog
-                    </>
-                  )}
-                </button>
-                <p className="text-xs text-gray-400 mt-2">
-                  Paste a link to any article and instantly convert it into a
-                  blog post in your style.
-                </p>
-              </div>
-              {/* --- End Convert Article Link to Blog --- */}
-
-              <div className="space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="lg:col-span-1 space-y-6"
+          >
+            <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-xl font-semibold text-blue-400">
+                  <AiOutlineBulb /> Start with a Topic
+                </CardTitle>
+                <CardDescription>
+                  Enter a topic or suggest ideas to begin.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 <div>
-                  <label className="block text-gray-300 mb-2">
-                    Topic/Title*
-                  </label>
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="text"
-                      value={topic}
-                      onChange={(e) => setTopic(e.target.value)}
-                      placeholder="e.g., The Future of Web Development"
-                      className="flex-1 w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      disabled={
-                        isGenerating ||
-                        isGeneratingOutline ||
-                        isSuggestingTopics
-                      }
-                    />
-                    <button
-                      onClick={handleSuggestTopics}
-                      disabled={
-                        isSuggestingTopics ||
-                        isGenerating ||
-                        isGeneratingOutline
-                      }
-                      title="Suggest Topics"
-                      className="p-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition-colors disabled:bg-gray-700 disabled:text-gray-500 disabled:cursor-not-allowed"
-                    >
-                      {isSuggestingTopics ? (
-                        <AiOutlineLoading3Quarters className="animate-spin" />
-                      ) : (
-                        <AiOutlineTags /> // Using Tags icon for topic suggestion
-                      )}
-                    </button>
-                  </div>
-                  {/* Display Suggested Topics */}
+                  <Label htmlFor="topic" className="text-gray-300">
+                    Topic / Idea
+                  </Label>
+                  <Input
+                    id="topic"
+                    value={topic}
+                    onChange={(e) => setTopic(e.target.value)}
+                    placeholder="e.g., Introduction to React Server Components"
+                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-500"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => handleSuggestTopics()}
+                    variant="outline"
+                    size="sm"
+                    className="border-blue-500 text-blue-400 hover:bg-blue-900/30 flex-1"
+                    disabled={loadingSection === "topics"}
+                  >
+                    {loadingSection === "topics" ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <AiOutlineTags className="mr-2 h-4 w-4" />
+                    )}
+                    Suggest Topics
+                  </Button>
+                  <Button
+                    onClick={handleGenerateOutline}
+                    variant="outline"
+                    size="sm"
+                    className="border-blue-500 text-blue-400 hover:bg-blue-900/30 flex-1"
+                    disabled={!topic.trim() || loadingSection === "outline"}
+                  >
+                    {loadingSection === "outline" ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <BookOpen className="mr-2 h-4 w-4" />
+                    )}
+                    Generate Outline
+                  </Button>
+                </div>
+
+                <AnimatePresence>
                   {suggestedTopics.length > 0 && (
-                    <div className="mt-2 space-y-1">
-                      <p className="text-xs text-gray-400">Suggestions:</p>
-                      {suggestedTopics.map((suggestedTopic, index) => (
-                        <button
-                          key={index}
-                          onClick={() => useSuggestedTopic(suggestedTopic)}
-                          className="block w-full text-left text-sm bg-gray-700 text-gray-200 px-3 py-1 rounded hover:bg-gray-600 transition-colors"
-                        >
-                          {suggestedTopic}
-                        </button>
-                      ))}
-                    </div>
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="pt-4 space-y-2"
+                    >
+                      <h4 className="text-sm font-medium text-gray-400">
+                        Suggested Topics:
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        {suggestedTopics.map((st, index) => (
+                          <Button
+                            key={index}
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => useSuggestedTopic(st)}
+                            className="bg-gray-700 hover:bg-gray-600 text-gray-300"
+                          >
+                            {st}
+                          </Button>
+                        ))}
+                      </div>
+                    </motion.div>
                   )}
-                </div>
+                </AnimatePresence>
+              </CardContent>
+            </Card>
 
-                <div>
-                  <label className="block text-gray-300 mb-2">Tone</label>
-                  <select
-                    value={tone}
-                    onChange={(e) => setTone(e.target.value)}
-                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    disabled={isGenerating || isGeneratingOutline}
+            <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-xl font-semibold text-blue-400">
+                  <Link /> Generate from Link
+                </CardTitle>
+                <CardDescription>
+                  Paste an article URL to generate a blog post based on it.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <Label htmlFor="articleUrl" className="text-gray-300">
+                    Article URL
+                  </Label>
+                  <Input
+                    id="articleUrl"
+                    type="url"
+                    value={articleUrl}
+                    onChange={(e) => setArticleUrl(e.target.value)}
+                    placeholder="https://example.com/article"
+                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-500"
+                  />
+                  <Button
+                    onClick={handleConvertLink}
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    disabled={!articleUrl.trim() || loadingSection === "link"}
                   >
-                    {toneOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {option.charAt(0).toUpperCase() + option.slice(1)}
-                      </option>
-                    ))}
-                  </select>
+                    {loadingSection === "link" ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <FiRefreshCw className="mr-2 h-4 w-4" />
+                    )}
+                    Generate from URL
+                  </Button>
                 </div>
+              </CardContent>
+            </Card>
 
+            <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-xl font-semibold text-blue-400">
+                  <Settings /> Configuration
+                </CardTitle>
+                <CardDescription>
+                  Adjust generation parameters (optional).
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 <div>
-                  <label className="block text-gray-300 mb-2">
-                    Length (words)
-                  </label>
-                  <select
-                    value={length}
-                    onChange={(e) => setLength(e.target.value)}
-                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    disabled={isGenerating || isGeneratingOutline}
-                  >
-                    {lengthOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {option} words
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-gray-300 mb-2">
-                    Keywords (comma separated)
-                  </label>
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="text"
-                      value={keywords}
-                      onChange={(e) => setKeywords(e.target.value)}
-                      placeholder="e.g., react, nextjs, web design"
-                      className="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      disabled={
-                        isGenerating ||
-                        isSuggestingKeywords ||
-                        isGeneratingOutline
-                      }
-                    />
-                    <button
-                      onClick={() => handleSuggestKeywords()} // Trigger suggestion
-                      disabled={
-                        isSuggestingKeywords ||
-                        !topic.trim() ||
-                        isGenerating ||
-                        isGeneratingOutline
-                      }
-                      title="Suggest Keywords based on Topic"
-                      className="p-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition-colors disabled:bg-gray-700 disabled:text-gray-500 disabled:cursor-not-allowed"
+                  <Label htmlFor="tone" className="text-gray-300">
+                    Tone
+                  </Label>
+                  <Select value={tone} onValueChange={setTone}>
+                    <SelectTrigger
+                      id="tone"
+                      className="bg-gray-700 border-gray-600 text-white"
                     >
-                      {isSuggestingKeywords ? (
-                        <AiOutlineLoading3Quarters className="animate-spin" />
-                      ) : (
-                        <AiOutlineBulb />
-                      )}
-                    </button>
-                  </div>
-                  {/* Display Suggested Keywords */}
-                  {suggestedKeywords.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {suggestedKeywords.map((kw, index) => (
-                        <button
-                          key={index}
-                          onClick={() => addKeyword(kw)}
-                          className="flex items-center text-xs bg-teal-800/50 text-teal-300 px-2 py-1 rounded-full hover:bg-teal-700/60 transition-colors"
-                          title={`Add "${kw}"`}
-                        >
-                          <FiPlus className="mr-1" size={12} /> {kw}
-                        </button>
+                      <SelectValue placeholder="Select Tone" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-800 border-gray-700 text-white">
+                      {toneOptions.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
                       ))}
-                    </div>
-                  )}
+                    </SelectContent>
+                  </Select>
                 </div>
-
-                {/* Generate Outline Button */}
-                <button
-                  onClick={handleGenerateOutline}
-                  disabled={
-                    isGeneratingOutline || !topic.trim() || isGenerating
-                  }
-                  className="w-full mt-2 flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
-                >
-                  {isGeneratingOutline ? (
-                    <>
-                      <AiOutlineLoading3Quarters className="animate-spin mr-2" />
-                      Generating Outline...
-                    </>
-                  ) : (
-                    "Generate Outline"
-                  )}
-                </button>
-
-                {/* Generate Full Post Button */}
-                <button
-                  onClick={handleGenerate}
-                  disabled={
-                    isGenerating || !topic.trim() || isGeneratingOutline
-                  }
-                  className="w-full mt-4 flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
-                >
-                  {isGenerating ? (
-                    <>
-                      <AiOutlineLoading3Quarters className="animate-spin mr-2" />
-                      Generating Full Post...
-                    </>
-                  ) : (
-                    <>
-                      <AiOutlineRobot className="mr-2" />
-                      Generate Blog Post{" "}
-                      {generatedOutline ? "(Using Outline)" : ""}
-                    </>
-                  )}
-                </button>
-              </div>
-
-              {/* Display Generated Outline */}
-              {generatedOutline && (
-                <div className="mt-6 p-4 bg-gray-700 border border-gray-600 rounded-lg">
-                  <h4 className="text-md font-semibold mb-2 text-gray-200">
-                    Suggested Outline:
-                  </h4>
-                  <p className="text-sm text-gray-300 mb-1">
-                    <strong>Title:</strong> {generatedOutline.title}
-                  </p>
-                  <ul className="list-disc list-inside space-y-1">
-                    {generatedOutline.headings.map((heading, index) => (
-                      <li key={index} className="text-sm text-gray-300">
-                        {heading}
-                      </li>
-                    ))}
-                  </ul>
-                  <p className="text-xs text-gray-400 mt-3">
-                    Click "Generate Blog Post" to use this outline.
-                  </p>
-                </div>
-              )}
-
-              {/* Fetch Trending News Button */}
-              <div className="mt-6 pt-6 border-t border-gray-700">
-                <h3 className="text-lg font-medium mb-4 text-white">
-                  Get Inspiration
-                </h3>
-                <button
-                  onClick={handleFetchNews}
-                  disabled={
-                    isLoadingNews || isGenerating || isGeneratingOutline
-                  }
-                  className="w-full flex items-center justify-center px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
-                >
-                  {isLoadingNews ? (
-                    <>
-                      <AiOutlineLoading3Quarters className="animate-spin mr-2" />
-                      Fetching News...
-                    </>
-                  ) : (
-                    <>
-                      <AiOutlineGlobal className="mr-2" /> Fetch Trending Tech
-                      News
-                    </>
-                  )}
-                </button>
-              </div>
-
-              {/* Display Trending News */}
-              {trendingNews.length > 0 && (
-                <div className="mt-4 space-y-3">
-                  <h4 className="text-md font-semibold text-gray-200">
-                    Trending Topics:
-                  </h4>
-                  {trendingNews.map((newsItem, index) => (
-                    <div
-                      key={index}
-                      className="p-3 bg-gray-700 border border-gray-600 rounded-lg"
+                <div>
+                  <Label htmlFor="length" className="text-gray-300">
+                    Length
+                  </Label>
+                  <Select value={length} onValueChange={setLength}>
+                    <SelectTrigger
+                      id="length"
+                      className="bg-gray-700 border-gray-600 text-white"
                     >
-                      <button
-                        onClick={() => useSuggestedTopic(newsItem.headline)} // Reuse function to set topic
-                        className="block w-full text-left font-medium text-blue-400 hover:underline mb-1"
-                        title="Use this as topic"
-                      >
-                        {newsItem.headline}
-                      </button>
-                      <p className="text-xs text-gray-400">
-                        {newsItem.summary}
-                      </p>
-                    </div>
-                  ))}
+                      <SelectValue placeholder="Select Length" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-800 border-gray-700 text-white">
+                      {lengthOptions.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-              )}
-
-              {/* Featured Image Section */}
-              {generatedContent && (
-                <div className="mt-8 pt-6 border-t border-gray-700">
-                  <h3 className="text-lg font-medium mb-4 text-white">
-                    Featured Image
-                  </h3>
-
-                  {selectedImage ? (
-                    <div className="space-y-4">
-                      <div className="relative rounded-lg overflow-hidden">
-                        <img
-                          src={selectedImage.src.medium}
-                          alt={selectedImage.alt || "Featured image"}
-                          className="w-full h-auto"
-                        />
-                        <button
-                          onClick={() => setSelectedImage(null)}
-                          className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
-                        >
-                          <IoMdClose />
-                        </button>
-                      </div>
-                      <p className="text-xs text-gray-400">
-                        Photo by{" "}
-                        <a
-                          href={selectedImage.photographer_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-400 hover:underline"
-                        >
-                          {selectedImage.photographer}
-                        </a>{" "}
-                        on Pexels
-                      </p>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => setShowImageSearch(true)}
-                      className="w-full flex items-center justify-center px-4 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
-                    >
-                      <AiOutlinePicture className="mr-2" />
-                      Select Featured Image
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Generated Content */}
-            <div className="lg:col-span-2">
-              {generatedContent ? (
-                <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-                  <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-medium text-white font-calendas">
-                      {isEditing
-                        ? "Edit Your Blog Post"
-                        : "Generated Blog Post"}
-                    </h2>
-                    <div className="flex space-x-2">
-                      {isEditing && (
-                        <button
-                          onClick={formatContent}
-                          disabled={isFormatting}
-                          className="flex items-center px-3 py-1 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
-                        >
-                          {isFormatting ? (
-                            <AiOutlineLoading3Quarters className="animate-spin mr-1" />
-                          ) : (
-                            <AiOutlineFormatPainter className="mr-1" />
-                          )}
-                          Format Content
-                        </button>
-                      )}
-                      <button
-                        onClick={toggleEditMode}
-                        className="flex items-center px-3 py-1 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
-                      >
-                        {isEditing ? (
-                          "Preview"
-                        ) : (
-                          <>
-                            <AiOutlineEdit className="mr-1" /> Edit
-                          </>
-                        )}
-                      </button>
-                      {!isEditing && (
-                        <button
-                          onClick={handleGenerate}
-                          disabled={isGenerating}
-                          className="flex items-center px-3 py-1 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors disabled:bg-gray-800 disabled:text-gray-500"
-                        >
-                          <FiRefreshCw
-                            className={`mr-1 ${
-                              isGenerating ? "animate-spin" : ""
-                            }`}
-                          />
-                          Regenerate
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  {isEditing ? (
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-gray-300 mb-2">
-                          Title
-                        </label>
-                        <input
-                          type="text"
-                          value={editedTitle}
-                          onChange={(e) => setEditedTitle(e.target.value)}
-                          className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-gray-300 mb-2">
-                          Content
-                        </label>
-                        <TipTapEditor
-                          content={editedContent}
-                          onUpdate={(html) => setEditedContent(html)}
-                        />
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="prose prose-invert max-w-none">
-                      <h1 className="text-2xl font-bold mb-4 text-white">
-                        {editedTitle}
-                      </h1>
-                      <div className="markdown-content overflow-auto max-h-[600px] pr-4 prose-headings:text-white prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:text-gray-300 prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-ul:text-gray-300 prose-ol:text-gray-300 prose-li:my-1">
-                        <TipTapRenderer content={editedContent} />
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="mt-6 pt-6 border-t border-gray-700">
-                    <button
-                      onClick={handleSaveBlog}
-                      disabled={isSaving}
-                      className="w-full flex items-center justify-center px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
-                    >
-                      {isSaving ? (
-                        <>
-                          <AiOutlineLoading3Quarters className="animate-spin mr-2" />
-                          Saving...
-                        </>
-                      ) : (
-                        <>
-                          <AiOutlineSave className="mr-2" />
-                          Save as Draft
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 h-full flex flex-col items-center justify-center text-center">
-                  {isGenerating || isGeneratingOutline ? ( // Show loading if either is running
-                    <div className="py-12">
-                      <AiOutlineLoading3Quarters className="animate-spin text-5xl text-blue-500 mx-auto mb-4" />
-                      <p className="text-gray-400 text-lg">
-                        {isGeneratingOutline
-                          ? "Generating outline..."
-                          : "Generating your blog post..."}
-                      </p>
-                      <p className="text-gray-500 mt-2">
-                        This may take a moment...
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="py-12">
-                      <AiOutlineRobot className="text-6xl text-gray-600 mx-auto mb-4" />
-                      <h3 className="text-xl text-white mb-2">
-                        Your AI-generated blog post will appear here
-                      </h3>
-                      <p className="text-gray-400 max-w-md mx-auto">
-                        Fill in the form on the left and click "Generate Blog
-                        Post" to create content with Gemini AI.
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </PageContainer>{" "}
-      {/* Close PageContainer */}
-      {/* Pexels Image Search Modal */}
-      {showImageSearch && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
-          <div className="bg-gray-800 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
-            <div className="p-4 border-b border-gray-700 flex justify-between items-center">
-              <h3 className="text-xl font-medium text-white">
-                Select an Image from Pexels
-              </h3>
-              <button
-                onClick={() => setShowImageSearch(false)}
-                className="text-gray-400 hover:text-white"
-              >
-                <IoMdClose size={24} />
-              </button>
-            </div>
-
-            <div className="p-4 border-b border-gray-700">
-              <div className="flex">
-                <input
-                  type="text"
-                  value={imageSearchQuery}
-                  onChange={(e) => {
-                    setImageSearchQuery(e.target.value);
-                    setCurrentPage(1);
-                    if (pexelsDebounceRef.current) {
-                      clearTimeout(pexelsDebounceRef.current);
-                    }
-                    const value = e.target.value;
-                    pexelsDebounceRef.current = setTimeout(() => {
-                      if (value.trim()) {
-                        handleSearchImages(1);
+                <div>
+                  <div className="flex justify-between items-center mb-1">
+                    <Label htmlFor="keywords" className="text-gray-300">
+                      Keywords (comma-separated)
+                    </Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() =>
+                        handleSuggestKeywords(generatedContent?.content)
                       }
-                    }, 400);
-                  }}
-                  placeholder="Search for images..."
-                  className="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-l-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  onKeyDown={(e) => e.key === "Enter" && handleSearchImages()}
-                />
-                <button
-                  onClick={() => handleSearchImages()}
-                  disabled={isSearchingImages || !imageSearchQuery.trim()}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed flex items-center"
-                >
-                  {isSearchingImages ? (
-                    <AiOutlineLoading3Quarters className="animate-spin" />
-                  ) : (
-                    <AiOutlineSearch />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-4">
-              {isSearchingImages ? (
-                <div className="flex items-center justify-center h-64">
-                  <AiOutlineLoading3Quarters className="animate-spin text-3xl text-blue-500" />
-                </div>
-              ) : searchResults.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {searchResults.map((image) => (
-                    <div
-                      key={image.id}
-                      className="relative group cursor-pointer rounded-lg overflow-hidden"
-                      onClick={() => handleSelectImage(image)}
+                      disabled={
+                        loadingSection === "keywords" ||
+                        (!topic && !generatedContent)
+                      }
+                      className="text-blue-400 hover:text-blue-300 px-1 h-auto"
+                      title="Suggest Keywords based on Topic/Content"
                     >
-                      <img
-                        src={image.src.medium}
-                        alt={image.alt || "Pexels image"}
-                        className="w-full h-48 object-cover"
-                      />
-                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 flex items-center justify-center transition-all duration-200">
-                        <div className="bg-blue-500 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transform scale-0 group-hover:scale-100 transition-all duration-200">
-                          <AiOutlineCheck size={20} />
+                      {loadingSection === "keywords" ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <AiOutlineBulb className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                  <Input
+                    id="keywords"
+                    value={keywords}
+                    onChange={(e) => setKeywords(e.target.value)}
+                    placeholder="e.g., react, typescript, state management"
+                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-500"
+                  />
+                  <AnimatePresence>
+                    {suggestedKeywords.length > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="pt-3 space-y-1"
+                      >
+                        <h4 className="text-xs font-medium text-gray-400">
+                          Suggestions:
+                        </h4>
+                        <div className="flex flex-wrap gap-1.5">
+                          {suggestedKeywords.map((kw, index) => (
+                            <Button
+                              key={index}
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => addKeyword(kw)}
+                              className="text-xs border-gray-600 text-gray-300 hover:bg-gray-700 h-auto py-0.5 px-1.5"
+                            >
+                              {kw}
+                            </Button>
+                          ))}
                         </div>
-                      </div>
-                    </div>
-                  ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-              ) : (
-                <div className="text-center py-12 text-gray-400">
-                  {imageSearchQuery
-                    ? "No images found. Try a different search term."
-                    : "Search for images to display results."}
-                </div>
-              )}
-            </div>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-            {searchResults.length > 0 && totalPages > 1 && (
-              <div className="p-4 border-t border-gray-700 flex justify-center">
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => {
-                      setCurrentPage((p) => {
-                        const nextPage = Math.max(1, p - 1);
-                        handleSearchImages(nextPage);
-                        return nextPage;
-                      });
-                    }}
-                    disabled={currentPage === 1 || isSearchingImages}
-                    className="px-3 py-1 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors disabled:bg-gray-800 disabled:text-gray-500"
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="lg:col-span-2 space-y-6"
+          >
+            {!generatedContent && (generatedOutline || topic) && (
+              <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card">
+                <CardContent className="pt-6">
+                  <Button
+                    onClick={handleGenerate}
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg py-3"
+                    disabled={loadingSection === "full"}
                   >
-                    Previous
-                  </button>
-                  <span className="px-3 py-1 bg-gray-700 text-white rounded-lg">
-                    {currentPage} of {totalPages}
-                  </span>
-                  <button
-                    onClick={() => {
-                      setCurrentPage((p) => {
-                        const nextPage = Math.min(totalPages, p + 1);
-                        handleSearchImages(nextPage);
-                        return nextPage;
-                      });
-                    }}
-                    disabled={currentPage === totalPages || isSearchingImages}
-                    className="px-3 py-1 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors disabled:bg-gray-800 disabled:text-gray-500"
-                  >
-                    Next
-                  </button>
-                </div>
-              </div>
+                    {loadingSection === "full" ? (
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    ) : (
+                      <AiOutlineRobot className="mr-2 h-5 w-5" />
+                    )}
+                    Generate Full Blog Post
+                  </Button>
+                </CardContent>
+              </Card>
             )}
-          </div>
+
+            <AnimatePresence>
+              {generatedOutline && !generatedContent && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                >
+                  <Card className="bg-gray-750 border-gray-600 text-white">
+                    <CardHeader>
+                      <CardTitle className="text-lg font-medium text-blue-300">
+                        Generated Outline
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-1 text-sm">
+                      <p>
+                        <strong>Title:</strong> {generatedOutline.title}
+                      </p>
+                      <div>
+                        <strong>Headings:</strong>
+                        <ul className="list-disc list-inside ml-4 text-gray-300">
+                          {generatedOutline.headings.map((h, i) => (
+                            <li key={i}>{h}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+              {generatedContent && (
+                <motion.div
+                  key="content-card"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                >
+                  <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card">
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between text-xl font-semibold text-blue-400">
+                        <span>Generated Content Preview</span>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={clearGeneratedContent}
+                          className="text-gray-400 hover:text-red-500"
+                        >
+                          <AiOutlineClose />
+                        </Button>
+                      </CardTitle>
+                      <CardDescription>
+                        Review the generated HTML content below.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <h2 className="text-2xl font-bold mb-4 pb-2 border-b border-gray-700">
+                        {generatedContent.title}
+                      </h2>
+                      <div className="prose prose-invert max-w-none prose-p:my-2 prose-h2:mt-4 prose-h2:mb-1 prose-h3:mt-3 prose-h3:mb-1 prose-ul:my-2 prose-li:my-0.5">
+                        <TipTapRenderer content={generatedContent.content} />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+              {generatedContent && (
+                <motion.div
+                  key="actions-card"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card">
+                    <CardHeader>
+                      <CardTitle className="text-xl font-semibold text-blue-400">
+                        Actions
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <Button
+                        onClick={handleSaveDraft}
+                        className="w-full bg-green-600 hover:bg-green-700"
+                        disabled={
+                          loadingSection === "save" ||
+                          saveStatus.state === "success"
+                        }
+                      >
+                        {loadingSection === "save" ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : saveStatus.state === "success" ? (
+                          <AiOutlineCheck className="mr-2 h-4 w-4" />
+                        ) : (
+                          <AiOutlineSave className="mr-2 h-4 w-4" />
+                        )}
+                        {saveStatus.state === "success"
+                          ? "Draft Saved!"
+                          : "Save as Draft"}
+                      </Button>
+                      {saveStatus.state === "error" && (
+                        <p className="mt-2 text-sm text-red-500">
+                          Error: {saveStatus.message}
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {error && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mt-4 p-3 bg-red-900/50 border border-red-700 rounded text-red-300 text-center text-sm"
+              >
+                {error}
+              </motion.div>
+            )}
+          </motion.div>
         </div>
-      )}
+      </PageContainer>
     </>
   );
 }

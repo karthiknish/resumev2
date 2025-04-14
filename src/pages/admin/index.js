@@ -16,6 +16,13 @@ import { useSession } from "next-auth/react";
 import { FaComments, FaUserCheck } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"; // <-- Import Select components
 import { AnimatePresence } from "framer-motion";
 import {
   FadeIn,
@@ -38,10 +45,29 @@ import LinkedInTab from "@/components/admin/tabs/LinkedInTab"; // Import LinkedI
 import PomodoroTab from "@/components/admin/tabs/PomodoroTab"; // Import PomodoroTab
 import HackerNewsFeed from "@/components/admin/tabs/HackerNewsFeed"; // Import HackerNewsFeed
 
+// Define tab configuration data
+const adminTabs = [
+  { value: "dashboard", label: "Blogs", Icon: AiOutlineRead },
+  { value: "calendar", label: "Calendar", Icon: AiOutlineCalendar },
+  { value: "chat-history", label: "Chat History", Icon: FaComments },
+  {
+    value: "contacts",
+    label: "Contacts",
+    Icon: AiOutlineMail,
+    showBadge: true,
+  },
+  { value: "bytes", label: "Bytes", Icon: AiOutlineThunderbolt },
+  { value: "subscribers", label: "Subscribers", Icon: FaUserCheck },
+  { value: "linkedin", label: "LinkedIn", Icon: AiFillLinkedin },
+  { value: "api-status", label: "API Status", Icon: AiOutlineExperiment },
+  { value: "pomodoro", label: "Pomodoro", Icon: AiOutlineClockCircle },
+  { value: "news", label: "News", Icon: AiOutlineFire },
+];
+
 function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [activeTab, setActiveTab] = useState(adminTabs[0].value); // Default to first tab
   const [isAdmin, setIsAdmin] = useState(false);
   const [sessionDebug, setSessionDebug] = useState(null);
 
@@ -149,94 +175,65 @@ function AdminDashboard() {
               <Separator className="my-6 bg-gray-800" />
             </FadeIn>
 
-            {/* Reverted Tabs structure */}
             <Tabs
-              defaultValue="dashboard"
               value={activeTab}
               onValueChange={setActiveTab}
               className="mb-8"
             >
               <SlideUp delay={0.4}>
-                {/* Reverted to flex row with horizontal scroll */}
-                <TabsList className="flex w-full overflow-x-auto pb-2 scrollbar-thin mb-4 space-x-1">
-                  <TabsTrigger
-                    value="dashboard"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0"
-                  >
-                    <AiOutlineRead /> <span className="ml-1.5">Blogs</span>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="calendar"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0"
-                  >
-                    <AiOutlineCalendar />{" "}
-                    <span className="ml-1.5">Calendar</span>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="chat-history"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0"
-                  >
-                    <FaComments /> <span className="ml-1.5">Chat History</span>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="contacts"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white relative flex-shrink-0"
-                  >
-                    <AiOutlineMail /> <span className="ml-1.5">Contacts</span>
-                    {unreadContactsCount > 0 && (
-                      <span className="absolute -top-1 -right-1 flex h-4 w-4">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-xs items-center justify-center">
-                          {unreadContactsCount > 9 ? "9+" : unreadContactsCount}
+                {/* Desktop TabsList (Hidden on Small Screens) */}
+                <TabsList className="hidden md:flex w-full overflow-x-auto pb-2 scrollbar-thin mb-4 space-x-1">
+                  {adminTabs.map((tab) => (
+                    <TabsTrigger
+                      key={tab.value}
+                      value={tab.value}
+                      className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0 relative"
+                    >
+                      <tab.Icon className="h-4 w-4" />{" "}
+                      <span className="ml-1.5">{tab.label}</span>
+                      {tab.value === "contacts" && unreadContactsCount > 0 && (
+                        <span className="absolute -top-1 -right-1 flex h-4 w-4">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-xs items-center justify-center">
+                            {unreadContactsCount > 9
+                              ? "9+"
+                              : unreadContactsCount}
+                          </span>
                         </span>
-                      </span>
-                    )}
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="bytes"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0"
-                  >
-                    <AiOutlineThunderbolt />{" "}
-                    <span className="ml-1.5">Bytes</span>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="subscribers"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0"
-                  >
-                    <FaUserCheck /> <span className="ml-1.5">Subscribers</span>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="linkedin"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0"
-                  >
-                    <AiFillLinkedin /> <span className="ml-1.5">LinkedIn</span>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="api-status"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0"
-                  >
-                    <AiOutlineExperiment />{" "}
-                    <span className="ml-1.5">API Status</span>
-                  </TabsTrigger>
-                  {/* Add Pomodoro Tab Trigger */}
-                  <TabsTrigger
-                    value="pomodoro"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0"
-                  >
-                    <AiOutlineClockCircle />{" "}
-                    <span className="ml-1.5">Pomodoro</span>
-                  </TabsTrigger>
-                  {/* Add News Tab Trigger */}
-                  <TabsTrigger
-                    value="news"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0"
-                  >
-                    <AiOutlineFire /> <span className="ml-1.5">News</span>
-                  </TabsTrigger>
+                      )}
+                    </TabsTrigger>
+                  ))}
                 </TabsList>
+
+                {/* Mobile Select (Visible only on Small Screens) */}
+                <div className="block md:hidden mb-4">
+                  <Select value={activeTab} onValueChange={setActiveTab}>
+                    <SelectTrigger className="w-full bg-gray-800 border-gray-700 text-white">
+                      <SelectValue placeholder="Select a tab" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-800 border-gray-700 text-white">
+                      {adminTabs.map((tab) => (
+                        <SelectItem key={tab.value} value={tab.value}>
+                          <div className="flex items-center">
+                            <tab.Icon className="mr-2 h-4 w-4" />
+                            {tab.label}
+                            {tab.value === "contacts" &&
+                              unreadContactsCount > 0 && (
+                                <span className="ml-2 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-medium rounded-full bg-red-500">
+                                  {unreadContactsCount > 9
+                                    ? "9+"
+                                    : unreadContactsCount}
+                                </span>
+                              )}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </SlideUp>
 
-              {/* Reverted Content Area structure */}
+              {/* Content Panes */}
               <AnimatePresence mode="wait">
                 <TabsContent value="dashboard" key="dashboard">
                   <DashboardTab
@@ -273,12 +270,10 @@ function AdminDashboard() {
                   {" "}
                   <ApiStatusTab />{" "}
                 </TabsContent>
-                {/* Add Pomodoro Tab Content */}
                 <TabsContent value="pomodoro" key="pomodoro">
                   {" "}
                   <PomodoroTab />{" "}
                 </TabsContent>
-                {/* Add News Tab Content */}
                 <TabsContent value="news" key="news">
                   {" "}
                   <HackerNewsFeed />{" "}
