@@ -52,47 +52,37 @@ import TableRow from "@tiptap/extension-table-row";
 
 // Import CodeBlockLowlight and lowlight
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
-import lowlight from "lowlight/lib/core"; // Use core for smaller bundle size
-// Register languages - Import and register only the languages you need
+import { createLowlight } from "lowlight";
+
+console.log("TipTapEditor: Imported createLowlight:", createLowlight); // Log
+
+// Register languages - Import the languages themselves
 import javascript from "highlight.js/lib/languages/javascript";
 import css from "highlight.js/lib/languages/css";
 import html from "highlight.js/lib/languages/xml"; // HTML is registered as xml
 import python from "highlight.js/lib/languages/python";
 import bash from "highlight.js/lib/languages/bash";
 
-// Register languages with lowlight
-lowlight.registerLanguage("javascript", javascript);
-lowlight.registerLanguage("js", javascript);
-lowlight.registerLanguage("css", css);
-lowlight.registerLanguage("html", html);
-lowlight.registerLanguage("xml", html);
-lowlight.registerLanguage("python", python);
-lowlight.registerLanguage("py", python);
-lowlight.registerLanguage("bash", bash);
-lowlight.registerLanguage("sh", bash);
+// Create the lowlight instance
+const lowlightInstance = createLowlight();
+
+// Register languages with the instance
+lowlightInstance.register({
+  javascript,
+  js: javascript,
+  css,
+  html,
+  xml: html,
+  python,
+  py: python,
+  bash,
+  sh: bash,
+});
 
 const MenuBar = ({ editor }) => {
   if (!editor) {
     return null;
   }
-
-  // Helper function to create button with tooltip
-  const MenuButton = ({ onClick, disabled, className, title, children }) => (
-    <div className="relative group">
-      <button
-        type="button"
-        onClick={onClick}
-        disabled={disabled}
-        className={className}
-      >
-        {children}
-      </button>
-      {/* Tooltip span */}
-      <span className="absolute left-1/2 -bottom-8 -translate-x-1/2 scale-0 group-hover:scale-100 transition-transform duration-150 ease-out bg-black text-white text-xs px-2 py-1 rounded shadow z-50 whitespace-nowrap pointer-events-none">
-        {title}
-      </span>
-    </div>
-  );
 
   // Color Picker Component
   const ColorPickerButton = ({ editor }) => {
@@ -113,13 +103,14 @@ const MenuBar = ({ editor }) => {
 
     return (
       <div className="relative">
-        <MenuButton
+        <button
+          type="button"
           onClick={() => setShowPicker(!showPicker)}
           className={`p-1 px-2 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-50`}
           title="Text Color"
         >
           <Palette className="w-4 h-4" />
-        </MenuButton>
+        </button>
         {showPicker && (
           <div className="absolute z-10 top-full mt-1 p-2 bg-gray-800 border border-gray-700 rounded shadow-lg flex gap-1">
             {colors.map((color) => (
@@ -152,26 +143,27 @@ const MenuBar = ({ editor }) => {
 
   return (
     <div className="flex flex-wrap gap-2 mb-4 p-2 bg-gray-800 rounded-md">
-      {/* Undo/Redo - Use MenuButton */}
-      <MenuButton
+      {/* Undo/Redo - Use standard button */}
+      <button
+        type="button"
         onClick={() => editor.chain().focus().undo().run()}
-        disabled={!editor.can().chain().focus().undo().run()}
+        disabled={!editor?.can().chain().focus().undo().run()}
         className="p-1 px-2 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-50"
         title="Undo"
       >
         <Undo className="w-4 h-4" />
-      </MenuButton>
-      <MenuButton
+      </button>
+      <button
+        type="button"
         onClick={() => editor.chain().focus().redo().run()}
-        disabled={!editor.can().chain().focus().redo().run()}
+        disabled={!editor?.can().chain().focus().redo().run()}
         className="p-1 px-2 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-50"
         title="Redo"
       >
         <Redo className="w-4 h-4" />
-      </MenuButton>
+      </button>
 
-      {/* Basic Formatting */}
-      {/* Revert Bold button to test click issue */}
+      {/* Basic Formatting - Use standard button */}
       <button
         type="button"
         onClick={() => {
@@ -185,19 +177,20 @@ const MenuBar = ({ editor }) => {
           );
           editor.chain().focus().toggleBold().run();
         }}
-        disabled={!editor.can().chain().focus().toggleBold().run()}
+        disabled={!editor?.can().chain().focus().toggleBold().run()}
         className={`p-1 px-2 rounded ${
           editor.isActive("bold")
             ? "bg-blue-600"
             : "bg-gray-700 hover:bg-gray-600"
         } disabled:opacity-50`}
-        title="Bold" // Keep title attribute for basic tooltip
+        title="Bold"
       >
         <Bold className="w-4 h-4" />
       </button>
-      <MenuButton
+      <button
+        type="button"
         onClick={() => editor.chain().focus().toggleUnderline().run()}
-        disabled={!editor.can().chain().focus().toggleUnderline().run()}
+        disabled={!editor?.can().chain().focus().toggleUnderline().run()}
         className={`p-1 px-2 rounded ${
           editor.isActive("underline")
             ? "bg-blue-600"
@@ -206,8 +199,9 @@ const MenuBar = ({ editor }) => {
         title="Underline"
       >
         <Underline className="w-4 h-4" />
-      </MenuButton>
-      <MenuButton
+      </button>
+      <button
+        type="button"
         onClick={() => editor.chain().focus().toggleHighlight().run()}
         className={`p-1 px-2 rounded ${
           editor.isActive("highlight")
@@ -215,12 +209,14 @@ const MenuBar = ({ editor }) => {
             : "bg-gray-700 hover:bg-gray-600"
         } disabled:opacity-50`}
         title="Highlight"
+        disabled={!editor?.can().chain().focus().toggleHighlight().run()}
       >
         <Highlighter className="w-4 h-4" />
-      </MenuButton>
-      <MenuButton
+      </button>
+      <button
+        type="button"
         onClick={() => editor.chain().focus().toggleItalic().run()}
-        disabled={!editor.can().chain().focus().toggleItalic().run()}
+        disabled={!editor?.can().chain().focus().toggleItalic().run()}
         className={`p-1 px-2 rounded ${
           editor.isActive("italic")
             ? "bg-blue-600"
@@ -229,10 +225,11 @@ const MenuBar = ({ editor }) => {
         title="Italic"
       >
         <Italic className="w-4 h-4" />
-      </MenuButton>
-      <MenuButton
+      </button>
+      <button
+        type="button"
         onClick={() => editor.chain().focus().toggleStrike().run()}
-        disabled={!editor.can().chain().focus().toggleStrike().run()}
+        disabled={!editor?.can().chain().focus().toggleStrike().run()}
         className={`p-1 px-2 rounded ${
           editor.isActive("strike")
             ? "bg-blue-600"
@@ -241,10 +238,11 @@ const MenuBar = ({ editor }) => {
         title="Strikethrough"
       >
         <Strikethrough className="w-4 h-4" />
-      </MenuButton>
-      <MenuButton
+      </button>
+      <button
+        type="button"
         onClick={() => editor.chain().focus().toggleCode().run()}
-        disabled={!editor.can().chain().focus().toggleCode().run()}
+        disabled={!editor?.can().chain().focus().toggleCode().run()}
         className={`p-1 px-2 rounded ${
           editor.isActive("code")
             ? "bg-blue-600"
@@ -253,10 +251,11 @@ const MenuBar = ({ editor }) => {
         title="Inline Code"
       >
         <Code className="w-4 h-4" />
-      </MenuButton>
+      </button>
 
-      {/* Headings - Use MenuButton */}
-      <MenuButton
+      {/* Headings - Already standard button */}
+      <button
+        type="button"
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
         className={`p-1 px-2 rounded ${
           editor.isActive("heading", { level: 1 })
@@ -264,10 +263,14 @@ const MenuBar = ({ editor }) => {
             : "bg-gray-700 hover:bg-gray-600"
         } disabled:opacity-50`}
         title="Heading 1"
+        disabled={
+          !editor?.can().chain().focus().toggleHeading({ level: 1 }).run()
+        }
       >
         <Heading1 className="w-4 h-4" />
-      </MenuButton>
-      <MenuButton
+      </button>
+      <button
+        type="button"
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         className={`p-1 px-2 rounded ${
           editor.isActive("heading", { level: 2 })
@@ -275,10 +278,14 @@ const MenuBar = ({ editor }) => {
             : "bg-gray-700 hover:bg-gray-600"
         } disabled:opacity-50`}
         title="Heading 2"
+        disabled={
+          !editor?.can().chain().focus().toggleHeading({ level: 2 }).run()
+        }
       >
         <Heading2 className="w-4 h-4" />
-      </MenuButton>
-      <MenuButton
+      </button>
+      <button
+        type="button"
         onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
         className={`p-1 px-2 rounded ${
           editor.isActive("heading", { level: 3 })
@@ -286,12 +293,16 @@ const MenuBar = ({ editor }) => {
             : "bg-gray-700 hover:bg-gray-600"
         } disabled:opacity-50`}
         title="Heading 3"
+        disabled={
+          !editor?.can().chain().focus().toggleHeading({ level: 3 }).run()
+        }
       >
         <Heading3 className="w-4 h-4" />
-      </MenuButton>
+      </button>
 
-      {/* Lists - Use MenuButton */}
-      <MenuButton
+      {/* Lists - Use standard button */}
+      <button
+        type="button"
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         className={`p-1 px-2 rounded ${
           editor.isActive("bulletList")
@@ -299,10 +310,12 @@ const MenuBar = ({ editor }) => {
             : "bg-gray-700 hover:bg-gray-600"
         } disabled:opacity-50`}
         title="Bullet List"
+        disabled={!editor?.can().chain().focus().toggleBulletList().run()}
       >
         <List className="w-4 h-4" />
-      </MenuButton>
-      <MenuButton
+      </button>
+      <button
+        type="button"
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
         className={`p-1 px-2 rounded ${
           editor.isActive("orderedList")
@@ -310,12 +323,14 @@ const MenuBar = ({ editor }) => {
             : "bg-gray-700 hover:bg-gray-600"
         } disabled:opacity-50`}
         title="Ordered List"
+        disabled={!editor?.can().chain().focus().toggleOrderedList().run()}
       >
         <ListOrdered className="w-4 h-4" />
-      </MenuButton>
+      </button>
 
-      {/* Alignment - Use MenuButton */}
-      <MenuButton
+      {/* Alignment - Use standard button */}
+      <button
+        type="button"
         onClick={() => editor.chain().focus().setTextAlign("left").run()}
         className={`p-1 px-2 rounded ${
           editor.isActive({ textAlign: "left" })
@@ -323,10 +338,12 @@ const MenuBar = ({ editor }) => {
             : "bg-gray-700 hover:bg-gray-600"
         } disabled:opacity-50`}
         title="Align Left"
+        disabled={!editor?.can().chain().focus().setTextAlign("left").run()}
       >
         <AlignLeft className="w-4 h-4" />
-      </MenuButton>
-      <MenuButton
+      </button>
+      <button
+        type="button"
         onClick={() => editor.chain().focus().setTextAlign("center").run()}
         className={`p-1 px-2 rounded ${
           editor.isActive({ textAlign: "center" })
@@ -334,10 +351,12 @@ const MenuBar = ({ editor }) => {
             : "bg-gray-700 hover:bg-gray-600"
         } disabled:opacity-50`}
         title="Align Center"
+        disabled={!editor?.can().chain().focus().setTextAlign("center").run()}
       >
         <AlignCenter className="w-4 h-4" />
-      </MenuButton>
-      <MenuButton
+      </button>
+      <button
+        type="button"
         onClick={() => editor.chain().focus().setTextAlign("right").run()}
         className={`p-1 px-2 rounded ${
           editor.isActive({ textAlign: "right" })
@@ -345,12 +364,14 @@ const MenuBar = ({ editor }) => {
             : "bg-gray-700 hover:bg-gray-600"
         } disabled:opacity-50`}
         title="Align Right"
+        disabled={!editor?.can().chain().focus().setTextAlign("right").run()}
       >
         <AlignRight className="w-4 h-4" />
-      </MenuButton>
+      </button>
 
-      {/* Link/Image - Use MenuButton */}
-      <MenuButton
+      {/* Link/Image - Use standard button */}
+      <button
+        type="button"
         onClick={() => {
           const url = window.prompt("Enter the URL");
           if (url) {
@@ -363,10 +384,12 @@ const MenuBar = ({ editor }) => {
             : "bg-gray-700 hover:bg-gray-600"
         } disabled:opacity-50`}
         title="Insert Link"
+        disabled={!editor?.can().chain().focus().setLink({ href: "" }).run()}
       >
         <LinkIcon className="w-4 h-4" />
-      </MenuButton>
-      <MenuButton
+      </button>
+      <button
+        type="button"
         onClick={() => {
           const url = window.prompt("Enter the image URL");
           if (url) {
@@ -375,12 +398,14 @@ const MenuBar = ({ editor }) => {
         }}
         className="p-1 px-2 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-50"
         title="Insert Image"
+        disabled={!editor?.can().chain().focus().setImage({ src: "" }).run()}
       >
         <ImageIcon className="w-4 h-4" />
-      </MenuButton>
+      </button>
 
-      {/* Blocks - Use MenuButton */}
-      <MenuButton
+      {/* Blocks - Use standard button */}
+      <button
+        type="button"
         onClick={() => editor.chain().focus().toggleCodeBlock().run()}
         className={`p-1 px-2 rounded ${
           editor.isActive("codeBlock")
@@ -388,32 +413,41 @@ const MenuBar = ({ editor }) => {
             : "bg-gray-700 hover:bg-gray-600"
         } disabled:opacity-50`}
         title="Code Block"
+        disabled={!editor?.can().chain().focus().toggleCodeBlock().run()}
       >
         <Code2 className="w-4 h-4" />
-      </MenuButton>
-      <MenuButton
-        onClick={() => editor.chain().focus().toggleBlockquote().run()}
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          console.log("Blockquote button clicked!");
+          editor.chain().focus().toggleBlockquote().run();
+        }}
         className={`p-1 px-2 rounded ${
           editor.isActive("blockquote")
             ? "bg-blue-600"
             : "bg-gray-700 hover:bg-gray-600"
         } disabled:opacity-50`}
         title="Blockquote"
+        disabled={!editor?.can().chain().focus().toggleBlockquote().run()}
       >
         <Quote className="w-4 h-4" />
-      </MenuButton>
-      <MenuButton
+      </button>
+      <button
+        type="button"
         onClick={() => editor.chain().focus().setHorizontalRule().run()}
         className="p-1 px-2 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-50"
         title="Horizontal Rule"
+        disabled={!editor?.can().chain().focus().setHorizontalRule().run()}
       >
         <Minus className="w-4 h-4" />
-      </MenuButton>
+      </button>
 
-      {/* Superscript/Subscript */}
-      <MenuButton
+      {/* Superscript/Subscript - Use standard button */}
+      <button
+        type="button"
         onClick={() => editor.chain().focus().toggleSuperscript().run()}
-        disabled={!editor.can().chain().focus().toggleSuperscript().run()}
+        disabled={!editor?.can().chain().focus().toggleSuperscript().run()}
         className={`p-1 px-2 rounded ${
           editor.isActive("superscript")
             ? "bg-blue-600"
@@ -422,10 +456,11 @@ const MenuBar = ({ editor }) => {
         title="Superscript"
       >
         <SuperscriptIcon className="w-4 h-4" />
-      </MenuButton>
-      <MenuButton
+      </button>
+      <button
+        type="button"
         onClick={() => editor.chain().focus().toggleSubscript().run()}
-        disabled={!editor.can().chain().focus().toggleSubscript().run()}
+        disabled={!editor?.can().chain().focus().toggleSubscript().run()}
         className={`p-1 px-2 rounded ${
           editor.isActive("subscript")
             ? "bg-blue-600"
@@ -434,22 +469,25 @@ const MenuBar = ({ editor }) => {
         title="Subscript"
       >
         <SubscriptIcon className="w-4 h-4" />
-      </MenuButton>
+      </button>
 
-      {/* Color Picker */}
+      {/* Color Picker - Already uses standard button trigger */}
       <ColorPickerButton editor={editor} />
 
-      {/* Clear Formatting */}
-      <MenuButton
+      {/* Clear Formatting - Use standard button */}
+      <button
+        type="button"
         onClick={() => editor.chain().focus().unsetAllMarks().run()}
         className="p-1 px-2 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-50"
         title="Clear Formatting"
+        disabled={!editor?.can().chain().focus().unsetAllMarks().run()}
       >
         <RemoveFormatting className="w-4 h-4" />
-      </MenuButton>
+      </button>
 
-      {/* Task List Button */}
-      <MenuButton
+      {/* Task List Button - Use standard button */}
+      <button
+        type="button"
         onClick={() => editor.chain().focus().toggleTaskList().run()}
         className={`p-1 px-2 rounded ${
           editor.isActive("taskList")
@@ -457,12 +495,14 @@ const MenuBar = ({ editor }) => {
             : "bg-gray-700 hover:bg-gray-600"
         } disabled:opacity-50`}
         title="Task List"
+        disabled={!editor?.can().chain().focus().toggleTaskList().run()}
       >
         <ListTodo className="w-4 h-4" />
-      </MenuButton>
+      </button>
 
-      {/* NEW: Add Table Button */}
-      <MenuButton
+      {/* Table Button - Use standard button */}
+      <button
+        type="button"
         onClick={() =>
           editor
             .chain()
@@ -472,9 +512,10 @@ const MenuBar = ({ editor }) => {
         }
         className={`p-1 px-2 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-50`}
         title="Insert Table"
+        disabled={!editor?.can().chain().focus().insertTable().run()}
       >
         <TableIcon className="w-4 h-4" />
-      </MenuButton>
+      </button>
     </div>
   );
 };
@@ -517,10 +558,10 @@ const TipTapEditor = ({ content, onUpdate }) => {
       TaskItem.configure({
         nested: true,
       }),
-      // Add CodeBlockLowlight
+      // Configure CodeBlockLowlight with languages
       CodeBlockLowlight.configure({
-        lowlight,
-        defaultLanguage: "plaintext", // Or set a default like 'javascript'
+        lowlight: lowlightInstance,
+        defaultLanguage: "plaintext",
       }),
       // Add Table extensions
       Table.configure({

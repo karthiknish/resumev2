@@ -17,24 +17,32 @@ import TableRow from '@tiptap/extension-table-row'
 
 // Import CodeBlockLowlight and lowlight
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
-import lowlight from 'lowlight/lib/core' // Use core for smaller bundle size
-// Register languages - Import and register only the languages you need
-import javascript from 'highlight.js/lib/languages/javascript';
-import css from 'highlight.js/lib/languages/css';
-import html from 'highlight.js/lib/languages/xml'; // HTML is registered as xml
-import python from 'highlight.js/lib/languages/python';
-import bash from 'highlight.js/lib/languages/bash';
+import { createLowlight } from "lowlight"; // Import createLowlight instead of default
 
-// Register languages with lowlight
-lowlight.registerLanguage('javascript', javascript);
-lowlight.registerLanguage('js', javascript);
-lowlight.registerLanguage('css', css);
-lowlight.registerLanguage('html', html);
-lowlight.registerLanguage('xml', html);
-lowlight.registerLanguage('python', python);
-lowlight.registerLanguage('py', python);
-lowlight.registerLanguage('bash', bash);
-lowlight.registerLanguage('sh', bash);
+console.log("TipTapRenderer: Imported createLowlight:", createLowlight); // Log
+
+// Register languages - Import the languages themselves
+import javascript from "highlight.js/lib/languages/javascript";
+import css from "highlight.js/lib/languages/css";
+import html from "highlight.js/lib/languages/xml"; // HTML is registered as xml
+import python from "highlight.js/lib/languages/python";
+import bash from "highlight.js/lib/languages/bash";
+
+// Create the lowlight instance
+const lowlightInstance = createLowlight();
+
+// Register languages with the instance
+lowlightInstance.register({
+  javascript,
+  js: javascript,
+  css,
+  html,
+  xml: html,
+  python,
+  py: python,
+  bash,
+  sh: bash,
+});
 
 const TipTapRenderer = ({ content }) => {
   const editor = useEditor({
@@ -56,9 +64,9 @@ const TipTapRenderer = ({ content }) => {
       TextAlign.configure({
         types: ["heading", "paragraph"],
       }),
-      // Add CodeBlockLowlight
+      // Configure CodeBlockLowlight with languages
       CodeBlockLowlight.configure({
-        lowlight,
+        lowlight: lowlightInstance, // Pass the created instance
       }),
       // Add Table extensions
       Table,
@@ -83,7 +91,6 @@ const TipTapRenderer = ({ content }) => {
   // Remove the wrapper div, rely on parent styling or add specific classes for renderer
   // The prose styling might conflict with table/code block styling
   return <EditorContent editor={editor} />;
-
 };
 
 export default TipTapRenderer;
