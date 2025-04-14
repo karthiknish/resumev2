@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState, lazy, Suspense } from "react"; // Import React
 import ReactDOM from "react-dom"; // Import ReactDOM for react-axe
 import { Inter } from "next/font/google";
+import Link from "next/link"; // Import Link for Cookie Banner
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -13,6 +14,9 @@ import dynamic from "next/dynamic";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "@/components/ui/sonner";
 import ChatBot from "@/components/Chatbot";
+import CookieConsentBanner from "@/components/CookieConsentBanner"; // Import the banner
+import { AnimatePresence } from "framer-motion"; // Import AnimatePresence
+
 // Dynamically import PageTransitionWrapper with no SSR
 const PageTransitionWrapper = dynamic(
   () => import("@/components/PageTransitionWrapper"),
@@ -86,6 +90,8 @@ const toastOptions = {
   // Add other types like info, warning if needed
 };
 
+const COOKIE_CONSENT_KEY = "user_cookie_consent_status";
+
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
@@ -94,9 +100,41 @@ export default function App({
   const [domLoaded, setDomLoaded] = useState(false);
   const [transitionType, setTransitionType] = useState("default");
   const [isPageLoading, setIsPageLoading] = useState(false);
+  const [consentStatus, setConsentStatus] = useState(null); // null | 'accepted' | 'declined'
+  const [showConsentBanner, setShowConsentBanner] = useState(false);
 
   // Determine if chatbot should be shown
   const showChatbot = !router.pathname.startsWith("/admin");
+
+  // Check cookie consent on mount
+  useEffect(() => {
+    // Ensure this runs only client-side
+    const storedConsent = localStorage.getItem(COOKIE_CONSENT_KEY);
+    setConsentStatus(storedConsent); // Will be null if not set
+    // Only show banner if consent hasn't been given (neither accepted nor declined)
+    if (!storedConsent) {
+      setShowConsentBanner(true);
+    }
+  }, []);
+
+  // Handle accepting cookies
+  const handleAcceptCookies = () => {
+    localStorage.setItem(COOKIE_CONSENT_KEY, "accepted");
+    setConsentStatus("accepted");
+    setShowConsentBanner(false);
+    console.log("Cookie Consent: Accepted");
+    // You might trigger loading analytics scripts here if needed
+    // Example: window.loadGoogleAnalytics?.();
+  };
+
+  // Handle declining cookies
+  const handleDeclineCookies = () => {
+    localStorage.setItem(COOKIE_CONSENT_KEY, "declined");
+    setConsentStatus("declined");
+    setShowConsentBanner(false);
+    console.log("Cookie Consent: Declined");
+    // Ensure non-essential scripts/cookies are disabled (requires separate logic)
+  };
 
   // Universal loading indicator for page transitions
   useEffect(() => {
@@ -295,6 +333,16 @@ export default function App({
           {/* Conditionally render Chatbot */}
           {showChatbot && <ChatBot />}
           <Analytics />
+
+          {/* Render Cookie Banner Conditionally */}
+          <AnimatePresence>
+            {showConsentBanner && (
+              <CookieConsentBanner
+                onAccept={handleAcceptCookies}
+                onDecline={handleDeclineCookies}
+              />
+            )}
+          </AnimatePresence>
         </main>
       </SessionProvider>
     </QueryClientProvider>

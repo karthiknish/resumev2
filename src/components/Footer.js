@@ -97,12 +97,37 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Added border-t and padding-top */}
+          {/* Bottom section with copyright and policy links */}
           <div className="text-center border-t border-gray-700 pt-6 mt-8">
             <p className="text-gray-400 text-sm">
               &copy; {new Date().getFullYear()} Karthik Nishanth. All rights
               reserved.
             </p>
+            {/* Add policy links below copyright */}
+            <div className="mt-3 space-x-4">
+              <Link
+                href="/terms-and-conditions"
+                className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
+              >
+                Terms & Conditions
+              </Link>
+              <span className="text-xs text-gray-600">|</span>{" "}
+              {/* Optional separator */}
+              <Link
+                href="/privacy-policy"
+                className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
+              >
+                Privacy Policy
+              </Link>
+              <span className="text-xs text-gray-600">|</span>{" "}
+              {/* Optional separator */}
+              <Link
+                href="/cookie-policy"
+                className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
+              >
+                Cookie Policy
+              </Link>
+            </div>
           </div>
         </div>
       </footer>
