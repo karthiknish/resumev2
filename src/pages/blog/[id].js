@@ -23,6 +23,7 @@ import { useRouter } from "next/router";
 import { formatDistanceToNow } from "date-fns";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
+import { checkAdminStatus } from "@/lib/authUtils";
 
 function Id({ data, relatedPosts }) {
   // Add relatedPosts to props destructuring
@@ -33,11 +34,7 @@ function Id({ data, relatedPosts }) {
 
   // Admin session check
   const { data: session } = useSession();
-  const isAdmin =
-    session &&
-    (session.user?.role === "admin" ||
-      (Array.isArray(session.user?.roles) &&
-        session.user.roles.includes("admin")));
+  const isAdmin = checkAdminStatus(session);
 
   // Calculate estimated reading time
   const estimateReadingTime = (content) => {

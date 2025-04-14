@@ -1,4 +1,4 @@
-import { connectDB } from "@/lib/dbConnect";
+import dbConnect from "@/lib/dbConnect";
 import Message from "@/models/Message";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]";
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
 
   if (req.method === "PUT") {
     try {
-      await connectDB();
+      await dbConnect();
       const updatedMessage = await Message.findByIdAndUpdate(
         id,
         { isRead: true },

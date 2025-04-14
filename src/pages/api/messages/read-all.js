@@ -1,4 +1,4 @@
-import { connectDB } from "@/lib/db";
+import dbConnect from "@/lib/dbConnect";
 import Message from "@/models/Message";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
@@ -19,7 +19,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    await connectDB();
+    await dbConnect();
 
     const result = await Message.updateMany(
       { isRead: false },

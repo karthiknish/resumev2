@@ -1,11 +1,11 @@
-import { connectDB } from "@/lib/dbConnect";
+import dbConnect from "@/lib/dbConnect";
 import Message from "@/models/Message";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { checkAdminStatus } from "@/lib/authUtils"; // Import the utility
 
 export default async function handler(req, res) {
-  await connectDB();
+  await dbConnect();
   const session = await getServerSession(req, res, authOptions);
 
   if (req.method === "GET") {

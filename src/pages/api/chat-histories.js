@@ -1,11 +1,11 @@
-import { connectDB } from "@/lib/dbConnect";
+import dbConnect from "@/lib/dbConnect";
 import ChatHistory from "@/models/ChatHistory";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "./auth/[...nextauth]";
 import { checkAdminStatus } from "@/lib/authUtils";
 
 export default async function handler(req, res) {
-  await connectDB();
+  await dbConnect();
   const session = await getServerSession(req, res, authOptions);
 
   // Use the utility function for the check
