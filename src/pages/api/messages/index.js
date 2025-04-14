@@ -1,4 +1,4 @@
-import { connectDB } from "@/lib/db";
+import { connectDB } from "@/lib/dbConnect";
 import Message from "@/models/Message";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
