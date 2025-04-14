@@ -101,3 +101,23 @@
    }
 
 }
+
+@layer components {
+  /* Add custom component styles here if needed */
+
+  /* Basic Tiptap Table Styling */
+  .ProseMirror table {
+    @apply w-full my-4 border-collapse border border-gray-600;
+  }
+  .ProseMirror th,
+  .ProseMirror td {
+    @apply border border-gray-600 px-3 py-2 text-left;
+  }
+  .ProseMirror th {
+    @apply bg-gray-700 font-semibold;
+  }
+  /* Style for resize handle */
+  .ProseMirror .column-resize-handle {
+    @apply absolute right-[-2px] top-0 w-[4px] bottom-0 bg-blue-500 cursor-col-resize pointer-events-auto;
+  }
+}

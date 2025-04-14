@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import "highlight.js/styles/github-dark.css"; // Add highlight.js theme CSS
 import Script from "next/script";
 import { useRouter } from "next/router";
 import React, { useEffect, useState, lazy, Suspense } from "react"; // Import React

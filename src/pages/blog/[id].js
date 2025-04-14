@@ -4,7 +4,6 @@ import Head from "next/head";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import rehypeHighlight from "rehype-highlight"; // Import the plugin
-import "highlight.js/styles/github-dark.css"; // Import a highlight.js theme CSS
 import PageContainer from "@/components/PageContainer";
 import {
   fadeInUpVariants,

@@ -31,6 +31,7 @@ import {
   Subscript as SubscriptIcon,
   ListTodo,
   RemoveFormatting,
+  Table as TableIcon,
 } from "lucide-react";
 import UnderlineExtension from "@tiptap/extension-underline";
 import Highlight from "@tiptap/extension-highlight";
@@ -42,6 +43,33 @@ import Subscript from "@tiptap/extension-subscript";
 import TaskList from "@tiptap/extension-task-list";
 import TaskItem from "@tiptap/extension-task-item";
 import { toast } from "sonner";
+
+// Import Table extensions
+import Table from "@tiptap/extension-table";
+import TableCell from "@tiptap/extension-table-cell";
+import TableHeader from "@tiptap/extension-table-header";
+import TableRow from "@tiptap/extension-table-row";
+
+// Import CodeBlockLowlight and lowlight
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import lowlight from "lowlight/lib/core"; // Use core for smaller bundle size
+// Register languages - Import and register only the languages you need
+import javascript from "highlight.js/lib/languages/javascript";
+import css from "highlight.js/lib/languages/css";
+import html from "highlight.js/lib/languages/xml"; // HTML is registered as xml
+import python from "highlight.js/lib/languages/python";
+import bash from "highlight.js/lib/languages/bash";
+
+// Register languages with lowlight
+lowlight.registerLanguage("javascript", javascript);
+lowlight.registerLanguage("js", javascript);
+lowlight.registerLanguage("css", css);
+lowlight.registerLanguage("html", html);
+lowlight.registerLanguage("xml", html);
+lowlight.registerLanguage("python", python);
+lowlight.registerLanguage("py", python);
+lowlight.registerLanguage("bash", bash);
+lowlight.registerLanguage("sh", bash);
 
 const MenuBar = ({ editor }) => {
   if (!editor) {
@@ -432,6 +460,21 @@ const MenuBar = ({ editor }) => {
       >
         <ListTodo className="w-4 h-4" />
       </MenuButton>
+
+      {/* NEW: Add Table Button */}
+      <MenuButton
+        onClick={() =>
+          editor
+            .chain()
+            .focus()
+            .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+            .run()
+        }
+        className={`p-1 px-2 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-50`}
+        title="Insert Table"
+      >
+        <TableIcon className="w-4 h-4" />
+      </MenuButton>
     </div>
   );
 };
@@ -441,51 +484,63 @@ const TipTapEditor = ({ content, onUpdate }) => {
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        // Disable StarterKit's code block to use CodeBlockLowlight
+        codeBlock: false,
+        // Keep other StarterKit defaults or configure as needed
+        heading: {
+          levels: [1, 2, 3],
+        },
+      }),
       TextStyle,
       Color,
       UnderlineExtension,
-      Highlight.configure({ multicolor: true }),
+      Highlight,
       Link.configure({
-        openOnClick: true,
+        openOnClick: false, // Recommended for editor UX
         autolink: true,
-        defaultProtocol: "https",
+        linkOnPaste: true,
       }),
-      Image,
+      Image.configure({
+        inline: false, // Allow images to be block elements
+        allowBase64: true, // Allow pasting base64 images (optional)
+      }),
       TextAlign.configure({
         types: ["heading", "paragraph"],
       }),
       Placeholder.configure({
-        placeholder:
-          "Start writing your blog post here... Press Tab for AI completion.",
+        placeholder: "Start writing your masterpiece...",
       }),
       Superscript,
       Subscript,
       TaskList,
       TaskItem.configure({
-        nested: true, // Allow nested task lists
+        nested: true,
       }),
+      // Add CodeBlockLowlight
+      CodeBlockLowlight.configure({
+        lowlight,
+        defaultLanguage: "plaintext", // Or set a default like 'javascript'
+      }),
+      // Add Table extensions
+      Table.configure({
+        resizable: true, // Allow column resizing
+      }),
+      TableRow,
+      TableHeader,
+      TableCell,
     ],
-    content: content,
+    content: content || "", // Use provided content or empty string
+    onUpdate: ({ editor }) => {
+      const html = editor.getHTML();
+      // console.log("Editor Updated (HTML):", html); // Debug log
+      onUpdate(html);
+    },
     editorProps: {
       attributes: {
         class:
-          "prose prose-invert max-w-none focus:outline-none min-h-[400px] bg-gray-900 text-white border border-gray-700 rounded-b-md p-4",
+          "prose prose-invert max-w-none focus:outline-none min-h-[300px] p-4 border border-gray-700 rounded-md bg-gray-900",
       },
-      handleKeyDown: (view, event) => {
-        if (event.key === "Tab" && !event.shiftKey) {
-          event.preventDefault();
-
-          handleSentenceCompletion();
-
-          return true;
-        }
-        return false;
-      },
-    },
-    onUpdate: ({ editor }) => {
-      const html = editor.getHTML();
-      onUpdate(html);
     },
   });
 
