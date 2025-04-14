@@ -8,6 +8,7 @@ import {
   AiOutlineUsergroupAdd,
   AiFillLinkedin, // Added LinkedIn icon
   AiOutlineClockCircle, // Added Clock icon for Pomodoro
+  AiOutlineFire, // Icon for News
 } from "react-icons/ai";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -35,6 +36,7 @@ import ApiStatusTab from "@/components/admin/tabs/ApiStatusTab";
 import SubscribersTab from "@/components/admin/tabs/SubscribersTab";
 import LinkedInTab from "@/components/admin/tabs/LinkedInTab"; // Import LinkedInTab
 import PomodoroTab from "@/components/admin/tabs/PomodoroTab"; // Import PomodoroTab
+import HackerNewsFeed from "@/components/admin/tabs/HackerNewsFeed"; // Import HackerNewsFeed
 
 function AdminDashboard() {
   const { data: session, status } = useSession();
@@ -224,6 +226,13 @@ function AdminDashboard() {
                     <AiOutlineClockCircle />{" "}
                     <span className="ml-1.5">Pomodoro</span>
                   </TabsTrigger>
+                  {/* Add News Tab Trigger */}
+                  <TabsTrigger
+                    value="news"
+                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0"
+                  >
+                    <AiOutlineFire /> <span className="ml-1.5">News</span>
+                  </TabsTrigger>
                 </TabsList>
               </SlideUp>
 
@@ -268,6 +277,11 @@ function AdminDashboard() {
                 <TabsContent value="pomodoro" key="pomodoro">
                   {" "}
                   <PomodoroTab />{" "}
+                </TabsContent>
+                {/* Add News Tab Content */}
+                <TabsContent value="news" key="news">
+                  {" "}
+                  <HackerNewsFeed />{" "}
                 </TabsContent>
               </AnimatePresence>
             </Tabs>

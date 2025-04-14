@@ -3,21 +3,23 @@ import Head from "next/head";
 import axios from "axios";
 import { useRouter } from "next/router";
 import PageContainer from "@/components/PageContainer"; // Ensure single import
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+// Import necessary icons and toast
+import { Loader2, Wand2 } from "lucide-react";
+import { toast } from "sonner";
 // Switch import is removed as it's handled in MetadataSection
 
 // Import the refactored components
 import BannerImageSection from "@/components/admin/blog-editor/BannerImageSection";
 import MetadataSection from "@/components/admin/blog-editor/MetadataSection";
-import ContentSection from "@/components/admin/blog-editor/ContentSection";
 import ActionButtons from "@/components/admin/blog-editor/ActionButtons";
 
 // Keep ReactMarkdown and AiOutlineClose for the preview modal if still needed
-import ReactMarkdown from "react-markdown";
 import { AiOutlineClose } from "react-icons/ai";
+import TipTapEditor from "@/components/TipTapEditor";
+import TipTapRenderer from "@/components/TipTapRenderer";
 
 function Edit() {
   const router = useRouter();
@@ -41,20 +43,15 @@ function Edit() {
 
   // State for specific features
   const [isFormatting, setIsFormatting] = useState(false);
+  const [formatError, setFormatError] = useState(""); // Add format error state
   // Audio summary feature removed
 
   // State for modals/toggles
   const [showPreview, setShowPreview] = useState(false);
-  const [showJsonInput, setShowJsonInput] = useState(false);
-  const [jsonInput, setJsonInput] = useState("");
 
   // --- Define toggle functions ---
   const togglePreview = () => {
     setShowPreview((prevState) => !prevState);
-  };
-
-  const toggleJsonInput = () => {
-    setShowJsonInput((prevState) => !prevState);
   };
 
   // --- Data Fetching ---
@@ -76,21 +73,6 @@ function Edit() {
               tags: Array.isArray(d.data.tags) ? d.data.tags : [],
               isPublished: d.data.isPublished || false, // Fetch isPublished status
             });
-            setJsonInput(
-              JSON.stringify(
-                {
-                  title: d.data.title || "",
-                  imageUrl: d.data.imageUrl || "",
-                  content: d.data.content || "",
-                  description: d.data.description || "",
-                  category: d.data.category || "",
-                  tags: Array.isArray(d.data.tags) ? d.data.tags : [],
-                  isPublished: d.data.isPublished || false,
-                },
-                null,
-                2
-              )
-            );
           } else {
             setError("Failed to load blog post data.");
             setSubmitStatus([
@@ -142,37 +124,46 @@ function Edit() {
     handleFormChange({ content: newContent });
   };
 
-  // --- Feature Handlers ---
-  const handleFormatContent = async () => {
+  // --- Format Content Handler ---
+  const handleFormatContent = useCallback(async () => {
     if (!formData.content?.trim()) {
-      setSubmitStatus([false, "Content is required for formatting"]);
+      toast.error("Content is empty, nothing to format.");
       return;
     }
     setIsFormatting(true);
+    setFormatError("");
+    setError(""); // Clear general errors too
     setSubmitStatus([]);
-    setError("");
     try {
+      console.log("[EditPage] Formatting content:", formData.content); // Log the content
+      console.log("[EditPage] Type of content:", typeof formData.content); // Log the type
+
+      console.log("[EditPage] Requesting content formatting...");
       const response = await fetch("/api/ai/format-content", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: formData.content }),
       });
-      const result = await response.json();
-      if (!response.ok)
-        throw new Error(result.message || "Failed to format content");
-      handleContentChange(result.data); // Use handler
-      setSubmitStatus([true, "Content formatted successfully!"]);
-      setTimeout(() => setSubmitStatus([]), 3000);
+      const data = await response.json();
+      if (response.ok && data.success && data.data) {
+        handleContentChange(data.data);
+        toast.success("Content formatted successfully!");
+      } else {
+        throw new Error(data.message || "Failed to format content.");
+      }
     } catch (err) {
-      console.error("Error formatting content:", err);
-      setError(err.message || "Failed to format content");
-      setSubmitStatus([false, err.message || "Failed to format content"]);
+      console.error("[EditPage] Error formatting content:", err);
+      const errorMsg =
+        err.response?.data?.message ||
+        err.message ||
+        "Error formatting content.";
+      setFormatError(errorMsg);
+      setError(`Formatting Error: ${errorMsg}`); // Also set general error for display
+      toast.error(`Formatting failed: ${errorMsg}`);
     } finally {
       setIsFormatting(false);
     }
-  };
-
-  // Audio summary feature removed
+  }, [formData.content, handleContentChange]); // Dependencies: content and handler
 
   // --- Main Form Submission ---
   const handleSubmit = async (e) => {
@@ -275,7 +266,7 @@ function Edit() {
             {formData.title}
           </h1>
           <div className="prose prose-invert max-w-none prose-headings:text-white prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:text-gray-300 prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-ul:text-gray-300 prose-ol:text-gray-300 prose-li:my-1">
-            <ReactMarkdown>{formData.content}</ReactMarkdown>
+            <TipTapRenderer content={formData.content} />
           </div>
         </div>
       </div>
@@ -290,66 +281,97 @@ function Edit() {
       </Head>
       <div className="min-h-screen bg-black text-white">
         <PageContainer className="mt-10">
-          <h1 className="text-4xl font-bold text-white font-calendas text-center mb-8 pt-8">
-            Edit Blog Post
-          </h1>
+          {!isLoading && blogId && (
+            <h1 className="text-4xl font-bold text-white font-calendas text-center mb-8 pt-8">
+              Edit Blog Post
+            </h1>
+          )}
 
-          <form
-            onSubmit={handleSubmit}
-            className="bg-gray-800 rounded-lg p-6 shadow-lg space-y-6"
-          >
-            <BannerImageSection
-              imageUrl={formData.imageUrl}
-              onImageUrlChange={handleImageUrlChange}
-            />
+          {isLoading && (
+            <div className="text-center py-10">Loading post...</div>
+          )}
 
-            <MetadataSection
-              formData={formData}
-              onFormChange={handleFormChange}
-              isPublished={formData.isPublished} // Pass isPublished state
-              onPublishChange={handlePublishChange} // Pass specific handler for switch
-            />
-
-            {/* The duplicate Publish Switch block is confirmed removed. */}
-
-            <ContentSection
-              content={formData.content}
-              setContent={handleContentChange}
-              onFormatContent={handleFormatContent}
-              isFormatting={isFormatting}
-              onTogglePreview={togglePreview} // Pass the toggle function
-              blogTitle={formData.title} // Pass title for content generation button
-            />
-
-            {/* Publish/Draft Toggle - moved above Save Changes */}
-            <div className="flex items-center space-x-2 pt-4 border-t border-gray-700">
-              <Switch
-                id="isPublished"
-                checked={formData.isPublished}
-                onCheckedChange={handlePublishChange}
-              />
-              <Label
-                htmlFor="isPublished"
-                className="text-gray-300 cursor-pointer"
-              >
-                {formData.isPublished ? "Published" : "Draft"}
-              </Label>
+          {!isLoading && !blogId && (
+            <div className="text-center py-10 text-red-500">
+              Invalid Post ID.
             </div>
+          )}
 
-            <ActionButtons
-              isLoading={isLoading}
-              isSaveDisabled={
-                !formData.title ||
-                !formData.content ||
-                !formData.imageUrl ||
-                !formData.description
-              }
+          {!isLoading && blogId && (
+            <form
               onSubmit={handleSubmit}
-              // Removed JSON editor button and related props
-              submitStatus={submitStatus}
-              error={error}
-            />
-          </form>
+              className="bg-gray-800 rounded-lg p-6 shadow-lg space-y-6 max-w-4xl mx-auto"
+            >
+              <BannerImageSection
+                imageUrl={formData.imageUrl}
+                onImageUrlChange={handleImageUrlChange}
+              />
+
+              <MetadataSection
+                formData={formData}
+                onFormChange={handleFormChange}
+                isPublished={formData.isPublished}
+                onPublishChange={handlePublishChange}
+              />
+
+              {/* --- Blog Content Section with Format Button --- */}
+              <div className="mb-6 space-y-2">
+                <div className="flex justify-between items-center flex-wrap">
+                  <Label
+                    htmlFor="blog-content-editor"
+                    className="block text-gray-300 text-lg font-semibold mb-2 sm:mb-0"
+                  >
+                    Blog Content
+                  </Label>
+                  <Button
+                    type="button" // Prevent form submission
+                    onClick={handleFormatContent}
+                    disabled={isFormatting || !formData.content?.trim()}
+                    variant="secondary"
+                    size="sm"
+                    className="flex items-center"
+                    title="Format content using AI"
+                  >
+                    {isFormatting ? (
+                      <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Wand2 className="mr-1 h-4 w-4" />
+                    )}
+                    Format
+                  </Button>
+                </div>
+                {/* Display Formatting Error */}
+                {formatError && (
+                  <p className="text-sm text-red-500">
+                    Format Error: {formatError}
+                  </p>
+                )}
+                <TipTapEditor
+                  id="blog-content-editor" // Add ID for label
+                  content={formData.content}
+                  onUpdate={(html) => handleContentChange(html)}
+                />
+              </div>
+              {/* --- End Blog Content Section --- */}
+
+              <ActionButtons
+                isLoading={isLoading}
+                isSaveDisabled={
+                  !formData.title ||
+                  !formData.content ||
+                  !formData.imageUrl ||
+                  !formData.description
+                }
+                onSubmit={handleSubmit}
+                onTogglePreview={togglePreview}
+                submitStatus={submitStatus}
+                error={error}
+                saveButtonText="Save Changes"
+                isPublished={formData.isPublished}
+                onPublishChange={handlePublishChange}
+              />
+            </form>
+          )}
         </PageContainer>
       </div>
       {showPreview && <BlogPreview />}

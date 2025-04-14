@@ -3,7 +3,6 @@ import Link from "next/link";
 import Head from "next/head";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
-import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight"; // Import the plugin
 import "highlight.js/styles/github-dark.css"; // Import a highlight.js theme CSS
 import PageContainer from "@/components/PageContainer";
@@ -19,6 +18,7 @@ import RelatedPosts from "@/components/RelatedPosts";
 import CommentsSection from "@/components/CommentsSection";
 import JsonLd, { createBlogPostingSchema } from "@/components/JsonLd"; // Import JsonLd and schema function
 import { useSession } from "next-auth/react"; // Import useSession for admin check
+import TipTapRenderer from "@/components/TipTapRenderer"; // Import TipTapRenderer
 
 function Id({ data, relatedPosts }) {
   // Add relatedPosts to props destructuring
@@ -401,9 +401,7 @@ function Id({ data, relatedPosts }) {
                     // Removed prose-code:* styles as rehype-highlight will handle styling via CSS
                     className="prose prose-invert max-w-none prose-headings:text-white prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:text-gray-300 prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-ul:text-gray-300 prose-ol:text-gray-300 prose-li:my-1 font-calendas prose-blockquote:border-blue-500 prose-blockquote:bg-blue-900/20 prose-blockquote:p-4 prose-blockquote:rounded-md"
                   >
-                    <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
-                      {data.content}
-                    </ReactMarkdown>
+                    <TipTapRenderer content={data.content} />
                   </motion.div>
                 )}
 

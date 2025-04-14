@@ -46,6 +46,45 @@ const LoadingFallback = () => (
   </div>
 );
 
+// Define centralized toast options
+const toastOptions = {
+  toastOptions: {
+    style: {
+      background: "#1f2937", // gray-800
+      color: "#f9fafb", // gray-50
+      border: "1px solid #374151", // gray-700
+    },
+    classNames: {
+      // Preserve existing classNames if any, or define default ones
+      toast: "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
+      description: "group-[.toast]:text-muted-foreground",
+      actionButton:
+        "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
+      cancelButton:
+        "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
+      // Add specific classNames for success/error if desired, or rely on style
+      success: "group-[.toast]:text-green-400", // Example: Tailwind text color
+      error: "group-[.toast]:text-red-400",     // Example: Tailwind text color
+    },
+  },
+  // Define specific styles for success/error if classNames aren't enough
+  success: {
+    style: {
+      background: "#047857", // emerald-700 (slightly darker green)
+      color: "#d1fae5", // emerald-100 (light green text)
+      border: "1px solid #065f46", // emerald-800
+    },
+  },
+  error: {
+    style: {
+      background: "#b91c1c", // red-700 (slightly darker red)
+      color: "#fee2e2", // red-100 (light red text)
+      border: "1px solid #991b1b", // red-800
+    },
+  },
+  // Add other types like info, warning if needed
+};
+
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
@@ -259,17 +298,8 @@ export default function App({
             ) : (
               <LoadingFallback />
             )}
-            {/* Added toastOptions for styling */}
-            <Toaster
-              toastOptions={{
-                classNames: {
-                  toast: "bg-gray-800 border-gray-700 text-white", // Dark background, border, light text
-                  success: "text-green-400",
-                  error: "text-red-400",
-                  // Add other types if needed (info, warning, etc.)
-                },
-              }}
-            />
+            {/* Pass centralized toast options to Toaster */}
+            <Toaster {...toastOptions} />
             <Footer />
             <ChatBot />
             <Analytics />

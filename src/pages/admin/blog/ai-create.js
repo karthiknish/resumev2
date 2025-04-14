@@ -18,8 +18,9 @@ import {
 } from "react-icons/ai";
 import { FiRefreshCw, FiPlus } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
-import ReactMarkdown from "react-markdown";
 import PageContainer from "@/components/PageContainer"; // Import PageContainer
+import TipTapRenderer from "@/components/TipTapRenderer"; // Import TipTapRenderer
+import TipTapEditor from "@/components/TipTapEditor"; // Import TipTapEditor
 
 export default function AICreateBlog() {
   const { data: session, status } = useSession();
@@ -978,12 +979,11 @@ export default function AICreateBlog() {
                       </div>
                       <div>
                         <label className="block text-gray-300 mb-2">
-                          Content (Markdown)
+                          Content
                         </label>
-                        <textarea
-                          value={editedContent}
-                          onChange={(e) => setEditedContent(e.target.value)}
-                          className="w-full h-[500px] px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+                        <TipTapEditor
+                          content={editedContent}
+                          onUpdate={(html) => setEditedContent(html)}
                         />
                       </div>
                     </div>
@@ -993,7 +993,7 @@ export default function AICreateBlog() {
                         {editedTitle}
                       </h1>
                       <div className="markdown-content overflow-auto max-h-[600px] pr-4 prose-headings:text-white prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:text-gray-300 prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-ul:text-gray-300 prose-ol:text-gray-300 prose-li:my-1">
-                        <ReactMarkdown>{editedContent}</ReactMarkdown>
+                        <TipTapRenderer content={editedContent} />
                       </div>
                     </div>
                   )}
