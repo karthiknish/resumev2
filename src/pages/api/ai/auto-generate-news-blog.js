@@ -90,7 +90,7 @@ export default async function handler(req, res) {
 
   // --- Authentication Check ---
   // Check for Cron Secret first, then fall back to admin session check
-  const authHeader = req.headers.get("authorization");
+  const authHeader = req.headers.authorization;
   const cronSecret = process.env.CRON_SECRET;
 
   if (authHeader === `Bearer ${cronSecret}`) {
@@ -103,12 +103,10 @@ export default async function handler(req, res) {
     );
     const isAdmin = await isAdminUser(req, res);
     if (!isAdmin) {
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message: "Forbidden: Authentication required (Admin or Cron Secret)",
-        });
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden: Authentication required (Admin or Cron Secret)",
+      });
     }
     console.log("Authenticated via admin session.");
   }
@@ -206,12 +204,12 @@ export default async function handler(req, res) {
     You are an expert tech blogger writing for Karthik Nishanth's website (karthiknish.com). Your task is to take the provided AI news content and write an engaging blog post about it.
 
     **WRITING TONE/STYLE:**
-    *   **Overall Tone:** Positive and optimistic. Focus on the advancements, opportunities, and benefits presented by the AI news.
-    *   **Audience:** Assume a developer audience. Use relevant technical terms naturally, but briefly explain complex concepts if necessary.
-    *   **Perspective:** Write with a "developer intuition". Analyze the news from a practical standpoint – what does this mean for developers' workflows, toolchains, or the future of building software?
-    *   **Structure:** Use standard HTML tags for formatting (e.g., `<h2>Heading</h2>`, `<p>Paragraph</p>`, `<ul><li>Item</li></ul>`, `<strong>bold</strong>`). Keep paragraphs concise.
-    *   **Conclusion:** End with a forward-looking, solution-oriented conclusion. Summarize the key takeaway, discuss potential applications, how developers might use this, or what the next steps in this area might be. Avoid simply trailing off.
-    *   Maintain a professional but engaging voice.
+    - **Overall Tone:** Positive and optimistic. Focus on the advancements, opportunities, and benefits presented by the AI news.
+    - **Audience:** Assume a developer audience. Use relevant technical terms naturally, but briefly explain complex concepts if necessary.
+    - **Perspective:** Write with a "developer intuition". Analyze the news from a practical standpoint – what does this mean for developers' workflows, toolchains, or the future of building software?
+    - **Structure:** Use standard HTML tags for formatting (e.g., <h2>Heading</h2>, <p>Paragraph</p>, <ul><li>Item</li></ul>, <strong>bold</strong>). Keep paragraphs concise.
+    - **Conclusion:** End with a forward-looking, solution-oriented conclusion. Summarize the key takeaway, discuss potential applications, how developers might use this, or what the next steps in this area might be. Avoid simply trailing off.
+    - Maintain a professional but engaging voice.
 
     **INPUT NEWS CONTENT:**
     ---
@@ -226,7 +224,7 @@ export default async function handler(req, res) {
     DESCRIPTION: [Generate a brief (1-2 sentences, max 160 chars) meta description summarizing the post]
     TAGS: [Suggest 3-5 relevant comma-separated tags (e.g., AI, Machine Learning, Gemini, Tech News)]
     BODY:
-    [Write the full blog post content here using appropriate HTML tags like `<h2>`, `<p>`, `<ul>`, `<li>`, `<strong>`, `<em>`, `<code>`, etc. Start with an introduction explaining the news, elaborate on the details and significance, add perspective/opinion, and conclude. Ensure the output is valid HTML within this BODY section.]
+    [Write the full blog post content here using appropriate HTML tags like <h2>, <p>, <ul>, <li>, <strong>, <em>, <code>, etc. Start with an introduction explaining the news, elaborate on the details and significance, add perspective/opinion, and conclude. Ensure the output is valid HTML within this BODY section. **Do not wrap the output in \`\`\`html ... \`\`\` or any other code blocks.**]
   `;
 
     // --- Generate Blog Post using Gemini ---
@@ -246,6 +244,21 @@ export default async function handler(req, res) {
 
     // --- Parse the AI Response ---
     const parsedData = parseAIResponse(aiResponseText);
+
+    // Clean potential markdown code block fences from the body
+    if (parsedData.body?.startsWith("```html")) {
+      parsedData.body = parsedData.body.slice(7);
+      if (parsedData.body.endsWith("```")) {
+        parsedData.body = parsedData.body.slice(0, -3);
+      }
+    } else if (parsedData.body?.startsWith("```")) {
+      // Handle generic ```
+      parsedData.body = parsedData.body.slice(3);
+      if (parsedData.body.endsWith("```")) {
+        parsedData.body = parsedData.body.slice(0, -3);
+      }
+    }
+    parsedData.body = parsedData.body?.trim(); // Trim again
 
     // --- Save as Draft Blog Post ---
     const newBlogPost = new Blog({

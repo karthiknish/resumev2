@@ -71,7 +71,7 @@ export default async function handler(req, res) {
       **Input HTML:**
       ${cleanedContent}
 
-      **Output:** Return only the fully reformatted HTML text without any additional commentary.
+      Please return only the reformatted HTML content without any markdown formatting or code block tags.
     `.trim();
 
     const generationConfig = {

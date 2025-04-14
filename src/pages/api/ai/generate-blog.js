@@ -79,7 +79,7 @@ export default async function handler(req, res) {
         }
         ${outlineInstructions}
         - **Readability:** Ensure paragraphs are well-structured and sentences flow logically. Use transition words where appropriate. Use HTML formatting effectively (`<h2>`, `<p>`, `<strong>`, `<ul>`, `<li>`, etc.).
-        - **Output:** Return the entire response, starting *directly* with the HTML title (`<h1>Title</h1>`), as a single block of valid, well-formatted HTML. Do not include any preamble, notes, disclaimers, or explanations before or after the HTML content itself.
+        - **Output:** Return the entire response, starting *directly* with the HTML title (`<h1>Title</h1>`), as a single block of valid, well-formatted HTML. Do not include any preamble, notes, disclaimers, or explanations before or after the HTML content itself. **Do not wrap the output in \`\`\`html ... \`\`\` or any other code blocks.**
       `;
       // Keep default maxOutputTokens for full post generation
     } else {
@@ -95,7 +95,7 @@ export default async function handler(req, res) {
         - Write a brief conclusion (1 paragraph using `<p>` tags).
         - Use basic HTML formatting (paragraphs `<p>`, maybe one or two `<h2>` subheadings if appropriate). Keep it relatively simple.
         - Focus on generating coherent text relevant to the title.
-        - Output *only* the generated HTML content (starting with `<p>` or `<h2>`). Do not include the title itself (like `<h1>Title</h1>`) in the output. Do not add any preamble, notes, or explanations.
+        - Output *only* the generated HTML content (starting with `<p>` or `<h2>`). Do not include the title itself (like `<h1>Title</h1>`) in the output. Do not add any preamble, notes, or explanations. **Do not wrap the output in \`\`\`html ... \`\`\` or any other code blocks.**
       `;
       generationConfig.maxOutputTokens = 2048; // Use fewer tokens for a draft
     }
@@ -112,7 +112,22 @@ export default async function handler(req, res) {
     );
 
     let title = effectiveTopic; // Start with the provided title/topic
-    let content = generatedText.trim();
+    let rawContent = generatedText.trim();
+
+    // Clean potential markdown code block fences
+    let content = rawContent;
+    if (content.startsWith("```html")) {
+      content = content.slice(7);
+      if (content.endsWith("```")) {
+        content = content.slice(0, -3);
+      }
+    } else if (content.startsWith("```")) { // Handle generic ``` if ```html wasn't found
+        content = content.slice(3);
+        if (content.endsWith("```")) {
+            content = content.slice(0, -3);
+        }
+    }
+    content = content.trim(); // Trim again after potential removal
 
     // If generated from outline, the AI might have included the title again
     if (outline) {

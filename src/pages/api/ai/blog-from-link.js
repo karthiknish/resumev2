@@ -64,7 +64,7 @@ You are an expert blogger, analyst, and thought leader writing for Karthik Nisha
 - Provide actionable takeaways, recommendations, or next steps for readers.
 - Use HTML formatting (headings <h2>, paragraphs <p>, lists <ul><li>, bold <strong>, etc.) where appropriate.
 - Do not reference the original article or its author.
-- Output only the HTML blog post content. Do not include any preamble or extra text.
+- Output only the HTML blog post content. Do not include any preamble or extra text. **Do not wrap the output in \`\`\`html ... \`\`\` or any other code blocks.**
 ${styleInstructions ? `- Style instructions: ${styleInstructions}` : ""}
 
 **Metadata:**
@@ -104,10 +104,26 @@ ${sanitizedText}
         .json({ error: "AI model returned empty content." });
     }
 
+    // Clean potential markdown code block fences
+    let content = aiResponse.trim();
+    if (content.startsWith("```html")) {
+      content = content.slice(7);
+      if (content.endsWith("```")) {
+        content = content.slice(0, -3);
+      }
+    } else if (content.startsWith("```")) {
+      // Handle generic ```
+      content = content.slice(3);
+      if (content.endsWith("```")) {
+        content = content.slice(0, -3);
+      }
+    }
+    content = content.trim(); // Trim again
+
     return res.status(200).json({
       success: true,
       title: title || "",
-      content: aiResponse, // Use the returned string directly
+      content: content, // Use the cleaned content
     });
   } catch (error) {
     console.error("Error in blog-from-link:", error);
