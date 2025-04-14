@@ -78,24 +78,24 @@ export default async function handler(req, res) {
             : "Optimize for relevant keywords related to the topic naturally within the content."
         }
         ${outlineInstructions}
-        - **Readability:** Ensure paragraphs are well-structured and sentences flow logically. Use transition words where appropriate. Use HTML formatting effectively (`<h2>`, `<p>`, `<strong>`, `<ul>`, `<li>`, etc.).
-        - **Output:** Return the entire response, starting *directly* with the HTML title (`<h1>Title</h1>`), as a single block of valid, well-formatted HTML. Do not include any preamble, notes, disclaimers, or explanations before or after the HTML content itself. **Do not wrap the output in \`\`\`html ... \`\`\` or any other code blocks.**
+        - **Readability:** Ensure paragraphs are well-structured and sentences flow logically. Use transition words where appropriate. Use HTML formatting effectively (<h2>, <p>, <strong>, <ul>, <li>, etc.).
+        - **Output:** Return the entire response, starting directly with the HTML title (<h1>Title</h1>), as a single block of valid, well-formatted HTML. Do not include any preamble, notes, disclaimers, or explanations before or after the HTML content itself. Do not wrap the output in code blocks.
       `;
       // Keep default maxOutputTokens for full post generation
     } else {
       // --- Prompt for generating DRAFT from TITLE only ---
       prompt = `
-        Act as a content writer. Generate a draft blog post in simple HTML format based *only* on the provided title.
+        Act as a content writer. Generate a draft blog post in simple HTML format based only on the provided title.
 
         **Title:** "${effectiveTopic}"
 
         **Instructions:**
-        - Create a reasonable introduction (1-2 paragraphs using `<p>` tags).
-        - Develop 2-4 body paragraphs discussing potential aspects related to the title (using `<p>` tags).
-        - Write a brief conclusion (1 paragraph using `<p>` tags).
-        - Use basic HTML formatting (paragraphs `<p>`, maybe one or two `<h2>` subheadings if appropriate). Keep it relatively simple.
+        - Create a reasonable introduction (1-2 paragraphs using <p> tags).
+        - Develop 2-4 body paragraphs discussing potential aspects related to the title (using <p> tags).
+        - Write a brief conclusion (1 paragraph using <p> tags).
+        - Use basic HTML formatting (paragraphs <p>, maybe one or two <h2> subheadings if appropriate). Keep it relatively simple.
         - Focus on generating coherent text relevant to the title.
-        - Output *only* the generated HTML content (starting with `<p>` or `<h2>`). Do not include the title itself (like `<h1>Title</h1>`) in the output. Do not add any preamble, notes, or explanations. **Do not wrap the output in \`\`\`html ... \`\`\` or any other code blocks.**
+        - Output only the generated HTML content (starting with <p> or <h2>). Do not include the title itself (like <h1>Title</h1>) in the output. Do not add any preamble, notes, or explanations. Do not wrap the output in code blocks.
       `;
       generationConfig.maxOutputTokens = 2048; // Use fewer tokens for a draft
     }
@@ -115,19 +115,9 @@ export default async function handler(req, res) {
     let rawContent = generatedText.trim();
 
     // Clean potential markdown code block fences
-    let content = rawContent.replace(/^\s*```(?:html)?\s*\n?|\s*\n?```\s*$/g, '').trim();
-    // if (content.startsWith("```html")) {
-    //   content = content.slice(7);
-    //   if (content.endsWith("```")) {
-    //     content = content.slice(0, -3);
-    //   }
-    // } else if (content.startsWith("```")) { // Handle generic ``` if ```html wasn't found
-    //     content = content.slice(3);
-    //     if (content.endsWith("```")) {
-    //         content = content.slice(0, -3);
-    //     }
-    // }
-    // content = content.trim(); // Trim again after potential removal -- Already handled by regex replace + trim()
+    let content = rawContent
+      .replace(/^\s*```(?:html)?\s*\n?|\s*\n?```\s*$/g, "")
+      .trim();
 
     // If generated from outline, the AI might have included the title again
     if (outline) {
