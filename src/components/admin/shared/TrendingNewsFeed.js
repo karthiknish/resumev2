@@ -45,6 +45,7 @@ export default function TrendingNewsFeed({ onNewsSelect }) {
 
   // Handle clicking a news item to copy to form
   const handleSelect = (item) => {
+    console.log("[TrendingNewsFeed] handleSelect called with:", item);
     if (onNewsSelect) {
       onNewsSelect(item.headline, item.summary); // Pass headline and summary
       toast.info(`Copied "${item.headline}" to form.`);
@@ -87,7 +88,7 @@ export default function TrendingNewsFeed({ onNewsSelect }) {
             {news.map((item, index) => (
               <li
                 key={index}
-                className="text-sm border-b border-gray-700 pb-2 last:border-b-0 group"
+                className="text-sm border-b border-gray-700 pb-2 last:border-b-0 group py-2"
               >
                 <div className="flex items-start justify-between gap-2">
                   {/* Headline as a link */}
@@ -102,17 +103,16 @@ export default function TrendingNewsFeed({ onNewsSelect }) {
                     <LinkIcon className="w-3 h-3 inline-block ml-1 opacity-50" />
                   </a>
                   {/* Button to copy to form */}
-                  {onNewsSelect && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-6 w-6 flex-shrink-0 text-gray-500 hover:text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={() => handleSelect(item)}
-                      title="Use this news for a new Byte"
-                    >
-                      <CopyPlus className="w-4 h-4" />
-                    </Button>
-                  )}
+
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-5 w-5 flex-shrink-0 text-gray-500 hover:text-purple-400 transition-visibility duration-200"
+                    onClick={() => handleSelect(item)}
+                    title="Use this news for a new Byte"
+                  >
+                    <CopyPlus className="w-3.5 h-3.5" />
+                  </Button>
                 </div>
                 <p className="text-gray-400 text-xs mt-1">{item.summary}</p>
               </li>

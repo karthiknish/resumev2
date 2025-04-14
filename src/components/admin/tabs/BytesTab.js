@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import {
   Loader2,
@@ -11,11 +11,22 @@ import {
   Search,
   Edit,
   XCircle,
+  Info,
+  X,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import PexelsImageSearch from "@/components/admin/PexelsImageSearch";
 import TrendingNewsFeed from "@/components/admin/shared/TrendingNewsFeed";
@@ -26,6 +37,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { motion, AnimatePresence } from "framer-motion";
+
+// Import Swiper React components
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/navigation";
 
 // Simple date formatter
 const formatDate = (dateString) => {
@@ -37,6 +57,22 @@ const formatDate = (dateString) => {
     hour: "2-digit",
     minute: "2-digit",
   });
+};
+
+// Animation Variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
 };
 
 export default function BytesTab() {
@@ -63,6 +99,13 @@ export default function BytesTab() {
 
   // Pexels Modal State
   const [isPexelsModalOpen, setIsPexelsModalOpen] = useState(false);
+
+  // State for instructions visibility
+  const [showInstructions, setShowInstructions] = useState(true);
+
+  // Ref for Swiper navigation
+  const swiperNavPrevRef = useRef(null);
+  const swiperNavNextRef = useRef(null);
 
   useEffect(() => {
     fetchBytes();
@@ -218,6 +261,7 @@ export default function BytesTab() {
 
   // --- News Selection Handler ---
   const handleNewsSelect = (headline, summary) => {
+    console.log("[BytesTab] handleNewsSelect called with:", headline, summary);
     setNewHeadline(headline);
     setNewBody(`Trending now: ${headline}\n\n${summary}\n\nMy thoughts: `);
     setNewImageUrl("");
@@ -262,342 +306,410 @@ export default function BytesTab() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Byte Generator Link */}
-      <div className="flex justify-end mb-4">
-        <Button size="sm" asChild className="bg-green-600 hover:bg-green-700">
-          <a
-            href="/admin/bytes/ai-create"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="space-y-8 p-4 md:p-6">
+      {/* Instructions Card - Conditionally Rendered */}
+      <AnimatePresence>
+        {showInstructions && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, height: 0, marginBottom: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="mb-6"
           >
-            <Sparkles className="mr-2 h-4 w-4" /> Byte Generator
-          </a>
-        </Button>
-      </div>
-      {/* Top Section: Create/Edit Form + News Feed */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <Card
-            id="byte-form-card"
-            className="border-gray-700 bg-gray-900 text-white h-full"
-          >
-            <CardHeader>
-              <CardTitle>
-                {isEditing ? "Edit Byte" : "Create New Byte"}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleFormSubmit} className="space-y-4">
-                {/* Headline */}
-                <div className="space-y-1">
-                  <div className="flex justify-between items-center">
-                    <label
-                      htmlFor="headline"
-                      className="block text-sm font-medium text-gray-300"
-                    >
-                      Headline*
-                    </label>
-                    {/* AI Suggest Button - Always visible */}
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="ghost"
-                      onClick={suggestHeadlines}
-                      disabled={isSuggestingHeadline || isSubmitting}
-                      className="text-xs text-purple-400 hover:text-purple-300"
-                    >
-                      {isSuggestingHeadline ? (
-                        <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                      ) : (
-                        <Sparkles className="w-3 h-3 mr-1" />
-                      )}{" "}
-                      Suggest
-                    </Button>
-                  </div>
+            <Card className="bg-blue-900/30 border-blue-700 text-blue-200 relative">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Info className="h-5 w-5" />
+                  Welcome to Bytes!
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm space-y-1">
+                <p>
+                  Use this section to create short, timely updates or quick
+                  thoughts ('Bytes').
+                </p>
+                <ul className="list-disc list-inside pl-2 space-y-0.5">
+                  <li>Fill the form below to create a new Byte.</li>
+                  <li>
+                    Use the <Sparkles className="inline h-3 w-3" /> buttons for
+                    AI suggestions.
+                  </li>
+                  <li>Add an image via URL or search Pexels.</li>
+                  <li>
+                    Click <Edit className="inline h-3 w-3" /> on a card to edit
+                    it.
+                  </li>
+                  <li>The latest Bytes appear at the top.</li>
+                </ul>
+              </CardContent>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-2 right-2 text-blue-300 hover:text-white hover:bg-blue-700/50 h-7 w-7"
+                onClick={() => setShowInstructions(false)}
+                aria-label="Dismiss instructions"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Form and Trending News Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        {/* Byte Creation/Edit Form Card */}
+        <Card
+          id="byte-form-card"
+          className="lg:col-span-2 bg-gray-800 border-gray-700 text-white shadow-md glow-card"
+        >
+          <CardHeader>
+            <CardTitle className="text-xl">
+              {isEditing ? "Edit Byte" : "Create New Byte"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleFormSubmit} className="space-y-4">
+              {/* Headline Input with AI Suggestion */}
+              <div>
+                <Label htmlFor="headline">Headline</Label>
+                <div className="flex items-center gap-2">
                   <Input
                     id="headline"
                     value={newHeadline}
                     onChange={(e) => setNewHeadline(e.target.value)}
-                    placeholder="Short, catchy headline"
+                    placeholder="Catchy headline..."
+                    className="flex-grow bg-gray-700 border-gray-600 text-white placeholder-gray-500"
                     required
-                    maxLength={200}
-                    disabled={isSubmitting}
-                    className="bg-gray-800 border-gray-600"
                   />
-                  {/* Headline Suggestions - Always visible if available */}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={suggestHeadlines}
+                    disabled={isSuggestingHeadline || !newBody.trim()}
+                    title="Suggest Headlines based on Body"
+                    className="border-purple-500 text-purple-400 hover:bg-purple-900/50 hover:text-purple-300 flex-shrink-0"
+                  >
+                    {isSuggestingHeadline ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Sparkles className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+                {/* Headline Suggestions */}
+                <AnimatePresence>
                   {headlineSuggestions.length > 0 && (
-                    <div className="flex flex-wrap gap-1 pt-1">
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="mt-2 space-y-1"
+                    >
                       {headlineSuggestions.map((s, i) => (
                         <Button
                           key={i}
                           type="button"
-                          size="xs"
-                          variant="outline"
-                          className="text-xs"
+                          variant="secondary"
+                          size="sm"
                           onClick={() => setNewHeadline(s)}
+                          className="w-full justify-start text-left text-gray-300 bg-gray-700 hover:bg-gray-600 h-auto py-1 px-2"
                         >
                           {s}
                         </Button>
                       ))}
-                    </div>
+                    </motion.div>
                   )}
-                </div>
+                </AnimatePresence>
+              </div>
 
-                {/* Body */}
-                <div className="space-y-1">
-                  <div className="flex justify-between items-center">
-                    <label
-                      htmlFor="body"
-                      className="block text-sm font-medium text-gray-300"
-                    >
-                      Body*
-                    </label>
-                    {/* AI Suggest Button - Always visible */}
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="ghost"
-                      onClick={suggestBodies}
-                      disabled={
-                        isSuggestingBody || isSubmitting || !newHeadline.trim()
-                      }
-                      className="text-xs text-purple-400 hover:text-purple-300"
-                    >
-                      {isSuggestingBody ? (
-                        <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                      ) : (
-                        <Sparkles className="w-3 h-3 mr-1" />
-                      )}{" "}
-                      Suggest
-                    </Button>
-                  </div>
+              {/* Body Textarea with AI Suggestion */}
+              <div>
+                <Label htmlFor="body">Body</Label>
+                <div className="flex items-start gap-2">
                   <Textarea
                     id="body"
                     value={newBody}
                     onChange={(e) => setNewBody(e.target.value)}
-                    placeholder="The main content of the byte (max 500 chars)"
+                    placeholder="What's happening? Your thoughts..."
+                    className="flex-grow bg-gray-700 border-gray-600 text-white placeholder-gray-500 min-h-[100px]"
                     required
-                    maxLength={500}
-                    rows={3}
-                    disabled={isSubmitting}
-                    className="bg-gray-800 border-gray-600"
                   />
-                  {/* Body Suggestions - Always visible if available */}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={suggestBodies}
+                    disabled={isSuggestingBody || !newHeadline.trim()}
+                    title="Suggest Body based on Headline"
+                    className="border-purple-500 text-purple-400 hover:bg-purple-900/50 hover:text-purple-300 flex-shrink-0 mt-0"
+                  >
+                    {isSuggestingBody ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Sparkles className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+                {/* Body Suggestions */}
+                <AnimatePresence>
                   {bodySuggestions.length > 0 && (
-                    <div className="flex flex-wrap gap-1 pt-1">
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="mt-2 space-y-1"
+                    >
                       {bodySuggestions.map((s, i) => (
                         <Button
                           key={i}
                           type="button"
-                          size="xs"
-                          variant="outline"
-                          className="text-xs"
+                          variant="secondary"
+                          size="sm"
                           onClick={() => setNewBody(s)}
+                          className="w-full justify-start text-left text-gray-300 bg-gray-700 hover:bg-gray-600 h-auto py-1 px-2 whitespace-pre-wrap break-words"
                         >
-                          {s.substring(0, 50)}...
+                          {s}
                         </Button>
                       ))}
-                    </div>
+                    </motion.div>
                   )}
-                </div>
-
-                {/* Image Display Area (Inside Form) */}
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
-                    Image (Optional)
-                  </label>
-                  {newImageUrl && (
-                    <div className="mb-2">
-                      <label className="block text-xs font-medium text-gray-400">
-                        Selected Image URL:
-                      </label>
-                      <div className="flex items-center gap-2">
-                        <Input
-                          type="text"
-                          value={newImageUrl}
-                          readOnly
-                          className="mt-1 text-xs bg-gray-700 border-gray-600 text-gray-300 flex-grow"
-                        />
-                        <Button
-                          type="button"
-                          size="xs"
-                          variant="ghost"
-                          className="text-red-400 text-xs mt-1 flex-shrink-0"
-                          onClick={() => setNewImageUrl("")}
-                        >
-                          Clear
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Link */}
-                <div>
-                  <label
-                    htmlFor="link"
-                    className="block text-sm font-medium text-gray-300 mb-1"
-                  >
-                    Link URL (Optional)
-                  </label>
-                  <Input
-                    id="link"
-                    value={newLink}
-                    onChange={(e) => setNewLink(e.target.value)}
-                    placeholder="https://..."
-                    disabled={isSubmitting}
-                    className="bg-gray-800 border-gray-600"
-                  />
-                </div>
-
-                {/* Submit/Update Button */}
-                <div className="flex items-center gap-2">
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="bg-blue-600 hover:bg-blue-700"
-                  >
-                    {isSubmitting ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : null}
-                    {isEditing
-                      ? isSubmitting
-                        ? "Updating..."
-                        : "Update Byte"
-                      : isSubmitting
-                      ? "Creating..."
-                      : "Create Byte"}
-                  </Button>
-                  {isEditing && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      onClick={resetForm}
-                      disabled={isSubmitting}
-                    >
-                      <XCircle className="w-4 h-4 mr-1" /> Cancel Edit
-                    </Button>
-                  )}
-                </div>
-              </form>
-
-              {/* Pexels Modal Trigger */}
-              <div className="mt-4 pt-4 border-t border-gray-700">
-                <Dialog
-                  open={isPexelsModalOpen}
-                  onOpenChange={setIsPexelsModalOpen}
-                >
-                  <DialogTrigger asChild>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="w-full justify-start text-left font-normal"
-                    >
-                      <Search className="w-4 h-4 mr-2" />
-                      {newImageUrl
-                        ? "Change Pexels Image"
-                        : "Search Pexels Image"}
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[80vw] max-h-[90vh] overflow-y-auto bg-gray-900 border-gray-700 text-white">
-                    <DialogHeader>
-                      <DialogTitle>Search Pexels Images</DialogTitle>
-                    </DialogHeader>
-                    <PexelsImageSearch onImageSelect={handlePexelsSelect} />
-                  </DialogContent>
-                </Dialog>
+                </AnimatePresence>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-        <div className="lg:col-span-1">
-          {/* Only show news feed when *not* editing */}
-          {!isEditing && <TrendingNewsFeed onNewsSelect={handleNewsSelect} />}
-        </div>
+
+              {/* Image URL and Pexels Search */}
+              <div>
+                <Label htmlFor="imageUrl">Image URL (Optional)</Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    id="imageUrl"
+                    value={newImageUrl}
+                    onChange={(e) => setNewImageUrl(e.target.value)}
+                    placeholder="https://example.com/image.jpg"
+                    className="flex-grow bg-gray-700 border-gray-600 text-white placeholder-gray-500"
+                  />
+                  <Dialog
+                    open={isPexelsModalOpen}
+                    onOpenChange={setIsPexelsModalOpen}
+                  >
+                    <DialogTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        title="Search Pexels for Image"
+                        className="border-green-500 text-green-400 hover:bg-green-900/50 hover:text-green-300 flex-shrink-0"
+                      >
+                        <Search className="h-4 w-4" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[600px] bg-gray-900 border-gray-700 text-white">
+                      <DialogHeader>
+                        <DialogTitle>Search Pexels Images</DialogTitle>
+                      </DialogHeader>
+                      <PexelsImageSearch onImageSelect={handlePexelsSelect} />
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
+
+              {/* Link URL */}
+              <div>
+                <Label htmlFor="link">Link URL (Optional)</Label>
+                <Input
+                  id="link"
+                  type="url"
+                  value={newLink}
+                  onChange={(e) => setNewLink(e.target.value)}
+                  placeholder="https://related-link.com"
+                  className="bg-gray-700 border-gray-600 text-white placeholder-gray-500"
+                />
+              </div>
+
+              {/* Submit/Cancel Buttons */}
+              <div className="flex justify-end gap-3 pt-2">
+                {isEditing && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={resetForm}
+                    disabled={isSubmitting}
+                    className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                  >
+                    Cancel Edit
+                  </Button>
+                )}
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="bg-blue-600 hover:bg-blue-700 min-w-[100px]"
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : isEditing ? (
+                    "Update Byte"
+                  ) : (
+                    "Create Byte"
+                  )}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+
+        {/* Trending News Card */}
+        <Card className="lg:col-span-1 bg-gray-800 border-gray-700 text-white shadow-md glow-card">
+          <CardHeader>
+            <CardTitle className="text-xl">Trending News</CardTitle>
+            <span className="text-xs text-gray-400">
+              Click to use as context
+            </span>
+          </CardHeader>
+          <CardContent>
+            <TrendingNewsFeed onNewsSelect={handleNewsSelect} />
+          </CardContent>
+        </Card>
       </div>
 
-      {/* List of existing bytes */}
-      <Card className="border-gray-700 bg-gray-900 text-white">
-        <CardHeader>
-          <CardTitle>Existing Bytes ({bytes.length})</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {isLoading && (
-            <div className="flex justify-center items-center py-10">
-              <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+      {/* Display Bytes Section - Changed to Slider */}
+      <div className="mt-10 relative">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-semibold text-white">Latest Bytes</h2>
+          {/* Custom Navigation Buttons */}
+          {!isLoading && !error && bytes.length > 3 && (
+            <div className="flex gap-2">
+              <Button
+                ref={swiperNavPrevRef}
+                variant="outline"
+                size="icon"
+                className="h-8 w-8 border-gray-600 text-gray-400 hover:bg-gray-700 hover:text-white"
+                aria-label="Previous Bytes Slide"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                ref={swiperNavNextRef}
+                variant="outline"
+                size="icon"
+                className="h-8 w-8 border-gray-600 text-gray-400 hover:bg-gray-700 hover:text-white"
+                aria-label="Next Bytes Slide"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
             </div>
           )}
-          {error && !isLoading && (
-            <p className="text-red-400 text-center py-10">Error: {error}</p>
-          )}
-          {!isLoading && !error && bytes.length === 0 && (
-            <p className="text-gray-400 text-center py-10">
-              No bytes created yet.
-            </p>
-          )}
-          {!isLoading && !error && bytes.length > 0 && (
-            <div className="space-y-4">
-              {bytes.map((byte) => (
-                <Card key={byte._id} className="bg-gray-800 border-gray-700">
-                  <CardContent className="p-4 flex flex-col md:flex-row gap-4">
+        </div>
+        {isLoading && (
+          <div className="flex justify-center items-center py-10">
+            <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+          </div>
+        )}
+        {error && !isLoading && (
+          <p className="text-center text-red-500 py-10">Error: {error}</p>
+        )}
+        {!isLoading && !error && bytes.length === 0 && (
+          <p className="text-center text-gray-500 py-10">
+            No bytes found. Create one above!
+          </p>
+        )}
+        {!isLoading && !error && bytes.length > 0 && (
+          <Swiper
+            modules={[Navigation]}
+            spaceBetween={16}
+            slidesPerView={1}
+            navigation={{
+              prevEl: swiperNavPrevRef.current,
+              nextEl: swiperNavNextRef.current,
+            }}
+            onBeforeInit={(swiper) => {
+              swiper.params.navigation.prevEl = swiperNavPrevRef.current;
+              swiper.params.navigation.nextEl = swiperNavNextRef.current;
+            }}
+            breakpoints={{
+              640: {
+                slidesPerView: 1,
+                spaceBetween: 16,
+              },
+              768: {
+                slidesPerView: 2,
+                spaceBetween: 16,
+              },
+              1024: {
+                slidesPerView: 3,
+                spaceBetween: 16,
+              },
+            }}
+            className="!pb-2"
+          >
+            {bytes.map((byte) => (
+              <SwiperSlide key={byte._id} className="h-auto">
+                <motion.div variants={itemVariants} className="h-full">
+                  <Card className="h-full flex flex-col bg-gray-800/80 border border-gray-700 text-white shadow-sm transition-all duration-300 hover:scale-[1.02] hover:border-blue-600 hover:shadow-blue-900/30 glow-card-hover overflow-hidden">
                     {byte.imageUrl && (
-                      <div className="flex-shrink-0 w-full md:w-32 h-32 relative rounded overflow-hidden">
+                      <div className="relative w-full h-40">
                         <Image
                           src={byte.imageUrl}
                           alt={byte.headline}
                           layout="fill"
                           objectFit="cover"
+                          className="transition-transform duration-300 group-hover:scale-105"
                         />
                       </div>
                     )}
-                    <div className="flex-grow">
-                      <h3 className="font-semibold text-lg text-white mb-1">
+                    <CardContent className="p-4 flex-grow flex flex-col">
+                      <h3 className="text-lg font-semibold mb-2 text-gray-100 leading-tight">
                         {byte.headline}
                       </h3>
-                      <p className="text-gray-300 text-sm mb-3">{byte.body}</p>
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-400">
-                        <span className="flex items-center gap-1">
-                          <CalendarDays className="w-3 h-3" />{" "}
-                          {formatDate(byte.createdAt)}
-                        </span>
+                      <p className="text-sm text-gray-400 flex-grow whitespace-pre-wrap break-words">
+                        {byte.body}
+                      </p>
+                    </CardContent>
+                    <CardFooter className="p-3 border-t border-gray-700 flex items-center justify-between text-xs text-gray-500">
+                      <span className="flex items-center gap-1">
+                        <CalendarDays className="h-3.5 w-3.5" />
+                        {formatDate(byte.createdAt)}
+                      </span>
+                      <div className="flex items-center gap-1.5">
                         {byte.link && (
                           <a
                             href={byte.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-blue-400 hover:underline"
+                            className="p-1 rounded hover:bg-gray-700 text-gray-400 hover:text-blue-400"
+                            title="Visit link"
                           >
-                            <ExternalLink className="w-3 h-3" /> Link
+                            <ExternalLink className="h-4 w-4" />
                           </a>
                         )}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleEditClick(byte)}
+                          className="p-1 h-auto w-auto rounded hover:bg-gray-700 text-gray-400 hover:text-yellow-400"
+                          title="Edit Byte"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDeleteByte(byte._id)}
+                          className="p-1 h-auto w-auto rounded hover:bg-gray-700 text-gray-400 hover:text-red-500"
+                          title="Delete Byte"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
-                    </div>
-                    {/* Action Buttons */}
-                    <div className="flex-shrink-0 flex flex-col md:flex-row md:items-start gap-2 pt-1">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEditClick(byte)}
-                        className="border-yellow-500 text-yellow-500 hover:bg-yellow-500/10 hover:text-yellow-400"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleDeleteByte(byte._id)}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                    </CardFooter>
+                  </Card>
+                </motion.div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        )}
+      </div>
     </div>
   );
 }

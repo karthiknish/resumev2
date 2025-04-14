@@ -45,6 +45,7 @@ import LinkedInTab from "@/components/admin/tabs/LinkedInTab"; // Import LinkedI
 import PomodoroTab from "@/components/admin/tabs/PomodoroTab"; // Import PomodoroTab
 import HackerNewsFeed from "@/components/admin/tabs/HackerNewsFeed"; // Import HackerNewsFeed
 import { checkAdminStatus } from "@/lib/authUtils"; // Import the utility
+import { toast } from "sonner";
 
 // Define tab configuration data
 const adminTabs = [
@@ -68,7 +69,7 @@ const adminTabs = [
 function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState(adminTabs[0].value); // Default to first tab
+  const [activeTab, setActiveTab] = useState(adminTabs[0].value);
   const [isAdmin, setIsAdmin] = useState(false);
   const [sessionDebug, setSessionDebug] = useState(null);
 
@@ -84,10 +85,26 @@ function AdminDashboard() {
       return;
     }
 
-    // Use the utility function for the check
-    const isAdmin = checkAdminStatus(session);
-    if (!isAdmin) {
-      router.push("/"); // Redirect non-admins to homepage
+    // --- TEMPORARY LOGGING ---
+    console.log("Admin Page Session Status:", status);
+    console.log("Admin Page Session Object:", JSON.stringify(session, null, 2));
+    console.log(
+      "NEXT_PUBLIC_ADMIN_EMAIL:",
+      process.env.NEXT_PUBLIC_ADMIN_EMAIL
+    );
+    // --- END TEMPORARY LOGGING ---
+
+    const isAdminCheck = checkAdminStatus(session);
+    setIsAdmin(isAdminCheck); // Update the isAdmin state
+    console.log("Admin Check Result:", isAdminCheck); // Log the result of the check
+
+    if (!isAdminCheck) {
+      // Add a small delay before redirecting to allow logs to appear
+      // and prevent immediate flashing if session is briefly null
+      setTimeout(() => {
+        toast.error("Access Denied: Redirecting...");
+        router.push("/"); // Redirect non-admins to homepage
+      }, 100);
     }
   }, [session, status, router]);
 
@@ -142,9 +159,15 @@ function AdminDashboard() {
     );
   }
 
-  // Not admin state
+  // Not admin state (Show temporarily while checking/redirecting if needed)
   if (status === "authenticated" && !isAdmin) {
-    return <EmptyPage sessionDebug={sessionDebug} />;
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-white text-xl">
+          Checking access or redirecting...
+        </div>
+      </div>
+    );
   }
 
   // Admin Dashboard Render
@@ -281,7 +304,7 @@ function AdminDashboard() {
     );
   }
 
-  return null; // Fallback return
+  return null; // Fallback return for intermediate states
 }
 
 export default AdminDashboard;
