@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import useDebounce from "@/hooks/useDebounce"; // Make sure this hook exists at this path
+import dynamic from "next/dynamic"; // <-- Add this import
 import {
   SlideInRight,
   // SlideUp, // Not used directly here anymore
@@ -14,6 +15,16 @@ import {
   // MotionDiv, // Not used directly here anymore
 } from "./animations/MotionComponents";
 import { Loader2 } from "lucide-react";
+
+// Dynamically import the SearchOverlay component
+const SearchOverlay = dynamic(() => import("./SearchOverlay"), {
+  ssr: false, // Disable server-side rendering for this component
+  loading: () => (
+    <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[110]">
+      <Loader2 className="h-8 w-8 text-white animate-spin" />
+    </div>
+  ), // Optional loading state
+});
 
 export default function Nav() {
   const [isOpen, setIsOpen] = useState(false); // Mobile menu state
@@ -349,125 +360,19 @@ export default function Nav() {
         )}
       </AnimatePresence>
 
-      {/* Immersive Search Overlay */}
+      {/* Render the dynamically imported Search Overlay */}
       <AnimatePresence>
         {isSearchOpen && (
-          <motion.div
-            // ref={searchContainerRef} // Ref might not be needed here anymore
-            className="fixed inset-0 bg-black/95 backdrop-blur-lg z-[110] flex flex-col items-center justify-start pt-20 sm:pt-28 p-4" // Increased padding top
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {/* Close Button */}
-            <motion.button
-              onClick={toggleSearch}
-              className="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors z-[111]"
-              aria-label="Close Search"
-              whileTap={{ scale: 0.9 }}
-            >
-              <FaTimesCircle size={30} />
-            </motion.button>
-
-            {/* Search Input */}
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="w-full max-w-2xl mb-6" // Increased max-width
-            >
-              <input
-                ref={searchInputRef}
-                type="text"
-                placeholder="Search articles and bytes..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                className="w-full px-6 py-4 rounded-full bg-gray-800 text-white text-xl border border-gray-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" // Larger text/padding
-              />
-            </motion.div>
-
-            {/* Search Results Area */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="w-full max-w-2xl flex-grow overflow-y-auto pb-10 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent" // Allow results to scroll, styled scrollbar
-            >
-              {(searchResults.length > 0 || isSearching) &&
-                debouncedSearchQuery.trim().length >= 2 && (
-                  <div className="space-y-4">
-                    {" "}
-                    {/* Increased spacing */}
-                    {isSearching && (
-                      <div className="p-4 text-gray-400 text-center flex justify-center items-center gap-2">
-                        <Loader2 className="h-5 w-5 animate-spin" />{" "}
-                        Searching...
-                      </div>
-                    )}
-                    {!isSearching &&
-                      searchResults.map((result) => (
-                        <Link
-                          href={
-                            result.type === "blog"
-                              ? `/blog/${result.slug}`
-                              : `/bytes#${result._id}` // Consider if linking to bytes fragment is desired
-                          }
-                          key={result._id}
-                          passHref
-                        >
-                          <a
-                            onClick={handleResultClick}
-                            className="block p-5 bg-gray-800/60 rounded-lg hover:bg-gray-700/80 transition-colors group" // Slightly more padding, adjusted bg
-                          >
-                            <p className="font-semibold text-white truncate text-lg group-hover:text-blue-400 transition-colors">
-                              {" "}
-                              {/* Title hover effect */}
-                              {result.type === "blog"
-                                ? result.title
-                                : result.headline}
-                              <span className="ml-2 text-xs uppercase font-normal text-gray-400 bg-gray-700 px-1.5 py-0.5 rounded">
-                                {result.type}
-                              </span>
-                            </p>
-                            {result.type === "blog" && result.description && (
-                              <p className="text-sm text-gray-400 truncate mt-1">
-                                {result.description}
-                              </p>
-                            )}
-                            {result.type === "byte" && result.body && (
-                              <p className="text-sm text-gray-400 truncate mt-1">
-                                {result.body}
-                              </p>
-                            )}
-                          </a>
-                        </Link>
-                      ))}
-                    {!isSearching &&
-                      searchResults.length === 0 &&
-                      debouncedSearchQuery.trim().length >= 2 && (
-                        <div className="p-4 text-gray-400 text-center">
-                          No results found for "{debouncedSearchQuery}".
-                        </div>
-                      )}
-                  </div>
-                )}
-              {/* Prompt to search if input is short */}
-              {!isSearching &&
-                debouncedSearchQuery.trim().length > 0 &&
-                debouncedSearchQuery.trim().length < 2 && (
-                  <div className="p-4 text-gray-500 text-center">
-                    Keep typing to search...
-                  </div>
-                )}
-              {/* Initial state prompt */}
-              {!isSearching && debouncedSearchQuery.trim().length === 0 && (
-                <div className="p-4 text-gray-500 text-center">
-                  Search for blog posts or bytes.
-                </div>
-              )}
-            </motion.div>
-          </motion.div>
+          <SearchOverlay
+            toggleSearch={toggleSearch}
+            searchInputRef={searchInputRef}
+            searchQuery={searchQuery}
+            handleSearchChange={handleSearchChange}
+            isSearching={isSearching}
+            searchResults={searchResults}
+            handleResultClick={handleResultClick}
+            debouncedSearchQuery={debouncedSearchQuery}
+          />
         )}
       </AnimatePresence>
     </>
