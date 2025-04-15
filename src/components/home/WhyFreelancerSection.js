@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { Coins, UserCheck, Zap } from "lucide-react"; // Using different icons
 
 const benefits = [
@@ -47,7 +48,7 @@ export default function WhyFreelancerSection() {
       viewport={{ once: true }}
       className="bg-gradient-to-b from-gray-900 via-black to-gray-900 py-16 md:py-24" // Added gradient background
     >
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 space-y-12">
         <motion.h2
           initial={{ y: 20, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
@@ -96,6 +97,21 @@ export default function WhyFreelancerSection() {
             </motion.div>
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="text-center"
+        >
+          <Link
+            href="/contact"
+            className="inline-block px-8 py-3 border border-gray-500 hover:border-blue-500 hover:bg-blue-500/10 text-gray-300 hover:text-blue-300 font-semibold rounded-md transition-colors shadow-lg"
+          >
+            Let's Build Together →
+          </Link>
+        </motion.div>
       </div>
     </motion.section>
   );

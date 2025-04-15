@@ -68,9 +68,11 @@ export default function FeaturedProjectsSection() {
       whileInView={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8 }}
       viewport={{ once: true }}
-      className="bg-black py-12" // Adjusted padding
+      className="bg-black py-16 md:py-24" // Increased padding
     >
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 space-y-12">
+        {" "}
+        {/* Added space-y */}
         <motion.h2
           initial={{ y: 20, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
@@ -82,6 +84,21 @@ export default function FeaturedProjectsSection() {
         </motion.h2>
         {/* Render BentoGrid with itemsSample */}
         <BentoGrid items={itemsSample} />
+        {/* CTA Button below the grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.3 }} // Adjust delay based on grid animation
+          className="text-center"
+        >
+          <Link
+            href="/projects" // Link to a potential dedicated projects page
+            className="inline-block px-8 py-3 border border-gray-500 hover:border-blue-500 hover:bg-blue-500/10 text-gray-300 hover:text-blue-300 font-semibold rounded-md transition-colors shadow-lg"
+          >
+            See More Projects →
+          </Link>
+        </motion.div>
       </div>
     </motion.section>
   );

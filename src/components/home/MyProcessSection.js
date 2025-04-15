@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import {
   Search,
   PencilRuler,
@@ -64,7 +65,7 @@ const MyProcessSection = () => {
 
   return (
     <section className="bg-black py-16 md:py-24">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 space-y-12">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -98,6 +99,21 @@ const MyProcessSection = () => {
             </motion.div>
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="text-center"
+        >
+          <Link
+            href="/contact"
+            className="inline-block px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md transition-colors shadow-lg"
+          >
+            Ready to Start? Get in Touch →
+          </Link>
+        </motion.div>
       </div>
     </section>
   );

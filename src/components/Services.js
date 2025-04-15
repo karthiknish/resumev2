@@ -47,7 +47,7 @@ const services = [
 
 export default function Services() {
   return (
-    <section className="space-y-8">
+    <section className="space-y-12">
       <h2 className="text-3xl font-medium text-white font-calendas text-center">
         My Services
       </h2>
@@ -58,18 +58,14 @@ export default function Services() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.2 }}
-            // --- New Styling ---
-            className="group relative bg-gradient-to-br from-gray-900 via-gray-800/80 to-black p-6 rounded-xl shadow-lg border border-white/10 overflow-hidden transition-all duration-300 hover:shadow-blue-500/30 hover:border-blue-500/50 hover:-translate-y-1 block" // Added block for Link
+            className="group relative bg-gradient-to-br from-gray-900 via-gray-800/80 to-black p-6 rounded-xl shadow-lg border border-white/10 overflow-hidden transition-all duration-300 hover:shadow-blue-500/30 hover:border-blue-500/50 hover:-translate-y-1 block"
           >
             <Link
               href={service.link || "#"}
               className="absolute inset-0 z-20"
               aria-label={`Learn more about ${service.title}`}
-            ></Link>{" "}
-            {/* Added Link overlay */}
-            {/* Subtle background pattern on hover */}
+            ></Link>
             <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[length:8px_8px] -z-10"></div>
-            {/* Icon with background */}
             <div className="relative z-10 mb-4 inline-flex items-center justify-center p-3 rounded-full bg-gray-700/60 border border-white/10 group-hover:bg-blue-900/50 group-hover:border-blue-700 transition-colors duration-300">
               {React.cloneElement(service.icon, {
                 className:
@@ -82,11 +78,7 @@ export default function Services() {
             <p className="relative z-10 text-gray-400 mb-4 text-sm group-hover:text-gray-300 transition-colors duration-300">
               {service.description}
             </p>
-            {/* Features list removed for cleaner card on homepage, focus on title/desc */}
-            {/* Optional: Add a subtle "Learn More" indicator - now part of the card content */}
             <div className="relative z-10 mt-4 text-right">
-              {" "}
-              {/* Aligned indicator */}
               <span className="text-xs text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-medium">
                 Learn More →
               </span>
@@ -94,6 +86,21 @@ export default function Services() {
           </motion.div>
         ))}
       </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        className="text-center"
+      >
+        <Link
+          href="/contact"
+          className="inline-block px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md transition-colors shadow-lg"
+        >
+          Discuss Your Project Needs →
+        </Link>
+      </motion.div>
     </section>
   );
 }

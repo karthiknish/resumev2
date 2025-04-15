@@ -202,19 +202,15 @@ export default function HeroSection() {
                 </Link>
               </motion.button>
               <motion.button
-                className="w-full md:w-auto text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-gray-700 px-6 py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-xl hover:bg-gray-600 transition-colors"
+                className="w-full md:w-auto text-base md:text-lg lg:text-xl font-calendas tracking-tight text-blue-300 bg-transparent border border-blue-500 px-6 py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-xl hover:bg-blue-500/10 hover:text-blue-200 transition-colors"
                 animate={{ opacity: 1, y: 0 }}
                 initial={{ opacity: 0, y: 20 }}
                 transition={{ duration: 0.2, ease: "easeOut", delay: 0.8 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Link
-                  target="_blank"
-                  href="https://github.com/karthiknish"
-                  className="font-calendas"
-                >
-                  View GitHub <span className="font-calendas ml-1">→</span>
+                <Link href="#projects" className="font-calendas">
+                  View My Work <span className="font-calendas ml-1">→</span>
                 </Link>
               </motion.button>
             </div>
