@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaTimesCircle } from "react-icons/fa";
 import { Loader2 } from "lucide-react";
 
-export default function SearchOverlay({
+// Define the component as a const
+const SearchOverlay = ({
   toggleSearch,
   searchInputRef,
   searchQuery,
@@ -13,7 +14,7 @@ export default function SearchOverlay({
   searchResults,
   handleResultClick,
   debouncedSearchQuery,
-}) {
+}) => {
   return (
     <motion.div
       className="fixed inset-0 bg-black/95 backdrop-blur-lg z-[110] flex flex-col items-center justify-start pt-20 sm:pt-28 p-4"
@@ -74,31 +75,25 @@ export default function SearchOverlay({
                         : `/bytes#${result._id}`
                     }
                     key={result._id}
-                    passHref
+                    onClick={handleResultClick}
+                    className="block p-5 bg-gray-800/60 rounded-lg hover:bg-gray-700/80 transition-colors group"
                   >
-                    <a
-                      onClick={handleResultClick}
-                      className="block p-5 bg-gray-800/60 rounded-lg hover:bg-gray-700/80 transition-colors group"
-                    >
-                      <p className="font-semibold text-white truncate text-lg group-hover:text-blue-400 transition-colors">
-                        {result.type === "blog"
-                          ? result.title
-                          : result.headline}
-                        <span className="ml-2 text-xs uppercase font-normal text-gray-400 bg-gray-700 px-1.5 py-0.5 rounded">
-                          {result.type}
-                        </span>
+                    <p className="font-semibold text-white truncate text-lg group-hover:text-blue-400 transition-colors">
+                      {result.type === "blog" ? result.title : result.headline}
+                      <span className="ml-2 text-xs uppercase font-normal text-gray-400 bg-gray-700 px-1.5 py-0.5 rounded">
+                        {result.type}
+                      </span>
+                    </p>
+                    {result.type === "blog" && result.description && (
+                      <p className="text-sm text-gray-400 truncate mt-1">
+                        {result.description}
                       </p>
-                      {result.type === "blog" && result.description && (
-                        <p className="text-sm text-gray-400 truncate mt-1">
-                          {result.description}
-                        </p>
-                      )}
-                      {result.type === "byte" && result.body && (
-                        <p className="text-sm text-gray-400 truncate mt-1">
-                          {result.body}
-                        </p>
-                      )}
-                    </a>
+                    )}
+                    {result.type === "byte" && result.body && (
+                      <p className="text-sm text-gray-400 truncate mt-1">
+                        {result.body}
+                      </p>
+                    )}
                   </Link>
                 ))}
               {!isSearching &&
@@ -127,4 +122,7 @@ export default function SearchOverlay({
       </motion.div>
     </motion.div>
   );
-}
+};
+
+// Wrap the component with React.memo for performance optimization and export as default
+export default React.memo(SearchOverlay);

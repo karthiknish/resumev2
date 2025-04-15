@@ -24,6 +24,26 @@ export default async function handler(req, res) {
         .json({ error: "Email and messages array are required" });
     }
 
+    // ---> ADD VALIDATION FOR MESSAGES ARRAY <---
+    for (const msg of messages) {
+      if (!msg.role || !["user", "assistant"].includes(msg.role)) {
+        const errorMessage = `Invalid input: All messages must have a valid 'role' ('user' or 'assistant'). Problem message: ${JSON.stringify(
+          msg
+        )}`;
+        console.log(`[/api/save-chat] Validation Error: ${errorMessage}`);
+        return res.status(400).json({ error: errorMessage });
+      }
+      if (typeof msg.content !== "string" || msg.content.trim() === "") {
+        const errorMessage = `Invalid input: All messages must have non-empty 'content'. Problem message: ${JSON.stringify(
+          msg
+        )}`;
+        console.log(`[/api/save-chat] Validation Error: ${errorMessage}`);
+        return res.status(400).json({ error: errorMessage });
+      }
+    }
+    console.log("[/api/save-chat] Input messages validated successfully.");
+    // ---> END VALIDATION <---
+
     // Create a chat record data object
     const chatRecordData = createChatRecord(email, messages, req);
     console.log(

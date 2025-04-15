@@ -30,7 +30,8 @@ export default function CookiePolicy() {
               identifies a user, but personal information that we store about
               You may be linked to the information stored in and obtained from
               Cookies. For further information on how We use, store and keep
-              your personal data secure, see our Privacy Policy.
+              your personal data secure, see our{" "}
+              <a href="/privacy-policy">Privacy Policy</a>.
             </p>
 
             <h2>Interpretation and Definitions</h2>
@@ -156,7 +157,6 @@ export default function CookiePolicy() {
               <li>
                 By visiting our <a href="/contact">Contact Page</a>
               </li>
-              <li>By sending an email to: contact@karthiknishanth.com</li>
             </ul>
           </div>
         </div>
@@ -164,3 +164,4 @@ export default function CookiePolicy() {
     </>
   );
 }
+

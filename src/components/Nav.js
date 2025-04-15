@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { FaBars, FaTimes, FaSearch, FaTimesCircle } from "react-icons/fa"; // Added FaSearch, FaTimesCircle
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -149,7 +149,8 @@ export default function Nav() {
     if (!isOpen) setIsSearchOpen(false); // Close search if opening mobile menu
   };
 
-  const toggleSearch = () => {
+  // Wrap toggleSearch in useCallback
+  const toggleSearch = useCallback(() => {
     const nextState = !isSearchOpen;
     setIsSearchOpen(nextState);
     setSearchQuery("");
@@ -160,19 +161,20 @@ export default function Nav() {
       // Focus input when opening search (delay slightly for transition)
       setTimeout(() => searchInputRef.current?.focus(), 100);
     }
-  };
+  }, [isSearchOpen]); // Dependency: isSearchOpen
 
-  const handleSearchChange = (e) => {
+  // Wrap handleSearchChange in useCallback
+  const handleSearchChange = useCallback((e) => {
     setSearchQuery(e.target.value);
-  };
+  }, []); // No dependencies needed
 
-  // Function to close search and navigate
-  const handleResultClick = () => {
+  // Wrap handleResultClick in useCallback
+  const handleResultClick = useCallback(() => {
     setIsSearchOpen(false);
     setSearchQuery("");
     setSearchResults([]);
     setIsOpen(false);
-  };
+  }, []); // No dependencies needed
 
   return (
     <>
