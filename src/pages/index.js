@@ -9,7 +9,7 @@ import TechStackSection from "@/components/home/TechStackSection";
 import FeaturedProjectsSection from "@/components/home/FeaturedProjectsSection";
 import MyProcessSection from "@/components/home/MyProcessSection"; // Import the new section
 import Services from "@/components/Services";
-import ContactForm from "@/components/Form";
+import ContactForm from "@/components/ContactForm"; // <-- Import the correct form component
 import Faq from "@/components/Faq";
 import JsonLd, {
   createWebsiteSchema,
@@ -145,8 +145,18 @@ const HomeScreen = () => {
         <Faq items={faqItems} />
       </section>
 
-      <section id="contact">
-        <ContactForm />
+      {/* Ensure the correct ContactForm component is used here */}
+      <section id="contact" className="bg-black py-16 md:py-24 px-4 md:px-8">
+        {/* Adding padding and background similar to other sections */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="max-w-4xl mx-auto" // Center the form content
+        >
+          <ContactForm />
+        </motion.div>
       </section>
     </>
   );
