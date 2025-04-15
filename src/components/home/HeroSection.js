@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { motion, LayoutGroup } from "framer-motion";
-import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { HeroGeometric } from "@/components/ui/shape-landing-hero";
 import { TextRotate } from "@/components/ui/text-rotate";
 import Floating, { FloatingElement } from "@/components/ui/parallax-floating";
@@ -34,7 +33,6 @@ export default function HeroSection() {
   return (
     // Removed md:bg-none to show dot pattern on desktop too
     <div className="bg-black bg-dot-pattern-mobile overflow-hidden relative min-h-[70vh] md:min-h-screen">
-      <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
       <HeroGeometric
         className="absolute inset-0 -z-0 opacity-30 hidden md:block"
         duration={20}

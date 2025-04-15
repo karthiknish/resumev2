@@ -2,7 +2,6 @@ import React, { useEffect } from "react"; // Removed useState
 import Head from "next/head";
 import { motion } from "framer-motion";
 import Cal, { getCalApi } from "@calcom/embed-react"; // Import Cal.com component
-import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { useRouter } from "next/router";
 import Services from "@/components/Services";
 import PageContainer from "@/components/PageContainer";
@@ -43,8 +42,6 @@ export default function Contact() {
       </Head>
       <PageContainer>
         <div className="min-h-screen p-8 md:p-16 max-w-6xl mx-auto relative">
-          <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
-
           <FadeIn>
             <div className="text-center mb-10">
               <h1 className="text-6xl font-bold text-white mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">

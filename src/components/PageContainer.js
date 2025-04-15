@@ -1,5 +1,3 @@
-import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
-
 /**
  * A reusable page container component that ensures proper spacing with the navigation
  *
@@ -17,9 +15,6 @@ const PageContainer = ({
 }) => {
   return (
     <div className={`min-h-screen relative ${bgClassName}`}>
-      {withBeams && (
-        <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
-      )}
       <div className="page-content">
         <div className={`max-w-6xl mx-auto p-8 ${className}`}>{children}</div>
       </div>

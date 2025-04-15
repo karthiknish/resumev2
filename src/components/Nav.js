@@ -284,7 +284,11 @@ export default function Nav() {
                 <FaSearch size={22} />
               </motion.button>
               {/* Hamburger Icon */}
-              <button onClick={toggleMenu} className="text-white text-2xl p-1">
+              <button
+                onClick={toggleMenu}
+                className="text-white text-2xl p-1"
+                aria-label={isOpen ? "Close menu" : "Open menu"}
+              >
                 {isOpen ? <FaTimes /> : <FaBars />}
               </button>
               {/* Theme Switcher (Mobile - Optional, could also go in mobile menu) */}
