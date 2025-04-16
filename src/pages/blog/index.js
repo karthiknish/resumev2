@@ -118,6 +118,15 @@ function Index({ initialPosts = [], categories = [] }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, selectedCategory, sortOrder]);
 
+  // Scroll to top when currentPage changes
+  useEffect(() => {
+    // Only scroll if the router is ready and the page has actually changed
+    // Avoids scrolling on initial load if page is already 1
+    if (router.isReady) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [currentPage, router.isReady]); // Add router.isReady dependency
+
   const handleSearchChange = (e) => setSearchTerm(e.target.value);
   const handleCategoryChange = (category) => setSelectedCategory(category);
   const handleSortChange = (value) => setSortOrder(value);
