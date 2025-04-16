@@ -167,7 +167,7 @@ export default function App({
   }, []);
 
   // Check if the Component has a getLayout function
-  const getLayout = Component.getLayout || ((page) => page);
+  // const getLayout = Component.getLayout || ((page) => page);
 
   // Handle page transitions
   useEffect(() => {
@@ -274,79 +274,38 @@ export default function App({
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <SessionProvider session={session}>
-        <main className={`${inter.variable} font-sans`}>
-          {/* Google Analytics - load with higher priority */}
-          <Script
-            strategy="beforeInteractive"
-            src="https://www.googletagmanager.com/gtag/js?id=G-LSLF7F9MS0"
-          />
-          <Script id="google-analytics" strategy="beforeInteractive">
-            {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-LSLF7F9MS0', {
-              page_path: window.location.pathname,
-              send_page_view: true
-            });
-          `}
-          </Script>
+    <SessionProvider session={session}>
+      <QueryClientProvider client={queryClient}>
+        <div
+          className={`${inter.variable} font-sans bg-black text-white flex flex-col min-h-screen`}
+        >
+          {isPageLoading && (
+            <div className="fixed top-0 left-0 right-0 h-1 bg-blue-500 z-[999] animate-pulse"></div>
+          )}
 
           <Nav />
-          {/* Universal loading overlay for page transitions */}
-          {isPageLoading && (
-            <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/70">
-              <svg
-                className="animate-spin h-16 w-16 text-blue-500"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v8z"
-                ></path>
-              </svg>
-            </div>
-          )}
-          {domLoaded ? (
+          <main className="flex-grow">
             <Suspense fallback={<LoadingFallback />}>
-              <PageTransitionWrapper transitionType={transitionType}>
-                {getLayout(<Component {...pageProps} />)}
+              <PageTransitionWrapper key={router.route} type={transitionType}>
+                <Component {...pageProps} />
               </PageTransitionWrapper>
             </Suspense>
-          ) : (
-            <LoadingFallback />
-          )}
-          {/* Pass centralized toast options to Toaster */}
-          <Toaster {...toastOptions} />
+          </main>
           <Footer />
-          {/* Render dynamic Chatbot */}
-          {showChatbot && <ChatBot />}
-          <Analytics />
 
-          {/* Render Cookie Banner Conditionally */}
-          <AnimatePresence>
-            {showConsentBanner && (
-              <CookieConsentBanner
-                onAccept={handleAcceptCookies}
-                onDecline={handleDeclineCookies}
-              />
-            )}
-          </AnimatePresence>
-        </main>
-      </SessionProvider>
-    </QueryClientProvider>
+          {showChatbot && <ChatBot />}
+
+          {showConsentBanner && (
+            <CookieConsentBanner
+              onAccept={handleAcceptCookies}
+              onDecline={handleDeclineCookies}
+            />
+          )}
+
+          <Toaster richColors theme="dark" toastOptions={toastOptions} />
+          <Analytics />
+        </div>
+      </QueryClientProvider>
+    </SessionProvider>
   );
 }
