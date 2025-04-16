@@ -17,6 +17,8 @@ import {
 // Removed ReactMarkdown import as we'll render plain text snippet
 import { FaSearch } from "react-icons/fa";
 import PageContainer from "@/components/PageContainer";
+import Blog from "@/models/Blog";
+import dbConnect from "@/lib/dbConnect";
 
 function Index({ initialPosts = [], categories = [] }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -35,32 +37,14 @@ function Index({ initialPosts = [], categories = [] }) {
   const [currentPage, setCurrentPage] = useState(initialPage);
   const POSTS_PER_PAGE = 10;
 
+  // Initialize directly from props, ensuring date conversion
   useEffect(() => {
-    const processedData = initialPosts.map((post) => {
-      const originalContent = post.content || "";
-      console.log("originalContent:", originalContent);
-      const limit = 250;
-      let limitedContentWithEllipsis = originalContent;
-
-      if (originalContent.length > limit) {
-        let lastSpace = originalContent.substring(0, limit).lastIndexOf(" ");
-        if (lastSpace === -1) lastSpace = limit;
-        limitedContentWithEllipsis =
-          originalContent.substring(0, lastSpace) + "...";
-      }
-
-      return {
+    setAllPosts(
+      initialPosts.map((post) => ({
         ...post,
-        // Ensure description exists, fallback to limited content if needed for display
-        description:
-          post.description ||
-          limitedContentWithEllipsis.substring(0, 160) +
-            (originalContent.length > 160 ? "..." : ""), // Use actual description or shorter snippet
-        limitedContent: limitedContentWithEllipsis, // Keep the potentially longer snippet for display
         createdAtDate: new Date(post.createdAt),
-      };
-    });
-    setAllPosts(processedData);
+      }))
+    );
   }, [initialPosts]);
 
   const filteredAndSortedContent = useMemo(() => {
@@ -73,9 +57,8 @@ function Index({ initialPosts = [], categories = [] }) {
       filtered = filtered.filter(
         (post) =>
           post.title.toLowerCase().includes(lowerSearchTerm) ||
-          (post.description &&
-            post.description.toLowerCase().includes(lowerSearchTerm)) || // Search description
-          (post.content && post.content.toLowerCase().includes(lowerSearchTerm))
+          (post.description && // Search description
+            post.description.toLowerCase().includes(lowerSearchTerm))
       );
     }
     filtered.sort((a, b) => {
@@ -410,31 +393,32 @@ function Index({ initialPosts = [], categories = [] }) {
 }
 
 export async function getStaticProps() {
-  const baseUrl = process.env.URL || "http://localhost:3000";
+  console.log("[getStaticProps /blog] Running..."); // Add log
   try {
-    const [postsRes, categoriesRes] = await Promise.all([
-      fetch(
-        `${baseUrl}/api/blog?publishedOnly=true&select=title,slug,imageUrl,createdAt,isPublished,content,description,category,tags&limit=1000`
-      ), // Ensure needed fields are selected, fetch up to 1000 blogs
-      fetch(`${baseUrl}/api/blog/categories`),
-    ]);
+    await dbConnect();
+    console.log("[getStaticProps /blog] DB Connected.");
+    // Fetch ONLY necessary fields, EXCLUDE content
+    const posts = await Blog.find({ isPublished: true })
+      .select("title slug createdAt description imageUrl tags category") // <-- EXCLUDED content
+      .sort({ createdAt: -1 })
+      .lean();
+    console.log(`[getStaticProps /blog] Fetched ${posts.length} posts.`);
 
-    const postsData = await postsRes.json();
-    const categoriesData = await categoriesRes.json();
-
-    const initialPosts = postsData?.success ? postsData.data : [];
-    const categories = categoriesData?.success ? categoriesData.categories : [];
+    const categories = await Blog.distinct("category", { isPublished: true });
+    console.log(
+      `[getStaticProps /blog] Fetched categories: ${categories.join(", ")}`
+    );
 
     return {
       props: {
-        initialPosts: JSON.parse(JSON.stringify(initialPosts)),
+        initialPosts: JSON.parse(JSON.stringify(posts)),
         categories: JSON.parse(JSON.stringify(categories)),
       },
-      revalidate: 3600, // Revalidate every hour
+      revalidate: 3600,
     };
   } catch (err) {
-    console.error("Error fetching blog data or categories:", err);
-    return { props: { initialPosts: [], categories: [] }, revalidate: 3600 };
+    console.error("[getStaticProps /blog] Error fetching data:", err);
+    return { props: { initialPosts: [], categories: [] }, revalidate: 60 }; // Shorter revalidate on error
   }
 }
 
