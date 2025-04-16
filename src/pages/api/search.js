@@ -25,30 +25,28 @@ export default async function handler(req, res) {
     const searchQuery = { $text: { $search: q.trim() } };
     const projection = { score: { $meta: "textScore" } }; // Project the text search score
 
-    // --- Search Blogs ---
-    const blogResults = await Blog.find(
-      { ...searchQuery, isPublished: true }, // Only search published blogs
-      projection
-    )
-      .select("title slug createdAt description imageUrl") // Select fields needed for display
-      .sort({ score: { $meta: "textScore" } }) // Sort by relevance
-      .limit(10) // Limit results per type
-      .lean(); // Use lean for performance
+    // --- Search Blogs and Bytes in Parallel ---
+    const [blogResults, byteResults] = await Promise.all([
+      Blog.find(
+        { ...searchQuery, isPublished: true }, // Only search published blogs
+        projection
+      )
+        .select("title slug createdAt description imageUrl") // Select fields needed for display
+        .sort({ score: { $meta: "textScore" } }) // Sort by relevance
+        .limit(10) // Limit results per type
+        .lean(), // Use lean for performance
+      Byte.find(searchQuery, projection)
+        .select("headline body createdAt link imageUrl") // Select fields needed for display
+        .sort({ score: { $meta: "textScore" } }) // Sort by relevance
+        .limit(10) // Limit results per type
+        .lean(),
+    ]);
 
     // Add type identifier
     const typedBlogResults = blogResults.map((doc) => ({
       ...doc,
       type: "blog",
     }));
-
-    // --- Search Bytes ---
-    const byteResults = await Byte.find(searchQuery, projection)
-      .select("headline body createdAt link imageUrl") // Select fields needed for display
-      .sort({ score: { $meta: "textScore" } }) // Sort by relevance
-      .limit(10) // Limit results per type
-      .lean();
-
-    // Add type identifier
     const typedByteResults = byteResults.map((doc) => ({
       ...doc,
       type: "byte",

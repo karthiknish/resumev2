@@ -409,7 +409,7 @@ function Index({ initialPosts = [], categories = [] }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const baseUrl = process.env.URL || "http://localhost:3000";
   try {
     const [postsRes, categoriesRes] = await Promise.all([
@@ -425,10 +425,16 @@ export async function getServerSideProps() {
     const initialPosts = postsData?.success ? postsData.data : [];
     const categories = categoriesData?.success ? categoriesData.categories : [];
 
-    return { props: { initialPosts, categories } };
+    return {
+      props: {
+        initialPosts: JSON.parse(JSON.stringify(initialPosts)),
+        categories: JSON.parse(JSON.stringify(categories)),
+      },
+      revalidate: 3600, // Revalidate every hour
+    };
   } catch (err) {
     console.error("Error fetching blog data or categories:", err);
-    return { props: { initialPosts: [], categories: [] } };
+    return { props: { initialPosts: [], categories: [] }, revalidate: 3600 };
   }
 }
 
