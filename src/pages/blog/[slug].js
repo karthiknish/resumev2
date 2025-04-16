@@ -23,6 +23,7 @@ import { formatDistanceToNow } from "date-fns";
 import { checkAdminStatus } from "@/lib/authUtils";
 import dbConnect from "@/lib/dbConnect"; // <-- Import dbConnect
 import Blog from "@/models/Blog"; // <-- Import Blog model
+import { ChevronUpIcon } from "@heroicons/react/24/solid";
 
 function SlugPage({ data, relatedPosts }) {
   // Add relatedPosts to props destructuring
@@ -43,70 +44,6 @@ function SlugPage({ data, relatedPosts }) {
   };
 
   const readingTime = data?.content ? estimateReadingTime(data.content) : 0;
-
-  // Reading progress state
-  const [readingProgress, setReadingProgress] = useState(0);
-
-  // Handle scroll to update reading progress using content ref
-  useEffect(() => {
-    const contentElement = contentRef.current;
-    if (!contentElement) return;
-
-    const updateReadingProgress = () => {
-      const elementTop = contentElement.offsetTop;
-      const elementHeight = contentElement.scrollHeight;
-      const viewportHeight = window.innerHeight;
-      const currentScrollPos = window.scrollY;
-
-      // Calculate the total scrollable distance *within* the content area relative to viewport
-      const totalScrollableHeight = elementHeight - viewportHeight;
-
-      // Calculate how far the user has scrolled *past the top* of the content element
-      const scrollRelativeToElementTop = Math.max(
-        0,
-        currentScrollPos - elementTop
-      );
-
-      let progress = 0;
-      if (totalScrollableHeight > 0) {
-        // Progress is the ratio of scroll distance within the element to the total scrollable height
-        progress = Math.min(
-          100,
-          (scrollRelativeToElementTop / totalScrollableHeight) * 100
-        );
-      } else if (
-        currentScrollPos >
-        elementTop + elementHeight - viewportHeight
-      ) {
-        // If content is shorter than viewport but scrolled past its end, consider it 100%
-        progress = 100;
-      }
-
-      setReadingProgress(progress);
-      // console.log(`[ProgressBar Ref] ElTop: ${elementTop}, ElHeight: ${elementHeight}, VHeight: ${viewportHeight}, ScrollY: ${currentScrollPos}, RelScroll: ${scrollRelativeToElementTop}, TotalScrollable: ${totalScrollableHeight}, Progress: ${progress}%`);
-    };
-
-    // Throttle via requestAnimationFrame
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          updateReadingProgress();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll, { passive: true });
-
-    updateReadingProgress(); // Initial calculation
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleScroll);
-    };
-  }, [data]);
 
   // Add useEffect for gtag tracking
   useEffect(() => {
@@ -194,6 +131,26 @@ function SlugPage({ data, relatedPosts }) {
   // Generate BlogPosting schema
   const blogPostingSchema = data ? createBlogPostingSchema(data) : null;
 
+  // ─── Scroll‑to‑top indicator state & effect ─────────────────────────
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [showScrollTopButton, setShowScrollTopButton] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const docHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const currentScrollY = window.scrollY;
+      const scrolled = docHeight > 0 ? (currentScrollY / docHeight) * 100 : 0;
+      setScrollProgress(scrolled);
+      setShowScrollTopButton(currentScrollY > 100);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Initial check
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+  // ────────────────────────────────────────────────────────────────────
+
   return (
     <>
       {/* Add JsonLd component */}
@@ -242,19 +199,41 @@ function SlugPage({ data, relatedPosts }) {
           href={`https://www.karthiknish.com/blog/${data.slug || data._id}`}
         />
       </Head>
-      <div className="fixed top-0 left-0 w-full h-2 z-[9999] bg-gray-700">
-        {" "}
-        {/* Increased height and z-index, adjusted bg */}
-        <div
-          className="h-full bg-blue-500 transition-transform duration-150 ease-linear"
-          style={{
-            transform: `scaleX(${readingProgress / 100})`,
-            transformOrigin: "left",
-          }}
-        />
-      </div>{" "}
-      {/* Reading progress bar - moved to top */}
-      <PageContainer className="pt-16 mt-10  space-y-8 font-calendas max-w-4xl mx-auto">
+      {showScrollTopButton && (
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="fixed left-6 bottom-6 z-50 w-12 h-12 rounded-full bg-gray-800/80 backdrop-blur-sm hover:bg-gray-700/80 transition-colors duration-200 flex items-center justify-center group"
+          aria-label="Scroll to top"
+        >
+          <div className="absolute">
+            <ChevronUpIcon className="w-6 h-6 text-white" />
+          </div>
+          <svg className="w-12 h-12 -rotate-90">
+            <circle
+              cx="50%"
+              cy="50%"
+              r="45%"
+              className="stroke-gray-600"
+              fill="none"
+              strokeWidth="2"
+            />
+            <circle
+              cx="50%"
+              cy="50%"
+              r="45%"
+              className="stroke-blue-500"
+              fill="none"
+              strokeWidth="2"
+              strokeDasharray={`${scrollProgress}, 100`}
+              pathLength="100"
+            />
+          </svg>
+        </motion.button>
+      )}
+      <PageContainer className="pt-16 mt-10 space-y-8 font-calendas max-w-4xl mx-auto">
         {/* Added padding-top */}
         <div className="mb-8 flex">
           <Link href="/blog" passHref legacyBehavior>
@@ -474,6 +453,8 @@ function SlugPage({ data, relatedPosts }) {
           <CommentsSection blogPostId={data._id} />
         </Card>
       </PageContainer>
+
+      {/* Scroll to top button with progress indicator */}
     </>
   );
 }
@@ -573,3 +554,4 @@ export async function getStaticProps(context) {
 }
 
 export default SlugPage; // Renamed component export
+
