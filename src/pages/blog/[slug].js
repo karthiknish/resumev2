@@ -50,7 +50,7 @@ function SlugPage({ data, relatedPosts }) {
   // Handle scroll to update reading progress using content ref
   useEffect(() => {
     const contentElement = contentRef.current;
-    if (!contentElement) return; // Exit if ref not attached yet
+    if (!contentElement) return;
 
     const updateReadingProgress = () => {
       const elementTop = contentElement.offsetTop;
@@ -86,15 +86,26 @@ function SlugPage({ data, relatedPosts }) {
       // console.log(`[ProgressBar Ref] ElTop: ${elementTop}, ElHeight: ${elementHeight}, VHeight: ${viewportHeight}, ScrollY: ${currentScrollPos}, RelScroll: ${scrollRelativeToElementTop}, TotalScrollable: ${totalScrollableHeight}, Progress: ${progress}%`);
     };
 
-    window.addEventListener("scroll", updateReadingProgress);
-    window.addEventListener("resize", updateReadingProgress); // Recalculate on resize
+    // Throttle via requestAnimationFrame
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          updateReadingProgress();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll, { passive: true });
+
     updateReadingProgress(); // Initial calculation
 
     return () => {
-      window.removeEventListener("scroll", updateReadingProgress);
-      window.removeEventListener("resize", updateReadingProgress);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
     };
-    // Rerun effect if data changes, ensuring ref is attached to the new content
   }, [data]);
 
   // Add useEffect for gtag tracking
@@ -280,16 +291,16 @@ function SlugPage({ data, relatedPosts }) {
             <div className="flex flex-col">
               <motion.div variants={fadeInUpVariants} className="relative">
                 <div className="relative w-full h-[300px] md:h-[450px] mb-8 rounded-lg shadow-md overflow-hidden">
-                  {/* Use next/image */}
                   <Image
                     src={data.imageUrl}
                     alt={data.title}
-                    layout="fill" // Fill the container
-                    objectFit="cover" // Cover the container, cropping if needed
-                    priority // Load this image eagerly as it's likely LCP
-                    className="transition-transform duration-300 group-hover:scale-105" // Optional: Keep hover effect if desired
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
+                    priority
+                    style={{ objectFit: "cover" }}
+                    className="transition-transform duration-300 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black "></div>
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black" />
                 </div>
                 {data.tags && data.tags.length > 0 && (
                   <div className="absolute top-4 right-4 flex flex-wrap gap-2">

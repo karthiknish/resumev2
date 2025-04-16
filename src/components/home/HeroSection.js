@@ -66,6 +66,7 @@ export default function HeroSection() {
                   src={exampleImages[0].url}
                   alt={exampleImages[0].title}
                   fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   style={{ objectFit: "cover" }}
                 />
               </motion.div>
@@ -81,6 +82,7 @@ export default function HeroSection() {
                   src={exampleImages[1].url}
                   alt={exampleImages[1].title}
                   fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   style={{ objectFit: "cover" }}
                 />
               </motion.div>
@@ -96,6 +98,7 @@ export default function HeroSection() {
                   src={exampleImages[2].url}
                   alt={exampleImages[2].title}
                   fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   style={{ objectFit: "cover" }}
                 />
               </motion.div>
@@ -111,6 +114,7 @@ export default function HeroSection() {
                   src={exampleImages[3].url}
                   alt={exampleImages[3].title}
                   fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   style={{ objectFit: "cover" }}
                 />
               </motion.div>
@@ -126,6 +130,7 @@ export default function HeroSection() {
                   src={exampleImages[4].url}
                   alt={exampleImages[4].title}
                   fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   style={{ objectFit: "cover" }}
                 />
               </motion.div>
