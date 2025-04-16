@@ -24,12 +24,12 @@ import { checkAdminStatus } from "@/lib/authUtils";
 import dbConnect from "@/lib/dbConnect"; // <-- Import dbConnect
 import Blog from "@/models/Blog"; // <-- Import Blog model
 
-function Id({ data, relatedPosts }) {
+function SlugPage({ data, relatedPosts }) {
   // Add relatedPosts to props destructuring
   // Ref for the main content card
   const contentRef = useRef(null);
   const router = useRouter();
-  const { id } = router.query;
+  const { slug } = router.query;
 
   // Admin session check
   const { data: session } = useSession();
@@ -467,84 +467,98 @@ function Id({ data, relatedPosts }) {
   );
 }
 
-// --- NEW getStaticPaths function ---
+// --- Update getStaticPaths function ---
 export async function getStaticPaths() {
   await dbConnect();
-  // Fetch only the _id of published posts
-  const posts = await Blog.find({ isPublished: true }).select("_id").lean();
+  // Fetch slug AND _id for logging purposes
+  const posts = await Blog.find({ isPublished: true })
+    .select("slug _id")
+    .lean();
 
-  // Create paths array
-  const paths = posts.map((post) => ({
-    params: { id: post._id.toString() }, // Use _id as the parameter
-  }));
+  const paths = posts
+    .map((post) => {
+      if (!post.slug || typeof post.slug !== "string") {
+        console.warn(
+          `[getStaticPaths] Post with ID ${post._id} is missing a valid slug. Skipping path generation.`
+        );
+        return null; // Skip this post
+      }
+      return {
+        params: { slug: post.slug }, // Use the valid slug
+      };
+    })
+    .filter(Boolean); // Remove any null entries from the array
+
+  // If no valid paths found after filtering, log a more specific message
+  if (paths.length === 0 && posts.length > 0) {
+    console.error(
+      "[getStaticPaths] No valid slugs found for published posts. Check database entries."
+    );
+  } else if (paths.length === 0) {
+    console.warn(
+      "[getStaticPaths] No published posts found to generate paths."
+    );
+  }
 
   return {
     paths: paths,
-    fallback: "blocking", // Use 'blocking' for on-demand generation of new posts
+    fallback: "blocking",
   };
 }
 
-// --- REPLACE getServerSideProps with getStaticProps ---
+// --- Update getStaticProps function ---
 export async function getStaticProps(context) {
-  const { id } = context.params; // Get id from context.params
+  const { slug } = context.params; // Get slug from context.params
 
   try {
     await dbConnect(); // Connect to DB
 
-    // Fetch the specific blog post by ID
-    const post = await Blog.findById(id).lean();
+    // Fetch the specific blog post by SLUG
+    const post = await Blog.findOne({ slug: slug }).lean(); // <-- Fetch by slug
 
     // If no post found or it's not published, return 404
+    // (Slug uniqueness should be handled by schema index)
     if (!post || !post.isPublished) {
       return {
         notFound: true,
       };
     }
 
-    // --- Fetch related posts ---
+    // --- Fetch related posts (logic remains similar) ---
     let relatedPosts = [];
     try {
       const relatedQuery = {
         isPublished: true,
-        _id: { $ne: post._id }, // Exclude the current post
-        $or: [
-          { category: post.category }, // Match category
-          { tags: { $in: post.tags || [] } }, // Match any tag
-        ],
+        _id: { $ne: post._id }, // Exclude the current post by ID
+        $or: [{ category: post.category }, { tags: { $in: post.tags || [] } }],
       };
-
       relatedPosts = await Blog.find(relatedQuery)
-        .select("title slug _id imageUrl createdAt") // Select fields for related posts
+        .select("title slug _id imageUrl createdAt")
         .limit(3)
         .sort({ createdAt: -1 })
         .lean();
-
-      // Ensure the current post isn't accidentally included
       relatedPosts = relatedPosts.filter(
         (p) => p._id.toString() !== post._id.toString()
       );
     } catch (error) {
       console.error("[Related Posts] Error fetching:", error);
-      relatedPosts = []; // Default to empty array on error
+      relatedPosts = [];
     }
     // --- End Fetch related posts ---
 
-    // Return main post data and related posts
     return {
       props: {
-        // Stringify/parse needed for complex objects like dates/ObjectIDs
         data: JSON.parse(JSON.stringify(post)),
         relatedPosts: JSON.parse(JSON.stringify(relatedPosts)),
       },
-      revalidate: 3600, // Revalidate every hour (adjust as needed)
+      revalidate: 3600,
     };
   } catch (error) {
     console.error("Error in getStaticProps for blog post:", error);
-    // Return 404 or some error prop if fetching the main post fails
     return {
       notFound: true,
     };
   }
 }
 
-export default Id;
+export default SlugPage; // Renamed component export
