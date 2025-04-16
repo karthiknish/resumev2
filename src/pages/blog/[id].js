@@ -21,6 +21,8 @@ import TipTapRenderer from "@/components/TipTapRenderer"; // Import TipTapRender
 import { useRouter } from "next/router";
 import { formatDistanceToNow } from "date-fns";
 import { checkAdminStatus } from "@/lib/authUtils";
+import dbConnect from "@/lib/dbConnect"; // <-- Import dbConnect
+import Blog from "@/models/Blog"; // <-- Import Blog model
 
 function Id({ data, relatedPosts }) {
   // Add relatedPosts to props destructuring
@@ -465,70 +467,84 @@ function Id({ data, relatedPosts }) {
   );
 }
 
-export async function getServerSideProps(context) {
-  const { id } = context.query; // Use 'id' which corresponds to [id].js, likely the slug
-  const baseUrl = process.env.URL || "http://localhost:3000"; // Fallback for local dev
+// --- NEW getStaticPaths function ---
+export async function getStaticPaths() {
+  await dbConnect();
+  // Fetch only the _id of published posts
+  const posts = await Blog.find({ isPublished: true }).select("_id").lean();
 
-  // Try fetching by slug first, then fallback to ID if needed (adjust API if necessary)
-  const response = await fetch(`${baseUrl}/api/blog?slug=${id}`);
-  const blogData = await response.json();
-  const data = blogData.data;
+  // Create paths array
+  const paths = posts.map((post) => ({
+    params: { id: post._id.toString() }, // Use _id as the parameter
+  }));
 
-  // If no data OR if the post is not published, return 404
-  if (!data || !data.isPublished) {
+  return {
+    paths: paths,
+    fallback: "blocking", // Use 'blocking' for on-demand generation of new posts
+  };
+}
+
+// --- REPLACE getServerSideProps with getStaticProps ---
+export async function getStaticProps(context) {
+  const { id } = context.params; // Get id from context.params
+
+  try {
+    await dbConnect(); // Connect to DB
+
+    // Fetch the specific blog post by ID
+    const post = await Blog.findById(id).lean();
+
+    // If no post found or it's not published, return 404
+    if (!post || !post.isPublished) {
+      return {
+        notFound: true,
+      };
+    }
+
+    // --- Fetch related posts ---
+    let relatedPosts = [];
+    try {
+      const relatedQuery = {
+        isPublished: true,
+        _id: { $ne: post._id }, // Exclude the current post
+        $or: [
+          { category: post.category }, // Match category
+          { tags: { $in: post.tags || [] } }, // Match any tag
+        ],
+      };
+
+      relatedPosts = await Blog.find(relatedQuery)
+        .select("title slug _id imageUrl createdAt") // Select fields for related posts
+        .limit(3)
+        .sort({ createdAt: -1 })
+        .lean();
+
+      // Ensure the current post isn't accidentally included
+      relatedPosts = relatedPosts.filter(
+        (p) => p._id.toString() !== post._id.toString()
+      );
+    } catch (error) {
+      console.error("[Related Posts] Error fetching:", error);
+      relatedPosts = []; // Default to empty array on error
+    }
+    // --- End Fetch related posts ---
+
+    // Return main post data and related posts
+    return {
+      props: {
+        // Stringify/parse needed for complex objects like dates/ObjectIDs
+        data: JSON.parse(JSON.stringify(post)),
+        relatedPosts: JSON.parse(JSON.stringify(relatedPosts)),
+      },
+      revalidate: 3600, // Revalidate every hour (adjust as needed)
+    };
+  } catch (error) {
+    console.error("Error in getStaticProps for blog post:", error);
+    // Return 404 or some error prop if fetching the main post fails
     return {
       notFound: true,
     };
   }
-
-  // --- Fetch related posts ---
-  let relatedPosts = [];
-  if (data && data.isPublished) {
-    // Only fetch related if main post exists and is published
-    try {
-      const relatedQuery = {
-        isPublished: true,
-        _id: { $ne: data._id }, // Exclude the current post
-        $or: [
-          { category: data.category }, // Match category
-          { tags: { $in: data.tags || [] } }, // Match any tag
-        ],
-      };
-      // Construct URL for fetching related posts
-      // Fetch limited fields (title, slug, imageUrl, createdAt) and limit to 3 results, sorted by newest
-      const relatedUrl = `${baseUrl}/api/blog?find=${encodeURIComponent(
-        JSON.stringify(relatedQuery)
-      )}&select=title,slug,imageUrl,createdAt&limit=3&sort=-createdAt`;
-
-      console.log(`[Related Posts] Fetching URL: ${relatedUrl}`); // Debug log
-      const relatedResponse = await fetch(relatedUrl);
-
-      if (relatedResponse.ok) {
-        const relatedData = await relatedResponse.json();
-        relatedPosts = relatedData.data || [];
-        // Ensure the current post isn't accidentally included (double check)
-        relatedPosts = relatedPosts.filter((post) => post._id !== data._id);
-        console.log(
-          `[Related Posts] Found ${relatedPosts.length} related posts.`
-        ); // Debug log
-      } else {
-        console.error(
-          `[Related Posts] Failed to fetch: ${relatedResponse.status}`
-        );
-      }
-    } catch (error) {
-      console.error("[Related Posts] Error fetching:", error);
-    }
-  }
-  // --- End Fetch related posts ---
-
-  // Return main post data and related posts
-  return {
-    props: {
-      data: data, // Main post data
-      relatedPosts: relatedPosts, // Related posts array
-    },
-  };
 }
 
 export default Id;
