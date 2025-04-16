@@ -81,10 +81,9 @@ export default function TechStackSection() {
   return (
     <motion.section
       initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      viewport={{ once: true }}
-      className="bg-gradient-to-b from-black via-gray-900 to-black py-16 md:py-24" // Added gradient
+      className="bg-gradient-to-b from-black via-gray-900 to-black py-16 md:py-24"
     >
       <div className="container mx-auto px-4">
         <motion.h2

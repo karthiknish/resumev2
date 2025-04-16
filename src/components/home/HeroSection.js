@@ -65,8 +65,8 @@ export default function HeroSection() {
                 <Image
                   src={exampleImages[0].url}
                   alt={exampleImages[0].title}
-                  layout="fill"
-                  objectFit="cover"
+                  fill
+                  style={{ objectFit: "cover" }}
                 />
               </motion.div>
             </FloatingElement>
@@ -80,8 +80,8 @@ export default function HeroSection() {
                 <Image
                   src={exampleImages[1].url}
                   alt={exampleImages[1].title}
-                  layout="fill"
-                  objectFit="cover"
+                  fill
+                  style={{ objectFit: "cover" }}
                 />
               </motion.div>
             </FloatingElement>
@@ -95,8 +95,8 @@ export default function HeroSection() {
                 <Image
                   src={exampleImages[2].url}
                   alt={exampleImages[2].title}
-                  layout="fill"
-                  objectFit="cover"
+                  fill
+                  style={{ objectFit: "cover" }}
                 />
               </motion.div>
             </FloatingElement>
@@ -110,8 +110,8 @@ export default function HeroSection() {
                 <Image
                   src={exampleImages[3].url}
                   alt={exampleImages[3].title}
-                  layout="fill"
-                  objectFit="cover"
+                  fill
+                  style={{ objectFit: "cover" }}
                 />
               </motion.div>
             </FloatingElement>
@@ -125,8 +125,8 @@ export default function HeroSection() {
                 <Image
                   src={exampleImages[4].url}
                   alt={exampleImages[4].title}
-                  layout="fill"
-                  objectFit="cover"
+                  fill
+                  style={{ objectFit: "cover" }}
                 />
               </motion.div>
             </FloatingElement>
