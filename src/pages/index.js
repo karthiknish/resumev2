@@ -1,9 +1,14 @@
 import Head from "next/head";
 import React from "react";
 import { motion } from "framer-motion";
+import dynamic from "next/dynamic"; // Import dynamic
 
 // Import section components
-import HeroSection from "@/components/home/HeroSection";
+// Dynamically import HeroSection with SSR disabled
+const HeroSection = dynamic(() => import("@/components/home/HeroSection"), {
+  ssr: false,
+});
+
 import WhyFreelancerSection from "@/components/home/WhyFreelancerSection";
 import TechStackSection from "@/components/home/TechStackSection";
 import FeaturedProjectsSection from "@/components/home/FeaturedProjectsSection";
