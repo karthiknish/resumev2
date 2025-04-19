@@ -9,6 +9,8 @@ import {
   updateBlog,
   deleteBlog,
 } from "@/lib/blogService"; // Import service functions
+import Subscriber from "@/models/Subscriber"; // Import Subscriber model
+import nodemailer from "nodemailer"; // Import nodemailer for sending emails
 import '@/models/User'; // Import User model to ensure schema is registered
 
 export default async function handler(req, res) {
@@ -123,6 +125,59 @@ export default async function handler(req, res) {
         }
 
         const newBlog = await createBlog(req.body);
+
+        // Send notification to subscribers if the blog is published
+        if (newBlog.isPublished) {
+          try {
+            const subscribers = await Subscriber.find({}).lean();
+            if (subscribers.length > 0) {
+              const transporter = nodemailer.createTransport({
+                host: process.env.EMAIL_SERVER_HOST,
+                port: process.env.EMAIL_SERVER_PORT,
+                secure: process.env.EMAIL_SERVER_PORT === "465",
+                auth: {
+                  user: process.env.EMAIL_SERVER_USER,
+                  pass: process.env.EMAIL_SERVER_PASSWORD,
+                },
+              });
+
+              const mailOptions = {
+                from: process.env.EMAIL_FROM,
+                subject: `New Blog Post: ${newBlog.title}`,
+                text: `Hi there,\n\nA new blog post titled "${newBlog.title}" has been published! Check it out here: https://karthiknish.com/blog/${newBlog.slug}\n\nBest,\nKarthik Nishanth`,
+                html: `
+                  <p>Hi there,</p>
+                  <p>A new blog post titled <strong>${newBlog.title}</strong> has been published!</p>
+                  <p>Check it out <a href="https://karthiknish.com/blog/${newBlog.slug}" style="color: #3b82f6; text-decoration: underline;">here</a>.</p>
+                  <p>Best,<br/>Karthik Nishanth</p>
+                `,
+              };
+
+              // Send email to each subscriber
+              for (const subscriber of subscribers) {
+                try {
+                  mailOptions.to = subscriber.email;
+                  await transporter.sendMail(mailOptions);
+                  console.log(`Notification email sent to ${subscriber.email}`);
+                } catch (emailError) {
+                  console.error(
+                    `Failed to send email to ${subscriber.email}:`,
+                    emailError
+                  );
+                }
+              }
+            } else {
+              console.log("No subscribers found to notify about new blog.");
+            }
+          } catch (notificationError) {
+            console.error(
+              "Error sending newsletter notifications:",
+              notificationError
+            );
+            // Don't fail the API response if notification fails
+          }
+        }
+
         return res.status(201).json({
           success: true,
           message: "Blog post created successfully",
