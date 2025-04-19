@@ -104,9 +104,10 @@ export default function App({
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [consentStatus, setConsentStatus] = useState(null); // null | 'accepted' | 'declined'
   const [showConsentBanner, setShowConsentBanner] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-  // Determine if chatbot should be shown
-  const showChatbot = !router.pathname.startsWith("/admin");
+  // Determine if chatbot should be shown only after mounted
+  const showChatbot = isMounted && !router.pathname.startsWith("/admin");
 
   // Check cookie consent on mount
   useEffect(() => {
@@ -117,6 +118,10 @@ export default function App({
     if (!storedConsent) {
       setShowConsentBanner(true);
     }
+  }, []);
+
+  useEffect(() => {
+    setIsMounted(true);
   }, []);
 
   // Handle accepting cookies
@@ -140,6 +145,7 @@ export default function App({
 
   // Universal loading indicator for page transitions
   useEffect(() => {
+    if (!isMounted) return; // Only set up router events after mount
     const handleStart = () => setIsPageLoading(true);
     const handleStop = () => setIsPageLoading(false);
 
@@ -152,7 +158,7 @@ export default function App({
       router.events.off("routeChangeComplete", handleStop);
       router.events.off("routeChangeError", handleStop);
     };
-  }, [router]);
+  }, [router, isMounted]);
 
   // Initialize react-axe for development only
   useEffect(() => {
@@ -171,6 +177,7 @@ export default function App({
 
   // Handle page transitions
   useEffect(() => {
+    if (!isMounted) return; // Only set up route change handlers after mount
     const handleRouteChangeStart = () => {
       document.documentElement.classList.add("js-page-transitioning");
 
@@ -229,14 +236,12 @@ export default function App({
 
     router.events.on("routeChangeStart", handleRouteChangeStart);
     router.events.on("routeChangeComplete", handleRouteChangeComplete);
-    router.events.on("routeChangeError", handleRouteChangeComplete);
 
     return () => {
       router.events.off("routeChangeStart", handleRouteChangeStart);
       router.events.off("routeChangeComplete", handleRouteChangeComplete);
-      router.events.off("routeChangeError", handleRouteChangeComplete);
     };
-  }, [router]);
+  }, [isMounted, router.events]);
 
   // Set different transition types based on route
   useEffect(() => {
