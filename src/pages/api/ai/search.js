@@ -1,6 +1,6 @@
 import dbConnect from "@/lib/dbConnect";
 import Blog from "@/models/Blog";
-import { generateContent } from "@/lib/gemini"; // Assuming gemini functions are here
+import { callGemini } from "@/lib/gemini"; // Use the correct exported function name
 import logger from "@/utils/logger";
 
 // Basic structure for the AI search endpoint
@@ -15,11 +15,9 @@ export default async function handler(req, res) {
   const { query } = req.query;
 
   if (!query || typeof query !== "string" || query.trim().length === 0) {
-    return res
-      .status(400)
-      .json({
-        message: "Search query is required and must be a non-empty string.",
-      });
+    return res.status(400).json({
+      message: "Search query is required and must be a non-empty string.",
+    });
   }
 
   logger.info(`AI Search initiated for query: "${query}"`);
@@ -66,7 +64,7 @@ export default async function handler(req, res) {
     // 4. Call Gemini API
     // TODO: Implement error handling and potentially parse the response more robustly
     logger.info("Sending request to Gemini for AI search ranking...");
-    const geminiResponse = await generateContent(prompt); // Use your existing Gemini function
+    const geminiResponse = await callGemini(prompt); // Use the correct function name
     logger.info("Received response from Gemini.");
 
     // 5. Parse Gemini response (expecting a JSON array of slugs)
