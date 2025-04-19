@@ -283,13 +283,18 @@ export default function App({
       <QueryClientProvider client={queryClient}>
         <div className={`${inter.variable} font-sans antialiased`}>
           <Nav />
-          <AnimatePresence mode="wait" initial={false}>
-            {isPageLoading ? (
-              <LoadingFallback />
-            ) : (
-              <Component {...pageProps} key={router.asPath} />
-            )}
-          </AnimatePresence>
+          {isMounted ? (
+            <AnimatePresence mode="wait" initial={false}>
+              {isPageLoading ? (
+                <LoadingFallback key="loading" />
+              ) : (
+                <Component {...pageProps} key={router.asPath} />
+              )}
+            </AnimatePresence>
+          ) : (
+            // Render component directly without AnimatePresence during SSR/build
+            <Component {...pageProps} key={router.asPath} />
+          )}
           <Footer />
           {/* ChatBot only on non-admin pages */}
           {showChatbot && <ChatBot />}
