@@ -1,0 +1,29 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Project Structure Overview
+
+**This rule MUST be followed strictly when navigating the codebase or making changes.**
+
+This is a [Next.js](mdc:https:/nextjs.org) project built with [React](mdc:https:/react.dev) and styled using [Tailwind CSS](mdc:https:/tailwindcss.com).
+
+## Key Directories
+
+*   `src/`: Contains the main application code.
+    *   `src/pages/`: Defines the application's routes. Key files include:
+        *   [`_app.js`](mdc:src/pages/_app.js): Custom App component, wraps all pages.
+        *   [`_document.js`](mdc:src/pages/_document.js): Custom Document component, modifies `<html>` and `<body>` tags.
+        *   [`index.js`](mdc:src/pages/index.js): The homepage.
+        *   [`api/`](mdc:src/pages/api): API routes handled by Next.js.
+        *   [`blog/`](mdc:src/pages/blog): Blog section.
+        *   [`projects/`](mdc:src/pages/projects): Projects section.
+        *   [`services/`](mdc:src/pages/services): Services section.
+    *   `src/components/`: Reusable React components. Potentially uses [shadcn/ui](mdc:https:/ui.shadcn.com) (see [`components.json`](mdc:components.json)).
+    *   `src/lib/`: Utility functions and libraries.
+    *   `src/styles/`: Global styles and Tailwind CSS configuration.
+    *   `src/data/`: Static data used by the application.
+*   `public/`: Static assets (images, fonts, etc.) served directly.
+
+**Refer to this structure consistently. Do not deviate without specific reason.**

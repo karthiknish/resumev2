@@ -276,34 +276,28 @@ export default function App({
   return (
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
-        <div
-          className={`${inter.variable} font-sans bg-black text-white flex flex-col min-h-screen`}
-        >
-          {isPageLoading && (
-            <div className="fixed top-0 left-0 right-0 h-1 bg-blue-500 z-[999] animate-pulse"></div>
-          )}
-
+        <div className={`${inter.variable} font-sans antialiased`}>
           <Nav />
-          <main className="flex-grow">
-            <Suspense fallback={<LoadingFallback />}>
-              <PageTransitionWrapper key={router.route} type={transitionType}>
-                <Component {...pageProps} />
-              </PageTransitionWrapper>
-            </Suspense>
-          </main>
+          <AnimatePresence mode="wait" initial={false}>
+            {isPageLoading ? (
+              <LoadingFallback />
+            ) : (
+              <Component {...pageProps} key={router.asPath} />
+            )}
+          </AnimatePresence>
           <Footer />
-
+          {/* ChatBot only on non-admin pages */}
           {showChatbot && <ChatBot />}
-
+          <Toaster richColors closeButton position="top-right" />
+          {/* Show cookie consent banner if no consent has been given */}
           {showConsentBanner && (
             <CookieConsentBanner
               onAccept={handleAcceptCookies}
               onDecline={handleDeclineCookies}
             />
           )}
-
-          <Toaster richColors theme="dark" toastOptions={toastOptions} />
-          <Analytics />
+          {/* Only render Analytics if consent is accepted */}
+          {consentStatus === "accepted" && <Analytics />}
         </div>
       </QueryClientProvider>
     </SessionProvider>

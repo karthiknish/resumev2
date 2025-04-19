@@ -174,7 +174,7 @@ function AdminDashboard() {
   if (status === "authenticated" && isAdmin) {
     return (
       <PageTransition>
-        <div className="admin-dashboard min-h-screen bg-black text-white">
+        <div className="admin-dashboard min-h-screen bg-gradient-to-br from-gray-900 to-black text-white">
           <Head>
             <title>Admin Dashboard</title>
           </Head>
@@ -190,7 +190,7 @@ function AdminDashboard() {
             </SlideInLeft>
 
             <FadeIn delay={0.3}>
-              <Separator className="my-6 bg-gray-800" />
+              <Separator className="my-6 bg-gray-700" />
             </FadeIn>
 
             <Tabs
@@ -200,12 +200,12 @@ function AdminDashboard() {
             >
               <SlideUp delay={0.4}>
                 {/* Desktop TabsList (Hidden on Small Screens) */}
-                <TabsList className="hidden md:flex w-full overflow-x-auto pb-2 scrollbar-thin mb-4 space-x-1">
+                <TabsList className="hidden md:flex w-full overflow-x-auto pb-2 scrollbar-thin mb-4 space-x-1 bg-gray-800/50 backdrop-blur-sm rounded-lg">
                   {adminTabs.map((tab) => (
                     <TabsTrigger
                       key={tab.value}
                       value={tab.value}
-                      className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0 relative"
+                      className="data-[state=active]:bg-blue-600 data-[state=active]:text-white flex-shrink-0 relative transition-all duration-200"
                     >
                       <tab.Icon className="h-4 w-4" />{" "}
                       <span className="ml-1.5">{tab.label}</span>
@@ -226,10 +226,10 @@ function AdminDashboard() {
                 {/* Mobile Select (Visible only on Small Screens) */}
                 <div className="block md:hidden mb-4">
                   <Select value={activeTab} onValueChange={setActiveTab}>
-                    <SelectTrigger className="w-full bg-gray-800 border-gray-700 text-white">
+                    <SelectTrigger className="w-full bg-gray-800/50 backdrop-blur-sm border-gray-700 text-white rounded-lg">
                       <SelectValue placeholder="Select a tab" />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-gray-700 text-white">
+                    <SelectContent className="bg-gray-800/80 backdrop-blur-sm border-gray-700 text-white rounded-lg">
                       {adminTabs.map((tab) => (
                         <SelectItem key={tab.value} value={tab.value}>
                           <div className="flex items-center">
@@ -251,52 +251,35 @@ function AdminDashboard() {
                 </div>
               </SlideUp>
 
-              {/* Content Panes */}
-              <AnimatePresence mode="wait">
-                <TabsContent value="dashboard" key="dashboard">
-                  <DashboardTab
-                    unreadCount={
-                      isLoadingContactsCount ? undefined : unreadContactsCount
-                    }
-                  />
-                </TabsContent>
-                <TabsContent value="calendar" key="calendar">
-                  {" "}
-                  <CalendarTab />{" "}
-                </TabsContent>
-                <TabsContent value="chat-history" key="chat-history">
-                  {" "}
-                  <ChatHistoryTab />{" "}
-                </TabsContent>
-                <TabsContent value="contacts" key="contacts">
-                  {" "}
-                  <ContactsTab />{" "}
-                </TabsContent>
-                <TabsContent value="bytes" key="bytes">
-                  {" "}
-                  <BytesTab />{" "}
-                </TabsContent>
-                <TabsContent value="subscribers" key="subscribers">
-                  {" "}
-                  <SubscribersTab />{" "}
-                </TabsContent>
-                <TabsContent value="linkedin" key="linkedin">
-                  {" "}
-                  <LinkedInTab />{" "}
-                </TabsContent>
-                <TabsContent value="api-status" key="api-status">
-                  {" "}
-                  <ApiStatusTab />{" "}
-                </TabsContent>
-                <TabsContent value="pomodoro" key="pomodoro">
-                  {" "}
-                  <PomodoroTab />{" "}
-                </TabsContent>
-                <TabsContent value="news" key="news">
-                  {" "}
-                  <HackerNewsFeed />{" "}
-                </TabsContent>
-              </AnimatePresence>
+              {/* Tab Content with Card-like Container */}
+              <div className="bg-gray-800/30 backdrop-blur-sm rounded-lg p-6 shadow-lg shadow-black/50 border border-gray-700/50">
+                <AnimatePresence mode="wait">
+                  {activeTab === "dashboard" && (
+                    <DashboardTab key="dashboard" />
+                  )}
+                  {activeTab === "calendar" && <CalendarTab key="calendar" />}
+                  {activeTab === "chat-history" && (
+                    <ChatHistoryTab key="chat-history" />
+                  )}
+                  {activeTab === "contacts" && (
+                    <ContactsTab
+                      key="contacts"
+                      onUnreadCountUpdate={setUnreadContactsCount}
+                    />
+                  )}
+                  {activeTab === "bytes" && <BytesTab key="bytes" />}
+                  {activeTab === "api-status" && (
+                    <ApiStatusTab key="api-status" />
+                  )}
+                  {activeTab === "subscribers" && (
+                    <SubscribersTab key="subscribers" />
+                  )}
+                  {activeTab === "linkedin" && <LinkedInTab key="linkedin" />}
+                  {activeTab === "pomodoro" && <PomodoroTab key="pomodoro" />}
+                  {activeTab === "news" && <HackerNewsFeed key="news" />}
+                  {!activeTab && <EmptyPage />}
+                </AnimatePresence>
+              </div>
             </Tabs>
           </PageContainer>
         </div>
