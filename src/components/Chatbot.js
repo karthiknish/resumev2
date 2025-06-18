@@ -299,31 +299,76 @@ function Chatbot() {
 
   return (
     <>
-      {/* Chat button - Slightly larger, softer shadow */}
-      <button
-        className={`fixed z-[1100] right-5 p-3.5 rounded-full bg-blue-600 text-white flex items-center shadow-md hover:shadow-lg hover:bg-blue-700 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black ${
+      {/* Chat button - Modern vibrant design */}
+      <motion.button
+        className={`fixed z-[1100] right-6 p-4 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white flex items-center shadow-xl hover:shadow-2xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-purple-300 ${
           // Adjust bottom only for mobile overlap prevention when open
-          isOpen ? "bottom-[70px] md:bottom-5" : "bottom-5"
+          isOpen ? "bottom-[80px] md:bottom-6" : "bottom-6"
         }`}
         onClick={() => setIsOpen(!isOpen)}
         aria-label={isOpen ? "Close chat" : "Open chat"}
+        whileHover={{ scale: 1.1, y: -2 }}
+        whileTap={{ scale: 0.95 }}
+        animate={{
+          boxShadow: [
+            "0 10px 30px rgba(147, 51, 234, 0.3)",
+            "0 15px 40px rgba(59, 130, 246, 0.4)",
+            "0 10px 30px rgba(147, 51, 234, 0.3)"
+          ]
+        }}
+        transition={{
+          boxShadow: {
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }
+        }}
       >
         <AnimatePresence mode="wait">
           <motion.div
             key={isOpen ? "close" : "open"}
-            initial={{ rotate: -90, opacity: 0 }}
-            animate={{ rotate: 0, opacity: 1 }}
-            exit={{ rotate: 90, opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            initial={{ rotate: -90, opacity: 0, scale: 0.8 }}
+            animate={{ rotate: 0, opacity: 1, scale: 1 }}
+            exit={{ rotate: 90, opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.3, type: "spring", stiffness: 400 }}
+            className="flex items-center gap-2"
           >
             {isOpen ? (
               <BiX className="text-3xl" />
             ) : (
-              <BiMessageSquareDots className="text-3xl" />
+              <>
+                <BiMessageSquareDots className="text-3xl" />
+                <motion.span
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  className="text-xl ml-1"
+                >
+                  ✨
+                </motion.span>
+              </>
             )}
           </motion.div>
         </AnimatePresence>
-      </button>
+        {!isOpen && (
+          <motion.div
+            className="absolute -top-12 right-0 bg-white text-gray-800 px-3 py-2 rounded-2xl shadow-lg text-sm font-medium border-2 border-purple-200 whitespace-nowrap"
+            initial={{ opacity: 0, y: 10, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.8 }}
+            transition={{ delay: 1, duration: 0.3 }}
+          >
+            <span className="flex items-center gap-2">
+              <span className="text-lg">💬</span>
+              Chat with me!
+            </span>
+            <div className="absolute -bottom-2 right-4 w-4 h-4 bg-white border-r-2 border-b-2 border-purple-200 transform rotate-45"></div>
+          </motion.div>
+        )}
+      </motion.button>
 
       {/* Chat Modal */}
       <AnimatePresence>
@@ -336,25 +381,50 @@ function Chatbot() {
             exit="exit"
             transition={{ type: "spring", stiffness: 400, damping: 35 }}
             // Use fixed positioning, apply responsive styles for placement/size
-            className="fixed inset-0 z-[1000] flex flex-col bg-gray-900 shadow-2xl border border-gray-700/50
-                       md:inset-auto md:bottom-20 md:right-5 md:w-[375px] md:max-h-[70vh] md:h-auto md:rounded-xl md:overflow-hidden"
+            className="fixed inset-0 z-[1000] flex flex-col bg-white/95 backdrop-blur-xl shadow-2xl border-2 border-purple-200
+                       md:inset-auto md:bottom-24 md:right-6 md:w-[400px] md:max-h-[70vh] md:h-auto md:rounded-3xl md:overflow-hidden"
           >
-            {/* Chat header - Added subtle gradient */}
-            <div className="flex justify-between items-center p-3 border-b border-gray-700 bg-gradient-to-r from-gray-800 to-gray-700 flex-shrink-0">
-              <h3 className="text-white font-semibold text-lg">
-                Chat Assistant
-              </h3>
-              <button
+            {/* Chat header - Modern vibrant design */}
+            <motion.div
+              className="flex justify-between items-center p-6 border-b-2 border-purple-200 bg-gradient-to-r from-purple-600 to-blue-600 flex-shrink-0"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="flex items-center gap-3">
+                <motion.div
+                  className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center"
+                  animate={{ rotate: [0, 10, -10, 0] }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  <span className="text-2xl">🤖</span>
+                </motion.div>
+                <div>
+                  <h3 className="text-white font-black text-xl" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                    Cline AI
+                  </h3>
+                  <p className="text-purple-100 text-sm font-medium">
+                    Karthik's Assistant
+                  </p>
+                </div>
+              </div>
+              <motion.button
                 onClick={() => setIsOpen(false)}
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-white/80 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-xl transition-all duration-300"
                 aria-label="Close chat"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
               >
                 <BiX size={24} />
-              </button>
-            </div>
+              </motion.button>
+            </motion.div>
 
             {/* Chat messages area */}
-            <div className="flex-grow p-4 overflow-y-auto space-y-4 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+            <div className="flex-grow p-6 overflow-y-auto space-y-6 bg-gradient-to-br from-purple-50/50 via-white/50 to-blue-50/50 scrollbar-thin scrollbar-thumb-purple-300 scrollbar-track-purple-100">
               {messages.map((msg, index) => (
                 <div
                   key={index}
@@ -365,10 +435,30 @@ function Chatbot() {
                 >
                   {/* Bot Avatar */}
                   {msg.role === "assistant" && (
-                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center mb-1">
-                      {/* Placeholder Icon - Replace with Image if desired */}
-                      <BiUserCircle className="text-gray-300 w-4 h-4" />
-                    </div>
+                    <motion.div
+                      className="flex-shrink-0 w-10 h-10 rounded-2xl bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center mb-1 shadow-lg"
+                      whileHover={{ scale: 1.1 }}
+                      animate={{ rotate: [0, 5, -5, 0] }}
+                      transition={{
+                        rotate: {
+                          duration: 3,
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }
+                      }}
+                    >
+                      <span className="text-xl">🤖</span>
+                    </motion.div>
+                  )}
+                  
+                  {/* User Avatar */}
+                  {msg.role === "user" && (
+                    <motion.div
+                      className="flex-shrink-0 w-10 h-10 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center mb-1 shadow-lg"
+                      whileHover={{ scale: 1.1 }}
+                    >
+                      <span className="text-xl">👤</span>
+                    </motion.div>
                   )}
 
                   <motion.div
@@ -381,106 +471,201 @@ function Chatbot() {
                       stiffness: 500,
                       damping: 30,
                     }}
-                    className={`max-w-[85%] px-4 py-2 rounded-lg shadow-md text-sm md:text-base border ${
+                    className={`max-w-[85%] px-6 py-4 rounded-3xl shadow-xl text-base border-2 ${
                       msg.role === "assistant"
-                        ? "bg-gray-700 text-gray-100 rounded-bl-none border-gray-600"
-                        : "bg-green-600 text-white rounded-br-none border-green-500"
+                        ? "bg-white/90 backdrop-blur-sm text-gray-800 rounded-bl-xl border-purple-200"
+                        : "bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-br-xl border-purple-400"
                     }`}
                   >
                     {renderMessageContent(msg)}
-                    <span className="block text-xs opacity-60 mt-1 text-right">
+                    <motion.span
+                      className={`block text-xs mt-2 text-right font-medium ${
+                        msg.role === "assistant" ? "text-gray-500" : "text-purple-200"
+                      }`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 0.7 }}
+                      transition={{ delay: 0.5 }}
+                    >
                       {formatDate(msg.timestamp)}
-                    </span>
+                    </motion.span>
                   </motion.div>
                 </div>
               ))}
               {isLoading && (
-                <div className="flex justify-start">
+                <motion.div
+                  className="flex justify-start items-end gap-3"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
                   {/* Bot Avatar for loading */}
-                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center mr-2 mb-1">
-                    <BiUserCircle className="text-gray-300 w-4 h-4" />
-                  </div>
+                  <motion.div
+                    className="flex-shrink-0 w-10 h-10 rounded-2xl bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center mb-1 shadow-lg"
+                    animate={{ rotate: [0, 360] }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "linear"
+                    }}
+                  >
+                    <span className="text-xl">🤖</span>
+                  </motion.div>
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-gray-700 text-white max-w-[85%] px-4 py-2 rounded-lg shadow-md rounded-bl-none border border-gray-600"
+                    className="bg-white/90 backdrop-blur-sm text-gray-800 max-w-[85%] px-6 py-4 rounded-3xl rounded-bl-xl shadow-xl border-2 border-purple-200"
                   >
-                    <div className="flex space-x-1.5 items-center h-5">
-                      <div
-                        className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce"
-                        style={{ animationDelay: "0ms" }}
-                      ></div>
-                      <div
-                        className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce"
-                        style={{ animationDelay: "150ms" }}
-                      ></div>
-                      <div
-                        className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce"
-                        style={{ animationDelay: "300ms" }}
-                      ></div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">🤔</span>
+                      <span className="font-medium">Thinking...</span>
+                    </div>
+                    <div className="flex space-x-2 items-center mt-2">
+                      <motion.div
+                        className="w-2 h-2 rounded-full bg-purple-500"
+                        animate={{ scale: [1, 1.5, 1] }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                          delay: 0
+                        }}
+                      />
+                      <motion.div
+                        className="w-2 h-2 rounded-full bg-blue-500"
+                        animate={{ scale: [1, 1.5, 1] }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                          delay: 0.3
+                        }}
+                      />
+                      <motion.div
+                        className="w-2 h-2 rounded-full bg-purple-500"
+                        animate={{ scale: [1, 1.5, 1] }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                          delay: 0.6
+                        }}
+                      />
                     </div>
                   </motion.div>
-                </div>
+                </motion.div>
               )}
               <div ref={chatEndRef} />
             </div>
 
             {/* Chat input area */}
-            <form
+            <motion.form
               onSubmit={handleSubmit}
-              className="border-t border-gray-700 p-3 bg-gray-800 flex-shrink-0" // Removed flex items-center gap-2 here
+              className="border-t-2 border-purple-200 p-6 bg-white/90 backdrop-blur-sm flex-shrink-0"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
             >
               {/* Added descriptive text for email collection */}
               {isCollectingEmail && (
-                <p className="text-xs text-gray-400 mb-1.5 px-1">
-                  Please enter your email to continue:
-                </p>
+                <motion.div
+                  className="mb-4 p-4 bg-gradient-to-r from-purple-100 to-blue-100 rounded-2xl border-2 border-purple-200"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                >
+                  <p className="text-sm text-gray-700 font-medium flex items-center gap-2">
+                    <span className="text-lg">📧</span>
+                    Please enter your email to continue:
+                  </p>
+                  <p className="text-xs text-gray-600 mt-1">
+                    This helps me save our conversation and follow up if needed
+                  </p>
+                </motion.div>
               )}
-              <div className="flex items-center gap-2">
-                {" "}
-                {/* Added inner flex container */}
+              <div className="flex items-center gap-4">
                 {isCollectingEmail ? (
                   <>
-                    <FaEnvelope className="text-gray-400 flex-shrink-0" />
+                    <motion.div
+                      className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg"
+                      whileHover={{ scale: 1.1 }}
+                      animate={{ rotate: [0, 5, -5, 0] }}
+                      transition={{
+                        rotate: {
+                          duration: 2,
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }
+                      }}
+                    >
+                      <FaEnvelope className="text-white text-lg" />
+                    </motion.div>
                     <Input
-                      className="flex-grow bg-gray-700 border-gray-600 text-white placeholder-gray-400 text-sm"
+                      className="flex-grow bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 text-gray-800 placeholder-gray-500 font-medium rounded-2xl px-6 py-4 text-lg focus:ring-4 focus:ring-purple-200 focus:border-purple-400 transition-all duration-300"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       onKeyDown={handleKeyDown}
-                      placeholder="your.email@example.com" // More specific placeholder
+                      placeholder="your.email@example.com"
                       type="email"
                       required
                       aria-label="Enter your email"
                     />
                   </>
                 ) : (
-                  <Input
-                    className="flex-grow bg-gray-700 border-gray-600 text-white placeholder-gray-400 text-sm"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Type your message..."
-                    aria-label="Type your message"
-                  />
+                  <>
+                    <motion.div
+                      className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg"
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    >
+                      <span className="text-xl">💬</span>
+                    </motion.div>
+                    <Input
+                      className="flex-grow bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 text-gray-800 placeholder-gray-500 font-medium rounded-2xl px-6 py-4 text-lg focus:ring-4 focus:ring-purple-200 focus:border-purple-400 transition-all duration-300"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      placeholder="Type your message..."
+                      aria-label="Type your message"
+                    />
+                  </>
                 )}
-                <Button
+                <motion.button
                   type="submit"
-                  size="icon"
-                  className="bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex-shrink-0"
+                  className="flex-shrink-0 w-14 h-14 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-2xl transition-all duration-300 flex items-center justify-center shadow-xl hover:shadow-2xl disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed"
                   disabled={!message.trim() || isLoading}
                   aria-label={
                     isCollectingEmail ? "Submit email" : "Send message"
                   }
+                  whileHover={{ scale: 1.1, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  {/* Conditional Icon */}
-                  {isCollectingEmail ? (
-                    <FaCheck className="w-5 h-5" />
+                  {isLoading ? (
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                  ) : isCollectingEmail ? (
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    >
+                      <FaCheck className="w-6 h-6" />
+                    </motion.div>
                   ) : (
-                    <BiSend className="w-5 h-5" />
+                    <motion.div
+                      animate={{ x: [0, 3, 0] }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    >
+                      <BiSend className="w-6 h-6" />
+                    </motion.div>
                   )}
-                </Button>
+                </motion.button>
               </div>
-            </form>
+            </motion.form>
           </motion.div>
         )}
       </AnimatePresence>

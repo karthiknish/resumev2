@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 3.9%;
+    --background: white%;
     --foreground: 0 0% 98%;
     /* ... other color variables ... */
     --card: 0 0% 3.9%;
@@ -50,7 +50,7 @@
 
   /* Add other base styles if necessary */
   body {
-     @apply bg-black text-gray-100; /* Example base body styles */
+     @apply bg-white text-gray-900; /* Example base body styles */
      font-family: var(--font-inter), sans-serif; /* Apply Inter font */
   }
 

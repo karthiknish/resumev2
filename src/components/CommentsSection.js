@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input"; // Import Input for anonymous name
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 // Simple date formatter
 const formatDate = (dateString) => {
@@ -113,20 +114,79 @@ export default function CommentsSection({ blogPostId }) {
   };
 
   return (
-    <div className="mt-12 pt-8 border-t border-gray-700">
-      <h2 className="text-2xl font-bold text-white mb-6 font-calendas">
-        Comments ({comments.length})
-      </h2>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true }}
+      className="mt-16 pt-12 border-t border-purple-200 bg-white/50 backdrop-blur-sm rounded-3xl p-8"
+    >
+      <motion.h2
+        className="text-4xl md:text-5xl font-black mb-8 flex items-center gap-4"
+        style={{ fontFamily: "Space Grotesk, sans-serif" }}
+        initial={{ opacity: 0, x: -20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6, delay: 0.1 }}
+        viewport={{ once: true }}
+      >
+        <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+          Comments
+        </span>
+        <motion.span
+          animate={{ rotate: [0, 15, -15, 0] }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="text-3xl"
+        >
+          💬
+        </motion.span>
+        <span className="bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 px-4 py-2 rounded-full text-xl font-bold">
+          {comments.length}
+        </span>
+      </motion.h2>
 
       {/* Comment Submission Form - Always visible */}
-      <form onSubmit={handleCommentSubmit} className="mb-8">
+      <motion.form
+        onSubmit={handleCommentSubmit}
+        className="mb-12 bg-white/80 backdrop-blur-sm p-8 rounded-3xl border-2 border-purple-200 shadow-xl"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        viewport={{ once: true }}
+      >
+        <h3
+          className="text-2xl font-bold mb-6 flex items-center gap-3 text-gray-900"
+          style={{ fontFamily: "Space Grotesk, sans-serif" }}
+        >
+          Share your thoughts
+          <motion.span
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="text-xl"
+          >
+            ✨
+          </motion.span>
+        </h3>
         {/* Show Name input only if not logged in */}
         {status === "unauthenticated" && (
-          <div className="mb-3">
+          <motion.div
+            className="mb-6"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             <label
               htmlFor="anonymousName"
-              className="block text-sm font-medium text-gray-300 mb-1"
+              className="block text-lg font-semibold text-gray-700 mb-3 flex items-center gap-2"
             >
+              <span className="text-xl">👤</span>
               Name (Optional)
             </label>
             <Input
@@ -137,78 +197,201 @@ export default function CommentsSection({ blogPostId }) {
               placeholder="Your Name"
               maxLength={50}
               disabled={isSubmitting}
-              className="w-full sm:w-1/2 bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full sm:w-1/2 bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 text-gray-800 placeholder-gray-500 focus:ring-4 focus:ring-purple-200 focus:border-purple-400 rounded-2xl px-6 py-4 text-lg font-medium transition-all duration-300"
             />
-          </div>
+          </motion.div>
         )}
         {/* Textarea is always visible */}
-        <Textarea
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          placeholder={
-            session
-              ? "Write your comment..."
-              : "Write your comment... (Sign in to use your profile name/image)"
-          }
-          required
-          maxLength={2000}
-          disabled={isSubmitting || status === "loading"} // Disable if auth status is loading
-          className="w-full p-3 rounded-md bg-gray-800 border border-gray-600 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 min-h-[100px] mb-3"
-          aria-label="New comment"
-        />
-        <Button
-          type="submit"
-          disabled={isSubmitting || !newComment.trim() || status === "loading"}
-          className="bg-blue-600 hover:bg-blue-700 text-white"
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="mb-6"
         >
-          {isSubmitting ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : null}
-          {isSubmitting ? "Posting..." : "Post Comment"}
-        </Button>
-      </form>
+          <label className="block text-lg font-semibold text-gray-700 mb-3 flex items-center gap-2">
+            <span className="text-xl">💭</span>
+            Your Comment
+          </label>
+          <Textarea
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            placeholder={
+              session
+                ? "Share your thoughts and insights..."
+                : "Share your thoughts... (Sign in to use your profile name/image)"
+            }
+            required
+            maxLength={2000}
+            disabled={isSubmitting || status === "loading"} // Disable if auth status is loading
+            className="w-full p-6 rounded-2xl bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 text-gray-800 placeholder-gray-500 focus:ring-4 focus:ring-purple-200 focus:border-purple-400 min-h-[120px] text-lg font-medium transition-all duration-300 resize-none"
+            aria-label="New comment"
+          />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <motion.button
+            type="submit"
+            disabled={isSubmitting || !newComment.trim() || status === "loading"}
+            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 shadow-xl hover:shadow-2xl disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed flex items-center gap-3"
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span>Posting your thoughts...</span>
+              </>
+            ) : (
+              <>
+                <motion.span
+                  animate={{ y: [0, -3, 0] }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="text-xl"
+                >
+                  🚀
+                </motion.span>
+                <span>Post Comment</span>
+              </>
+            )}
+          </motion.button>
+        </motion.div>
+      </motion.form>
       {/* Display Comments */}
-      <div className="space-y-6">
+      <motion.div
+        className="space-y-8"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+        viewport={{ once: true }}
+      >
         {isLoading && (
-          <Loader2 className="h-6 w-6 animate-spin text-gray-400 mx-auto" />
+          <motion.div
+            className="flex justify-center items-center py-12"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+            <span className="ml-3 text-lg font-medium text-gray-600">Loading comments...</span>
+          </motion.div>
         )}
         {error && !isLoading && (
-          <p className="text-red-400">Error loading comments: {error}</p>
+          <motion.div
+            className="bg-red-50 border-2 border-red-200 rounded-2xl p-6"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            <p className="text-red-600 font-medium text-lg flex items-center gap-2">
+              <span className="text-xl">⚠️</span>
+              Error loading comments: {error}
+            </p>
+          </motion.div>
         )}
         {!isLoading && !error && comments.length === 0 && (
-          <p className="text-gray-400">Be the first to comment!</p>
+          <motion.div
+            className="text-center py-16 bg-gradient-to-br from-purple-50 to-blue-50 rounded-3xl border-2 border-purple-200"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <motion.div
+              animate={{ rotate: [0, 10, -10, 0] }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="text-6xl mb-4"
+            >
+              💬
+            </motion.div>
+            <h4 className="text-2xl font-bold text-gray-800 mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+              Be the first to comment!
+            </h4>
+            <p className="text-gray-600 text-lg">
+              Share your thoughts and start the conversation
+            </p>
+          </motion.div>
         )}
         {!isLoading &&
           !error &&
-          comments.map((comment) => (
-            <div key={comment._id} className="flex items-start space-x-4">
-              <div className="flex-shrink-0">
-                <Image
-                  // Use comment.authorImage if available (set during creation), else default
-                  src={comment.authorImage || "/avatars/default.png"}
-                  alt={`${comment.authorName || "Anonymous"}'s avatar`}
-                  width={40}
-                  height={40}
-                  className="rounded-full"
-                />
-              </div>
-              <div className="flex-grow bg-gray-800/50 p-4 rounded-lg">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="font-semibold text-white">
-                    {comment.authorName || "Anonymous"}
-                  </span>
-                  <span className="text-xs text-gray-400">
-                    {formatDate(comment.createdAt)}
-                  </span>
+          comments.map((comment, index) => (
+            <motion.div
+              key={comment._id}
+              className="flex items-start space-x-6 group"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
+            >
+              <motion.div
+                className="flex-shrink-0"
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className="relative">
+                  <Image
+                    // Use comment.authorImage if available (set during creation), else default
+                    src={comment.authorImage || "/avatars/default.png"}
+                    alt={`${comment.authorName || "Anonymous"}'s avatar`}
+                    width={56}
+                    height={56}
+                    className="rounded-2xl border-4 border-purple-200 shadow-lg"
+                  />
+                  <motion.div
+                    className="absolute -bottom-1 -right-1 w-6 h-6 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full border-2 border-white flex items-center justify-center"
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <span className="text-xs">✨</span>
+                  </motion.div>
                 </div>
-                <p className="text-gray-300 whitespace-pre-wrap">
+              </motion.div>
+              <motion.div
+                className="flex-grow bg-white/80 backdrop-blur-sm p-6 rounded-3xl border-2 border-purple-200 shadow-lg group-hover:shadow-xl group-hover:border-purple-300 transition-all duration-300"
+                whileHover={{ y: -2 }}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <motion.span
+                    className="font-bold text-xl text-gray-900 flex items-center gap-2"
+                    style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    <span className="text-lg">👤</span>
+                    {comment.authorName || "Anonymous"}
+                  </motion.span>
+                  <motion.span
+                    className="text-sm font-medium text-gray-500 bg-gradient-to-r from-purple-100 to-blue-100 px-3 py-1 rounded-full flex items-center gap-1"
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    <span className="text-xs">📅</span>
+                    {formatDate(comment.createdAt)}
+                  </motion.span>
+                </div>
+                <motion.p
+                  className="text-gray-700 whitespace-pre-wrap text-lg leading-relaxed"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  viewport={{ once: true }}
+                >
                   {comment.text}
-                </p>
+                </motion.p>
                 {/* Add reply functionality here later if needed */}
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           ))}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

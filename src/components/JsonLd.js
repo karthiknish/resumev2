@@ -1,8 +1,4 @@
-import { useRouter } from "next/router";
-
 const JsonLd = ({ data }) => {
-  const router = useRouter();
-
   return (
     <script
       type="application/ld+json"

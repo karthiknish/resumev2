@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { toast } from "sonner"; // Using sonner for notifications
 import { Input } from "@/components/ui/input"; // Assuming shadcn/ui input
 import { Button } from "@/components/ui/button";
@@ -54,41 +55,85 @@ export default function NewsletterSignup() {
   };
 
   return (
-    <div>
-      <h3 className="text-lg font-semibold text-gray-200 mb-3">Stay Updated</h3>
-      <p className="text-gray-400 mb-4 text-sm">
-        Get the latest articles and bytes delivered to your inbox.
+    <div className="bg-white/10 backdrop-blur-sm p-8 rounded-3xl border border-white/20">
+      <h3
+        className="text-2xl font-bold mb-4 flex items-center gap-3"
+        style={{ fontFamily: "Space Grotesk, sans-serif" }}
+      >
+        Stay in the Loop
+        <motion.span
+          animate={{ rotate: [0, 15, -15, 0] }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="text-xl"
+        >
+          📮
+        </motion.span>
+      </h3>
+      <p className="text-lg text-purple-100 mb-6 leading-relaxed">
+        Get magical updates and exclusive content delivered to your inbox!
       </p>
-      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2">
-        <Input
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          disabled={isLoading}
-          required
-          className="flex-grow bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
-          aria-label="Email for newsletter"
-        />
-        <Button
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <motion.div
+          whileHover={{ scale: 1.02 }}
+          transition={{ duration: 0.2 }}
+        >
+          <Input
+            type="email"
+            placeholder="your@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white placeholder:text-purple-200 px-6 py-4 rounded-2xl text-lg font-medium focus:border-white/50 focus:ring-2 focus:ring-white/30 transition-all duration-300"
+            disabled={isLoading}
+            required
+            aria-label="Email for newsletter"
+          />
+        </motion.div>
+        <motion.button
           type="submit"
           disabled={isLoading}
-          className="bg-blue-600 hover:bg-blue-700 text-white shrink-0"
+          className="w-full bg-white text-purple-600 hover:bg-purple-100 font-bold py-4 px-6 rounded-2xl text-lg transition-all duration-300 shadow-xl hover:shadow-2xl disabled:bg-white/50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+          whileHover={{ scale: 1.05, y: -2 }}
+          whileTap={{ scale: 0.95 }}
         >
-          {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-          {isLoading ? "Subscribing..." : "Subscribe"}
-        </Button>
+          {isLoading ? (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              Subscribing...
+            </>
+          ) : (
+            <>
+              <motion.span
+                animate={{ y: [0, -3, 0] }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="text-xl"
+              >
+                🚀
+              </motion.span>
+              Subscribe Now
+            </>
+          )}
+        </motion.button>
       </form>
       {message && (
-        <p
-          className={`mt-2 text-sm ${
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`mt-4 text-sm text-center font-medium ${
             message.includes("failed") || message.includes("error")
-              ? "text-red-400"
-              : "text-green-400"
+              ? "text-red-300"
+              : "text-green-300"
           }`}
         >
           {message}
-        </p>
+        </motion.p>
       )}
     </div>
   );

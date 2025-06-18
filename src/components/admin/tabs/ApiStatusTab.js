@@ -109,39 +109,77 @@ const ApiStatusCard = ({ title, testEndpoint, usageEndpoint }) => {
   };
 
   return (
-    <Card className="border-gray-700 bg-gray-800/50">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg flex items-center justify-between">
-          <span>{title}</span>
+    <Card className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 hover:border-purple-300 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-2xl">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-xl font-bold flex items-center justify-between text-gray-800">
+          <span className="flex items-center gap-3">
+            <div className="text-2xl">
+              {title.includes('Gemini') ? '🧠' : 
+               title.includes('Pexels') ? '📸' : 
+               title.includes('GNews') ? '📰' : 
+               title.includes('MongoDB') ? '🗄️' : '⚡'}
+            </div>
+            {title}
+          </span>
           <Badge
             variant={getBadgeVariant()}
-            className={`ml-2 ${getStatusColor()}`}
+            className={`ml-2 font-bold rounded-xl px-3 py-1 ${
+              status === 'success' 
+                ? 'bg-green-100 text-green-700 border-green-300' 
+                : status === 'error'
+                ? 'bg-red-100 text-red-700 border-red-300'
+                : 'bg-gray-100 text-gray-700 border-gray-300'
+            }`}
           >
             {getStatusIcon()}
-            <span className="ml-1.5">
+            <span className="ml-2">
               {status.charAt(0).toUpperCase() + status.slice(1)}
             </span>
           </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {/* Make message text brighter on success/error */}
-        <p className={`text-sm ${getStatusColor()} mb-2`}>{message}</p>
+        <p className={`text-lg font-medium mb-4 ${
+          status === 'success' 
+            ? 'text-green-700' 
+            : status === 'error'
+            ? 'text-red-700'
+            : 'text-gray-600'
+        }`}>
+          {message}
+        </p>
         {usageEndpoint && (
-          <div className="mt-2 pt-2 border-t border-gray-700/50 text-xs text-gray-400">
+          <div className="mt-4 pt-4 border-t-2 border-purple-100 rounded-xl bg-gradient-to-r from-purple-50 to-blue-50 p-4">
             {isLoadingUsage ? (
-              <span className="flex items-center">
-                <Loader2 className="w-3 h-3 mr-1 animate-spin" /> Loading
-                usage...
-              </span>
+              <div className="flex items-center gap-2 text-gray-700 font-medium">
+                <div className="animate-spin text-lg">⚡</div>
+                Loading usage...
+              </div>
             ) : usage !== null && usage.limit !== null ? (
-              <span>
-                Usage Today: {usage.count} / {usage.limit} requests
-              </span>
+              <div className="text-gray-700 font-semibold">
+                <div className="flex items-center justify-between mb-2">
+                  <span>Usage Today:</span>
+                  <span className="text-lg font-black">{usage.count} / {usage.limit}</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div 
+                    className="bg-gradient-to-r from-purple-600 to-blue-600 h-3 rounded-full transition-all duration-300"
+                    style={{ width: `${Math.min((usage.count / usage.limit) * 100, 100)}%` }}
+                  ></div>
+                </div>
+              </div>
             ) : usage !== null && usage.count !== null ? (
-              <span>Usage Today: {usage.count} requests</span>
+              <div className="text-gray-700 font-semibold">
+                <span className="flex items-center gap-2">
+                  <span className="text-xl">📊</span>
+                  Usage Today: <span className="font-black text-lg">{usage.count}</span> requests
+                </span>
+              </div>
             ) : (
-              <span>Usage data unavailable.</span>
+              <div className="text-gray-500 font-medium flex items-center gap-2">
+                <span className="text-xl">❓</span>
+                Usage data unavailable
+              </div>
             )}
           </div>
         )}
@@ -172,21 +210,35 @@ export default function ApiStatusTab() {
   ];
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-semibold text-white mb-4">
-        API Status Dashboard
-      </h2>
-      <p className="text-gray-400 mb-6">
-        Check the operational status and usage of integrated third-party APIs.
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {apiEndpoints.map((api) => (
-          <ApiStatusCard
+    <div className="space-y-8">
+      <div className="text-center">
+        <div className="flex items-center justify-center gap-4 mb-4">
+          <div className="text-6xl animate-pulse">⚡</div>
+          <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+            API Status Dashboard
+          </h2>
+        </div>
+        <p className="text-xl text-gray-700 font-medium max-w-3xl mx-auto">
+          Monitor the operational status and usage of all integrated third-party APIs in real-time.
+          <span className="inline-block ml-2 text-2xl">🔍</span>
+        </p>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        {apiEndpoints.map((api, index) => (
+          <div
             key={api.title}
-            title={api.title}
-            testEndpoint={api.testEndpoint}
-            usageEndpoint={api.usageEndpoint}
-          />
+            className="transform transition-all duration-300 hover:scale-105"
+            style={{
+              animationDelay: `${index * 0.1}s`,
+            }}
+          >
+            <ApiStatusCard
+              title={api.title}
+              testEndpoint={api.testEndpoint}
+              usageEndpoint={api.usageEndpoint}
+            />
+          </div>
         ))}
       </div>
     </div>

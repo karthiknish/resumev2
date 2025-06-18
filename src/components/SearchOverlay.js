@@ -17,12 +17,17 @@ const SearchOverlay = ({
 }) => {
   return (
     <motion.div
-      className="fixed inset-0 bg-black/95 backdrop-blur-lg z-[110] flex flex-col items-center justify-start pt-20 sm:pt-28 p-4"
+      className="fixed inset-0 bg-gradient-to-br from-purple-900/95 via-black/95 to-blue-900/95 backdrop-blur-lg z-[110] flex flex-col items-center justify-start pt-20 sm:pt-28 p-4 relative overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
+      {/* Decorative Color Splashes */}
+      <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+      <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-blue-500/10 to-cyan-500/10 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
+      <div className="absolute bottom-0 left-0 w-88 h-88 bg-gradient-to-tr from-green-500/10 to-emerald-500/10 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2"></div>
+      <div className="absolute bottom-0 right-0 w-72 h-72 bg-gradient-to-tl from-orange-500/10 to-yellow-500/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
       {/* Close Button */}
       <motion.button
         onClick={toggleSearch}

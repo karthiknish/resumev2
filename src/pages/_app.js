@@ -1,10 +1,10 @@
 import "@/styles/globals.css";
-import "highlight.js/styles/github-dark.css"; // Add highlight.js theme CSS
+import "highlight.js/styles/github.css"; // Light theme for code highlighting
 import Script from "next/script";
 import { useRouter } from "next/router";
 import React, { useEffect, useState, lazy, Suspense } from "react"; // Import React
 import ReactDOM from "react-dom"; // Import ReactDOM for react-axe
-import { Inter } from "next/font/google";
+import { Inter, Space_Grotesk } from "next/font/google";
 import Link from "next/link"; // Import Link for Cookie Banner
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
@@ -25,10 +25,16 @@ const PageTransitionWrapper = dynamic(
   { ssr: false }
 );
 
-// Configure the Inter font with display: swap for better performance
+// Configure the Inter and Space Grotesk fonts with display: swap for better performance
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
   display: "swap",
 });
 
@@ -42,54 +48,51 @@ const queryClient = new QueryClient({
   },
 });
 
-// Simple loading component
+// Simple loading component with light theme
 const LoadingFallback = () => (
-  <div className="min-h-screen flex items-center justify-center">
-    <div className="animate-pulse bg-gray-800 rounded-lg p-8">
-      <div className="h-8 w-32 bg-gray-700 rounded mb-4"></div>
-      <div className="h-4 w-64 bg-gray-700 rounded"></div>
+  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-white to-blue-50">
+    <div className="animate-pulse bg-white rounded-lg p-8 shadow-lg border border-gray-100">
+      <div className="h-8 w-32 bg-gradient-to-r from-purple-200 to-blue-200 rounded mb-4"></div>
+      <div className="h-4 w-64 bg-gradient-to-r from-gray-200 to-purple-200 rounded"></div>
     </div>
   </div>
 );
 
-// Define centralized toast options
+// Define centralized toast options with light theme
 const toastOptions = {
   toastOptions: {
     style: {
-      background: "#1f2937", // gray-800
-      color: "#f9fafb", // gray-50
-      border: "1px solid #374151", // gray-700
+      background: "#ffffff", // white
+      color: "#1f2937", // gray-800
+      border: "1px solid #e5e7eb", // gray-200
+      boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
     },
     classNames: {
-      // Preserve existing classNames if any, or define default ones
       toast:
-        "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
-      description: "group-[.toast]:text-muted-foreground",
+        "group toast group-[.toaster]:bg-white group-[.toaster]:text-gray-800 group-[.toaster]:border-gray-200 group-[.toaster]:shadow-lg",
+      description: "group-[.toast]:text-gray-600",
       actionButton:
-        "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
+        "group-[.toast]:bg-blue-500 group-[.toast]:text-white group-[.toast]:hover:bg-blue-600",
       cancelButton:
-        "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
-      // Add specific classNames for success/error if desired, or rely on style
-      success: "group-[.toast]:text-green-400", // Example: Tailwind text color
-      error: "group-[.toast]:text-red-400", // Example: Tailwind text color
+        "group-[.toast]:bg-gray-100 group-[.toast]:text-gray-700 group-[.toast]:hover:bg-gray-200",
+      success: "group-[.toast]:text-green-600",
+      error: "group-[.toast]:text-red-600",
     },
   },
-  // Define specific styles for success/error if classNames aren't enough
   success: {
     style: {
-      background: "#047857", // emerald-700 (slightly darker green)
-      color: "#d1fae5", // emerald-100 (light green text)
-      border: "1px solid #065f46", // emerald-800
+      background: "#f0fdf4", // green-50
+      color: "#166534", // green-800
+      border: "1px solid #bbf7d0", // green-200
     },
   },
   error: {
     style: {
-      background: "#b91c1c", // red-700 (slightly darker red)
-      color: "#fee2e2", // red-100 (light red text)
-      border: "1px solid #991b1b", // red-800
+      background: "#fef2f2", // red-50
+      color: "#991b1b", // red-800
+      border: "1px solid #fecaca", // red-200
     },
   },
-  // Add other types like info, warning if needed
 };
 
 const COOKIE_CONSENT_KEY = "user_cookie_consent_status";
@@ -281,7 +284,7 @@ export default function App({
   return (
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
-        <div className={`${inter.variable} font-sans antialiased`}>
+        <div className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased`}>
           <Nav />
           {isMounted ? (
             <AnimatePresence mode="wait" initial={false}>

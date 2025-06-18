@@ -1,224 +1,213 @@
 import Link from "next/link";
-import { motion, LayoutGroup } from "framer-motion";
-import { HeroGeometric } from "@/components/ui/shape-landing-hero";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { Spotlight } from "@/components/ui/spotlight";
+import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { TextRotate } from "@/components/ui/text-rotate";
-import Floating, { FloatingElement } from "@/components/ui/parallax-floating";
-import Image from "next/image";
 
-// Sample images
-const exampleImages = [
-  {
-    url: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=3270&auto=format&fit=crop",
-    title: "Coding on a laptop",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=3270&auto=format&fit=crop",
-    title: "Team collaboration",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=3270&auto=format&fit=crop",
-    title: "Modern workspace setup",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=3015&auto=format&fit=crop",
-    title: "Data Analytics Dashboard",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?q=80&w=3276&auto=format&fit=crop",
-    title: "Business Analytics",
-  },
+// Technology icons with enhanced styling
+const techStack = [
+  { name: "React", icon: "⚛️", color: "from-blue-400 to-cyan-400" },
+  { name: "React Native", icon: "📱", color: "from-purple-400 to-pink-400" },
+  { name: "Next.js", icon: "▲", color: "from-gray-400 to-white" },
+  { name: "Node.js", icon: "🟢", color: "from-green-400 to-emerald-400" },
+  { name: "TypeScript", icon: "🔷", color: "from-blue-500 to-blue-700" },
+  { name: "MongoDB", icon: "🍃", color: "from-green-500 to-green-700" },
+  { name: "AWS", icon: "☁️", color: "from-orange-400 to-yellow-400" },
+  { name: "Docker", icon: "🐳", color: "from-blue-400 to-blue-600" },
 ];
 
 export default function HeroSection() {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+  
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   return (
-    // Removed md:bg-none to show dot pattern on desktop too
-    <div className="bg-black bg-dot-pattern-mobile overflow-hidden relative min-h-[70vh] md:min-h-screen">
-      <HeroGeometric
-        className="absolute inset-0 -z-0 opacity-30 hidden md:block"
-        duration={20}
-        speed={2}
-      />
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="relative z-10 min-h-[70vh] md:min-h-screen py-12 md:py-20 flex flex-col items-center justify-center"
+    <div ref={containerRef} className="relative min-h-screen overflow-hidden bg-gradient-to-br from-purple-50 via-white to-blue-50">
+      {/* Animated Background */}
+      <BackgroundBeamsWithCollision className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-50/80 via-white/90 to-blue-50/80" />
+        
+        {/* Dynamic Spotlight Effect */}
+        <Spotlight
+          className="absolute -top-40 left-0 md:left-60 md:-top-20"
+          fill="rgba(139, 92, 246, 0.1)"
+        />
+        
+        {/* Floating Tech Stack Icons */}
+        <div className="absolute inset-0 pointer-events-none">
+          {techStack.map((tech, index) => (
+            <motion.div
+              key={tech.name}
+              className={`absolute w-16 h-16 rounded-full bg-gradient-to-r ${tech.color} flex items-center justify-center text-2xl shadow-2xl backdrop-blur-sm`}
+              style={{
+                left: `${10 + (index * 12) % 80}%`,
+                top: `${15 + (index * 7) % 70}%`,
+                x: mousePosition.x * (0.02 + index * 0.005),
+                y: mousePosition.y * (0.02 + index * 0.005),
+              }}
+              animate={{
+                y: [0, -20, 0],
+                rotate: [0, 5, -5, 0],
+                scale: [1, 1.1, 1],
+              }}
+              transition={{
+                duration: 4 + index * 0.5,
+                repeat: Infinity,
+                delay: index * 0.3,
+                ease: "easeInOut"
+              }}
+              whileHover={{ scale: 1.2, rotate: 10 }}
+            >
+              <span>{tech.icon}</span>
+            </motion.div>
+          ))}
+        </div>
+      </BackgroundBeamsWithCollision>
+      
+      {/* Main Content */}
+      <motion.div 
+        style={{ y, opacity }}
+        className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 md:px-8"
       >
-        <motion.div
-          initial={{ x: -100, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative z-10 container mx-auto mb-10 flex flex-col items-center"
-        >
-          {/* Floating Images - Hidden on mobile */}
-          <Floating
-            sensitivity={-0.5}
-            className="h-full w-full absolute pointer-events-none hidden md:block"
+        <div className="max-w-6xl mx-auto text-center">
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-purple-200 text-gray-700 text-sm font-medium mb-8 shadow-sm"
           >
-            <FloatingElement depth={0.5} className="top-[15%] left-[5%]">
-              <motion.div
-                className="w-24 h-16 relative shadow-2xl rounded-xl overflow-hidden -rotate-[3deg] brightness-50"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5 }}
+            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+            Available for new projects
+          </motion.div>
+          
+          {/* Main Heading */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-4xl md:text-6xl lg:text-8xl font-bold mb-6 leading-tight"
+          >
+            <span className="bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 bg-clip-text text-transparent">
+              Cross Platform
+            </span>
+            <br />
+            <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+              Developer
+            </span>
+          </motion.h1>
+          
+          {/* Rotating Text */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-xl md:text-2xl lg:text-3xl text-gray-600 mb-8 font-light"
+          >
+            Building{" "}
+            <TextRotate
+              texts={[
+                "Web Applications",
+                "Mobile Apps",
+                "Cloud Solutions",
+                "API Integrations",
+                "Digital Experiences",
+                "Scalable Systems",
+                "Modern Interfaces",
+                "Custom Solutions"
+              ]}
+              mainClassName="text-blue-400 font-semibold"
+              staggerDuration={0.05}
+              rotationInterval={2500}
+            />
+          </motion.div>
+          
+          {/* Description */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="text-lg md:text-xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed"
+          >
+            Freelance cross platform developer creating custom, scalable, and high-performance 
+            web and mobile solutions that bridge the gap between innovative design and 
+            powerful functionality.
+          </motion.p>
+          
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+          >
+            <Link href="/contact">
+              <motion.button
+                whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(59, 130, 246, 0.3)" }}
+                whileTap={{ scale: 0.95 }}
+                className="group relative px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-full text-lg shadow-2xl transition-all duration-300 overflow-hidden"
               >
-                <Image
-                  src={exampleImages[0].url}
-                  alt={exampleImages[0].title}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  style={{ objectFit: "cover" }}
-                />
-              </motion.div>
-            </FloatingElement>
-            <FloatingElement depth={1} className="top-[5%] left-[15%]">
-              <motion.div
-                className="w-48 h-36 relative shadow-2xl rounded-xl overflow-hidden -rotate-12 brightness-50"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.7 }}
-              >
-                <Image
-                  src={exampleImages[1].url}
-                  alt={exampleImages[1].title}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  style={{ objectFit: "cover" }}
-                />
-              </motion.div>
-            </FloatingElement>
-            <FloatingElement depth={4} className="top-[80%] left-[10%]">
-              <motion.div
-                className="w-60 h-60 relative shadow-2xl rounded-xl overflow-hidden -rotate-[4deg] brightness-50"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.9 }}
-              >
-                <Image
-                  src={exampleImages[2].url}
-                  alt={exampleImages[2].title}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  style={{ objectFit: "cover" }}
-                />
-              </motion.div>
-            </FloatingElement>
-            <FloatingElement depth={2} className="top-[5%] right-[5%]">
-              <motion.div
-                className="w-64 h-56 relative shadow-2xl rounded-xl overflow-hidden rotate-[6deg] brightness-50"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1.1 }}
-              >
-                <Image
-                  src={exampleImages[3].url}
-                  alt={exampleImages[3].title}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  style={{ objectFit: "cover" }}
-                />
-              </motion.div>
-            </FloatingElement>
-            <FloatingElement depth={1} className="top-[70%] right-[10%]">
-              <motion.div
-                className="w-80 h-80 relative shadow-2xl rounded-xl overflow-hidden rotate-[19deg] brightness-50"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1.3 }}
-              >
-                <Image
-                  src={exampleImages[4].url}
-                  alt={exampleImages[4].title}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  style={{ objectFit: "cover" }}
-                />
-              </motion.div>
-            </FloatingElement>
-          </Floating>
-
-          {/* Main Text Content */}
-          <div className="flex flex-col justify-center items-center w-full max-w-[280px] sm:max-w-[350px] md:max-w-[500px] lg:max-w-[700px] z-50 pointer-events-auto mt-8 md:mt-10 px-4">
-            <motion.h1
-              className="text-2xl sm:text-5xl md:text-7xl lg:text-8xl text-center w-full justify-center items-center flex-col flex whitespace-pre leading-tight font-calendas tracking-tight space-y-1 md:space-y-4 text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400 md:text-white md:bg-none"
-              animate={{ opacity: 1, y: 0 }}
-              initial={{ opacity: 0, y: 20 }}
-              transition={{ duration: 0.2, ease: "easeOut", delay: 0.3 }}
-            >
-              <span>I Build </span>
-              <LayoutGroup>
-                <motion.span layout className="flex whitespace-pre">
+                <span className="relative z-10 flex items-center gap-2">
+                  Let's Work Together
                   <motion.span
-                    layout
-                    className="flex whitespace-pre"
-                    transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                   >
-                    Websites{" "}
+                    →
                   </motion.span>
-                  <TextRotate
-                    texts={[
-                      "that scale",
-                      "that perform",
-                      "with precision",
-                      "with passion",
-                      "⚡ fast",
-                      "secure 🔒",
-                      "elegant",
-                      "✨ modern",
-                      "robust",
-                      "🚀 efficient",
-                      "future-proof",
-                      "seamless",
-                      "strategic",
-                    ]}
-                    mainClassName="overflow-hidden pr-2 text-blue-500 py-0 pb-1 md:pb-4 rounded-xl"
-                    staggerDuration={0.03}
-                    staggerFrom="last"
-                    rotationInterval={3000}
-                    transition={{ type: "spring", damping: 30, stiffness: 400 }}
-                  />
-                </motion.span>
-              </LayoutGroup>
-            </motion.h1>
-            <motion.p
-              className="text-base sm:text-lg md:text-xl lg:text-2xl text-center font-calendas pt-6 sm:pt-8 md:pt-10 lg:pt-12 text-gray-300 md:text-white"
-              animate={{ opacity: 1, y: 0 }}
-              initial={{ opacity: 0, y: 20 }}
-              transition={{ duration: 0.2, ease: "easeOut", delay: 0.5 }}
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </motion.button>
+            </Link>
+            
+            <Link href="#projects">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-8 py-4 border-2 border-gray-300 text-gray-700 font-semibold rounded-full text-lg backdrop-blur-sm hover:border-purple-400 hover:bg-purple-50 transition-all duration-300"
+              >
+                View My Work
+              </motion.button>
+            </Link>
+          </motion.div>
+          
+          {/* Scroll Indicator */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 1.2 }}
+            className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+          >
+            <motion.div
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="w-6 h-10 border-2 border-gray-400 rounded-full flex justify-center"
             >
-              Freelance web developer creating custom, scalable, and
-              high-performance web solutions for businesses and individuals.
-            </motion.p>
-
-            {/* Buttons - Stacked on mobile */}
-            <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4 mt-10 md:mt-12 lg:mt-16 w-full md:w-auto">
-              <motion.button
-                className="w-full md:w-auto text-base md:text-lg lg:text-xl font-calendas tracking-tight text-white bg-blue-500 px-6 py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-2xl hover:bg-blue-600 transition-colors"
-                animate={{ opacity: 1, y: 0 }}
-                initial={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.2, ease: "easeOut", delay: 0.7 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Link className="text-white font-calendas" href="/contact">
-                  Get in Touch <span className="font-calendas ml-1">→</span>
-                </Link>
-              </motion.button>
-              <motion.button
-                className="w-full md:w-auto text-base md:text-lg lg:text-xl font-calendas tracking-tight text-blue-300 bg-transparent border border-blue-500 px-6 py-3 lg:px-8 lg:py-3 rounded-full z-20 shadow-xl hover:bg-blue-500/10 hover:text-blue-200 transition-colors"
-                animate={{ opacity: 1, y: 0 }}
-                initial={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.2, ease: "easeOut", delay: 0.8 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Link href="#projects" className="font-calendas">
-                  View My Work <span className="font-calendas ml-1">→</span>
-                </Link>
-              </motion.button>
-            </div>
-          </div>
-        </motion.div>
+              <motion.div
+                animate={{ y: [0, 12, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                className="w-1 h-3 bg-gray-500 rounded-full mt-2"
+              />
+            </motion.div>
+          </motion.div>
+        </div>
       </motion.div>
     </div>
   );

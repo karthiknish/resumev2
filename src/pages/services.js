@@ -191,151 +191,402 @@ export default function Services() {
         {serviceSchemas.map((schema, index) => (
           <JsonLd key={`service-schema-${index}`} data={schema} />
         ))}
+        
+        {/* Google Fonts */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="true"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
       </Head>
       <PageContainer>
-        <div className="min-h-screen p-8 md:p-16 max-w-6xl mx-auto">
-          <FadeIn>
-            <div className="mb-16">
-              <div className="text-center mb-10">
-                <h1 className="text-6xl font-bold text-white mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                  Services
-                </h1>
-                <div className="w-24 h-1 bg-blue-500 mx-auto mb-8 rounded-full"></div>
-                <p className="text-gray-300 mb-8 max-w-3xl mx-auto text-lg">
-                  I offer a comprehensive range of development services to help
-                  bring your digital ideas to life. Whether you need a stunning
-                  website, a powerful web application, or a mobile app, I have
-                  the expertise to deliver high-quality solutions tailored to
-                  your specific needs.
-                </p>
-              </div>
+        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 py-24 md:py-32" style={{ fontFamily: "Inter, sans-serif" }}>
+          <div className="max-w-7xl mx-auto px-6">
+            {/* Hero Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-20"
+            >
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="inline-flex items-center gap-3 px-6 py-3 bg-white/80 backdrop-blur-sm border border-purple-200 rounded-full text-purple-700 text-sm font-semibold mb-8 shadow-lg"
+              >
+                <motion.span
+                  animate={{ rotate: [0, 15, -15, 0] }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="text-xl"
+                >
+                  ⚡
+                </motion.span>
+                <span>Professional Development Services</span>
+                <motion.span
+                  animate={{
+                    scale: [1, 1.2, 1],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 1,
+                  }}
+                  className="text-xl"
+                >
+                  ✨
+                </motion.span>
+              </motion.div>
+              
+              <h1
+                className="text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight"
+                style={{ fontFamily: "Space Grotesk, sans-serif" }}
+              >
+                <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                  My Services
+                </span>
+                <motion.span
+                  animate={{
+                    rotate: [0, 20, -20, 0],
+                    scale: [1, 1.2, 1],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 1,
+                  }}
+                  className="inline-block ml-4 text-yellow-400"
+                >
+                  🚀
+                </motion.span>
+              </h1>
+              
+              <p className="text-2xl md:text-3xl text-gray-700 max-w-5xl mx-auto leading-relaxed font-medium mb-12">
+                Comprehensive{" "}
+                <motion.span
+                  className="inline-block bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent font-bold"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  development solutions
+                </motion.span>{" "}
+                to bring your digital vision to life. From stunning websites to powerful applications.
+                <motion.span
+                  animate={{ rotate: [0, 5, -5, 0] }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="inline-block ml-2"
+                >
+                  💻
+                </motion.span>
+              </p>
+            </motion.div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                {services.map((service, index) => {
-                  const slug = generateSlug(service.title);
-                  const href = `/services/${slug}`;
+            {/* Services Grid */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20"
+            >
+              {services.map((service, index) => {
+                const slug = generateSlug(service.title);
+                const href = `/services/${slug}`;
+                
+                // Define unique gradient colors for each service
+                const gradients = [
+                  "from-blue-500 to-cyan-500",
+                  "from-green-500 to-emerald-500", 
+                  "from-pink-500 to-rose-500",
+                  "from-orange-500 to-amber-500",
+                  "from-red-500 to-pink-500",
+                  "from-indigo-500 to-purple-500"
+                ];
 
-                  return (
-                    <HoverCard key={index}>
-                      <Link href={href} className="block h-full group">
-                        {" "}
-                        {/* Added group class */}
-                        <div className="bg-gradient-to-br from-gray-900 to-black p-8 rounded-xl shadow-2xl border border-blue-500/20 h-full flex flex-col transition-transform duration-300 ease-in-out hover:scale-[1.02] hover:shadow-blue-500/30">
-                          <div className="mb-4">{service.icon}</div>
-                          <h2 className="text-2xl font-bold text-blue-400 mb-3">
-                            {service.title}
-                          </h2>
-                          <p className="text-gray-300 mb-4 flex-grow">
-                            {service.description}
-                          </p>
-                          <ul className="space-y-2 mt-2 mb-4">
-                            {" "}
-                            {/* Added mb-4 */}
-                            {service.features.slice(0, 3).map(
-                              (
-                                feature,
-                                idx // Show only first 3 features
-                              ) => (
-                                <li key={idx} className="flex items-start">
-                                  <div className="bg-blue-500 p-1 rounded-full mr-3 mt-1 flex-shrink-0">
-                                    {" "}
-                                    {/* Added flex-shrink-0 */}
-                                    <svg
-                                      className="w-4 h-4 text-white"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      viewBox="0 0 24 24"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M5 13l4 4L19 7"
-                                      ></path>
-                                    </svg>
-                                  </div>
-                                  <p className="text-gray-300 text-sm">
-                                    {feature}
-                                  </p>{" "}
-                                  {/* Made text smaller */}
-                                </li>
-                              )
-                            )}
-                          </ul>
-                          <div className="mt-auto pt-4 border-t border-gray-800/50">
-                            {" "}
-                            {/* Added border top */}
-                            <span className="text-blue-400 font-semibold group-hover:underline">
-                              Learn More →
-                            </span>
-                          </div>
-                        </div>
-                      </Link>
-                    </HoverCard>
-                  );
-                })}
-              </div>
-            </div>
-          </FadeIn>
-
-          <FadeIn delay={0.2}>
-            <div className="bg-gradient-to-br from-gray-900 to-black p-8 rounded-xl shadow-2xl border border-blue-500/20 mb-12">
-              <h2 className="text-3xl font-bold text-white mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                Frequently Asked Questions
-              </h2>
-              <div className="w-24 h-1 bg-blue-500 mb-8 rounded-full"></div>
-              <div className="space-y-4">
-                {faqs.map((faq, index) => (
-                  <div
+                return (
+                  <motion.div
                     key={index}
-                    className="border-b border-gray-800 pb-4 last:border-b-0"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                    whileHover={{ y: -10, scale: 1.02 }}
+                    className="group"
                   >
-                    <button
+                    <Link href={href} className="block h-full">
+                      <div className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 p-8 rounded-3xl shadow-xl hover:shadow-2xl hover:border-purple-300 transition-all duration-300 h-full flex flex-col group-hover:bg-white/90">
+                        {/* Service Icon with unique gradient */}
+                        <motion.div
+                          className={`w-20 h-20 bg-gradient-to-r ${gradients[index]} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                          whileHover={{ rotate: [0, -10, 10, 0] }}
+                          transition={{ duration: 0.5 }}
+                        >
+                          <div className="text-white text-3xl">
+                            {React.cloneElement(service.icon, {
+                              className: "text-3xl",
+                              style: { color: "white" }
+                            })}
+                          </div>
+                        </motion.div>
+                        
+                        <h2
+                          className="text-3xl font-black mb-4 text-gray-900 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-blue-600 group-hover:bg-clip-text transition-all duration-300"
+                          style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                        >
+                          {service.title}
+                        </h2>
+                        
+                        <p className="text-gray-700 mb-6 flex-grow text-lg leading-relaxed">
+                          {service.description}
+                        </p>
+                        
+                        {/* Feature List */}
+                        <ul className="space-y-3 mb-6">
+                          {service.features.slice(0, 3).map((feature, idx) => (
+                            <li key={idx} className="flex items-center gap-3">
+                              <motion.div
+                                className={`w-6 h-6 bg-gradient-to-r ${gradients[index]} rounded-full flex items-center justify-center flex-shrink-0`}
+                                whileHover={{ scale: 1.2 }}
+                              >
+                                <svg
+                                  className="w-3 h-3 text-white"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="3"
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </svg>
+                              </motion.div>
+                              <span className="text-gray-700 font-medium">
+                                {feature}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                        
+                        {/* CTA */}
+                        <motion.div
+                          className="mt-auto pt-6 border-t-2 border-purple-100"
+                          whileHover={{ x: 5 }}
+                        >
+                          <span className="inline-flex items-center gap-2 text-purple-600 font-bold text-lg group-hover:text-blue-600 transition-colors">
+                            Learn More
+                            <motion.span
+                              animate={{ x: [0, 5, 0] }}
+                              transition={{
+                                duration: 1.5,
+                                repeat: Infinity,
+                                ease: "easeInOut",
+                              }}
+                            >
+                              →
+                            </motion.span>
+                          </span>
+                        </motion.div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+
+            {/* FAQ Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 p-8 md:p-12 rounded-3xl shadow-2xl mb-16"
+            >
+              <motion.h2
+                className="text-5xl md:text-6xl font-black mb-8 flex items-center gap-4"
+                style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                viewport={{ once: true }}
+              >
+                <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                  FAQ
+                </span>
+                <motion.span
+                  animate={{ rotate: [0, 15, -15, 0] }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="text-4xl"
+                >
+                  ❓
+                </motion.span>
+              </motion.h2>
+              
+              <div className="space-y-6">
+                {faqs.map((faq, index) => (
+                  <motion.div
+                    key={index}
+                    className="border-b-2 border-purple-100 pb-6 last:border-b-0"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    <motion.button
                       onClick={() => toggleFaq(index)}
-                      className="flex justify-between items-center w-full text-left font-medium text-white hover:text-blue-400 transition-colors"
+                      className="flex justify-between items-center w-full text-left font-bold text-gray-900 hover:text-purple-600 transition-colors group"
+                      whileHover={{ x: 5 }}
                     >
-                      <span className="text-lg">{faq.question}</span>
-                      {expandedFaq === index ? (
-                        <FaChevronUp className="text-blue-500" />
-                      ) : (
-                        <FaChevronDown className="text-gray-500" />
-                      )}
-                    </button>
+                      <span className="text-xl md:text-2xl pr-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                        {faq.question}
+                      </span>
+                      <motion.div
+                        animate={{ rotate: expandedFaq === index ? 180 : 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="flex-shrink-0"
+                      >
+                        {expandedFaq === index ? (
+                          <FaChevronUp className="text-purple-600 text-xl" />
+                        ) : (
+                          <FaChevronDown className="text-gray-500 group-hover:text-purple-600 text-xl transition-colors" />
+                        )}
+                      </motion.div>
+                    </motion.button>
                     {expandedFaq === index && (
                       <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="mt-3 text-gray-300"
+                        className="mt-6 bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-2xl border border-purple-200"
                       >
-                        <p className="text-lg leading-relaxed">{faq.answer}</p>
+                        <p className="text-lg leading-relaxed text-gray-700 font-medium">
+                          {faq.answer}
+                        </p>
                       </motion.div>
                     )}
-                  </div>
+                  </motion.div>
                 ))}
               </div>
-            </div>
-          </FadeIn>
+            </motion.div>
 
-          <FadeIn delay={0.4}>
-            <div className="bg-gradient-to-br from-blue-900/30 to-purple-900/30 p-8 rounded-xl shadow-2xl border border-blue-500/20 text-center">
-              <h2 className="text-3xl font-bold text-white mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                Ready to Start Your Project?
-              </h2>
-              <div className="w-24 h-1 bg-blue-500 mx-auto mb-8 rounded-full"></div>
-              <p className="text-gray-300 mb-8 max-w-2xl mx-auto text-lg leading-relaxed">
-                Let's discuss how I can help bring your ideas to life. Contact
-                me for a free consultation and project estimate.
-              </p>
-              <Link
-                href="/contact"
-                className="inline-block px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md transition-colors"
+            {/* CTA Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              viewport={{ once: true }}
+              className="bg-gradient-to-br from-purple-600 to-blue-600 p-12 md:p-16 rounded-3xl shadow-2xl text-center relative overflow-hidden"
+            >
+              {/* Floating Elements */}
+              <motion.div
+                className="absolute top-10 left-10 text-6xl opacity-20"
+                animate={{
+                  y: [0, -30, 0],
+                  rotate: [0, 360],
+                }}
+                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
               >
-                Get in Touch →
-              </Link>
-            </div>
-          </FadeIn>
+                💫
+              </motion.div>
+              <motion.div
+                className="absolute bottom-10 right-20 text-5xl opacity-20"
+                animate={{
+                  scale: [1, 1.4, 1],
+                  rotate: [0, -45, 0],
+                }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 2,
+                }}
+              >
+                ⭐
+              </motion.div>
+              
+              <motion.h2
+                className="text-4xl md:text-6xl font-black text-white mb-8 relative z-10"
+                style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                Ready to Start?
+                <motion.span
+                  animate={{ rotate: [0, 20, -20, 0] }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="inline-block ml-4 text-yellow-300"
+                >
+                  🚀
+                </motion.span>
+              </motion.h2>
+              
+              <p className="text-xl md:text-2xl text-purple-100 mb-12 max-w-4xl mx-auto leading-relaxed font-medium relative z-10">
+                Let's discuss how I can help bring your ideas to life. Contact me for a
+                <span className="font-bold text-white"> free consultation </span>
+                and project estimate.
+              </p>
+              
+              <motion.div
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="relative z-10"
+              >
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center gap-3 px-12 py-6 bg-white text-purple-600 hover:text-blue-600 font-black text-xl rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl"
+                >
+                  <motion.span
+                    animate={{ y: [0, -3, 0] }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    className="text-2xl"
+                  >
+                    💬
+                  </motion.span>
+                  Get in Touch
+                  <motion.span
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    →
+                  </motion.span>
+                </Link>
+              </motion.div>
+            </motion.div>
+          </div>
         </div>
       </PageContainer>
     </>

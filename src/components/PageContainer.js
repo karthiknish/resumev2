@@ -11,7 +11,7 @@ const PageContainer = ({
   children,
   withBeams = true,
   className = "",
-  bgClassName = "bg-black/95",
+  bgClassName = "bg-gradient-to-br from-purple-50 via-white to-blue-50",
 }) => {
   return (
     <div className={`min-h-screen relative ${bgClassName}`}>

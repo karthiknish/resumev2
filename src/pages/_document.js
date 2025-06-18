@@ -24,7 +24,7 @@ export default function Document() {
         />
         {/* Google Analytics script moved to _app.js */}
       </Head>
-      <body className="antialiased bg-black text-white">
+      <body className="antialiased">
         <Main />
         <NextScript />
       </body>

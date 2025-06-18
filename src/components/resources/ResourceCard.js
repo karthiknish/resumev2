@@ -8,48 +8,82 @@ const ResourceCard = ({ resource, featured = false }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className={`bg-gradient-to-br from-gray-900 to-black p-6 rounded-xl shadow-2xl border border-blue-500/20 ${
+      whileHover={{ y: -8, scale: 1.02 }}
+      className={`bg-white/80 backdrop-blur-sm border-2 border-purple-200 p-8 rounded-3xl shadow-xl hover:shadow-2xl hover:border-purple-300 transition-all duration-300 group ${
         featured
-          ? "h-full flex flex-col transform hover:scale-[1.02] transition-all duration-300"
-          : "transform hover:scale-[1.02] transition-all duration-300"
+          ? "h-full flex flex-col"
+          : ""
       }`}
     >
-      <h3 className="text-xl font-bold text-blue-400 mb-3">{resource.title}</h3>
+      <h3
+        className="text-2xl md:text-3xl font-black mb-4 text-gray-900 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-blue-600 group-hover:bg-clip-text transition-all duration-300"
+        style={{ fontFamily: "Space Grotesk, sans-serif" }}
+      >
+        {resource.title}
+      </h3>
       <p
-        className={`text-gray-300 mb-4 leading-relaxed ${
+        className={`text-gray-700 mb-6 leading-relaxed text-lg font-medium ${
           featured ? "flex-grow" : ""
         }`}
       >
         {resource.description}
       </p>
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className="flex flex-wrap gap-3 mb-6">
         {resource.tags.map((tag, idx) => (
-          <span
+          <motion.span
             key={idx}
-            className="bg-blue-900/30 text-blue-300 text-xs px-2 py-1 rounded-full"
+            className="bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 px-4 py-2 rounded-full font-semibold border border-purple-200 hover:from-purple-200 hover:to-blue-200 transition-all duration-300 text-sm"
+            whileHover={{ scale: 1.05 }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, delay: idx * 0.1 }}
           >
             {tag}
-          </span>
+          </motion.span>
         ))}
       </div>
-      <a
+      <motion.a
         href={resource.link}
         target="_blank"
         rel="noopener noreferrer"
         className={`${
           featured
-            ? "text-blue-400 hover:text-blue-300 flex items-center font-bold transition-colors"
-            : "inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition-colors"
+            ? "inline-flex items-center gap-2 text-purple-600 hover:text-blue-600 font-bold text-lg transition-colors duration-300"
+            : "inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl"
         }`}
+        whileHover={{ scale: 1.05, x: featured ? 5 : 0 }}
+        whileTap={{ scale: 0.95 }}
       >
         {featured ? (
           <>
-            Visit Resource <FaExternalLinkAlt className="ml-2" />
+            Visit Resource 
+            <motion.div
+              animate={{ x: [0, 3, 0] }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <FaExternalLinkAlt className="text-sm" />
+            </motion.div>
           </>
         ) : (
-          "View Resource"
+          <>
+            <span>View Resource</span>
+            <motion.div
+              animate={{ x: [0, 3, 0] }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <FaExternalLinkAlt className="text-sm" />
+            </motion.div>
+          </>
         )}
-      </a>
+      </motion.a>
     </motion.div>
   );
 };

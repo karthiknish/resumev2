@@ -10,11 +10,31 @@ const FeaturedResources = ({ resources }) => {
   );
 
   return (
-    <div className="mb-12">
-      <h2 className="text-3xl font-bold text-white mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-        Featured Resources
-      </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="mb-16">
+      <motion.h2
+        className="text-5xl md:text-6xl font-black mb-12 flex items-center gap-4"
+        style={{ fontFamily: "Space Grotesk, sans-serif" }}
+        initial={{ opacity: 0, x: -20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+      >
+        <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+          Featured Resources
+        </span>
+        <motion.span
+          animate={{ rotate: [0, 15, -15, 0] }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="text-4xl"
+        >
+          ⭐
+        </motion.span>
+      </motion.h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {featuredResources.map((resource, index) => (
           <HoverCard key={index}>
             <motion.div

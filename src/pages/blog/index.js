@@ -155,247 +155,397 @@ function Index({ initialPosts = [], categories = [] }) {
           content="blog, web development, technology, full stack, cloud, react, nodejs, karthik, nishanth, liverpool, uk"
         />
         <meta name="author" content="Karthik Nishanth" />
+        
+        {/* Google Fonts */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="true"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
       </Head>
-      <PageContainer className="mt-10">
-        <Card className="border-none bg-black/60 backdrop-blur-sm p-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-              <h1 className="text-3xl font-bold text-white font-calendas">
-                From the Blog
+      <PageContainer>
+        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 py-24 md:py-32 relative overflow-hidden" style={{ fontFamily: "Inter, sans-serif" }}>
+          {/* Decorative Color Splashes */}
+          <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-purple-200/20 to-pink-200/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+          <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-blue-200/20 to-cyan-200/20 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
+          <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-green-200/20 to-emerald-200/20 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2"></div>
+          <div className="absolute bottom-0 right-0 w-88 h-88 bg-gradient-to-tl from-orange-200/20 to-yellow-200/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+          
+          <div className="max-w-7xl mx-auto px-6 relative z-10">
+            {/* Hero Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-16"
+            >
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="inline-flex items-center gap-3 px-6 py-3 bg-white/80 backdrop-blur-sm border border-purple-200 rounded-full text-purple-700 text-sm font-semibold mb-8 shadow-lg"
+              >
+                <motion.span
+                  animate={{ rotate: [0, 15, -15, 0] }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="text-xl"
+                >
+                  📝
+                </motion.span>
+                <span>Welcome to my blog</span>
+                <motion.span
+                  animate={{
+                    scale: [1, 1.2, 1],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 1,
+                  }}
+                  className="text-xl"
+                >
+                  ✨
+                </motion.span>
+              </motion.div>
+              
+              <h1
+                className="text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight"
+                style={{ fontFamily: "Space Grotesk, sans-serif" }}
+              >
+                <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                  Blog & Insights
+                </span>
+                <motion.span
+                  animate={{
+                    rotate: [0, 20, -20, 0],
+                    scale: [1, 1.2, 1],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 1,
+                  }}
+                  className="inline-block ml-4 text-yellow-400"
+                >
+                  💡
+                </motion.span>
               </h1>
-            </div>
+              
+              <p className="text-2xl md:text-3xl text-gray-700 max-w-4xl mx-auto leading-relaxed font-medium">
+                Exploring the latest in{" "}
+                <motion.span
+                  className="inline-block bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent font-bold"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  technology, development,
+                </motion.span>{" "}
+                and creative innovation
+                <motion.span
+                  animate={{ rotate: [0, 5, -5, 0] }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="inline-block ml-2"
+                >
+                  🚀
+                </motion.span>
+              </p>
+            </motion.div>
 
             {/* Filters and Sorting Controls */}
-            <div className="flex flex-col md:flex-row gap-4 mb-8 items-center">
-              {/* Category Filter Dropdown */}
-              <div className="w-full md:w-auto flex items-center gap-2">
-                <span className="text-gray-400 text-sm mr-2 whitespace-nowrap">
-                  Filter by:
-                </span>
-                <Select
-                  value={selectedCategory}
-                  onValueChange={handleCategoryChange}
-                >
-                  <SelectTrigger className="w-48 bg-black/40 border-gray-700 text-white">
-                    <SelectValue placeholder="All Categories" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-700 text-white">
-                    <SelectItem value="All">All</SelectItem>
-                    {categories.map((category) => (
-                      <SelectItem key={category} value={category}>
-                        {category}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="bg-white/80 backdrop-blur-sm p-8 rounded-3xl shadow-xl border-2 border-purple-200 mb-12"
+            >
+              <div className="flex flex-col md:flex-row gap-6 items-center">
+                {/* Category Filter Dropdown */}
+                <div className="w-full md:w-auto flex items-center gap-3">
+                  <span className="text-gray-700 font-semibold text-lg whitespace-nowrap">
+                    🏷️ Filter by:
+                  </span>
+                  <Select
+                    value={selectedCategory}
+                    onValueChange={handleCategoryChange}
+                  >
+                    <SelectTrigger className="w-56 bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 text-gray-800 font-medium rounded-2xl px-6 py-4 text-lg hover:border-purple-300 transition-all duration-300">
+                      <SelectValue placeholder="All Categories" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white border-2 border-purple-200 text-gray-800 rounded-2xl shadow-xl">
+                      <SelectItem value="All" className="text-lg font-medium hover:bg-purple-50">All Categories</SelectItem>
+                      {categories.map((category) => (
+                        <SelectItem key={category} value={category} className="text-lg font-medium hover:bg-purple-50">
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex-grow"></div> {/* Spacer */}
+                {/* Search and Sort */}
+                <div className="flex flex-col md:flex-row gap-4 items-center w-full md:w-auto">
+                  <form
+                    onSubmit={(e) => e.preventDefault()}
+                    className="flex w-full md:w-auto"
+                  >
+                    <input
+                      type="text"
+                      value={searchTerm}
+                      onChange={handleSearchChange}
+                      placeholder="Search posts..."
+                      className="px-6 py-4 bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-l-blue-200 border-t-blue-200 border-b-blue-200 border-r-0 rounded-l-2xl text-gray-800 font-medium text-lg placeholder:text-gray-500 focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-400 w-full md:w-auto flex-grow transition-all duration-300"
+                    />
+                    <motion.div
+                      className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-4 rounded-r-2xl flex items-center justify-center hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 cursor-pointer"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <FaSearch className="text-xl" />
+                    </motion.div>
+                  </form>
+                  <Select
+                    onValueChange={handleSortChange}
+                    defaultValue={sortOrder}
+                  >
+                    <SelectTrigger className="w-full md:w-[220px] bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 text-gray-800 font-medium rounded-2xl px-6 py-4 text-lg hover:border-green-300 transition-all duration-300">
+                      <SelectValue placeholder="Sort by..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white border-2 border-green-200 text-gray-800 rounded-2xl shadow-xl">
+                      <SelectItem value="desc" className="text-lg font-medium hover:bg-green-50">📅 Newest First</SelectItem>
+                      <SelectItem value="asc" className="text-lg font-medium hover:bg-green-50">📆 Oldest First</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <div className="flex-grow"></div> {/* Spacer */}
-              {/* Search and Sort */}
-              <div className="flex flex-col md:flex-row gap-4 items-center w-full md:w-auto">
-                <form
-                  onSubmit={(e) => e.preventDefault()}
-                  className="flex w-full md:w-auto"
-                >
-                  <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                    placeholder="Filter posts..."
-                    className="px-3 py-2 bg-black/40 border border-gray-700 rounded-l-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500 w-full md:w-auto flex-grow"
-                  />
-                  <div className="bg-gray-600 text-white px-3 py-2 rounded-r-md flex items-center justify-center">
-                    <FaSearch />
-                  </div>
-                </form>
-                <Select
-                  onValueChange={handleSortChange}
-                  defaultValue={sortOrder}
-                >
-                  <SelectTrigger className="w-full md:w-[180px] bg-black/40 border-gray-700 text-white">
-                    <SelectValue placeholder="Sort by..." />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-700 text-white">
-                    <SelectItem value="desc">Date Descending</SelectItem>
-                    <SelectItem value="asc">Date Ascending</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+            </motion.div>
 
             {/* Display Search/Filter Status */}
             {(searchTerm.trim() !== "" || selectedCategory !== "All") && (
-              <div className="mb-6 text-gray-400 text-sm">
-                {" "}
-                Showing {filteredAndSortedContent.length} posts{" "}
-                {searchTerm.trim() !== "" && ` matching "${searchTerm}"`}{" "}
-                {selectedCategory !== "All" &&
-                  ` in category "${selectedCategory}"`}
-                .{" "}
-              </div>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="mb-8 text-center"
+              >
+                <p className="text-gray-600 text-lg font-medium bg-white/60 backdrop-blur-sm inline-flex items-center gap-2 px-6 py-3 rounded-full border border-purple-200">
+                  <span className="text-2xl">🔍</span>
+                  Showing {filteredAndSortedContent.length} posts
+                  {searchTerm.trim() !== "" && ` matching "${searchTerm}"`}
+                  {selectedCategory !== "All" &&
+                    ` in ${selectedCategory}`}
+                </p>
+              </motion.div>
             )}
 
             {/* Post List */}
             {filteredAndSortedContent.length > 0 ? (
               <>
-                <div className="space-y-12">
-                  {paginatedPosts.map((post) => (
-                    <div
+                <div className="grid md:grid-cols-2 gap-8">
+                  {paginatedPosts.map((post, index) => (
+                    <motion.div
                       key={post._id}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: index * 0.1 }}
+                      viewport={{ once: true }}
+                      whileHover={{ y: -10, scale: 1.02 }}
                       className="cursor-pointer group block"
                       onClick={() => handleCardClick(post.slug)}
                     >
                       <Link href={`/blog/${post.slug}`} passHref legacyBehavior>
-                        <a className="block">
-                          <div className="flex flex-col lg:flex-row items-center gap-8 bg-gradient-to-br from-gray-900/80 to-black/80 rounded-2xl shadow-xl border border-gray-800 hover:shadow-2xl transition-shadow duration-300">
-                            <div className="w-full lg:w-1/2 h-64 lg:h-96 overflow-hidden rounded-xl relative shadow-lg">
+                        <a className="block h-full">
+                          <Card className="h-full bg-white/80 backdrop-blur-sm border-2 border-purple-200 rounded-3xl shadow-lg hover:shadow-2xl hover:border-purple-300 transition-all duration-300 overflow-hidden">
+                            <div className="h-64 overflow-hidden relative">
                               <Image
                                 src={post.imageUrl}
                                 alt={post.title}
                                 layout="fill"
                                 objectFit="cover"
-                                className="transition-transform duration-300 group-hover:scale-105"
+                                className="transition-transform duration-500 group-hover:scale-110"
                               />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                               {post.category &&
                                 post.category !== "Uncategorized" && (
-                                  <span className="absolute top-4 left-4 bg-purple-700/80 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md uppercase tracking-wider z-10">
+                                  <motion.span
+                                    className="absolute top-4 left-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg z-10"
+                                    whileHover={{ scale: 1.1 }}
+                                  >
                                     {post.category}
-                                  </span>
+                                  </motion.span>
                                 )}
                             </div>
-                            <div className="lg:w-1/2 flex flex-col justify-between h-full py-4">
-                              <div>
-                                <h2 className="text-2xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors font-calendas leading-tight">
-                                  {post.title}
-                                </h2>
-                                <p className="text-gray-300 mb-4 font-calendas line-clamp-3 text-base leading-relaxed">
-                                  {post.description}
-                                </p>
-                              </div>
-                              <div className="flex flex-col gap-2 mt-2">
-                                <span className="text-xs text-gray-400 flex items-center gap-2">
-                                  <svg
-                                    className="w-4 h-4 text-blue-400"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    viewBox="0 0 24 24"
+                            <div className="p-8">
+                              <h2
+                                className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-blue-600 group-hover:bg-clip-text transition-all duration-300 leading-tight"
+                                style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                              >
+                                {post.title}
+                              </h2>
+                              <p className="text-gray-700 mb-6 line-clamp-3 text-lg leading-relaxed">
+                                {post.description}
+                              </p>
+                              <div className="flex flex-col gap-4">
+                                <div className="flex items-center gap-2 text-gray-500">
+                                  <motion.span
+                                    animate={{ rotate: [0, 10, -10, 0] }}
+                                    transition={{
+                                      duration: 2,
+                                      repeat: Infinity,
+                                      ease: "easeInOut",
+                                    }}
+                                    className="text-xl"
                                   >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      d="M8 7V3m8 4V3m-9 8h10m-12 8a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v12z"
-                                    />
-                                  </svg>
-                                  {post.createdAtDate.toLocaleDateString(
-                                    "en-US",
-                                    {
-                                      year: "numeric",
-                                      month: "short",
-                                      day: "numeric",
-                                    }
-                                  )}
-                                </span>
-                                <div className="flex flex-wrap items-center gap-2 mt-1">
+                                    📅
+                                  </motion.span>
+                                  <span className="text-sm font-medium">
+                                    {post.createdAtDate.toLocaleDateString(
+                                      "en-US",
+                                      {
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                      }
+                                    )}
+                                  </span>
+                                </div>
+                                <div className="flex flex-wrap items-center gap-2">
                                   {post.tags &&
                                     post.tags.slice(0, 3).map((tag) => (
                                       <span
                                         key={tag}
-                                        className="bg-gray-700 text-xs text-gray-200 px-2 py-0.5 rounded-full font-medium"
+                                        className="bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 text-sm px-3 py-1 rounded-full font-medium border border-purple-200"
                                       >
                                         {tag}
                                       </span>
                                     ))}
                                 </div>
-                                <span>
-                                  <span className="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold shadow hover:bg-blue-700 transition-colors text-sm">
-                                    Read more →
-                                  </span>
-                                </span>
+                                <motion.div
+                                  className="mt-4 inline-flex items-center gap-2 text-purple-600 font-bold text-lg group-hover:text-blue-600 transition-colors"
+                                  whileHover={{ x: 5 }}
+                                >
+                                  Read more
+                                  <motion.span
+                                    animate={{ x: [0, 5, 0] }}
+                                    transition={{
+                                      duration: 1.5,
+                                      repeat: Infinity,
+                                      ease: "easeInOut",
+                                    }}
+                                  >
+                                    →
+                                  </motion.span>
+                                </motion.div>
                               </div>
                             </div>
-                          </div>
+                          </Card>
                         </a>
                       </Link>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
-                {isTransitioning && (
-                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-                    <svg
-                      className="animate-spin h-16 w-16 text-blue-500"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8v8z"
-                      ></path>
-                    </svg>
-                  </div>
-                )}
-                {console.log(totalPages)}
                 {/* Pagination Controls */}
                 {totalPages > 1 && (
-                  <div className="flex justify-center items-center gap-2 mt-10">
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="px-5 py-2 rounded-full font-semibold text-base border-2 border-blue-600"
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    viewport={{ once: true }}
+                    className="flex justify-center items-center gap-3 mt-16"
+                  >
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`px-6 py-3 rounded-2xl font-bold text-lg border-2 transition-all duration-300 ${
+                        currentPage === 1
+                          ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
+                          : "bg-white text-purple-600 border-purple-300 hover:bg-purple-50 hover:border-purple-400"
+                      }`}
                       disabled={currentPage === 1}
                       onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     >
-                      Previous
-                    </Button>
-                    {Array.from({ length: totalPages }, (_, i) => (
-                      <Button
-                        key={i + 1}
-                        size="lg"
-                        variant={currentPage === i + 1 ? "default" : "outline"}
-                        className={`px-5 py-2 rounded-full font-semibold text-base border-2 ${
-                          currentPage === i + 1
-                            ? "bg-blue-600 text-white border-blue-600"
-                            : "text-gray-300 border-gray-600 hover:bg-gray-700 hover:text-white"
-                        }`}
-                        onClick={() => setCurrentPage(i + 1)}
-                      >
-                        {i + 1}
-                      </Button>
-                    ))}
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="px-5 py-2 rounded-full font-semibold text-base border-2 border-blue-600"
+                      ← Previous
+                    </motion.button>
+                    
+                    <div className="flex gap-2">
+                      {Array.from({ length: totalPages }, (_, i) => (
+                        <motion.button
+                          key={i + 1}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
+                          className={`w-12 h-12 rounded-2xl font-bold text-lg border-2 transition-all duration-300 ${
+                            currentPage === i + 1
+                              ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white border-purple-600 shadow-lg"
+                              : "bg-white text-gray-600 border-gray-300 hover:border-purple-400 hover:text-purple-600"
+                          }`}
+                          onClick={() => setCurrentPage(i + 1)}
+                        >
+                          {i + 1}
+                        </motion.button>
+                      ))}
+                    </div>
+                    
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`px-6 py-3 rounded-2xl font-bold text-lg border-2 transition-all duration-300 ${
+                        currentPage === totalPages
+                          ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
+                          : "bg-white text-purple-600 border-purple-300 hover:bg-purple-50 hover:border-purple-400"
+                      }`}
                       disabled={currentPage === totalPages}
                       onClick={() =>
                         setCurrentPage((p) => Math.min(totalPages, p + 1))
                       }
                     >
-                      Next
-                    </Button>
-                  </div>
+                      Next →
+                    </motion.button>
+                  </motion.div>
                 )}
               </>
             ) : (
-              <div className="text-center py-12 text-gray-400">
-                No posts found matching your criteria.
-              </div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="text-center py-20"
+              >
+                <div className="bg-gradient-to-br from-cyan-50/90 via-white/85 to-blue-50/90 backdrop-blur-sm rounded-3xl p-12 border-2 border-purple-200 shadow-xl max-w-2xl mx-auto">
+                  <motion.div
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    className="text-6xl mb-6"
+                  >
+                    🔍
+                  </motion.div>
+                  <h3 className="text-2xl font-bold text-gray-800 mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                    No posts found
+                  </h3>
+                  <p className="text-gray-600 text-lg">
+                    Try adjusting your search or filters to find what you're looking for!
+                  </p>
+                </div>
+              </motion.div>
             )}
-          </motion.div>
-        </Card>
+          </div>
+        </div>
       </PageContainer>
     </>
   );

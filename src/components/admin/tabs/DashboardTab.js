@@ -152,58 +152,69 @@ export default function DashboardTab({ unreadCount }) {
   return (
     <StaggerContainer className="space-y-6">
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <StaggerItem index={0}>
-          <Card className="border-gray-700 bg-gray-900 text-white">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
-              <FileText className="h-4 w-4 text-gray-400" />
+          <Card className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 hover:border-purple-300 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-2xl">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-lg font-bold text-gray-700">Total Posts</CardTitle>
+              <div className="p-2 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl">
+                <FileText className="h-5 w-5 text-white" />
+              </div>
             </CardHeader>
             <CardContent>
               {isLoading && totalPosts === 0 ? (
-                <Loader2 className="h-6 w-6 animate-spin" />
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin text-2xl">📊</div>
+                  <span className="text-gray-600">Loading...</span>
+                </div>
               ) : (
-                <div className="text-2xl font-bold">{totalPosts}</div>
+                <div className="text-3xl font-black text-gray-800">{totalPosts}</div>
               )}
             </CardContent>
           </Card>
         </StaggerItem>
         <StaggerItem index={1}>
-          <Card className="border-gray-700 bg-gray-900 text-white">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+          <Card className="bg-white/80 backdrop-blur-sm border-2 border-green-200 hover:border-green-300 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-2xl">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-lg font-bold text-gray-700">
                 Unread Messages
               </CardTitle>
-              <MessageSquare className="h-4 w-4 text-gray-400" />
+              <div className="p-2 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl">
+                <MessageSquare className="h-5 w-5 text-white" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
-                {unreadCount ?? <Loader2 className="h-6 w-6 animate-spin" />}
+              <div className="text-3xl font-black text-gray-800">
+                {unreadCount ?? <div className="flex items-center gap-2"><div className="animate-spin text-2xl">💬</div><span className="text-gray-600 text-lg">Loading...</span></div>}
               </div>
             </CardContent>
           </Card>
         </StaggerItem>
         <StaggerItem index={2}>
-          <Card className="border-gray-700 bg-gray-900 text-white">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Subscribers</CardTitle>
-              <Users className="h-4 w-4 text-gray-400" />
+          <Card className="bg-white/80 backdrop-blur-sm border-2 border-orange-200 hover:border-orange-300 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-2xl">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-lg font-bold text-gray-700">Subscribers</CardTitle>
+              <div className="p-2 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl">
+                <Users className="h-5 w-5 text-white" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">N/A</div>
+              <div className="text-3xl font-black text-gray-800">N/A</div>
             </CardContent>
           </Card>
         </StaggerItem>
         <StaggerItem index={3}>
-          <Card className="border-gray-700 bg-gray-900 text-white">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+          <Card className="bg-white/80 backdrop-blur-sm border-2 border-blue-200 hover:border-blue-300 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-2xl">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-lg font-bold text-gray-700">
                 Site Visitors
               </CardTitle>
-              <BarChart2 className="h-4 w-4 text-gray-400" />
+              <div className="p-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl">
+                <BarChart2 className="h-5 w-5 text-white" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">N/A</div>
+              <div className="text-3xl font-black text-gray-800">N/A</div>
             </CardContent>
           </Card>
         </StaggerItem>
@@ -213,24 +224,26 @@ export default function DashboardTab({ unreadCount }) {
       <div className="grid gap-6 lg:grid-cols-1">
         {/* Recent Blog Posts Table */}
         <StaggerItem index={1} className="lg:col-span-1">
-          {" "}
-          {/* Adjust grid span if needed */}
-          <Card className="border-gray-700 bg-gray-900 text-white h-full">
-            {" "}
-            {/* Added h-full */}
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-              <CardTitle>Recent Blog Posts</CardTitle>
-              <div className="flex space-x-2">
+          <Card className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 shadow-2xl rounded-3xl h-full">
+            <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between space-y-4 md:space-y-0 pb-6">
+              <CardTitle className="text-2xl font-black text-gray-800" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                Recent Blog Posts
+              </CardTitle>
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Button
                   size="sm"
                   asChild
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl"
                 >
                   <Link href="/admin/blog/ai-create">
                     <Bot className="mr-2 h-4 w-4" /> AI Generator
                   </Link>
                 </Button>
-                <Button size="sm" asChild>
+                <Button 
+                  size="sm" 
+                  asChild
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl"
+                >
                   <Link href="/admin/blog/create">
                     <FilePlus className="mr-2 h-4 w-4" /> Create New
                   </Link>
@@ -239,32 +252,49 @@ export default function DashboardTab({ unreadCount }) {
             </CardHeader>
             <CardContent>
               {isLoading && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-                  <Loader2 className="h-16 w-16 animate-spin text-blue-500" />
+                <div className="flex items-center justify-center py-12">
+                  <div className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 rounded-2xl px-8 py-6 shadow-xl flex items-center gap-4">
+                    <div className="animate-spin text-3xl">⚡</div>
+                    <span className="text-gray-700 font-bold text-xl">Loading posts...</span>
+                  </div>
                 </div>
               )}
               {error && !isLoading && (
-                <p className="text-red-400 text-center py-10">Error: {error}</p>
+                <div className="flex items-center justify-center py-12">
+                  <div className="bg-white/80 backdrop-blur-sm border-2 border-red-200 rounded-2xl px-8 py-6 shadow-xl text-center">
+                    <div className="text-6xl mb-4">😕</div>
+                    <h3 className="text-2xl font-black text-gray-800 mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                      Oops! Something went wrong
+                    </h3>
+                    <p className="text-red-600 font-medium">Error: {error}</p>
+                  </div>
+                </div>
               )}
               {!isLoading && !error && blogPosts.length === 0 && (
-                <p className="text-gray-400 text-center py-10">
-                  No blog posts found.
-                </p>
+                <div className="flex items-center justify-center py-12">
+                  <div className="bg-white/80 backdrop-blur-sm border-2 border-gray-200 rounded-2xl px-8 py-6 shadow-xl text-center">
+                    <div className="text-6xl mb-4">📝</div>
+                    <h3 className="text-2xl font-black text-gray-800 mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                      No Blog Posts Yet
+                    </h3>
+                    <p className="text-gray-600 font-medium">Create your first blog post to get started!</p>
+                  </div>
+                </div>
               )}
               {!isLoading && !error && blogPosts.length > 0 && (
                 <>
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
-                        <TableRow className="border-gray-700 hover:bg-gray-800">
-                          <TableHead className="text-gray-300">Title</TableHead>
-                          <TableHead className="text-gray-300">
+                        <TableRow className="border-purple-200 hover:bg-purple-50/50">
+                          <TableHead className="text-gray-700 font-bold text-lg">Title</TableHead>
+                          <TableHead className="text-gray-700 font-bold text-lg">
                             Status
                           </TableHead>
-                          <TableHead className="text-gray-300">
+                          <TableHead className="text-gray-700 font-bold text-lg">
                             Created At
                           </TableHead>
-                          <TableHead className="text-right text-gray-300">
+                          <TableHead className="text-right text-gray-700 font-bold text-lg">
                             Actions
                           </TableHead>
                         </TableRow>
@@ -273,9 +303,9 @@ export default function DashboardTab({ unreadCount }) {
                         {blogPosts.map((post) => (
                           <TableRow
                             key={post._id}
-                            className="border-gray-800 hover:bg-gray-800/50"
+                            className="border-purple-100 hover:bg-purple-50/30 transition-colors duration-200"
                           >
-                            <TableCell className="font-medium">
+                            <TableCell className="font-semibold text-gray-800 text-lg">
                               {post.title}
                             </TableCell>
                             <TableCell>
@@ -317,26 +347,26 @@ export default function DashboardTab({ unreadCount }) {
                                 variant={
                                   post.isPublished ? "success" : "warning"
                                 }
-                                className={`cursor-pointer transition-colors ${
+                                className={`cursor-pointer transition-all duration-300 font-bold rounded-xl px-3 py-1 ${
                                   post.isPublished
-                                    ? "bg-green-900 text-green-300 hover:bg-green-800"
-                                    : "bg-yellow-900 text-yellow-300 hover:bg-yellow-800"
+                                    ? "bg-green-100 text-green-700 hover:bg-green-200 border-green-300"
+                                    : "bg-yellow-100 text-yellow-700 hover:bg-yellow-200 border-yellow-300"
                                 }`}
                                 title="Click to toggle status"
                               >
                                 {isLoading && (
-                                  <Loader2 className="h-3 w-3 animate-spin mr-1 inline" />
+                                  <div className="animate-spin text-sm mr-1 inline">⚡</div>
                                 )}
                                 {post.isPublished ? "Published" : "Draft"}
                               </Badge>
                             </TableCell>
-                            <TableCell>{formatDate(post.createdAt)}</TableCell>
+                            <TableCell className="text-gray-700 font-medium">{formatDate(post.createdAt)}</TableCell>
                             <TableCell className="text-right space-x-2">
                               <Button
                                 variant="ghost"
                                 size="sm"
                                 asChild
-                                className="text-white hover:text-white hover:bg-gray-600"
+                                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
                               >
                                 <Link href={`/admin/blog/edit/${post._id}`}>
                                   Edit
@@ -347,7 +377,7 @@ export default function DashboardTab({ unreadCount }) {
                                   variant="outline"
                                   size="sm"
                                   asChild
-                                  className="text-white border-gray-600 hover:text-white hover:bg-gray-600"
+                                  className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white border-transparent font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
                                 >
                                   <Link
                                     href={`/blog/${post.slug}`}
@@ -370,7 +400,7 @@ export default function DashboardTab({ unreadCount }) {
                                   <Button
                                     variant="destructive"
                                     size="sm"
-                                    className="text-red-400 hover:bg-red-700 hover:text-white"
+                                    className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
                                     onClick={() => handleDeleteClick(post._id)}
                                   >
                                     <Trash2 className="h-4 w-4" />
@@ -378,25 +408,25 @@ export default function DashboardTab({ unreadCount }) {
                                 </AlertDialogTrigger>
                                 {/* Render content only when this specific post is targeted */}
                                 {postToDelete === post._id && (
-                                  <AlertDialogContent className="bg-gray-900 border-gray-700 text-white">
+                                  <AlertDialogContent className="bg-white/90 backdrop-blur-sm border-2 border-red-200 rounded-2xl shadow-2xl">
                                     <AlertDialogHeader>
-                                      <AlertDialogTitle className="flex items-center gap-2">
-                                        <AlertTriangle className="text-red-500" />{" "}
+                                      <AlertDialogTitle className="flex items-center gap-3 text-2xl font-black text-gray-800" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                                        <div className="text-4xl">⚠️</div>
                                         Are you absolutely sure?
                                       </AlertDialogTitle>
-                                      <AlertDialogDescription className="text-gray-400">
+                                      <AlertDialogDescription className="text-gray-700 font-medium text-lg">
                                         This action cannot be undone. This will
                                         permanently delete the blog post titled
-                                        "
+                                        <span className="font-bold text-red-600"> "
                                         {blogPosts.find(
                                           (p) => p._id === postToDelete
                                         )?.title || "this post"}
-                                        ".
+                                        "</span>.
                                       </AlertDialogDescription>
                                     </AlertDialogHeader>
-                                    <AlertDialogFooter>
+                                    <AlertDialogFooter className="gap-3">
                                       <AlertDialogCancel
-                                        className="bg-gray-600 hover:bg-gray-700 border-gray-600"
+                                        className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl border-transparent"
                                         onClick={() => setPostToDelete(null)}
                                       >
                                         Cancel
@@ -404,10 +434,10 @@ export default function DashboardTab({ unreadCount }) {
                                       <AlertDialogAction
                                         onClick={confirmDelete}
                                         disabled={isDeleting}
-                                        className="bg-red-600 hover:bg-red-700"
+                                        className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
                                       >
                                         {isDeleting ? (
-                                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                          <div className="animate-spin text-lg mr-2">⚡</div>
                                         ) : null}
                                         Yes, delete post
                                       </AlertDialogAction>
@@ -423,26 +453,27 @@ export default function DashboardTab({ unreadCount }) {
                   </div>
                   {/* Pagination Controls */}
                   {totalPages > 1 && (
-                    <div className="flex items-center justify-end space-x-2 py-4">
+                    <div className="flex items-center justify-end space-x-4 py-6">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={handlePreviousPage}
                         disabled={currentPage <= 1 || isLoading}
-                        className="border-gray-600 hover:bg-gray-700 disabled:opacity-50"
+                        className="bg-white border-2 border-purple-200 text-purple-600 hover:bg-purple-50 hover:border-purple-300 disabled:opacity-50 font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
                       >
                         <ChevronLeft className="h-4 w-4 mr-1" /> Previous
                       </Button>
-                      <span className="text-sm text-gray-400">
-                        {" "}
-                        Page {currentPage} of {totalPages}{" "}
-                      </span>
+                      <div className="bg-gradient-to-r from-purple-100 to-blue-100 px-4 py-2 rounded-xl border border-purple-200">
+                        <span className="text-sm font-bold text-purple-700">
+                          Page {currentPage} of {totalPages}
+                        </span>
+                      </div>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={handleNextPage}
                         disabled={currentPage >= totalPages || isLoading}
-                        className="border-gray-600 hover:bg-gray-700 disabled:opacity-50"
+                        className="bg-white border-2 border-purple-200 text-purple-600 hover:bg-purple-50 hover:border-purple-300 disabled:opacity-50 font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
                       >
                         Next <ChevronRight className="h-4 w-4 ml-1" />
                       </Button>

@@ -198,25 +198,39 @@ function SlugPage({ data, relatedPosts }) {
           rel="canonical"
           href={`https://www.karthiknish.com/blog/${data.slug || data._id}`}
         />
+
+        {/* Google Fonts */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="true"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
       </Head>
       {showScrollTopButton && (
         <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed left-6 bottom-6 z-50 w-12 h-12 rounded-full bg-gray-800/80 backdrop-blur-sm hover:bg-gray-700/80 transition-colors duration-200 flex items-center justify-center group"
+          className="fixed left-6 bottom-6 z-50 w-14 h-14 rounded-full  bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-300 flex items-center justify-center group shadow-xl hover:shadow-2xl"
           aria-label="Scroll to top"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
         >
           <div className="absolute">
-            <ChevronUpIcon className="w-6 h-6 text-white" />
+            <ChevronUpIcon className="w-7 h-7 text-white" />
           </div>
-          <svg className="w-12 h-12 -rotate-90">
+          <svg className="w-14 h-14 -rotate-90 absolute">
             <circle
               cx="50%"
               cy="50%"
               r="45%"
-              className="stroke-gray-600"
+              className="stroke-white/20"
               fill="none"
               strokeWidth="2"
             />
@@ -224,7 +238,7 @@ function SlugPage({ data, relatedPosts }) {
               cx="50%"
               cy="50%"
               r="45%"
-              className="stroke-blue-500"
+              className="stroke-white"
               fill="none"
               strokeWidth="2"
               strokeDasharray={`${scrollProgress}, 100`}
@@ -233,225 +247,341 @@ function SlugPage({ data, relatedPosts }) {
           </svg>
         </motion.button>
       )}
-      <PageContainer className="pt-16 mt-10 space-y-8 font-calendas max-w-4xl mx-auto">
-        {/* Added padding-top */}
-        <div className="mb-8 flex">
-          <Link href="/blog" passHref legacyBehavior>
-            <a className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-blue-800 via-blue-700 to-blue-900 text-white hover:bg-blue-800 hover:text-white font-semibold shadow-lg border border-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-              <span className="text-base">Back to all articles</span>
-            </a>
-          </Link>
-        </div>
-        {/* Assign the ref to the Card component */}
-
-        <Card
-          ref={contentRef}
-          className="border-none bg-black/60 backdrop-blur-sm p-8 rounded-xl shadow-lg"
+      <PageContainer>
+        <div
+          className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 py-24 relative overflow-hidden"
+          style={{ fontFamily: "Inter, sans-serif" }}
         >
-          <motion.div
-            variants={staggerContainerVariants}
-            initial="initial"
-            animate="animate"
-            className="space-y-6"
-          >
-            <div className="flex flex-col">
-              <motion.div variants={fadeInUpVariants} className="relative">
-                <div className="relative w-full h-[300px] md:h-[450px] mb-8 rounded-lg shadow-md overflow-hidden">
-                  <Image
-                    src={data.imageUrl}
-                    alt={data.title}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
-                    priority
-                    style={{ objectFit: "cover" }}
-                    className="transition-transform duration-300 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black" />
-                </div>
-                {data.tags && data.tags.length > 0 && (
-                  <div className="absolute top-4 right-4 flex flex-wrap gap-2">
-                    {data.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="bg-black/70 backdrop-blur-sm px-3 py-1 rounded-full text-white text-xs"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </motion.div>
-
-              <div className="flex flex-col">
-                <motion.h1
-                  variants={fadeInUpVariants}
-                  className="text-3xl md:text-4xl font-bold text-white mb-4 font-calendas"
+          {/* Decorative Color Splashes */}
+          <div className="absolute top-0 left-0 w-80 h-80 bg-gradient-to-br from-rose-200/15 to-pink-200/15 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+          <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-bl from-indigo-200/15 to-purple-200/15 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
+          <div className="absolute bottom-0 left-0 w-88 h-88 bg-gradient-to-tr from-teal-200/15 to-green-200/15 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2"></div>
+          <div className="absolute bottom-0 right-0 w-76 h-76 bg-gradient-to-tl from-amber-200/15 to-orange-200/15 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+          
+          <div className="max-w-5xl mx-auto px-6 relative z-10">
+            {/* Back Button */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              className="mb-12"
+            >
+              <Link href="/blog" passHref legacyBehavior>
+                <motion.a
+                  className="inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-white/80 backdrop-blur-sm border-2 border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300 font-bold shadow-lg transition-all duration-300"
+                  whileHover={{ scale: 1.05, x: -5 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  {data.title}
-                </motion.h1>
-                {/* Admin-only Edit Button */}
-                {isAdmin && (
-                  <Link
-                    href={`/admin/blog/edit/${data._id}`}
-                    passHref
-                    legacyBehavior
+                  <motion.svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    animate={{ x: [0, -5, 0] }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
                   >
-                    <a className="inline-block mb-4 px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-800 transition-colors font-semibold">
-                      Edit
-                    </a>
-                  </Link>
-                )}
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </motion.svg>
+                  <span className="text-lg">Back to all articles</span>
+                </motion.a>
+              </Link>
+            </motion.div>
+            {/* Assign the ref to the Card component */}
 
-                <motion.div
-                  variants={fadeInUpVariants}
-                  className="flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-400 mb-6"
-                >
-                  <div className="flex items-center">
-                    <CalendarIcon className="h-4 w-4 mr-1.5" />
-                    <span className="text-sm">
-                      {new Date(
-                        data.createdAt || Date.now()
-                      ).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center">
-                    <ClockIcon className="h-4 w-4 mr-1.5" />
-                    <span className="text-sm">{readingTime} min read</span>
-                  </div>
-
-                  {/* Social Share Buttons */}
-                  <div className="flex items-center gap-3 ml-0 md:ml-auto">
-                    <span className="text-sm hidden md:inline">Share:</span>
-                    <button
-                      onClick={() => shareArticle("twitter")}
-                      className="text-gray-400 hover:text-blue-400 transition-colors"
-                      aria-label="Share on Twitter"
-                    >
-                      <svg
-                        className="w-5 h-5"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723 10.054 10.054 0 01-3.127 1.184 4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
-                      </svg>
-                    </button>
-                    <button
-                      onClick={() => shareArticle("facebook")}
-                      className="text-gray-400 hover:text-blue-600 transition-colors"
-                      aria-label="Share on Facebook"
-                    >
-                      <svg
-                        className="w-5 h-5"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                      </svg>
-                    </button>
-                    <button
-                      onClick={() => shareArticle("linkedin")}
-                      className="text-gray-400 hover:text-blue-700 transition-colors"
-                      aria-label="Share on LinkedIn"
-                    >
-                      <svg
-                        className="w-5 h-5"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                      </svg>
-                    </button>
-                    <button
-                      onClick={() => shareArticle("copy")}
-                      className="text-gray-400 hover:text-green-500 transition-colors"
-                      aria-label="Copy link"
-                    >
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                        ></path>
-                      </svg>
-                    </button>
-                  </div>
-                </motion.div>
-
-                <Separator className="my-6 bg-gray-700" />
-
-                {/* Removed Audio Player Section */}
-
-                {data.content && (
+            <motion.article
+              ref={contentRef}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 p-12 rounded-3xl shadow-2xl"
+            >
+              <motion.div
+                variants={staggerContainerVariants}
+                initial="initial"
+                animate="animate"
+                className="space-y-6"
+              >
+                <div className="flex flex-col">
                   <motion.div
                     variants={fadeInUpVariants}
-                    // Removed prose-code:* styles as rehype-highlight will handle styling via CSS
-                    className="prose prose-invert max-w-none prose-headings:text-white prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:text-gray-300 prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-ul:text-gray-300 prose-ol:text-gray-300 prose-li:my-1 font-calendas prose-blockquote:border-blue-500 prose-blockquote:bg-blue-900/20 prose-blockquote:p-4 prose-blockquote:rounded-md"
+                    className="relative mb-12"
                   >
-                    <TipTapRenderer content={data.content} />
-                  </motion.div>
-                )}
-
-                <Separator className="my-8 bg-gray-700" />
-
-                <motion.div
-                  variants={fadeInUpVariants}
-                  className="flex justify-between items-center"
-                >
-                  <Link href="/blog">
-                    <span className="text-blue-400 hover:underline">
-                      ← More articles
-                    </span>
-                  </Link>
-
-                  {data.tags && data.tags.length > 0 && (
-                    <div className="flex items-center flex-wrap gap-2">
-                      <TagIcon className="h-4 w-4 text-gray-400 flex-shrink-0" />
-                      {data.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="text-gray-400 text-sm bg-gray-700 px-2 py-0.5 rounded"
-                        >
-                          {tag}
-                        </span>
-                      ))}
+                    <div className="relative w-full h-[300px] md:h-[500px] rounded-3xl shadow-xl overflow-hidden group">
+                      <Image
+                        src={data.imageUrl}
+                        alt={data.title}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
+                        priority
+                        style={{ objectFit: "cover" }}
+                        className="transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
-                  )}
-                </motion.div>
-              </div>
-            </div>
-          </motion.div>
+                    {data.tags && data.tags.length > 0 && (
+                      <div className="absolute top-6 right-6 flex flex-wrap gap-3">
+                        {data.tags.map((tag) => (
+                          <motion.span
+                            key={tag}
+                            className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-2 rounded-full font-semibold shadow-lg text-sm"
+                            whileHover={{ scale: 1.1 }}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            {tag}
+                          </motion.span>
+                        ))}
+                      </div>
+                    )}
+                  </motion.div>
 
-          {/* Render Related Posts Section */}
-          <RelatedPosts posts={relatedPosts} />
+                  <div className="flex flex-col">
+                    <motion.h1
+                      variants={fadeInUpVariants}
+                      className="text-4xl md:text-6xl lg:text-7xl font-black mb-8 leading-tight tracking-tight"
+                      style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                    >
+                      <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                        {data.title}
+                      </span>
+                    </motion.h1>
+                    {/* Admin-only Edit Button */}
+                    {isAdmin && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="mb-8"
+                      >
+                        <Link
+                          href={`/admin/blog/edit/${data._id}`}
+                          passHref
+                          legacyBehavior
+                        >
+                          <motion.a
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-2xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-bold shadow-lg"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <span className="text-xl">✏️</span>
+                            Edit Article
+                          </motion.a>
+                        </Link>
+                      </motion.div>
+                    )}
 
-          {/* Render Comments Section */}
-          <CommentsSection blogPostId={data._id} />
-        </Card>
+                    <motion.div
+                      variants={fadeInUpVariants}
+                      className="flex flex-wrap items-center gap-x-6 gap-y-4 text-gray-600 mb-8 bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-2xl border border-purple-200"
+                    >
+                      <div className="flex items-center gap-2">
+                        <motion.span
+                          animate={{ rotate: [0, 10, -10, 0] }}
+                          transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                          }}
+                          className="text-2xl"
+                        >
+                          📅
+                        </motion.span>
+                        <span className="font-semibold text-lg">
+                          {new Date(
+                            data.createdAt || Date.now()
+                          ).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <motion.span
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                            delay: 1,
+                          }}
+                          className="text-2xl"
+                        >
+                          ⏱️
+                        </motion.span>
+                        <span className="font-semibold text-lg">
+                          {readingTime} min read
+                        </span>
+                      </div>
+
+                      {/* Social Share Buttons */}
+                      <div className="flex items-center gap-4 ml-0 md:ml-auto">
+                        <span className="font-bold text-lg hidden md:inline flex items-center gap-2">
+                          <span className="text-2xl">📤</span>
+                          Share:
+                        </span>
+                        <motion.button
+                          onClick={() => shareArticle("twitter")}
+                          className="p-3 bg-blue-400 hover:bg-blue-500 text-white rounded-2xl transition-all duration-300 shadow-lg"
+                          aria-label="Share on Twitter"
+                          whileHover={{ scale: 1.1, y: -2 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <svg
+                            className="w-6 h-6"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723 10.054 10.054 0 01-3.127 1.184 4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
+                          </svg>
+                        </motion.button>
+                        <motion.button
+                          onClick={() => shareArticle("facebook")}
+                          className="p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl transition-all duration-300 shadow-lg"
+                          aria-label="Share on Facebook"
+                          whileHover={{ scale: 1.1, y: -2 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <svg
+                            className="w-6 h-6"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                          </svg>
+                        </motion.button>
+                        <motion.button
+                          onClick={() => shareArticle("linkedin")}
+                          className="p-3 bg-blue-700 hover:bg-blue-800 text-white rounded-2xl transition-all duration-300 shadow-lg"
+                          aria-label="Share on LinkedIn"
+                          whileHover={{ scale: 1.1, y: -2 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <svg
+                            className="w-6 h-6"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                          </svg>
+                        </motion.button>
+                        <motion.button
+                          onClick={() => shareArticle("copy")}
+                          className="p-3 bg-green-500 hover:bg-green-600 text-white rounded-2xl transition-all duration-300 shadow-lg"
+                          aria-label="Copy link"
+                          whileHover={{ scale: 1.1, y: -2 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <svg
+                            className="w-6 h-6"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                            ></path>
+                          </svg>
+                        </motion.button>
+                      </div>
+                    </motion.div>
+
+                    <Separator className="my-8 bg-gradient-to-r from-purple-200 via-blue-200 to-purple-200 h-0.5" />
+
+                    {/* Removed Audio Player Section */}
+
+                    {data.content && (
+                      <motion.div
+                        variants={fadeInUpVariants}
+                        className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-headings:font-bold prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-purple-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700 prose-li:my-2 prose-blockquote:border-l-4 prose-blockquote:border-purple-400 prose-blockquote:bg-purple-50 prose-blockquote:p-6 prose-blockquote:rounded-r-2xl prose-blockquote:my-6 prose-code:bg-gray-100 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-900 prose-pre:rounded-2xl prose-pre:p-6"
+                        style={{ fontFamily: "Inter, sans-serif" }}
+                      >
+                        <TipTapRenderer content={data.content} />
+                      </motion.div>
+                    )}
+
+                    <Separator className="my-12 bg-gradient-to-r from-purple-200 via-blue-200 to-purple-200 h-0.5" />
+
+                    <motion.div
+                      variants={fadeInUpVariants}
+                      className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
+                    >
+                      <Link href="/blog">
+                        <motion.span
+                          className="inline-flex items-center gap-2 text-purple-600 hover:text-blue-600 font-bold text-lg transition-colors duration-300"
+                          whileHover={{ x: -5 }}
+                        >
+                          <motion.svg
+                            className="w-6 h-6"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
+                            animate={{ x: [0, -5, 0] }}
+                            transition={{
+                              duration: 1.5,
+                              repeat: Infinity,
+                              ease: "easeInOut",
+                            }}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M15 19l-7-7 7-7"
+                            />
+                          </motion.svg>
+                          More articles
+                        </motion.span>
+                      </Link>
+
+                      {data.tags && data.tags.length > 0 && (
+                        <div className="flex items-center flex-wrap gap-3">
+                          <span className="flex items-center gap-2 text-gray-700 font-semibold">
+                            <span className="text-2xl">🏷️</span>
+                            Tags:
+                          </span>
+                          {data.tags.map((tag) => (
+                            <motion.span
+                              key={tag}
+                              className="bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 px-4 py-2 rounded-full font-medium border border-purple-200 hover:from-purple-200 hover:to-blue-200 transition-all duration-300"
+                              whileHover={{ scale: 1.05 }}
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ duration: 0.3 }}
+                            >
+                              {tag}
+                            </motion.span>
+                          ))}
+                        </div>
+                      )}
+                    </motion.div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Render Related Posts Section */}
+              <RelatedPosts posts={relatedPosts} />
+
+              {/* Render Comments Section */}
+              <CommentsSection blogPostId={data._id} />
+            </motion.article>
+          </div>
+        </div>
       </PageContainer>
 
       {/* Scroll to top button with progress indicator */}
