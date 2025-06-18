@@ -76,7 +76,7 @@ export default function ChatHistoryTab() {
   };
 
   return (
-    <Card className="border-gray-700 bg-gray-900 text-white">
+    <Card className="bg-white/90 backdrop-blur-sm border-2 border-purple-200 shadow-xl rounded-3xl overflow-hidden">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <MessageSquare className="w-5 h-5" /> Chat History (

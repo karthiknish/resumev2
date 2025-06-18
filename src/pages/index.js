@@ -512,12 +512,11 @@ const HomeScreen = () => {
               transition={{ duration: 0.6, delay: 0.8 }}
               className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
             >
-              <Button
-                size="lg"
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-10 py-5 text-xl font-bold rounded-2xl shadow-2xl hover:shadow-purple-300/50 transition-all duration-300 border-0"
-                asChild
-              >
-                <Link href="/contact">
+              <Link href="/contact">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-10 py-5 text-xl font-bold rounded-2xl shadow-2xl hover:shadow-purple-300/50 transition-all duration-300 border-0"
+                >
                   <motion.span
                     animate={{ rotate: [0, 10, 0] }}
                     transition={{
@@ -531,15 +530,14 @@ const HomeScreen = () => {
                   </motion.span>
                   Let's build something amazing
                   <ArrowRightIcon className="ml-3 h-6 w-6" />
-                </Link>
-              </Button>
+                </Button>
+              </Link>
 
-              <Button
-                size="lg"
-                className="bg-white/90 backdrop-blur-sm border-2 border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300 px-10 py-5 text-xl font-bold rounded-2xl shadow-xl transition-all duration-300"
-                asChild
-              >
-                <Link href="#work">
+              <Link href="#work">
+                <Button
+                  size="lg"
+                  className="bg-white/90 backdrop-blur-sm border-2 border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300 px-10 py-5 text-xl font-bold rounded-2xl shadow-xl transition-all duration-300"
+                >
                   <motion.span
                     animate={{ scale: [1, 1.2, 1] }}
                     transition={{
@@ -552,8 +550,8 @@ const HomeScreen = () => {
                     👀
                   </motion.span>
                   See my magic in action
-                </Link>
-              </Button>
+                </Button>
+              </Link>
             </motion.div>
 
             {/* Enhanced Technology Showcase */}
@@ -769,11 +767,10 @@ const HomeScreen = () => {
                   viewport={{ once: true }}
                   whileHover={{ y: -15, scale: 1.03 }}
                 >
-                  <Card
-                    className={`h-full overflow-hidden border-2 shadow-xl hover:shadow-2xl transition-all duration-300 group cursor-pointer rounded-3xl ${project.color}`}
-                    asChild
-                  >
-                    <Link href={project.link}>
+                  <Link href={project.link}>
+                    <Card
+                      className={`h-full overflow-hidden border-2 shadow-xl hover:shadow-2xl transition-all duration-300 group cursor-pointer rounded-3xl ${project.color}`}
+                    >
                       <div className="aspect-video relative overflow-hidden">
                         <Image
                           src={project.image}
@@ -804,22 +801,21 @@ const HomeScreen = () => {
                           ))}
                         </div>
                       </CardContent>
-                    </Link>
-                  </Card>
+                    </Card>
+                  </Link>
                 </motion.div>
               ))}
             </div>
 
             <div className="text-center mt-16">
-              <Button
-                className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-8 py-4 text-lg font-bold rounded-2xl shadow-xl border-0"
-                asChild
-              >
-                <Link href="/projects">
+              <Link href="/projects">
+                <Button
+                  className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-8 py-4 text-lg font-bold rounded-2xl shadow-xl border-0"
+                >
                   View all my creations
                   <ArrowRightIcon className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
@@ -1014,12 +1010,11 @@ const HomeScreen = () => {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                <Button
-                  size="lg"
-                  className="bg-white text-purple-700 hover:bg-purple-50 px-10 py-5 text-xl font-bold rounded-2xl shadow-2xl border-0"
-                  asChild
-                >
-                  <Link href="/contact">
+                <Link href="/contact">
+                  <Button
+                    size="lg"
+                    className="bg-white text-purple-700 hover:bg-purple-50 px-10 py-5 text-xl font-bold rounded-2xl shadow-2xl border-0"
+                  >
                     <motion.span
                       animate={{ rotate: [0, 20, 0] }}
                       transition={{
@@ -1032,19 +1027,18 @@ const HomeScreen = () => {
                       💌
                     </motion.span>
                     Let's create magic together
-                  </Link>
-                </Button>
+                  </Button>
+                </Link>
 
-                <Button
-                  size="lg"
-                  className="bg-transparent border-2 border-white text-white hover:bg-white/10 px-10 py-5 text-xl font-bold rounded-2xl transition-all duration-300"
-                  asChild
-                >
-                  <Link href="/services">
+                <Link href="/services">
+                  <Button
+                    size="lg"
+                    className="bg-transparent border-2 border-white text-white hover:bg-white/10 px-10 py-5 text-xl font-bold rounded-2xl transition-all duration-300"
+                  >
                     <HeartIcon className="mr-3 h-6 w-6" />
                     Explore my services
-                  </Link>
-                </Button>
+                  </Button>
+                </Link>
               </div>
             </motion.div>
           </div>

@@ -317,9 +317,9 @@ export default function BytesTab() {
             transition={{ duration: 0.3 }}
             className="mb-6"
           >
-            <Card className="bg-blue-900/30 border-blue-700 text-blue-200 relative">
+            <Card className="bg-gradient-to-br from-purple-100/90 to-blue-100/90 backdrop-blur-sm border-2 border-purple-300 text-purple-800 relative shadow-xl">
               <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-lg">
+                <CardTitle className="flex items-center gap-2 text-lg font-bold" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
                   <Info className="h-5 w-5" />
                   Welcome to Bytes!
                 </CardTitle>
@@ -346,7 +346,7 @@ export default function BytesTab() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute top-2 right-2 text-blue-300 hover:text-white hover:bg-blue-700/50 h-7 w-7"
+                className="absolute top-2 right-2 text-purple-600 hover:text-purple-800 hover:bg-purple-200/50 h-7 w-7 rounded-full"
                 onClick={() => setShowInstructions(false)}
                 aria-label="Dismiss instructions"
               >
@@ -362,11 +362,11 @@ export default function BytesTab() {
         {/* Byte Creation/Edit Form Card */}
         <Card
           id="byte-form-card"
-          className="lg:col-span-2 bg-gray-800 border-gray-700 text-white shadow-md glow-card"
+          className="lg:col-span-2 bg-white/90 backdrop-blur-sm border-2 border-purple-200 text-gray-800 shadow-xl rounded-3xl"
         >
           <CardHeader>
-            <CardTitle className="text-xl">
-              {isEditing ? "Edit Byte" : "Create New Byte"}
+            <CardTitle className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+              {isEditing ? "✏️ Edit Byte" : "✨ Create New Byte"}
             </CardTitle>
           </CardHeader>
           <CardContent>

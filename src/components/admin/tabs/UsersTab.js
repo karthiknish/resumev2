@@ -68,41 +68,47 @@ function UsersTab() {
 
   return (
     <FadeIn>
-      <Card className="glow-card">
-        <CardHeader className="bg-black rounded-t-lg flex flex-row items-center justify-between">
-          <CardTitle className="text-2xl font-medium text-white font-calendas glow-blue">
-            User Management
+      <Card className="bg-white/90 backdrop-blur-sm border-2 border-blue-200 shadow-xl rounded-3xl overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 flex flex-row items-center justify-between">
+          <CardTitle className="text-2xl font-black text-white" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+            👥 User Management
           </CardTitle>
           <Input
             type="text"
             placeholder="Search users..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-1/3 bg-gray-800 border-gray-700 text-white placeholder-gray-500"
+            className="w-1/3 bg-white/90 backdrop-blur-sm border-2 border-blue-200 text-gray-800 placeholder-gray-500 rounded-xl focus:border-blue-400 focus:ring-4 focus:ring-blue-200"
           />
         </CardHeader>
-        <CardContent className="bg-gray-900 p-0">
+        <CardContent className="bg-gradient-to-br from-blue-50 to-indigo-50 p-0">
           {isLoading ? (
-            <p className="text-gray-300 p-4 text-center">Loading users...</p>
+            <div className="flex justify-center items-center p-10">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+              <span className="ml-3 text-blue-600 font-medium">Loading users...</span>
+            </div>
           ) : error ? (
-            <p className="text-red-500 p-4 text-center">{error}</p>
+            <div className="text-center p-10">
+              <div className="text-4xl mb-4">⚠️</div>
+              <p className="text-red-600 font-semibold">{error}</p>
+            </div>
           ) : currentUsers.length > 0 ? (
             <>
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-blue-200 shadow-lg m-6">
                 <Table>
                   <TableHeader>
-                    <TableRow className="border-gray-700 border-b-2">
-                      <TableHead className="text-gray-300 py-3 px-4 font-bold">
-                        Name
+                    <TableRow className="border-blue-200 border-b-2">
+                      <TableHead className="text-blue-700 py-4 px-6 font-bold text-lg">
+                        👤 Name
                       </TableHead>
-                      <TableHead className="text-gray-300 py-3 px-4 font-bold">
-                        Email
+                      <TableHead className="text-blue-700 py-4 px-6 font-bold text-lg">
+                        📧 Email
                       </TableHead>
-                      <TableHead className="text-gray-300 py-3 px-4 font-bold">
-                        Role
+                      <TableHead className="text-blue-700 py-4 px-6 font-bold text-lg">
+                        💼 Role
                       </TableHead>
-                      <TableHead className="text-gray-300 py-3 px-4 font-bold text-right">
-                        Joined
+                      <TableHead className="text-blue-700 py-4 px-6 font-bold text-lg text-right">
+                        📅 Joined
                       </TableHead>
                       {/* Add Actions header if needed later */}
                     </TableRow>
@@ -111,15 +117,15 @@ function UsersTab() {
                     {currentUsers.map((user) => (
                       <TableRow
                         key={user._id}
-                        className="border-gray-700 hover:bg-gray-800/50"
+                        className="border-blue-100 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300"
                       >
-                        <TableCell className="font-medium text-white py-3 px-4">
+                        <TableCell className="font-semibold text-gray-800 py-4 px-6">
                           {user.name || "N/A"}
                         </TableCell>
-                        <TableCell className="text-gray-300 py-3 px-4">
+                        <TableCell className="text-gray-700 py-4 px-6">
                           {user.email || "N/A"}
                         </TableCell>
-                        <TableCell className="text-gray-300 py-3 px-4">
+                        <TableCell className="text-gray-700 py-4 px-6">
                           <Badge
                             variant={
                               user.role === "admin" || user.isAdmin
@@ -128,14 +134,14 @@ function UsersTab() {
                             }
                             className={
                               user.role === "admin" || user.isAdmin
-                                ? "bg-red-700 text-white"
-                                : "bg-gray-600 text-gray-200"
+                                ? "bg-gradient-to-r from-red-100 to-pink-100 text-red-700 border border-red-200 font-bold"
+                                : "bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 border border-blue-200 font-medium"
                             }
                           >
                             {user.role || (user.isAdmin ? "Admin" : "User")}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-gray-400 py-3 px-4 text-right">
+                        <TableCell className="text-gray-600 py-4 px-6 text-right font-medium">
                           {format(
                             new Date(user.createdAt || new Date()),
                             "MMM dd, yyyy"
@@ -149,17 +155,17 @@ function UsersTab() {
               </div>
               {/* Pagination Controls */}
               {totalPages > 1 && (
-                <div className="flex justify-center items-center space-x-2 p-4 border-t border-gray-700">
+                <div className="flex justify-center items-center space-x-4 p-6 border-t-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
                   <Button
                     onClick={() => paginate(currentPage - 1)}
                     disabled={currentPage === 1}
                     variant="outline"
                     size="sm"
-                    className="text-white border-gray-600 hover:bg-gray-700 disabled:opacity-50"
+                    className="text-blue-600 border-2 border-blue-300 hover:bg-blue-50 hover:border-blue-400 disabled:opacity-50 rounded-xl font-medium"
                   >
                     Previous
                   </Button>
-                  <span className="text-gray-400 text-sm">
+                  <span className="text-blue-700 font-bold px-4 py-2 bg-white/80 rounded-xl border border-blue-200">
                     Page {currentPage} of {totalPages}
                   </span>
                   <Button
@@ -167,7 +173,7 @@ function UsersTab() {
                     disabled={currentPage === totalPages}
                     variant="outline"
                     size="sm"
-                    className="text-white border-gray-600 hover:bg-gray-700 disabled:opacity-50"
+                    className="text-blue-600 border-2 border-blue-300 hover:bg-blue-50 hover:border-blue-400 disabled:opacity-50 rounded-xl font-medium"
                   >
                     Next
                   </Button>
@@ -175,9 +181,15 @@ function UsersTab() {
               )}
             </>
           ) : (
-            <p className="text-gray-400 p-4 text-center">
-              No users found{searchTerm ? " matching your search" : ""}.
-            </p>
+            <div className="text-center py-12">
+              <div className="text-6xl mb-4">👥</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                No users found
+              </h3>
+              <p className="text-gray-600">
+                {searchTerm ? "No users match your search criteria." : "No users have been created yet."}
+              </p>
+            </div>
           )}
         </CardContent>
       </Card>

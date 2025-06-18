@@ -108,16 +108,16 @@ function CalendarTab() {
   return (
     <SlideUp delay={0.2}>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <Card className="lg:col-span-2 glow-card">
-          <CardHeader className="bg-black rounded-t-lg">
-            <CardTitle className="text-2xl font-medium text-white font-calendas glow-blue">
-              Blog Post Calendar
+        <Card className="lg:col-span-2 bg-white/90 backdrop-blur-sm border-2 border-purple-200 shadow-xl rounded-3xl overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-purple-600 to-blue-600 p-6">
+            <CardTitle className="text-2xl font-black text-white mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+              📅 Blog Post Calendar
             </CardTitle>
-            <p className="text-gray-300">
-              Dates with blog posts are marked with a blue dot.
+            <p className="text-purple-100 font-medium">
+              Dates with blog posts are marked with a purple dot.
             </p>
           </CardHeader>
-          <CardContent className="bg-gray-900 p-0 md:p-2 flex justify-center">
+          <CardContent className="bg-gradient-to-br from-purple-50 to-blue-50 p-6 flex justify-center">
             {" "}
             {/* Center calendar */}
             {isLoading ? (

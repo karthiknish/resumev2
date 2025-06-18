@@ -53,49 +53,57 @@ export default function SubscribersTab() {
   }, []);
 
   return (
-    <Card className="border-gray-700 bg-gray-900 text-white">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Mail className="w-5 h-5" /> Newsletter Subscribers (
-          {subscribers.length})
+    <Card className="bg-white/90 backdrop-blur-sm border-2 border-green-200 shadow-xl rounded-3xl overflow-hidden">
+      <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6">
+        <CardTitle className="flex items-center gap-3 text-2xl font-black" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+          <Mail className="w-6 h-6" /> 📧 Newsletter Subscribers ({subscribers.length})
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6 bg-gradient-to-br from-green-50 to-emerald-50">
         {isLoading && (
           <div className="flex justify-center items-center py-10">
-            <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+            <Loader2 className="h-8 w-8 animate-spin text-green-500" />
           </div>
         )}
         {error && !isLoading && (
-          <p className="text-red-400 text-center py-10">Error: {error}</p>
+          <div className="text-center py-10">
+            <div className="text-4xl mb-4">⚠️</div>
+            <p className="text-red-600 font-semibold">Error: {error}</p>
+          </div>
         )}
         {!isLoading && !error && subscribers.length === 0 && (
-          <p className="text-gray-400 text-center py-10">No subscribers yet.</p>
+          <div className="text-center py-12">
+            <div className="text-6xl mb-4">📧</div>
+            <h3 className="text-xl font-bold text-gray-800 mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+              No subscribers yet
+            </h3>
+            <p className="text-gray-600">Your newsletter is waiting for its first subscriber!</p>
+          </div>
         )}
         {!isLoading && !error && subscribers.length > 0 && (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-green-200 shadow-lg">
             <Table>
               <TableHeader>
-                <TableRow className="border-gray-700 hover:bg-gray-800">
-                  <TableHead className="text-gray-300">Email</TableHead>
-                  <TableHead className="text-gray-300">Subscribed On</TableHead>
+                <TableRow className="border-green-200 hover:bg-green-50">
+                  <TableHead className="text-green-700 font-bold text-lg">📧 Email</TableHead>
+                  <TableHead className="text-green-700 font-bold text-lg">📅 Subscribed On</TableHead>
                   {/* Add Actions column later if needed */}
-                  {/* <TableHead className="text-right text-gray-300">Actions</TableHead> */}
+                  {/* <TableHead className="text-right text-green-700">Actions</TableHead> */}
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {subscribers.map((subscriber) => (
                   <TableRow
                     key={subscriber._id}
-                    className="border-gray-800 hover:bg-gray-800/50"
+                    className="border-green-100 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 transition-all duration-300"
                   >
-                    <TableCell className="font-medium">
+                    <TableCell className="font-semibold text-gray-800 py-4">
                       {subscriber.email}
                     </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1 text-gray-400">
-                        <CalendarDays className="w-4 h-4" />
-                        {formatDate(subscriber.subscribedAt)}
+                    <TableCell className="py-4">
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <CalendarDays className="w-4 h-4 text-green-500" />
+                        <span className="font-medium">{formatDate(subscriber.subscribedAt)}</span>
                       </div>
                     </TableCell>
                     {/* Add Action buttons later if needed */}

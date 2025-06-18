@@ -35,8 +35,8 @@ const PomodoroTab = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-6 text-white">
-        Pomodoro Productivity
+      <h2 className="text-3xl font-black mb-8 bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+        🍅 Pomodoro Productivity
       </h2>
       {/* Render the Pomodoro Timer */}
       <PomodoroTimer />
@@ -44,9 +44,9 @@ const PomodoroTab = () => {
       {/* Additional Features */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Weekly Pomodoros Bar Chart */}
-        <div className="bg-gray-800/50 backdrop-blur-sm p-4 rounded-lg shadow border border-gray-700/50">
-          <h3 className="text-lg font-medium text-white mb-2">
-            Weekly Pomodoros
+        <div className="bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-xl border-2 border-red-200">
+          <h3 className="text-lg font-bold text-red-700 mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+            📊 Weekly Pomodoros
           </h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">

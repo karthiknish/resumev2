@@ -195,193 +195,279 @@ export default function FreelancerAdvantage() {
           content="Discover why hiring a freelance web developer provides better value, faster results, and more personalized service than traditional agencies."
         />
         <meta property="og:type" content="website" />
+        
+        {/* Google Fonts */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="true"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
       </Head>
 
       <PageContainer className="overflow-hidden">
-        {/* Hero Section with Animated Background */}
-        <div className="relative py-20 md:py-32">
-          <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
+        <div className="min-h-screen relative" style={{ fontFamily: "Inter, sans-serif" }}>
+          {/* Modern Gradient Background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50"></div>
+          
+          {/* Decorative Color Splashes */}
+          <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-purple-200/20 to-pink-200/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+          <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-blue-200/20 to-cyan-200/20 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
+          <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-green-200/20 to-emerald-200/20 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2"></div>
+          <div className="absolute bottom-0 right-0 w-88 h-88 bg-gradient-to-tl from-orange-200/20 to-yellow-200/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
 
-          <div className="container mx-auto px-4 relative z-10">
-            <motion.div
-              className="text-center max-w-4xl mx-auto"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
-                  Direct. Fast. Cost-Effective.
-                </span>
-                <br />
-                <span className="text-white">
-                  Why Freelancers Build Better Websites
-                </span>
-              </h1>
-
-              <p className="text-xl text-gray-300 mb-10 max-w-3xl mx-auto">
-                Skip the agency markup and connect directly with the talent
-                building your website. Get faster turnarounds, personalized
-                attention, and exceptional results at a fraction of the cost.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <motion.button
-                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-lg text-white font-semibold shadow-xl hover:shadow-blue-500/20 transition duration-300"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleContactClick}
+          {/* Hero Section */}
+          <div className="relative z-10 py-20 md:py-32">
+            <div className="container mx-auto px-4">
+              <motion.div
+                className="text-center max-w-5xl mx-auto"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-100 to-purple-100 border border-blue-200 rounded-full text-blue-700 text-sm font-semibold mb-8 shadow-lg"
                 >
-                  Get Started Today
-                </motion.button>
+                  <motion.span
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    className="text-xl"
+                  >
+                    💼
+                  </motion.span>
+                  <span>Freelancer Advantage</span>
+                </motion.div>
 
-                <motion.a
-                  href="#benefits"
-                  className="px-8 py-4 bg-gray-800/80 hover:bg-gray-700/80 rounded-lg text-white font-semibold shadow-lg transition duration-300"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  Learn More
-                </motion.a>
-              </div>
-            </motion.div>
+                <h1 className="text-5xl md:text-7xl font-black text-gray-900 mb-8 leading-tight" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                  <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">
+                    Direct. Fast. Cost-Effective.
+                  </span>
+                  <br />
+                  <span className="text-gray-800">
+                    Why Freelancers Build Better Websites
+                  </span>
+                </h1>
+
+                <div className="w-32 h-2 bg-gradient-to-r from-blue-400 to-purple-400 mx-auto mb-10 rounded-full shadow-lg"></div>
+
+                <p className="text-xl text-gray-700 mb-12 max-w-4xl mx-auto font-medium leading-relaxed">
+                  Skip the agency markup and connect directly with the talent
+                  building your website. Get faster turnarounds, personalized
+                  attention, and exceptional results at a fraction of the cost.
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                  <motion.button
+                    className="px-10 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-2xl text-white font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center gap-3"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleContactClick}
+                  >
+                    <span className="text-xl">🚀</span>
+                    Get Started Today
+                    <motion.span
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                    >
+                      →
+                    </motion.span>
+                  </motion.button>
+
+                  <motion.a
+                    href="#benefits"
+                    className="px-10 py-4 bg-white/90 backdrop-blur-sm border-2 border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-3"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <span className="text-xl">💡</span>
+                    Learn More
+                  </motion.a>
+                </div>
+              </motion.div>
+            </div>
           </div>
-        </div>
 
-        {/* Main Benefits Section */}
-        <div id="benefits" className="py-20 bg-black/80 backdrop-blur-sm">
-          <div className="container mx-auto px-4">
-            <motion.div
-              className="text-center mb-16"
-              variants={fadeInUp}
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true }}
-            >
-              <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-                Why Choose a <span className="text-blue-400">Freelancer</span>{" "}
-                Over an Agency?
-              </h2>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                Make the smart choice for your business website by going direct
-                to the source.
-              </p>
-            </motion.div>
-
-            <motion.div
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-              variants={staggerContainer}
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true }}
-            >
-              {/* Benefit Card 1 */}
+          {/* Main Benefits Section */}
+          <div id="benefits" className="relative py-20">
+            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm"></div>
+            <div className="relative z-10 container mx-auto px-4">
               <motion.div
-                className="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-xl shadow-xl"
+                className="text-center mb-16"
                 variants={fadeInUp}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true }}
               >
-                <div className="bg-blue-600/20 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6">
-                  <FaDollarSign className="text-blue-400 text-3xl" />
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  Lower Costs
-                </h3>
-                <p className="text-gray-300">
-                  Freelancers have minimal overhead and no agency markup fees.
-                  You're paying for the talent, not the fancy office or project
-                  managers.
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-purple-100 to-blue-100 border border-purple-200 rounded-full text-purple-700 text-sm font-semibold mb-6 shadow-lg"
+                >
+                  <motion.span
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    className="text-xl"
+                  >
+                    ⚡
+                  </motion.span>
+                  <span>Key Benefits</span>
+                </motion.div>
+                
+                <h2 className="text-4xl md:text-6xl font-black text-gray-900 mb-6" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                  Why Choose a{" "}
+                  <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    Freelancer
+                  </span>{" "}
+                  Over an Agency?
+                </h2>
+                <div className="w-32 h-2 bg-gradient-to-r from-blue-400 to-purple-400 mx-auto mb-8 rounded-full shadow-lg"></div>
+                <p className="text-xl text-gray-700 max-w-4xl mx-auto font-medium leading-relaxed">
+                  Make the smart choice for your business website by going direct
+                  to the source.
                 </p>
               </motion.div>
 
-              {/* Benefit Card 2 */}
               <motion.div
-                className="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-xl shadow-xl"
-                variants={fadeInUp}
+                className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+                variants={staggerContainer}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true }}
               >
-                <div className="bg-blue-600/20 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6">
-                  <FaComments className="text-blue-400 text-3xl" />
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  Direct Communication
-                </h3>
-                <p className="text-gray-300">
-                  No more message relay through account managers. Speak directly
-                  with the person building your website for clearer
-                  communication.
-                </p>
-              </motion.div>
+                {/* Benefit Card 1 */}
+                <motion.div
+                  className="bg-white/90 backdrop-blur-sm border-2 border-green-200 p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
+                  variants={fadeInUp}
+                  whileHover={{ scale: 1.02, y: -5 }}
+                >
+                  <div className="bg-gradient-to-br from-green-400 to-emerald-500 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6 shadow-lg">
+                    <FaDollarSign className="text-white text-3xl" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                    Lower Costs
+                  </h3>
+                  <p className="text-gray-700 font-medium leading-relaxed">
+                    Freelancers have minimal overhead and no agency markup fees.
+                    You're paying for the talent, not the fancy office or project
+                    managers.
+                  </p>
+                </motion.div>
 
-              {/* Benefit Card 3 */}
-              <motion.div
-                className="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-xl shadow-xl"
-                variants={fadeInUp}
-              >
-                <div className="bg-blue-600/20 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6">
-                  <FaRocket className="text-blue-400 text-3xl" />
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  Faster Delivery
-                </h3>
-                <p className="text-gray-300">
-                  Freelancers don't have agency bureaucracy. Decisions and
-                  changes happen quickly, cutting project time by weeks or even
-                  months.
-                </p>
-              </motion.div>
+                {/* Benefit Card 2 */}
+                <motion.div
+                  className="bg-white/90 backdrop-blur-sm border-2 border-blue-200 p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
+                  variants={fadeInUp}
+                  whileHover={{ scale: 1.02, y: -5 }}
+                >
+                  <div className="bg-gradient-to-br from-blue-400 to-cyan-500 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6 shadow-lg">
+                    <FaComments className="text-white text-3xl" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                    Direct Communication
+                  </h3>
+                  <p className="text-gray-700 font-medium leading-relaxed">
+                    No more message relay through account managers. Speak directly
+                    with the person building your website for clearer
+                    communication.
+                  </p>
+                </motion.div>
 
-              {/* Benefit Card 4 */}
-              <motion.div
-                className="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-xl shadow-xl"
-                variants={fadeInUp}
-              >
-                <div className="bg-blue-600/20 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6">
-                  <FaHandshake className="text-blue-400 text-3xl" />
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  Personal Attention
-                </h3>
-                <p className="text-gray-300">
-                  Freelancers take on fewer clients than agencies, ensuring your
-                  project gets the focused attention it deserves.
-                </p>
-              </motion.div>
+                {/* Benefit Card 3 */}
+                <motion.div
+                  className="bg-white/90 backdrop-blur-sm border-2 border-purple-200 p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
+                  variants={fadeInUp}
+                  whileHover={{ scale: 1.02, y: -5 }}
+                >
+                  <div className="bg-gradient-to-br from-purple-400 to-pink-500 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6 shadow-lg">
+                    <FaRocket className="text-white text-3xl" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                    Faster Delivery
+                  </h3>
+                  <p className="text-gray-700 font-medium leading-relaxed">
+                    Freelancers don't have agency bureaucracy. Decisions and
+                    changes happen quickly, cutting project time by weeks or even
+                    months.
+                  </p>
+                </motion.div>
 
-              {/* Benefit Card 5 */}
-              <motion.div
-                className="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-xl shadow-xl"
-                variants={fadeInUp}
-              >
-                <div className="bg-blue-600/20 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6">
-                  <FaLightbulb className="text-blue-400 text-3xl" />
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  Creative Freedom
-                </h3>
-                <p className="text-gray-300">
-                  Freelancers aren't bound by rigid agency processes, allowing
-                  for more creative approaches and innovative solutions to your
-                  challenges.
-                </p>
-              </motion.div>
+                {/* Benefit Card 4 */}
+                <motion.div
+                  className="bg-white/90 backdrop-blur-sm border-2 border-orange-200 p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
+                  variants={fadeInUp}
+                  whileHover={{ scale: 1.02, y: -5 }}
+                >
+                  <div className="bg-gradient-to-br from-orange-400 to-red-500 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6 shadow-lg">
+                    <FaHandshake className="text-white text-3xl" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                    Personal Attention
+                  </h3>
+                  <p className="text-gray-700 font-medium leading-relaxed">
+                    Freelancers take on fewer clients than agencies, ensuring your
+                    project gets the focused attention it deserves.
+                  </p>
+                </motion.div>
 
-              {/* Benefit Card 6 */}
-              <motion.div
-                className="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-xl shadow-xl"
-                variants={fadeInUp}
-              >
-                <div className="bg-blue-600/20 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6">
-                  <FaBullseye className="text-blue-400 text-3xl" />
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  Specialized Expertise
-                </h3>
-                <p className="text-gray-300">
-                  Choose a freelancer with the exact skill set your project
-                  needs, rather than getting assigned whoever is available at an
-                  agency.
-                </p>
+                {/* Benefit Card 5 */}
+                <motion.div
+                  className="bg-white/90 backdrop-blur-sm border-2 border-yellow-200 p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
+                  variants={fadeInUp}
+                  whileHover={{ scale: 1.02, y: -5 }}
+                >
+                  <div className="bg-gradient-to-br from-yellow-400 to-orange-500 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6 shadow-lg">
+                    <FaLightbulb className="text-white text-3xl" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                    Creative Freedom
+                  </h3>
+                  <p className="text-gray-700 font-medium leading-relaxed">
+                    Freelancers aren't bound by rigid agency processes, allowing
+                    for more creative approaches and innovative solutions to your
+                    challenges.
+                  </p>
+                </motion.div>
+
+                {/* Benefit Card 6 */}
+                <motion.div
+                  className="bg-white/90 backdrop-blur-sm border-2 border-cyan-200 p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
+                  variants={fadeInUp}
+                  whileHover={{ scale: 1.02, y: -5 }}
+                >
+                  <div className="bg-gradient-to-br from-cyan-400 to-blue-500 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6 shadow-lg">
+                    <FaBullseye className="text-white text-3xl" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                    Specialized Expertise
+                  </h3>
+                  <p className="text-gray-700 font-medium leading-relaxed">
+                    Choose a freelancer with the exact skill set your project
+                    needs, rather than getting assigned whoever is available at an
+                    agency.
+                  </p>
+                </motion.div>
               </motion.div>
-            </motion.div>
+            </div>
           </div>
         </div>
 

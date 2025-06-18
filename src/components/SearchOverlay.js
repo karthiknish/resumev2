@@ -31,8 +31,9 @@ const SearchOverlay = ({
       {/* Close Button */}
       <motion.button
         onClick={toggleSearch}
-        className="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors z-[111]"
+        className="absolute top-6 right-6 text-white/80 hover:text-white transition-colors z-[111] p-2 rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/20"
         aria-label="Close Search"
+        whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
       >
         <FaTimesCircle size={30} />
@@ -51,7 +52,7 @@ const SearchOverlay = ({
           placeholder="Search articles and bytes..."
           value={searchQuery}
           onChange={handleSearchChange}
-          className="w-full px-6 py-4 rounded-full bg-gray-800 text-white text-xl border border-gray-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          className="w-full px-6 py-4 rounded-full bg-white/90 backdrop-blur-sm text-gray-800 text-xl border-2 border-purple-200 focus:outline-none focus:border-purple-400 focus:ring-4 focus:ring-purple-200 placeholder:text-gray-500 font-medium shadow-xl transition-all duration-300"
           autoFocus
         />
       </motion.div>
@@ -67,8 +68,9 @@ const SearchOverlay = ({
           debouncedSearchQuery.trim().length >= 2 && (
             <div className="space-y-4">
               {isSearching && (
-                <div className="p-4 text-gray-400 text-center flex justify-center items-center gap-2">
-                  <Loader2 className="h-5 w-5 animate-spin" /> Searching...
+                <div className="p-6 text-purple-600 text-center flex justify-center items-center gap-3 bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-purple-200 shadow-lg">
+                  <Loader2 className="h-6 w-6 animate-spin text-purple-500" /> 
+                  <span className="font-semibold text-lg">Searching...</span>
                 </div>
               )}
               {!isSearching &&
@@ -81,21 +83,21 @@ const SearchOverlay = ({
                     }
                     key={result._id}
                     onClick={handleResultClick}
-                    className="block p-5 bg-gray-800/60 rounded-lg hover:bg-gray-700/80 transition-colors group"
+                    className="block p-6 bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-purple-200 hover:bg-white hover:border-purple-300 hover:shadow-xl transition-all duration-300 group"
                   >
-                    <p className="font-semibold text-white truncate text-lg group-hover:text-blue-400 transition-colors">
+                    <p className="font-bold text-gray-900 truncate text-lg group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-blue-600 group-hover:bg-clip-text transition-all duration-300">
                       {result.type === "blog" ? result.title : result.headline}
-                      <span className="ml-2 text-xs uppercase font-normal text-gray-400 bg-gray-700 px-1.5 py-0.5 rounded">
+                      <span className="ml-2 text-xs uppercase font-semibold text-purple-600 bg-gradient-to-r from-purple-100 to-blue-100 px-2 py-1 rounded-full border border-purple-200">
                         {result.type}
                       </span>
                     </p>
                     {result.type === "blog" && result.description && (
-                      <p className="text-sm text-gray-400 truncate mt-1">
+                      <p className="text-sm text-gray-600 truncate mt-2 leading-relaxed">
                         {result.description}
                       </p>
                     )}
                     {result.type === "byte" && result.body && (
-                      <p className="text-sm text-gray-400 truncate mt-1">
+                      <p className="text-sm text-gray-600 truncate mt-2 leading-relaxed">
                         {result.body}
                       </p>
                     )}
@@ -104,8 +106,24 @@ const SearchOverlay = ({
               {!isSearching &&
                 searchResults.length === 0 &&
                 debouncedSearchQuery.trim().length >= 2 && (
-                  <div className="p-4 text-gray-400 text-center">
-                    No results found for &quot;{debouncedSearchQuery}&quot;.
+                  <div className="p-8 text-center bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-purple-200 shadow-lg">
+                    <motion.div
+                      animate={{ rotate: [0, 10, -10, 0] }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                      className="text-4xl mb-4"
+                    >
+                      🔍
+                    </motion.div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                      No results found
+                    </h3>
+                    <p className="text-gray-600">
+                      No results found for &quot;<span className="font-semibold text-purple-600">{debouncedSearchQuery}</span>&quot;.
+                    </p>
                   </div>
                 )}
             </div>
@@ -114,14 +132,36 @@ const SearchOverlay = ({
         {!isSearching &&
           debouncedSearchQuery.trim().length > 0 &&
           debouncedSearchQuery.trim().length < 2 && (
-            <div className="p-4 text-gray-500 text-center">
-              Keep typing to search...
+            <div className="p-6 text-center bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-purple-200 shadow-lg">
+              <span className="text-2xl mb-2 block">⌨️</span>
+              <p className="text-gray-600 font-medium">
+                Keep typing to search...
+              </p>
             </div>
           )}
         {/* Initial state prompt */}
         {!isSearching && debouncedSearchQuery.trim().length === 0 && (
-          <div className="p-4 text-gray-500 text-center">
-            Search for blog posts or bytes.
+          <div className="p-8 text-center bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-purple-200 shadow-lg">
+            <motion.div
+              animate={{ 
+                scale: [1, 1.1, 1],
+                rotate: [0, 5, -5, 0] 
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="text-4xl mb-4"
+            >
+              🔍
+            </motion.div>
+            <h3 className="text-xl font-bold text-gray-800 mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+              Start your search
+            </h3>
+            <p className="text-gray-600">
+              Search for blog posts or bytes to discover content.
+            </p>
           </div>
         )}
       </motion.div>
