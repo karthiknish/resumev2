@@ -188,7 +188,7 @@ export default function Nav() {
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="container mx-auto px-6 py-5">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 md:py-5">
           <div className="flex justify-between items-center">
             <FadeIn delay={0.1}>
               <Link href="/" className="flex items-center group">
@@ -200,9 +200,11 @@ export default function Nav() {
                   <Image
                     src="/Logo.png"
                     alt="Logo"
-                    width={55}
-                    height={55}
-                    className="mr-3"
+                    width={56}
+                    height={56}
+                    sizes="(max-width: 640px) 40px, (max-width: 768px) 48px, 56px"
+                    className="mr-2 sm:mr-3 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14"
+                    priority
                   />
                   <motion.span
                     className="absolute -top-1 -right-1 text-xl opacity-0 group-hover:opacity-100 transition-opacity"
@@ -220,14 +222,14 @@ export default function Nav() {
             </FadeIn>
 
             {/* Desktop Menu & Search Icon */}
-            <div className="hidden md:flex items-center space-x-6">
+            <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
               {/* Regular Nav Links */}
               {navLinks.map((link) => (
                 <SlideInRight key={link.href} delay={link.delay}>
                   <HoverCard scale={1.05}>
                     <Link
                       href={link.href}
-                      className={`text-lg font-semibold relative group ${
+                      className={`text-base lg:text-lg font-semibold relative group ${
                         (link.href === "/" && router.pathname === "/") || // Home check
                         (link.href !== "/" && // Exclude home for startsWith checks
                           (router.pathname === link.href || // Exact match
@@ -296,17 +298,17 @@ export default function Nav() {
               {/* Search Icon */}
               <motion.button
                 onClick={toggleSearch}
-                className="text-gray-700 hover:text-purple-600 transition-all duration-300 p-3 rounded-xl hover:bg-purple-100 group"
+                className="text-gray-700 hover:text-purple-600 transition-all duration-300 p-2 lg:p-3 rounded-xl hover:bg-purple-100 group"
                 aria-label="Open Search"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <FaSearch size={22} className="group-hover:rotate-12 transition-transform duration-300" />
+                <FaSearch className="w-5 h-5 lg:w-6 lg:h-6 group-hover:rotate-12 transition-transform duration-300" />
               </motion.button>
             </div>
 
             {/* Mobile Menu Button & Theme Switcher */}
-            <motion.div className="md:hidden flex items-center space-x-3">
+            <motion.div className="md:hidden flex items-center space-x-2 sm:space-x-3">
               {/* Search Icon (Mobile) */}
               <motion.button
                 onClick={toggleSearch}
@@ -315,17 +317,17 @@ export default function Nav() {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <FaSearch size={24} />
+                <FaSearch className="w-5 h-5 sm:w-6 sm:h-6" />
               </motion.button>
               {/* Hamburger Icon */}
               <motion.button
                 onClick={toggleMenu}
-                className="text-gray-700 text-3xl p-2 rounded-xl hover:bg-purple-100 hover:text-purple-600 transition-all duration-300"
+                className="text-gray-700 p-2 rounded-xl hover:bg-purple-100 hover:text-purple-600 transition-all duration-300"
                 aria-label={isOpen ? "Close menu" : "Open menu"}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {isOpen ? <FaTimes /> : <FaBars />}
+                {isOpen ? <FaTimes className="w-6 h-6 sm:w-7 sm:h-7" /> : <FaBars className="w-6 h-6 sm:w-7 sm:h-7" />}
               </motion.button>
             </motion.div>
           </div>
@@ -337,20 +339,19 @@ export default function Nav() {
         {isOpen && (
           <motion.div
             id="mobile-nav"
-            className="md:hidden bg-gradient-to-br from-purple-50 via-white to-blue-50 text-gray-800 pt-8 pb-8 shadow-2xl z-[100] fixed top-[88px] left-0 right-0 h-[calc(100vh-88px)] w-full overflow-y-auto border-t-2 border-purple-100"
+            className="md:hidden bg-gradient-to-br from-purple-50 via-white to-blue-50 text-gray-800 pt-6 sm:pt-8 pb-6 sm:pb-8 shadow-2xl z-[100] fixed top-[72px] sm:top-[80px] md:top-[88px] left-0 right-0 h-[calc(100vh-72px)] sm:h-[calc(100vh-80px)] md:h-[calc(100vh-88px)] w-full overflow-y-auto border-t-2 border-purple-100"
             initial={{ opacity: 0, x: "100%" }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex flex-col h-full pt-4 items-center">
-              {" "}
+            <div className="flex flex-col h-full pt-2 sm:pt-4 items-center px-4">
               {/* Centered items */}
               {navLinks.map((link) => (
                 <motion.a
                   key={link.href}
                   href={link.href}
-                  className={`block py-4 px-6 text-center text-2xl font-bold rounded-2xl mx-4 mb-2 transition-all duration-300 ${
+                  className={`block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-bold rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-all duration-300 w-full max-w-xs ${
                     (link.href === "/" && router.pathname === "/") ||
                     (link.href !== "/" &&
                       (router.pathname === link.href ||
@@ -374,7 +375,7 @@ export default function Nav() {
                   {session?.user?.role === "admin" && (
                     <motion.a
                       href="/admin"
-                      className={`block py-4 px-6 text-center text-2xl font-bold rounded-2xl mx-4 mb-2 transition-all duration-300 ${
+                      className={`block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-bold rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-all duration-300 w-full max-w-xs ${
                         router.pathname.startsWith("/admin")
                           ? "text-transparent bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text bg-purple-100"
                           : "text-gray-800 hover:bg-purple-100 hover:text-purple-600"
@@ -389,7 +390,7 @@ export default function Nav() {
 
                   <motion.a
                     href="#"
-                    className="block py-4 px-6 text-center text-2xl font-bold rounded-2xl mx-4 mb-2 transition-all duration-300 text-gray-800 hover:bg-purple-100 hover:text-purple-600"
+                    className="block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-bold rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-all duration-300 w-full max-w-xs text-gray-800 hover:bg-purple-100 hover:text-purple-600"
                     onClick={() => {
                       handleSignOut();
                       handleLinkClick();

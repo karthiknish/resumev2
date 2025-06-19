@@ -180,7 +180,7 @@ export default function Contact() {
                 >
                   📅
                 </motion.span>
-                <span className="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent text-center sm:text-left">
                   Schedule a Consultation
                 </span>
                 <motion.span
