@@ -119,10 +119,10 @@ export default function CommentsSection({ blogPostId }) {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
       viewport={{ once: true }}
-      className="mt-16 pt-12 border-t border-purple-200 bg-white/50 backdrop-blur-sm rounded-3xl p-8"
+      className="mt-16 pt-8 sm:pt-12 border-t border-purple-200 bg-white/50 backdrop-blur-sm rounded-3xl p-4 sm:p-6 md:p-8"
     >
       <motion.h2
-        className="text-4xl md:text-5xl font-black mb-8 flex items-center gap-4"
+        className="text-3xl sm:text-4xl md:text-5xl font-black mb-6 sm:mb-8 flex flex-wrap items-center gap-3 sm:gap-4"
         style={{ fontFamily: "Space Grotesk, sans-serif" }}
         initial={{ opacity: 0, x: -20 }}
         whileInView={{ opacity: 1, x: 0 }}
@@ -143,7 +143,7 @@ export default function CommentsSection({ blogPostId }) {
         >
           💬
         </motion.span>
-        <span className="bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 px-4 py-2 rounded-full text-xl font-bold">
+        <span className="bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 px-3 sm:px-4 py-1 sm:py-2 rounded-full text-lg sm:text-xl font-bold">
           {comments.length}
         </span>
       </motion.h2>
@@ -151,14 +151,14 @@ export default function CommentsSection({ blogPostId }) {
       {/* Comment Submission Form - Always visible */}
       <motion.form
         onSubmit={handleCommentSubmit}
-        className="mb-12 bg-white/80 backdrop-blur-sm p-8 rounded-3xl border-2 border-purple-200 shadow-xl"
+        className="mb-8 sm:mb-12 bg-white/80 backdrop-blur-sm p-4 sm:p-6 md:p-8 rounded-3xl border-2 border-purple-200 shadow-xl"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
         viewport={{ once: true }}
       >
         <h3
-          className="text-2xl font-bold mb-6 flex items-center gap-3 text-gray-900"
+          className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3 text-gray-900"
           style={{ fontFamily: "Space Grotesk, sans-serif" }}
         >
           Share your thoughts
@@ -177,14 +177,14 @@ export default function CommentsSection({ blogPostId }) {
         {/* Show Name input only if not logged in */}
         {status === "unauthenticated" && (
           <motion.div
-            className="mb-6"
+            className="mb-4 sm:mb-6"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
             <label
               htmlFor="anonymousName"
-              className="block text-lg font-semibold text-gray-700 mb-3 flex items-center gap-2"
+              className="block text-base sm:text-lg font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2"
             >
               <span className="text-xl">👤</span>
               Name (Optional)
@@ -197,7 +197,7 @@ export default function CommentsSection({ blogPostId }) {
               placeholder="Your Name"
               maxLength={50}
               disabled={isSubmitting}
-              className="w-full sm:w-1/2 bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 text-gray-800 placeholder-gray-500 focus:ring-4 focus:ring-purple-200 focus:border-purple-400 rounded-2xl px-6 py-4 text-lg font-medium transition-all duration-300"
+              className="w-full sm:w-1/2 bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 text-gray-800 placeholder-gray-500 focus:ring-4 focus:ring-purple-200 focus:border-purple-400 rounded-2xl px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg font-medium transition-all duration-300"
             />
           </motion.div>
         )}
@@ -206,9 +206,9 @@ export default function CommentsSection({ blogPostId }) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="mb-6"
+          className="mb-4 sm:mb-6"
         >
-          <label className="block text-lg font-semibold text-gray-700 mb-3 flex items-center gap-2">
+          <label className="block text-base sm:text-lg font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2">
             <span className="text-xl">💭</span>
             Your Comment
           </label>
@@ -223,7 +223,7 @@ export default function CommentsSection({ blogPostId }) {
             required
             maxLength={2000}
             disabled={isSubmitting || status === "loading"} // Disable if auth status is loading
-            className="w-full p-6 rounded-2xl bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 text-gray-800 placeholder-gray-500 focus:ring-4 focus:ring-purple-200 focus:border-purple-400 min-h-[120px] text-lg font-medium transition-all duration-300 resize-none"
+            className="w-full p-4 sm:p-6 rounded-2xl bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 text-gray-800 placeholder-gray-500 focus:ring-4 focus:ring-purple-200 focus:border-purple-400 min-h-[100px] sm:min-h-[120px] text-base sm:text-lg font-medium transition-all duration-300 resize-none"
             aria-label="New comment"
           />
         </motion.div>
@@ -235,7 +235,7 @@ export default function CommentsSection({ blogPostId }) {
           <motion.button
             type="submit"
             disabled={isSubmitting || !newComment.trim() || status === "loading"}
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 shadow-xl hover:shadow-2xl disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed flex items-center gap-3"
+            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-bold text-base sm:text-lg transition-all duration-300 shadow-xl hover:shadow-2xl disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed flex items-center gap-2 sm:gap-3"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -278,7 +278,7 @@ export default function CommentsSection({ blogPostId }) {
             animate={{ opacity: 1 }}
           >
             <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
-            <span className="ml-3 text-lg font-medium text-gray-600">Loading comments...</span>
+            <span className="ml-3 text-base sm:text-lg font-medium text-gray-600">Loading comments...</span>
           </motion.div>
         )}
         {error && !isLoading && (
@@ -287,7 +287,7 @@ export default function CommentsSection({ blogPostId }) {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <p className="text-red-600 font-medium text-lg flex items-center gap-2">
+            <p className="text-red-600 font-medium text-base sm:text-lg flex items-center gap-2">
               <span className="text-xl">⚠️</span>
               Error loading comments: {error}
             </p>
@@ -311,10 +311,10 @@ export default function CommentsSection({ blogPostId }) {
             >
               💬
             </motion.div>
-            <h4 className="text-2xl font-bold text-gray-800 mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+            <h4 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
               Be the first to comment!
             </h4>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-600 text-base sm:text-lg">
               Share your thoughts and start the conversation
             </p>
           </motion.div>
@@ -324,7 +324,7 @@ export default function CommentsSection({ blogPostId }) {
           comments.map((comment, index) => (
             <motion.div
               key={comment._id}
-              className="flex items-start space-x-6 group"
+              className="flex items-start space-x-3 sm:space-x-6 group"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -340,9 +340,9 @@ export default function CommentsSection({ blogPostId }) {
                     // Use comment.authorImage if available (set during creation), else default
                     src={comment.authorImage || "/avatars/default.png"}
                     alt={`${comment.authorName || "Anonymous"}'s avatar`}
-                    width={56}
-                    height={56}
-                    className="rounded-2xl border-4 border-purple-200 shadow-lg"
+                    width={48}
+                    height={48}
+                    className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl border-4 border-purple-200 shadow-lg"
                   />
                   <motion.div
                     className="absolute -bottom-1 -right-1 w-6 h-6 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full border-2 border-white flex items-center justify-center"
@@ -358,12 +358,12 @@ export default function CommentsSection({ blogPostId }) {
                 </div>
               </motion.div>
               <motion.div
-                className="flex-grow bg-white/80 backdrop-blur-sm p-6 rounded-3xl border-2 border-purple-200 shadow-lg group-hover:shadow-xl group-hover:border-purple-300 transition-all duration-300"
+                className="flex-grow bg-white/80 backdrop-blur-sm p-4 sm:p-6 rounded-3xl border-2 border-purple-200 shadow-lg group-hover:shadow-xl group-hover:border-purple-300 transition-all duration-300"
                 whileHover={{ y: -2 }}
               >
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-4 gap-2 sm:gap-0">
                   <motion.span
-                    className="font-bold text-xl text-gray-900 flex items-center gap-2"
+                    className="font-bold text-lg sm:text-xl text-gray-900 flex items-center gap-2"
                     style={{ fontFamily: "Space Grotesk, sans-serif" }}
                     whileHover={{ scale: 1.05 }}
                   >
@@ -371,7 +371,7 @@ export default function CommentsSection({ blogPostId }) {
                     {comment.authorName || "Anonymous"}
                   </motion.span>
                   <motion.span
-                    className="text-sm font-medium text-gray-500 bg-gradient-to-r from-purple-100 to-blue-100 px-3 py-1 rounded-full flex items-center gap-1"
+                    className="text-xs sm:text-sm font-medium text-gray-500 bg-gradient-to-r from-purple-100 to-blue-100 px-2 sm:px-3 py-1 rounded-full flex items-center gap-1"
                     whileHover={{ scale: 1.05 }}
                   >
                     <span className="text-xs">📅</span>
@@ -379,7 +379,7 @@ export default function CommentsSection({ blogPostId }) {
                   </motion.span>
                 </div>
                 <motion.p
-                  className="text-gray-700 whitespace-pre-wrap text-lg leading-relaxed"
+                  className="text-gray-700 whitespace-pre-wrap text-base sm:text-lg leading-relaxed"
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   transition={{ duration: 0.5, delay: 0.2 }}

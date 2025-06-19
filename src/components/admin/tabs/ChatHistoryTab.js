@@ -77,89 +77,178 @@ export default function ChatHistoryTab() {
   };
 
   return (
-    <Card className="bg-white/90 backdrop-blur-sm border-2 border-purple-200 shadow-xl rounded-3xl overflow-hidden">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <MessageSquare className="w-5 h-5" /> Chat History (
-          {chatHistories.length})
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+    >
+      <Card className="bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 shadow-xl rounded-3xl overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-purple-100 to-blue-100 border-b border-purple-200">
+          <CardTitle className="flex items-center gap-3 text-gray-800">
+            <div className="p-2 bg-white rounded-full shadow-md">
+              <MessageSquare className="w-5 h-5 text-purple-600" />
+            </div>
+            <span className="font-bold">Chat Conversations</span>
+            <Badge className="bg-purple-600 text-white hover:bg-purple-700">
+              {chatHistories.length} {chatHistories.length === 1 ? 'conversation' : 'conversations'}
+            </Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
         {isLoading && (
-          <div className="flex justify-center items-center py-10">
-            <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
-          </div>
+          <motion.div 
+            className="flex flex-col justify-center items-center py-16"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <div className="relative">
+              <Loader2 className="h-12 w-12 animate-spin text-purple-600" />
+              <Sparkles className="h-6 w-6 text-purple-400 absolute -top-2 -right-2 animate-pulse" />
+            </div>
+            <p className="text-gray-600 font-medium mt-4">Loading chat conversations...</p>
+          </motion.div>
         )}
         {error && !isLoading && (
-          <p className="text-red-400 text-center py-10">Error: {error}</p>
+          <motion.div 
+            className="text-center py-16"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            <div className="bg-red-50 border border-red-200 rounded-2xl p-6">
+              <div className="text-red-600 text-5xl mb-4">⚠️</div>
+              <p className="text-red-700 font-semibold text-lg mb-2">Unable to Load Conversations</p>
+              <p className="text-red-600">{error}</p>
+            </div>
+          </motion.div>
         )}
         {!isLoading && !error && chatHistories.length === 0 && (
-          <p className="text-gray-400 text-center py-10">
-            No chat history found.
-          </p>
+          <motion.div 
+            className="text-center py-16"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-8">
+              <div className="text-gray-400 text-6xl mb-4">💬</div>
+              <p className="text-gray-600 font-semibold text-xl mb-2">No Conversations Yet</p>
+              <p className="text-gray-500">Chat conversations will appear here once users start chatting with the AI.</p>
+            </div>
+          </motion.div>
         )}
         {!isLoading && !error && chatHistories.length > 0 && (
-          <Accordion type="single" collapsible className="w-full space-y-2">
-            {chatHistories.map((history, index) => (
-              <AccordionItem
-                key={history._id || index}
-                value={`item-${index}`}
-                className="border border-gray-700 rounded-md bg-gray-800/50 px-4"
-              >
-                <AccordionTrigger className="hover:no-underline">
-                  <div className="flex justify-between items-center w-full text-sm">
-                    <span className="flex items-center gap-2 font-medium text-gray-300">
-                      <User className="w-4 h-4" />{" "}
-                      {history.email || "Unknown User"}
-                    </span>
-                    <span className="flex items-center gap-1 text-xs text-gray-400">
-                      <Clock className="w-3 h-3" />{" "}
-                      {formatDate(history.timestamp || history.lastUpdated)}
-                    </span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="pt-4 text-gray-300">
-                  <div className="space-y-3 max-h-60 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
-                    {history.messages?.map((msg, msgIndex) => {
-                      if (!msg) {
-                        console.warn(
-                          `Skipping null/undefined message at index ${msgIndex} in history ${history._id}`
-                        );
-                        return null;
-                      }
-                      const isUser = msg.role === "user";
-                      return (
-                        <div
-                          key={msgIndex}
-                          className={`flex ${
-                            isUser ? "justify-end" : "justify-start"
-                          }`}
-                        >
-                          <div // Changed Badge to div for more control
-                            className={`max-w-[80%] whitespace-normal text-left px-3 py-1.5 rounded-lg border ${
-                              isUser
-                                ? "bg-green-600 text-white rounded-br-none border-green-500" // User styles
-                                : "bg-gray-700 text-gray-100 rounded-bl-none border-gray-600" // AI styles
-                            }`}
-                          >
-                            {renderMessageContent(msg)}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, staggerChildren: 0.1 }}
+          >
+            <Accordion type="single" collapsible className="w-full space-y-4">
+              {chatHistories.map((history, index) => (
+                <motion.div
+                  key={history._id || index}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <AccordionItem
+                    value={`item-${index}`}
+                    className="border-2 border-purple-200 rounded-2xl bg-white shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
+                  >
+                    <AccordionTrigger className="hover:no-underline px-6 py-4 bg-gradient-to-r from-purple-50 to-blue-50 hover:from-purple-100 hover:to-blue-100 transition-all duration-300">
+                      <div className="flex justify-between items-center w-full">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-white rounded-full shadow-sm">
+                            <User className="w-4 h-4 text-purple-600" />
+                          </div>
+                          <div className="text-left">
+                            <p className="font-semibold text-gray-800">
+                              {history.email || "Anonymous User"}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              {history.messages?.length || 0} {(history.messages?.length || 0) === 1 ? 'message' : 'messages'}
+                            </p>
                           </div>
                         </div>
-                      );
-                    })}
-                  </div>
-                  {/* Display metadata if available */}
-                  <div className="mt-4 pt-3 border-t border-gray-700 text-xs text-gray-500 space-y-1">
-                    {history.device && <div>Device: {history.device}</div>}
-                    {history.browser && <div>Browser: {history.browser}</div>}
-                    {history.ip && <div>IP: {history.ip}</div>}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <Clock className="w-4 h-4" />
+                          <span>{formatDate(history.timestamp || history.lastUpdated)}</span>
+                        </div>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-6 pb-6">
+                      <div className="space-y-4 max-h-80 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-purple-300 scrollbar-track-purple-100">
+                        {history.messages?.map((msg, msgIndex) => {
+                          if (!msg) {
+                            console.warn(
+                              `Skipping null/undefined message at index ${msgIndex} in history ${history._id}`
+                            );
+                            return null;
+                          }
+                          const isUser = msg.role === "user";
+                          return (
+                            <motion.div
+                              key={msgIndex}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: msgIndex * 0.05 }}
+                              className={`flex items-start gap-3 ${
+                                isUser ? "justify-end" : "justify-start"
+                              }`}
+                            >
+                              {!isUser && (
+                                <div className="p-2 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full shadow-sm flex-shrink-0">
+                                  <Bot className="w-4 h-4 text-purple-600" />
+                                </div>
+                              )}
+                              <div
+                                className={`max-w-[75%] px-4 py-3 rounded-2xl shadow-sm ${
+                                  isUser
+                                    ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-br-md"
+                                    : "bg-white border border-gray-200 text-gray-800 rounded-bl-md"
+                                }`}
+                              >
+                                <div className="whitespace-pre-wrap break-words leading-relaxed">
+                                  {renderMessageContent(msg)}
+                                </div>
+                              </div>
+                              {isUser && (
+                                <div className="p-2 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full shadow-sm flex-shrink-0">
+                                  <User className="w-4 h-4 text-white" />
+                                </div>
+                              )}
+                            </motion.div>
+                          );
+                        })}
+                      </div>
+                      {/* Display metadata if available */}
+                      {(history.device || history.browser || history.ip) && (
+                        <div className="mt-6 pt-4 border-t border-gray-200">
+                          <div className="flex flex-wrap gap-2">
+                            {history.device && (
+                              <Badge variant="outline" className="text-xs bg-gray-50 text-gray-600 border-gray-300">
+                                📱 {history.device}
+                              </Badge>
+                            )}
+                            {history.browser && (
+                              <Badge variant="outline" className="text-xs bg-gray-50 text-gray-600 border-gray-300">
+                                🌐 {history.browser}
+                              </Badge>
+                            )}
+                            {history.ip && (
+                              <Badge variant="outline" className="text-xs bg-gray-50 text-gray-600 border-gray-300">
+                                🌍 {history.ip}
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
+                </motion.div>
+              ))}
+            </Accordion>
+          </motion.div>
         )}
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }

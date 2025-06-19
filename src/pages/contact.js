@@ -52,17 +52,17 @@ export default function Contact() {
       </Head>
       <PageContainer>
         <div
-          className="min-h-screen mt-24 bg-gradient-to-br from-purple-50 via-white to-blue-50 p-8 md:p-16 max-w-6xl mx-auto relative"
+          className="min-h-screen mt-24 bg-gradient-to-br from-purple-50 via-white to-blue-50 p-4 sm:p-6 md:p-8 lg:p-16 max-w-6xl mx-auto relative"
           style={{ fontFamily: "Inter, sans-serif" }}
         >
           <FadeIn>
-            <div className="text-center mb-16">
+            <div className="text-center mb-12 sm:mb-16">
               {/* Animated Introduction */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="inline-flex items-center gap-3 px-6 py-3 bg-white/80 backdrop-blur-sm border border-purple-200 rounded-full text-purple-700 text-sm font-semibold mb-8 shadow-lg"
+                className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 bg-white/80 backdrop-blur-sm border border-purple-200 rounded-full text-purple-700 text-xs sm:text-sm font-semibold mb-6 sm:mb-8 shadow-lg"
               >
                 <motion.span
                   animate={{ rotate: [0, 15, -15, 0] }}
@@ -97,7 +97,7 @@ export default function Contact() {
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight"
+                className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-6 sm:mb-8 leading-tight tracking-tight"
                 style={{ fontFamily: "Space Grotesk, sans-serif" }}
               >
                 <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
@@ -124,7 +124,7 @@ export default function Contact() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="text-2xl md:text-3xl text-gray-700 mb-12 max-w-4xl mx-auto leading-relaxed font-medium"
+                className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-700 mb-8 sm:mb-12 max-w-4xl mx-auto leading-relaxed font-medium px-2"
               >
                 Have a{" "}
                 <motion.span
@@ -157,13 +157,13 @@ export default function Contact() {
 
           {/* --- Booking Section Start --- */}
           <FadeIn delay={0.3}>
-            <section className="mt-16 bg-white/80 backdrop-blur-sm p-8 rounded-3xl shadow-2xl border-2 border-purple-200">
+            <section className="mt-12 sm:mt-16 bg-white/80 backdrop-blur-sm p-4 sm:p-6 md:p-8 rounded-3xl shadow-2xl border-2 border-purple-200">
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
-                className="text-5xl md:text-6xl font-black mb-6 flex items-center justify-center gap-6"
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 sm:mb-6 flex flex-wrap items-center justify-center gap-3 sm:gap-6"
                 style={{ fontFamily: "Space Grotesk, sans-serif" }}
               >
                 <motion.span
@@ -204,13 +204,13 @@ export default function Contact() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
                 viewport={{ once: true }}
-                className="text-gray-600 mb-8 text-xl max-w-3xl mx-auto text-center leading-relaxed font-medium"
+                className="text-gray-600 mb-6 sm:mb-8 text-base sm:text-lg md:text-xl max-w-3xl mx-auto text-center leading-relaxed font-medium px-2"
               >
                 Ready to discuss your project? Pick a time that works best for
                 you using the scheduler below. Let's grab a virtual coffee and
                 chat about your vision!
               </motion.p>
-              <div className="min-h-[400px] bg-gradient-to-br from-purple-50 to-blue-50 rounded-3xl flex items-center justify-center border-2 border-purple-200 shadow-inner">
+              <div className="min-h-[350px] sm:min-h-[400px] bg-gradient-to-br from-purple-50 to-blue-50 rounded-3xl flex items-center justify-center border-2 border-purple-200 shadow-inner">
                 {/* Cal.com Embed */}
                 <Cal
                   namespace="15min"
@@ -219,7 +219,7 @@ export default function Contact() {
                     width: "100%",
                     height: "100%",
                     overflow: "scroll",
-                    minHeight: "500px",
+                    minHeight: "450px",
                   }} // Added minHeight
                   config={{ layout: "month_view" }}
                 />
@@ -234,10 +234,10 @@ export default function Contact() {
           </FadeIn>
 
           <FadeIn delay={0.6}>
-            <section className="mt-16 bg-gradient-to-br from-purple-600 to-blue-600 p-12 rounded-3xl shadow-2xl text-white relative overflow-hidden">
+            <section className="mt-12 sm:mt-16 bg-gradient-to-br from-purple-600 to-blue-600 p-6 sm:p-8 md:p-12 rounded-3xl shadow-2xl text-white relative overflow-hidden">
               {/* Floating Elements */}
               <motion.div
-                className="absolute top-10 left-10 text-4xl opacity-30"
+                className="absolute top-6 left-6 sm:top-10 sm:left-10 text-3xl sm:text-4xl opacity-30"
                 animate={{
                   y: [0, -30, 0],
                   rotate: [0, 360],
@@ -251,7 +251,7 @@ export default function Contact() {
                 🌟
               </motion.div>
               <motion.div
-                className="absolute bottom-10 right-20 text-3xl opacity-25"
+                className="absolute bottom-6 right-6 sm:bottom-10 sm:right-20 text-2xl sm:text-3xl opacity-25"
                 animate={{
                   x: [0, 20, 0],
                   y: [0, -15, 0],
@@ -271,7 +271,7 @@ export default function Contact() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
-                className="text-5xl md:text-6xl font-black mb-8 flex items-center justify-center gap-6 relative z-10 text-center"
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-6 sm:mb-8 flex flex-wrap items-center justify-center gap-3 sm:gap-6 relative z-10 text-center"
                 style={{ fontFamily: "Space Grotesk, sans-serif" }}
               >
                 <motion.span
@@ -310,13 +310,13 @@ export default function Contact() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
                 viewport={{ once: true }}
-                className="text-2xl text-purple-100 mb-12 max-w-3xl mx-auto leading-relaxed font-medium text-center relative z-10"
+                className="text-lg sm:text-xl md:text-2xl text-purple-100 mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed font-medium text-center relative z-10 px-2"
               >
                 Whether you need a stunning website, a complex web application,
                 or technical consultation, I'm here to help turn your wildest
                 vision into reality. Let's make magic happen!
               </motion.p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 relative z-10">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12 relative z-10">
                 {[
                   {
                     icon: "⚡",
@@ -341,22 +341,22 @@ export default function Contact() {
                     transition={{ duration: 0.6, delay: index * 0.1 }}
                     viewport={{ once: true }}
                     whileHover={{ y: -10, scale: 1.05 }}
-                    className="bg-white/20 backdrop-blur-sm p-6 rounded-3xl border border-white/30 text-center hover:bg-white/30 transition-all duration-300"
+                    className="bg-white/20 backdrop-blur-sm p-4 sm:p-6 rounded-3xl border border-white/30 text-center hover:bg-white/30 transition-all duration-300"
                   >
                     <motion.div
-                      className="text-4xl mb-4"
+                      className="text-3xl sm:text-4xl mb-3 sm:mb-4"
                       whileHover={{ scale: 1.2, rotate: 10 }}
                       transition={{ duration: 0.3 }}
                     >
                       {item.icon}
                     </motion.div>
                     <h4
-                      className="text-xl font-bold text-white mb-3"
+                      className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3"
                       style={{ fontFamily: "Space Grotesk, sans-serif" }}
                     >
                       {item.title}
                     </h4>
-                    <p className="text-purple-100 leading-relaxed">
+                    <p className="text-purple-100 leading-relaxed text-sm sm:text-base">
                       {item.desc}
                     </p>
                   </motion.div>

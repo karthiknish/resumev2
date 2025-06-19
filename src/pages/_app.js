@@ -4,8 +4,7 @@ import Script from "next/script";
 import { useRouter } from "next/router";
 import React, { useEffect, useState, lazy, Suspense } from "react"; // Import React
 import ReactDOM from "react-dom"; // Import ReactDOM for react-axe
-import { Inter, Space_Grotesk } from "next/font/google";
-import Link from "next/link"; // Import Link for Cookie Banner
+import { Inter, Space_Grotesk } from "next/font/google"; // Import Link for Cookie Banner
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -13,7 +12,6 @@ import { SessionProvider } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "@/components/ui/sonner";
-import CookieConsentBanner from "@/components/CookieConsentBanner"; // Import the banner
 import { AnimatePresence } from "framer-motion"; // Import AnimatePresence
 
 // Dynamically import ChatBot
@@ -65,7 +63,8 @@ const toastOptions = {
       background: "#ffffff", // white
       color: "#1f2937", // gray-800
       border: "1px solid #e5e7eb", // gray-200
-      boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+      boxShadow:
+        "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
     },
     classNames: {
       toast:
@@ -95,8 +94,6 @@ const toastOptions = {
   },
 };
 
-const COOKIE_CONSENT_KEY = "user_cookie_consent_status";
-
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
@@ -105,46 +102,18 @@ export default function App({
   const [domLoaded, setDomLoaded] = useState(false);
   const [transitionType, setTransitionType] = useState("default");
   const [isPageLoading, setIsPageLoading] = useState(false);
-  const [consentStatus, setConsentStatus] = useState(null); // null | 'accepted' | 'declined'
-  const [showConsentBanner, setShowConsentBanner] = useState(false);
+  // null | 'accepted' | 'declined'
+
   const [isMounted, setIsMounted] = useState(false);
 
   // Determine if chatbot should be shown only after mounted
   const showChatbot = isMounted && !router.pathname.startsWith("/admin");
 
   // Check cookie consent on mount
-  useEffect(() => {
-    // Ensure this runs only client-side
-    const storedConsent = localStorage.getItem(COOKIE_CONSENT_KEY);
-    setConsentStatus(storedConsent); // Will be null if not set
-    // Only show banner if consent hasn't been given (neither accepted nor declined)
-    if (!storedConsent) {
-      setShowConsentBanner(true);
-    }
-  }, []);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
-  // Handle accepting cookies
-  const handleAcceptCookies = () => {
-    localStorage.setItem(COOKIE_CONSENT_KEY, "accepted");
-    setConsentStatus("accepted");
-    setShowConsentBanner(false);
-    console.log("Cookie Consent: Accepted");
-    // You might trigger loading analytics scripts here if needed
-    // Example: window.loadGoogleAnalytics?.();
-  };
-
-  // Handle declining cookies
-  const handleDeclineCookies = () => {
-    localStorage.setItem(COOKIE_CONSENT_KEY, "declined");
-    setConsentStatus("declined");
-    setShowConsentBanner(false);
-    console.log("Cookie Consent: Declined");
-    // Ensure non-essential scripts/cookies are disabled (requires separate logic)
-  };
 
   // Universal loading indicator for page transitions
   useEffect(() => {
@@ -284,7 +253,9 @@ export default function App({
   return (
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
-        <div className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased`}>
+        <div
+          className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased`}
+        >
           <Nav />
           {isMounted ? (
             <AnimatePresence mode="wait" initial={false}>
@@ -303,14 +274,8 @@ export default function App({
           {showChatbot && <ChatBot />}
           <Toaster richColors closeButton position="top-right" />
           {/* Show cookie consent banner if no consent has been given */}
-          {showConsentBanner && (
-            <CookieConsentBanner
-              onAccept={handleAcceptCookies}
-              onDecline={handleDeclineCookies}
-            />
-          )}
-          {/* Only render Analytics if consent is accepted */}
-          {consentStatus === "accepted" && <Analytics />}
+
+          <Analytics />
         </div>
       </QueryClientProvider>
     </SessionProvider>

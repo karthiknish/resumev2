@@ -253,14 +253,14 @@ const HomeScreen = () => {
       </Head>
 
       <div
-        className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50"
+        className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 overflow-x-hidden"
         style={{ fontFamily: "Inter, sans-serif" }}
       >
         {/* Hero Section */}
-        <section className="relative py-28 min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100">
+        <section className="relative py-28 min-h-screen flex items-center justify-center overflow-x-hidden bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100">
           {/* Animated Background Blobs */}
           <motion.div
-            className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-r from-purple-300 to-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-30"
+            className="absolute top-20 left-4 md:left-20 w-48 h-48 md:w-72 md:h-72 bg-gradient-to-r from-purple-300 to-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-30"
             animate={{
               scale: [1, 1.2, 1],
               x: [0, 50, 0],
@@ -273,7 +273,7 @@ const HomeScreen = () => {
             }}
           />
           <motion.div
-            className="absolute top-40 right-20 w-80 h-80 bg-gradient-to-r from-blue-300 to-cyan-300 rounded-full mix-blend-multiply filter blur-xl opacity-30"
+            className="absolute top-40 right-4 md:right-20 w-52 h-52 md:w-80 md:h-80 bg-gradient-to-r from-blue-300 to-cyan-300 rounded-full mix-blend-multiply filter blur-xl opacity-30"
             animate={{
               scale: [1, 1.1, 1],
               x: [0, -40, 0],
@@ -287,7 +287,7 @@ const HomeScreen = () => {
             }}
           />
           <motion.div
-            className="absolute bottom-20 left-1/2 w-96 h-96 bg-gradient-to-r from-green-300 to-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-20"
+            className="absolute bottom-20 left-1/2 w-60 h-60 md:w-96 md:h-96 bg-gradient-to-r from-green-300 to-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-20"
             animate={{
               scale: [1, 1.3, 1],
               x: [0, 30, 0],
@@ -303,7 +303,7 @@ const HomeScreen = () => {
 
           {/* Floating Tech Icons */}
           <motion.div
-            className="absolute top-32 left-32 text-6xl opacity-70"
+            className="absolute top-32 left-8 md:left-32 text-4xl md:text-6xl opacity-70"
             animate={{
               y: [0, -30, 0],
               rotate: [0, 10, -10, 0],
@@ -314,7 +314,7 @@ const HomeScreen = () => {
             💻
           </motion.div>
           <motion.div
-            className="absolute top-20 right-40 text-5xl opacity-60"
+            className="absolute top-20 right-8 md:right-40 text-3xl md:text-5xl opacity-60"
             animate={{
               y: [0, 20, 0],
               x: [0, 15, 0],
@@ -330,7 +330,7 @@ const HomeScreen = () => {
             🚀
           </motion.div>
           <motion.div
-            className="absolute bottom-40 left-40 text-4xl opacity-50"
+            className="absolute bottom-40 left-8 md:left-40 text-2xl md:text-4xl opacity-50"
             animate={{
               rotate: [0, 360],
               scale: [1, 1.2, 1],
@@ -340,7 +340,7 @@ const HomeScreen = () => {
             ⚛️
           </motion.div>
           <motion.div
-            className="absolute bottom-32 right-32 text-5xl opacity-60"
+            className="absolute bottom-32 right-8 md:right-32 text-3xl md:text-5xl opacity-60"
             animate={{
               scale: [1, 1.3, 1],
               y: [0, -15, 0],
@@ -356,7 +356,7 @@ const HomeScreen = () => {
             📱
           </motion.div>
           <motion.div
-            className="absolute top-1/2 left-20 text-3xl opacity-40"
+            className="absolute top-1/2 left-4 md:left-20 text-2xl md:text-3xl opacity-40"
             animate={{
               y: [0, -40, 0],
               x: [0, 20, 0],
@@ -372,7 +372,7 @@ const HomeScreen = () => {
             ✨
           </motion.div>
           <motion.div
-            className="absolute top-1/3 right-20 text-4xl opacity-50"
+            className="absolute top-1/3 right-4 md:right-20 text-2xl md:text-4xl opacity-50"
             animate={{
               scale: [1, 1.4, 1],
               rotate: [0, -20, 20, 0],
@@ -387,7 +387,7 @@ const HomeScreen = () => {
             🎨
           </motion.div>
 
-          <div className="max-w-6xl mx-auto px-6 relative z-10 text-center">
+          <div className="max-w-6xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 relative z-10 text-center">
             {/* Animated Introduction */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -429,7 +429,7 @@ const HomeScreen = () => {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight"
+              className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight"
               style={{ fontFamily: "Space Grotesk, sans-serif" }}
             >
               <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
@@ -461,7 +461,7 @@ const HomeScreen = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-2xl md:text-3xl text-gray-700 mb-8 max-w-4xl mx-auto leading-relaxed font-medium"
+              className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-700 mb-8 max-w-4xl mx-auto leading-relaxed font-medium"
             >
               I create{" "}
               <motion.span
@@ -515,7 +515,7 @@ const HomeScreen = () => {
               <Link href="/contact">
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-10 py-5 text-xl font-bold rounded-2xl shadow-2xl hover:shadow-purple-300/50 transition-all duration-300 border-0"
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 sm:px-10 py-4 sm:py-5 text-lg sm:text-xl font-bold rounded-2xl shadow-2xl hover:shadow-purple-300/50 transition-all duration-300 border-0"
                 >
                   <motion.span
                     animate={{ rotate: [0, 10, 0] }}
@@ -536,7 +536,7 @@ const HomeScreen = () => {
               <Link href="#work">
                 <Button
                   size="lg"
-                  className="bg-white/90 backdrop-blur-sm border-2 border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300 px-10 py-5 text-xl font-bold rounded-2xl shadow-xl transition-all duration-300"
+                  className="bg-white/90 backdrop-blur-sm border-2 border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300 px-6 sm:px-10 py-4 sm:py-5 text-lg sm:text-xl font-bold rounded-2xl shadow-xl transition-all duration-300"
                 >
                   <motion.span
                     animate={{ scale: [1, 1.2, 1] }}
@@ -609,7 +609,7 @@ const HomeScreen = () => {
 
         {/* Capabilities Section */}
         <section className="py-20 md:py-32 bg-gradient-to-br from-white to-purple-50">
-          <div className="max-w-7xl mx-auto px-6">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
             <div className="text-center mb-20">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -712,7 +712,7 @@ const HomeScreen = () => {
           id="work"
           className="py-20 md:py-32 bg-gradient-to-br from-blue-50 to-cyan-50"
         >
-          <div className="max-w-7xl mx-auto px-6">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
             <div className="text-center mb-20">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -809,9 +809,7 @@ const HomeScreen = () => {
 
             <div className="text-center mt-16">
               <Link href="/projects">
-                <Button
-                  className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-8 py-4 text-lg font-bold rounded-2xl shadow-xl border-0"
-                >
+                <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-8 py-4 text-lg font-bold rounded-2xl shadow-xl border-0">
                   View all my creations
                   <ArrowRightIcon className="ml-2 h-5 w-5" />
                 </Button>
@@ -822,7 +820,7 @@ const HomeScreen = () => {
 
         {/* Testimonials Section */}
         <section className="py-20 md:py-32 bg-gradient-to-br from-pink-50 to-purple-50">
-          <div className="max-w-7xl mx-auto px-6">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
             <div className="text-center mb-20">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -920,7 +918,7 @@ const HomeScreen = () => {
 
         {/* Freelancer Advantage Section */}
         <section className="py-20 md:py-32 bg-gradient-to-br from-orange-50 to-yellow-50">
-          <div className="max-w-7xl mx-auto px-6">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
             <div className="text-center mb-20">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -992,7 +990,8 @@ const HomeScreen = () => {
                     Save 40-60%
                   </h3>
                   <p className="text-gray-700 text-lg">
-                    No agency markup or overhead costs. Get premium quality at freelance prices.
+                    No agency markup or overhead costs. Get premium quality at
+                    freelance prices.
                   </p>
                 </div>
               </motion.div>
@@ -1019,7 +1018,8 @@ const HomeScreen = () => {
                     2x Faster
                   </h3>
                   <p className="text-gray-700 text-lg">
-                    Direct communication and streamlined processes mean faster delivery.
+                    Direct communication and streamlined processes mean faster
+                    delivery.
                   </p>
                 </div>
               </motion.div>
@@ -1046,7 +1046,8 @@ const HomeScreen = () => {
                     Personal Touch
                   </h3>
                   <p className="text-gray-700 text-lg">
-                    Your project gets dedicated attention, not split focus across dozens of clients.
+                    Your project gets dedicated attention, not split focus
+                    across dozens of clients.
                   </p>
                 </div>
               </motion.div>
@@ -1056,7 +1057,7 @@ const HomeScreen = () => {
               <Link href="/freelancer-advantage">
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white px-10 py-5 text-xl font-bold rounded-2xl shadow-2xl hover:shadow-orange-300/50 transition-all duration-300 border-0"
+                  className="bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white px-6 sm:px-8 md:px-10 py-4 sm:py-5 text-lg sm:text-xl font-bold rounded-2xl shadow-2xl hover:shadow-orange-300/50 transition-all duration-300 border-0"
                 >
                   <motion.span
                     animate={{ rotate: [0, 15, 0] }}
@@ -1121,7 +1122,7 @@ const HomeScreen = () => {
             ✨
           </motion.div>
 
-          <div className="max-w-5xl mx-auto px-6 text-center relative z-10">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 text-center relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}

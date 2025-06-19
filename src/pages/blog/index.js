@@ -176,7 +176,7 @@ function Index({ initialPosts = [], categories = [] }) {
           <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-green-200/20 to-emerald-200/20 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2"></div>
           <div className="absolute bottom-0 right-0 w-88 h-88 bg-gradient-to-tl from-orange-200/20 to-yellow-200/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
           
-          <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 relative z-10">
             {/* Hero Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -219,7 +219,7 @@ function Index({ initialPosts = [], categories = [] }) {
               </motion.div>
               
               <h1
-                className="text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight"
+                className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight"
                 style={{ fontFamily: "Space Grotesk, sans-serif" }}
               >
                 <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
@@ -242,7 +242,7 @@ function Index({ initialPosts = [], categories = [] }) {
                 </motion.span>
               </h1>
               
-              <p className="text-2xl md:text-3xl text-gray-700 max-w-4xl mx-auto leading-relaxed font-medium">
+              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-700 max-w-4xl mx-auto leading-relaxed font-medium px-2">
                 Exploring the latest in{" "}
                 <motion.span
                   className="inline-block bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent font-bold"
@@ -270,25 +270,25 @@ function Index({ initialPosts = [], categories = [] }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-white/80 backdrop-blur-sm p-8 rounded-3xl shadow-xl border-2 border-purple-200 mb-12"
+              className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 md:p-8 rounded-3xl shadow-xl border-2 border-purple-200 mb-12"
             >
-              <div className="flex flex-col md:flex-row gap-6 items-center">
+              <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 items-center">
                 {/* Category Filter Dropdown */}
-                <div className="w-full md:w-auto flex items-center gap-3">
-                  <span className="text-gray-700 font-semibold text-lg whitespace-nowrap">
+                <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
+                  <span className="text-gray-700 font-semibold text-base sm:text-lg whitespace-nowrap">
                     🏷️ Filter by:
                   </span>
                   <Select
                     value={selectedCategory}
                     onValueChange={handleCategoryChange}
                   >
-                    <SelectTrigger className="w-56 bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 text-gray-800 font-medium rounded-2xl px-6 py-4 text-lg hover:border-purple-300 transition-all duration-300">
+                    <SelectTrigger className="w-full sm:w-48 lg:w-56 bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 text-gray-800 font-medium rounded-2xl px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg hover:border-purple-300 transition-all duration-300">
                       <SelectValue placeholder="All Categories" />
                     </SelectTrigger>
                     <SelectContent className="bg-white border-2 border-purple-200 text-gray-800 rounded-2xl shadow-xl">
-                      <SelectItem value="All" className="text-lg font-medium hover:bg-purple-50">All Categories</SelectItem>
+                      <SelectItem value="All" className="text-base sm:text-lg font-medium hover:bg-purple-50">All Categories</SelectItem>
                       {categories.map((category) => (
-                        <SelectItem key={category} value={category} className="text-lg font-medium hover:bg-purple-50">
+                        <SelectItem key={category} value={category} className="text-base sm:text-lg font-medium hover:bg-purple-50">
                           {category}
                         </SelectItem>
                       ))}
@@ -297,36 +297,36 @@ function Index({ initialPosts = [], categories = [] }) {
                 </div>
                 <div className="flex-grow"></div> {/* Spacer */}
                 {/* Search and Sort */}
-                <div className="flex flex-col md:flex-row gap-4 items-center w-full md:w-auto">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center w-full lg:w-auto">
                   <form
                     onSubmit={(e) => e.preventDefault()}
-                    className="flex w-full md:w-auto"
+                    className="flex w-full sm:w-auto"
                   >
                     <input
                       type="text"
                       value={searchTerm}
                       onChange={handleSearchChange}
                       placeholder="Search posts..."
-                      className="px-6 py-4 bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-l-blue-200 border-t-blue-200 border-b-blue-200 border-r-0 rounded-l-2xl text-gray-800 font-medium text-lg placeholder:text-gray-500 focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-400 w-full md:w-auto flex-grow transition-all duration-300"
+                      className="px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-l-blue-200 border-t-blue-200 border-b-blue-200 border-r-0 rounded-l-2xl text-gray-800 font-medium text-base sm:text-lg placeholder:text-gray-500 focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-400 w-full sm:w-auto flex-grow transition-all duration-300"
                     />
                     <motion.div
-                      className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-4 rounded-r-2xl flex items-center justify-center hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 cursor-pointer"
+                      className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-r-2xl flex items-center justify-center hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 cursor-pointer"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
-                      <FaSearch className="text-xl" />
+                      <FaSearch className="text-lg sm:text-xl" />
                     </motion.div>
                   </form>
                   <Select
                     onValueChange={handleSortChange}
                     defaultValue={sortOrder}
                   >
-                    <SelectTrigger className="w-full md:w-[220px] bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 text-gray-800 font-medium rounded-2xl px-6 py-4 text-lg hover:border-green-300 transition-all duration-300">
+                    <SelectTrigger className="w-full sm:w-[200px] lg:w-[220px] bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 text-gray-800 font-medium rounded-2xl px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg hover:border-green-300 transition-all duration-300">
                       <SelectValue placeholder="Sort by..." />
                     </SelectTrigger>
                     <SelectContent className="bg-white border-2 border-green-200 text-gray-800 rounded-2xl shadow-xl">
-                      <SelectItem value="desc" className="text-lg font-medium hover:bg-green-50">📅 Newest First</SelectItem>
-                      <SelectItem value="asc" className="text-lg font-medium hover:bg-green-50">📆 Oldest First</SelectItem>
+                      <SelectItem value="desc" className="text-base sm:text-lg font-medium hover:bg-green-50">📅 Newest First</SelectItem>
+                      <SelectItem value="asc" className="text-base sm:text-lg font-medium hover:bg-green-50">📆 Oldest First</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -464,12 +464,12 @@ function Index({ initialPosts = [], categories = [] }) {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
                     viewport={{ once: true }}
-                    className="flex justify-center items-center gap-3 mt-16"
+                    className="flex flex-wrap justify-center items-center gap-2 sm:gap-3 mt-16 px-2"
                   >
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`px-6 py-3 rounded-2xl font-bold text-lg border-2 transition-all duration-300 ${
+                      className={`px-4 sm:px-6 py-2 sm:py-3 rounded-2xl font-bold text-base sm:text-lg border-2 transition-all duration-300 ${
                         currentPage === 1
                           ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
                           : "bg-white text-purple-600 border-purple-300 hover:bg-purple-50 hover:border-purple-400"
@@ -480,13 +480,13 @@ function Index({ initialPosts = [], categories = [] }) {
                       ← Previous
                     </motion.button>
                     
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-1 sm:gap-2">
                       {Array.from({ length: totalPages }, (_, i) => (
                         <motion.button
                           key={i + 1}
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.95 }}
-                          className={`w-12 h-12 rounded-2xl font-bold text-lg border-2 transition-all duration-300 ${
+                          className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl font-bold text-base sm:text-lg border-2 transition-all duration-300 ${
                             currentPage === i + 1
                               ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white border-purple-600 shadow-lg"
                               : "bg-white text-gray-600 border-gray-300 hover:border-purple-400 hover:text-purple-600"
@@ -501,7 +501,7 @@ function Index({ initialPosts = [], categories = [] }) {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`px-6 py-3 rounded-2xl font-bold text-lg border-2 transition-all duration-300 ${
+                      className={`px-4 sm:px-6 py-2 sm:py-3 rounded-2xl font-bold text-base sm:text-lg border-2 transition-all duration-300 ${
                         currentPage === totalPages
                           ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
                           : "bg-white text-purple-600 border-purple-300 hover:bg-purple-50 hover:border-purple-400"
