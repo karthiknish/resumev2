@@ -2,12 +2,16 @@ import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Loader2,
   RefreshCw,
   CopyPlus,
   ExternalLink as LinkIcon,
+  Newspaper,
+  Sparkles,
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 // Accept onNewsSelect prop
 export default function TrendingNewsFeed({ onNewsSelect }) {
@@ -53,73 +57,121 @@ export default function TrendingNewsFeed({ onNewsSelect }) {
   };
 
   return (
-    <Card className="border-gray-700 bg-gray-800/50">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-lg">Trending Tech News</CardTitle>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={fetchNews}
-          disabled={isLoading}
-          aria-label="Refresh News"
-        >
-          <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
-        </Button>
-      </CardHeader>
-      <CardContent>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.1 }}
+    >
+      <Card className="bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 shadow-xl rounded-3xl overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-purple-100 to-blue-100 border-b border-purple-200 flex flex-row items-center justify-between pb-3">
+          <CardTitle className="flex items-center gap-3 text-gray-800">
+            <div className="p-2 bg-white rounded-full shadow-md">
+              <Newspaper className="w-5 h-5 text-purple-600" />
+            </div>
+            <span className="font-bold">Trending Tech News</span>
+          </CardTitle>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={fetchNews}
+            disabled={isLoading}
+            aria-label="Refresh News"
+            className="hover:bg-white/50 transition-colors"
+          >
+            <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""} text-purple-600`} />
+          </Button>
+        </CardHeader>
+        <CardContent className="p-6">
         {/* GNews Usage Note */}
-        <p className="text-xs text-gray-500 mb-3 italic">
-          Powered by GNews (Free tier: 100 requests/day). Click refresh
-          sparingly.
-        </p>
+        <div className="mb-4">
+          <Badge variant="outline" className="text-xs bg-yellow-50 text-yellow-700 border-yellow-300">
+            ⚡ Powered by GNews (Free tier: 100 requests/day)
+          </Badge>
+        </div>
         {isLoading && (
-          <div className="flex justify-center py-4">
-            <Loader2 className="w-5 h-5 animate-spin" />
-          </div>
+          <motion.div 
+            className="flex flex-col justify-center items-center py-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <div className="relative">
+              <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+              <Sparkles className="h-4 w-4 text-purple-400 absolute -top-1 -right-1 animate-pulse" />
+            </div>
+            <p className="text-gray-600 font-medium mt-3 text-sm">Loading latest tech news...</p>
+          </motion.div>
         )}
-        {error && <p className="text-red-400 text-sm">Error: {error}</p>}
+        {error && (
+          <motion.div 
+            className="bg-red-50 border border-red-200 rounded-2xl p-4"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            <p className="text-red-700 text-sm font-medium">Error: {error}</p>
+          </motion.div>
+        )}
         {!isLoading && !error && news.length === 0 && (
-          <p className="text-gray-400 text-sm text-center py-4">
-            No news items found.
-          </p>
+          <motion.div 
+            className="text-center py-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <div className="text-gray-400 text-5xl mb-4">📰</div>
+            <p className="text-gray-600 font-medium">No news items found</p>
+            <p className="text-gray-500 text-sm mt-2">Try refreshing to get the latest updates</p>
+          </motion.div>
         )}
         {!isLoading && !error && news.length > 0 && (
-          <ul className="space-y-3 max-h-60 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
-            {news.map((item, index) => (
-              <li
-                key={index}
-                className="text-sm border-b border-gray-700 pb-2 last:border-b-0 group py-2"
-              >
-                <div className="flex items-start justify-between gap-2">
-                  {/* Headline as a link */}
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold text-gray-100 hover:text-blue-400 transition-colors mb-0.5 flex-grow"
-                    title={`Read full article: ${item.headline}`}
-                  >
-                    {item.headline}
-                    <LinkIcon className="w-3 h-3 inline-block ml-1 opacity-50" />
-                  </a>
-                  {/* Button to copy to form */}
-
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-5 w-5 flex-shrink-0 text-gray-500 hover:text-purple-400 transition-visibility duration-200"
-                    onClick={() => handleSelect(item)}
-                    title="Use this news for a new Byte"
-                  >
-                    <CopyPlus className="w-3.5 h-3.5" />
-                  </Button>
-                </div>
-                <p className="text-gray-400 text-xs mt-1">{item.summary}</p>
-              </li>
-            ))}
-          </ul>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="flex items-center gap-2 mb-4">
+              <Badge className="bg-purple-600 text-white">
+                {news.length} {news.length === 1 ? 'article' : 'articles'}
+              </Badge>
+            </div>
+            <ul className="space-y-4 max-h-80 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-purple-300 scrollbar-track-purple-100">
+              {news.map((item, index) => (
+                <motion.li
+                  key={index}
+                  className="bg-white border-2 border-purple-200 rounded-2xl p-4 hover:shadow-lg transition-all duration-300 group"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    {/* Headline as a link */}
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-gray-800 hover:text-purple-600 transition-colors mb-2 flex-grow group-hover:text-purple-700"
+                      title={`Read full article: ${item.headline}`}
+                    >
+                      {item.headline}
+                      <LinkIcon className="w-3 h-3 inline-block ml-1 opacity-50" />
+                    </a>
+                    {/* Button to copy to form */}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 flex-shrink-0 text-purple-500 hover:text-purple-700 hover:bg-purple-100 transition-all duration-200 rounded-full"
+                      onClick={() => handleSelect(item)}
+                      title="Use this news for a new post idea"
+                    >
+                      <CopyPlus className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <p className="text-gray-600 text-sm leading-relaxed">{item.summary}</p>
+                </motion.li>
+              ))}
+            </ul>
+          </motion.div>
         )}
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }
