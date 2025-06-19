@@ -71,7 +71,6 @@ function AdminDashboard() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState(adminTabs[0].value);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [sessionDebug, setSessionDebug] = useState(null);
 
   // State specifically for unread count (now for Contacts)
   const [unreadContactsCount, setUnreadContactsCount] = useState(0);
@@ -147,7 +146,9 @@ function AdminDashboard() {
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center">
         <div className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 rounded-2xl px-8 py-6 shadow-xl flex items-center gap-4">
           <div className="animate-spin text-3xl">⚡</div>
-          <span className="text-gray-700 font-bold text-xl">Loading Admin Dashboard...</span>
+          <span className="text-gray-700 font-bold text-xl">
+            Loading Admin Dashboard...
+          </span>
         </div>
       </div>
     );
@@ -159,7 +160,9 @@ function AdminDashboard() {
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center">
         <div className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 rounded-2xl px-8 py-6 shadow-xl flex items-center gap-4">
           <div className="text-3xl">🔐</div>
-          <span className="text-gray-700 font-bold text-xl">Redirecting to sign in...</span>
+          <span className="text-gray-700 font-bold text-xl">
+            Redirecting to sign in...
+          </span>
         </div>
       </div>
     );
@@ -193,7 +196,10 @@ function AdminDashboard() {
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
                 <div className="flex items-center gap-4">
                   <div className="text-6xl animate-pulse">⚡</div>
-                  <h1 className="text-4xl md:text-6xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                  <h1
+                    className="text-4xl md:text-6xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent"
+                    style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                  >
                     Admin Dashboard
                   </h1>
                 </div>
@@ -208,26 +214,26 @@ function AdminDashboard() {
             <Tabs
               value={activeTab}
               onValueChange={setActiveTab}
-              className="mb-8"
+              className="mb-8 mt-2 z-10"
             >
               <SlideUp delay={0.4}>
                 {/* Desktop TabsList (Hidden on Small Screens) */}
-                <TabsList className="hidden md:flex w-full overflow-x-auto pb-2 scrollbar-thin mb-6 space-x-2 bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-purple-200 shadow-xl">
+                <TabsList className="hidden md:flex w-full overflow-x-auto pb-6 pt-6 mt-8 mb-8 scrollbar-thin space-x-2 bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-purple-200 shadow-xl">
                   {adminTabs.map((tab, index) => {
                     const gradients = [
-                      'from-purple-500 to-blue-500',
-                      'from-pink-500 to-rose-500', 
-                      'from-orange-500 to-red-500',
-                      'from-green-500 to-teal-500',
-                      'from-indigo-500 to-purple-500',
-                      'from-cyan-500 to-blue-500',
-                      'from-violet-500 to-purple-500',
-                      'from-blue-500 to-indigo-500',
-                      'from-emerald-500 to-teal-500',
-                      'from-amber-500 to-orange-500'
+                      "from-purple-500 to-blue-500",
+                      "from-pink-500 to-rose-500",
+                      "from-orange-500 to-red-500",
+                      "from-green-500 to-teal-500",
+                      "from-indigo-500 to-purple-500",
+                      "from-cyan-500 to-blue-500",
+                      "from-violet-500 to-purple-500",
+                      "from-blue-500 to-indigo-500",
+                      "from-emerald-500 to-teal-500",
+                      "from-amber-500 to-orange-500",
                     ];
                     const gradientClass = gradients[index % gradients.length];
-                    
+
                     return (
                       <TabsTrigger
                         key={tab.value}
@@ -240,16 +246,17 @@ function AdminDashboard() {
                       >
                         <tab.Icon className="h-4 w-4" />{" "}
                         <span className="ml-2">{tab.label}</span>
-                        {tab.value === "contacts" && unreadContactsCount > 0 && (
-                          <span className="absolute -top-2 -right-2 flex h-5 w-5">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-5 w-5 bg-red-500 text-xs items-center justify-center text-white font-bold">
-                              {unreadContactsCount > 9
-                                ? "9+"
-                                : unreadContactsCount}
+                        {tab.value === "contacts" &&
+                          unreadContactsCount > 0 && (
+                            <span className="absolute -top-2 -right-2 flex h-5 w-5">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-5 w-5 bg-red-500 text-xs items-center justify-center text-white font-bold">
+                                {unreadContactsCount > 9
+                                  ? "9+"
+                                  : unreadContactsCount}
+                              </span>
                             </span>
-                          </span>
-                        )}
+                          )}
                       </TabsTrigger>
                     );
                   })}
@@ -263,7 +270,11 @@ function AdminDashboard() {
                     </SelectTrigger>
                     <SelectContent className="bg-white/90 backdrop-blur-sm border-2 border-purple-200 text-gray-700 rounded-2xl shadow-xl">
                       {adminTabs.map((tab) => (
-                        <SelectItem key={tab.value} value={tab.value} className="font-semibold">
+                        <SelectItem
+                          key={tab.value}
+                          value={tab.value}
+                          className="font-semibold"
+                        >
                           <div className="flex items-center">
                             <tab.Icon className="mr-3 h-5 w-5" />
                             {tab.label}
