@@ -918,6 +918,165 @@ const HomeScreen = () => {
           </div>
         </section>
 
+        {/* Freelancer Advantage Section */}
+        <section className="py-20 md:py-32 bg-gradient-to-br from-orange-50 to-yellow-50">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center mb-20">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                <h2
+                  className="text-5xl md:text-6xl font-black text-gray-900 mb-6 flex items-center justify-center gap-6"
+                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                >
+                  <motion.span
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      rotate: [0, 10, -10, 0],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    className="text-4xl"
+                  >
+                    💼
+                  </motion.span>
+                  Why Choose a Freelancer?
+                  <motion.span
+                    animate={{
+                      y: [0, -8, 0],
+                      rotate: [0, 15, 0],
+                    }}
+                    transition={{
+                      duration: 2.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: 0.5,
+                    }}
+                    className="text-4xl"
+                  >
+                    💡
+                  </motion.span>
+                </h2>
+                <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
+                  Discover the advantages of working directly with talent
+                </p>
+              </motion.div>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8 mb-16">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -5, scale: 1.02 }}
+                className="bg-white/80 backdrop-blur-sm border-2 border-green-200 p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 group"
+              >
+                <div className="text-center">
+                  <motion.div
+                    className="text-6xl mb-6"
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                  >
+                    💰
+                  </motion.div>
+                  <h3
+                    className="text-2xl font-bold text-gray-900 mb-4"
+                    style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                  >
+                    Save 40-60%
+                  </h3>
+                  <p className="text-gray-700 text-lg">
+                    No agency markup or overhead costs. Get premium quality at freelance prices.
+                  </p>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -5, scale: 1.02 }}
+                className="bg-white/80 backdrop-blur-sm border-2 border-blue-200 p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 group"
+              >
+                <div className="text-center">
+                  <motion.div
+                    className="text-6xl mb-6"
+                    whileHover={{ scale: 1.1, rotate: -5 }}
+                  >
+                    ⚡
+                  </motion.div>
+                  <h3
+                    className="text-2xl font-bold text-gray-900 mb-4"
+                    style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                  >
+                    2x Faster
+                  </h3>
+                  <p className="text-gray-700 text-lg">
+                    Direct communication and streamlined processes mean faster delivery.
+                  </p>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -5, scale: 1.02 }}
+                className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 group"
+              >
+                <div className="text-center">
+                  <motion.div
+                    className="text-6xl mb-6"
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                  >
+                    🎯
+                  </motion.div>
+                  <h3
+                    className="text-2xl font-bold text-gray-900 mb-4"
+                    style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                  >
+                    Personal Touch
+                  </h3>
+                  <p className="text-gray-700 text-lg">
+                    Your project gets dedicated attention, not split focus across dozens of clients.
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+
+            <div className="text-center">
+              <Link href="/freelancer-advantage">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white px-10 py-5 text-xl font-bold rounded-2xl shadow-2xl hover:shadow-orange-300/50 transition-all duration-300 border-0"
+                >
+                  <motion.span
+                    animate={{ rotate: [0, 15, 0] }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    className="mr-3 text-2xl"
+                  >
+                    🚀
+                  </motion.span>
+                  Learn Why Freelancers Win
+                  <ArrowRightIcon className="ml-3 h-6 w-6" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* CTA Section */}
         <section className="py-20 md:py-32 bg-gradient-to-br from-purple-600 to-blue-600 relative overflow-hidden">
           {/* Floating Elements */}

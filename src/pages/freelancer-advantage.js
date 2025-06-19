@@ -2,7 +2,6 @@ import Head from "next/head";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
-import PageContainer from "@/components/PageContainer";
 import {
   FaRocket,
   FaHandshake,
@@ -209,295 +208,657 @@ export default function FreelancerAdvantage() {
         />
       </Head>
 
-      <PageContainer className="overflow-hidden">
-        <div className="min-h-screen relative" style={{ fontFamily: "Inter, sans-serif" }}>
-          {/* Modern Gradient Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50"></div>
-          
-          {/* Decorative Color Splashes */}
-          <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-purple-200/20 to-pink-200/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-          <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-blue-200/20 to-cyan-200/20 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
-          <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-green-200/20 to-emerald-200/20 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2"></div>
-          <div className="absolute bottom-0 right-0 w-88 h-88 bg-gradient-to-tl from-orange-200/20 to-yellow-200/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 overflow-hidden" style={{ fontFamily: "Inter, sans-serif" }}>
+        {/* Hero Section with animated background */}
+        <section className="relative py-28 min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100">
+          {/* Animated Background Blobs - matching homepage */}
+          <motion.div
+            className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-r from-purple-300 to-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-30"
+            animate={{
+              scale: [1, 1.2, 1],
+              x: [0, 50, 0],
+              y: [0, -30, 0],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+          <motion.div
+            className="absolute top-40 right-20 w-80 h-80 bg-gradient-to-r from-blue-300 to-cyan-300 rounded-full mix-blend-multiply filter blur-xl opacity-30"
+            animate={{
+              scale: [1, 1.1, 1],
+              x: [0, -40, 0],
+              y: [0, 40, 0],
+            }}
+            transition={{
+              duration: 10,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 2,
+            }}
+          />
+          <motion.div
+            className="absolute bottom-20 left-1/2 w-96 h-96 bg-gradient-to-r from-green-300 to-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-20"
+            animate={{
+              scale: [1, 1.3, 1],
+              x: [0, 30, 0],
+              rotate: [0, 180, 360],
+            }}
+            transition={{
+              duration: 12,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 4,
+            }}
+          />
 
-          {/* Hero Section */}
-          <div className="relative z-10 py-20 md:py-32">
-            <div className="container mx-auto px-4">
+          {/* Floating Tech Icons */}
+          <motion.div
+            className="absolute top-32 left-32 text-6xl opacity-70"
+            animate={{
+              y: [0, -30, 0],
+              rotate: [0, 10, -10, 0],
+              scale: [1, 1.1, 1],
+            }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          >
+            💻
+          </motion.div>
+          <motion.div
+            className="absolute top-20 right-40 text-5xl opacity-60"
+            animate={{
+              y: [0, 20, 0],
+              x: [0, 15, 0],
+              rotate: [0, -15, 15, 0],
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1,
+            }}
+          >
+            🚀
+          </motion.div>
+          <motion.div
+            className="absolute bottom-40 left-40 text-4xl opacity-50"
+            animate={{
+              rotate: [0, 360],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+          >
+            ⚛️
+          </motion.div>
+          <motion.div
+            className="absolute bottom-32 right-32 text-5xl opacity-60"
+            animate={{
+              scale: [1, 1.3, 1],
+              y: [0, -15, 0],
+              rotate: [0, 20, 0],
+            }}
+            transition={{
+              duration: 2.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 0.5,
+            }}
+          >
+            📱
+          </motion.div>
+
+          <div className="max-w-6xl mx-auto px-6 relative z-10 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center"
+            >
               <motion.div
-                className="text-center max-w-5xl mx-auto"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
+                className="inline-flex items-center gap-3 px-6 py-3 bg-white/80 backdrop-blur-sm border border-purple-200 rounded-full text-purple-700 text-sm font-semibold mb-8 shadow-lg"
               >
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                  className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-100 to-purple-100 border border-blue-200 rounded-full text-blue-700 text-sm font-semibold mb-8 shadow-lg"
+                <motion.span
+                  animate={{ rotate: [0, 15, -15, 0] }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="text-xl"
                 >
-                  <motion.span
-                    animate={{ rotate: [0, 10, -10, 0] }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="text-xl"
-                  >
-                    💼
-                  </motion.span>
-                  <span>Freelancer Advantage</span>
-                </motion.div>
-
-                <h1 className="text-5xl md:text-7xl font-black text-gray-900 mb-8 leading-tight" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
-                  <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">
-                    Direct. Fast. Cost-Effective.
-                  </span>
-                  <br />
-                  <span className="text-gray-800">
-                    Why Freelancers Build Better Websites
-                  </span>
-                </h1>
-
-                <div className="w-32 h-2 bg-gradient-to-r from-blue-400 to-purple-400 mx-auto mb-10 rounded-full shadow-lg"></div>
-
-                <p className="text-xl text-gray-700 mb-12 max-w-4xl mx-auto font-medium leading-relaxed">
-                  Skip the agency markup and connect directly with the talent
-                  building your website. Get faster turnarounds, personalized
-                  attention, and exceptional results at a fraction of the cost.
-                </p>
-
-                <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                  <motion.button
-                    className="px-10 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-2xl text-white font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center gap-3"
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={handleContactClick}
-                  >
-                    <span className="text-xl">🚀</span>
-                    Get Started Today
-                    <motion.span
-                      animate={{ x: [0, 5, 0] }}
-                      transition={{
-                        duration: 1.5,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
-                    >
-                      →
-                    </motion.span>
-                  </motion.button>
-
-                  <motion.a
-                    href="#benefits"
-                    className="px-10 py-4 bg-white/90 backdrop-blur-sm border-2 border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-3"
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <span className="text-xl">💡</span>
-                    Learn More
-                  </motion.a>
-                </div>
+                  💼
+                </motion.span>
+                <span>Freelancer Advantage</span>
               </motion.div>
-            </div>
-          </div>
 
-          {/* Main Benefits Section */}
-          <div id="benefits" className="relative py-20">
-            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm"></div>
-            <div className="relative z-10 container mx-auto px-4">
-              <motion.div
-                className="text-center mb-16"
-                variants={fadeInUp}
-                initial="initial"
-                whileInView="animate"
-                viewport={{ once: true }}
+              <motion.h1
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight"
+                style={{ fontFamily: "Space Grotesk, sans-serif" }}
               >
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                  className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-purple-100 to-blue-100 border border-purple-200 rounded-full text-purple-700 text-sm font-semibold mb-6 shadow-lg"
+                <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                  Direct. Fast.
+                </span>
+                <br />
+                <span className="bg-gradient-to-r from-pink-500 via-red-500 to-orange-500 bg-clip-text text-transparent">
+                  Cost-Effective.
+                </span>
+                <motion.span
+                  animate={{
+                    rotate: [0, 20, -20, 0],
+                    scale: [1, 1.2, 1],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 1,
+                  }}
+                  className="inline-block ml-4 text-yellow-400"
+                >
+                  ⚡
+                </motion.span>
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="text-2xl md:text-3xl text-gray-700 mb-8 max-w-4xl mx-auto leading-relaxed font-medium"
+              >
+                Skip the agency markup and connect{" "}
+                <motion.span
+                  className="inline-block bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent font-bold"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  directly with the talent
+                </motion.span>{" "}
+                building your website.
+                <motion.span
+                  animate={{ rotate: [0, 5, -5, 0] }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="inline-block ml-2"
+                >
+                  ✨
+                </motion.span>
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+                className="text-lg text-gray-600 mb-12 flex items-center justify-center gap-3"
+              >
+                <span>Get faster turnarounds, personalized attention, and exceptional results</span>
+                <motion.span
+                  animate={{ y: [0, -5, 0] }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="text-2xl"
+                >
+                  🎯
+                </motion.span>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.8 }}
+                className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
+              >
+                <motion.button
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-10 py-5 text-xl font-bold rounded-2xl shadow-2xl hover:shadow-purple-300/50 transition-all duration-300 border-0 flex items-center gap-3"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleContactClick}
                 >
                   <motion.span
-                    animate={{ rotate: [0, 10, -10, 0] }}
+                    animate={{ rotate: [0, 10, 0] }}
                     transition={{
                       duration: 2,
                       repeat: Infinity,
                       ease: "easeInOut",
                     }}
-                    className="text-xl"
+                    className="text-2xl"
                   >
-                    ⚡
+                    🚀
                   </motion.span>
-                  <span>Key Benefits</span>
+                  Let's build something amazing
+                </motion.button>
+
+                <motion.a
+                  href="#benefits"
+                  className="bg-white/90 backdrop-blur-sm border-2 border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300 px-10 py-5 text-xl font-bold rounded-2xl shadow-xl transition-all duration-300 flex items-center gap-3"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <motion.span
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    className="text-2xl"
+                  >
+                    👀
+                  </motion.span>
+                  See the advantages
+                </motion.a>
+              </motion.div>
+
+              {/* Scroll indicator */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 1.5 }}
+                className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
+              >
+                <motion.div
+                  animate={{ y: [0, 10, 0] }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="text-4xl"
+                >
+                  👇
                 </motion.div>
-                
-                <h2 className="text-4xl md:text-6xl font-black text-gray-900 mb-6" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
-                  Why Choose a{" "}
-                  <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    Freelancer
-                  </span>{" "}
-                  Over an Agency?
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Main Benefits Section */}
+        <section id="benefits" className="py-20 md:py-32 bg-gradient-to-br from-white to-purple-50">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center mb-20">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -5 }}
+              >
+                <h2
+                  className="text-5xl md:text-6xl font-black text-gray-900 mb-6 flex items-center justify-center gap-6"
+                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                >
+                  <motion.span
+                    animate={{ rotate: [0, 20, -20, 0] }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    className="text-4xl"
+                  >
+                    🔮
+                  </motion.span>
+                  Why Choose a Freelancer?
+                  <motion.span
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      rotate: [0, 10, 0],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: 1,
+                    }}
+                    className="text-4xl"
+                  >
+                    💫
+                  </motion.span>
                 </h2>
-                <div className="w-32 h-2 bg-gradient-to-r from-blue-400 to-purple-400 mx-auto mb-8 rounded-full shadow-lg"></div>
-                <p className="text-xl text-gray-700 max-w-4xl mx-auto font-medium leading-relaxed">
-                  Make the smart choice for your business website by going direct
-                  to the source.
+                <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
+                  Make the smart choice for your business website by going direct to the source
+                </p>
+              </motion.div>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {/* Benefit Card 1 */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -10, scale: 1.02 }}
+                className="h-full p-8 border-2 shadow-lg hover:shadow-2xl transition-all duration-300 group rounded-3xl bg-green-50 border-green-200 hover:bg-green-100"
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <motion.div
+                    className="text-5xl"
+                    whileHover={{ scale: 1.2, rotate: 10 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    💰✨
+                  </motion.div>
+                  <motion.div
+                    className="text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    animate={{
+                      rotate: [0, 15, -15, 0],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    💵🎉
+                  </motion.div>
+                </div>
+                <h3
+                  className="text-2xl font-bold text-gray-900 mb-4"
+                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                >
+                  Lower Costs
+                </h3>
+                <p className="text-gray-700 leading-relaxed text-lg">
+                  Freelancers have minimal overhead and no agency markup fees.
+                  You're paying for the talent, not the fancy office or project
+                  managers.
                 </p>
               </motion.div>
 
+              {/* Benefit Card 2 */}
               <motion.div
-                className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-                variants={staggerContainer}
-                initial="initial"
-                whileInView="animate"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
                 viewport={{ once: true }}
+                whileHover={{ y: -10, scale: 1.02 }}
+                className="h-full p-8 border-2 shadow-lg hover:shadow-2xl transition-all duration-300 group rounded-3xl bg-blue-50 border-blue-200 hover:bg-blue-100"
               >
-                {/* Benefit Card 1 */}
-                <motion.div
-                  className="bg-white/90 backdrop-blur-sm border-2 border-green-200 p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
-                  variants={fadeInUp}
-                  whileHover={{ scale: 1.02, y: -5 }}
+                <div className="flex items-center justify-between mb-6">
+                  <motion.div
+                    className="text-5xl"
+                    whileHover={{ scale: 1.2, rotate: 10 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    💬🌟
+                  </motion.div>
+                  <motion.div
+                    className="text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    animate={{
+                      rotate: [0, 15, -15, 0],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    🗣️✨
+                  </motion.div>
+                </div>
+                <h3
+                  className="text-2xl font-bold text-gray-900 mb-4"
+                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
                 >
-                  <div className="bg-gradient-to-br from-green-400 to-emerald-500 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6 shadow-lg">
-                    <FaDollarSign className="text-white text-3xl" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
-                    Lower Costs
-                  </h3>
-                  <p className="text-gray-700 font-medium leading-relaxed">
-                    Freelancers have minimal overhead and no agency markup fees.
-                    You're paying for the talent, not the fancy office or project
-                    managers.
-                  </p>
-                </motion.div>
-
-                {/* Benefit Card 2 */}
-                <motion.div
-                  className="bg-white/90 backdrop-blur-sm border-2 border-blue-200 p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
-                  variants={fadeInUp}
-                  whileHover={{ scale: 1.02, y: -5 }}
-                >
-                  <div className="bg-gradient-to-br from-blue-400 to-cyan-500 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6 shadow-lg">
-                    <FaComments className="text-white text-3xl" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
-                    Direct Communication
-                  </h3>
-                  <p className="text-gray-700 font-medium leading-relaxed">
-                    No more message relay through account managers. Speak directly
-                    with the person building your website for clearer
-                    communication.
-                  </p>
-                </motion.div>
-
-                {/* Benefit Card 3 */}
-                <motion.div
-                  className="bg-white/90 backdrop-blur-sm border-2 border-purple-200 p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
-                  variants={fadeInUp}
-                  whileHover={{ scale: 1.02, y: -5 }}
-                >
-                  <div className="bg-gradient-to-br from-purple-400 to-pink-500 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6 shadow-lg">
-                    <FaRocket className="text-white text-3xl" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
-                    Faster Delivery
-                  </h3>
-                  <p className="text-gray-700 font-medium leading-relaxed">
-                    Freelancers don't have agency bureaucracy. Decisions and
-                    changes happen quickly, cutting project time by weeks or even
-                    months.
-                  </p>
-                </motion.div>
-
-                {/* Benefit Card 4 */}
-                <motion.div
-                  className="bg-white/90 backdrop-blur-sm border-2 border-orange-200 p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
-                  variants={fadeInUp}
-                  whileHover={{ scale: 1.02, y: -5 }}
-                >
-                  <div className="bg-gradient-to-br from-orange-400 to-red-500 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6 shadow-lg">
-                    <FaHandshake className="text-white text-3xl" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
-                    Personal Attention
-                  </h3>
-                  <p className="text-gray-700 font-medium leading-relaxed">
-                    Freelancers take on fewer clients than agencies, ensuring your
-                    project gets the focused attention it deserves.
-                  </p>
-                </motion.div>
-
-                {/* Benefit Card 5 */}
-                <motion.div
-                  className="bg-white/90 backdrop-blur-sm border-2 border-yellow-200 p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
-                  variants={fadeInUp}
-                  whileHover={{ scale: 1.02, y: -5 }}
-                >
-                  <div className="bg-gradient-to-br from-yellow-400 to-orange-500 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6 shadow-lg">
-                    <FaLightbulb className="text-white text-3xl" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
-                    Creative Freedom
-                  </h3>
-                  <p className="text-gray-700 font-medium leading-relaxed">
-                    Freelancers aren't bound by rigid agency processes, allowing
-                    for more creative approaches and innovative solutions to your
-                    challenges.
-                  </p>
-                </motion.div>
-
-                {/* Benefit Card 6 */}
-                <motion.div
-                  className="bg-white/90 backdrop-blur-sm border-2 border-cyan-200 p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
-                  variants={fadeInUp}
-                  whileHover={{ scale: 1.02, y: -5 }}
-                >
-                  <div className="bg-gradient-to-br from-cyan-400 to-blue-500 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6 shadow-lg">
-                    <FaBullseye className="text-white text-3xl" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
-                    Specialized Expertise
-                  </h3>
-                  <p className="text-gray-700 font-medium leading-relaxed">
-                    Choose a freelancer with the exact skill set your project
-                    needs, rather than getting assigned whoever is available at an
-                    agency.
-                  </p>
-                </motion.div>
+                  Direct Communication
+                </h3>
+                <p className="text-gray-700 leading-relaxed text-lg">
+                  No more message relay through account managers. Speak directly
+                  with the person building your website for clearer
+                  communication.
+                </p>
               </motion.div>
+
+              {/* Benefit Card 3 */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -10, scale: 1.02 }}
+                className="h-full p-8 border-2 shadow-lg hover:shadow-2xl transition-all duration-300 group rounded-3xl bg-purple-50 border-purple-200 hover:bg-purple-100"
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <motion.div
+                    className="text-5xl"
+                    whileHover={{ scale: 1.2, rotate: 10 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    🚀⚡
+                  </motion.div>
+                  <motion.div
+                    className="text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    animate={{
+                      rotate: [0, 15, -15, 0],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    ⏱️💨
+                  </motion.div>
+                </div>
+                <h3
+                  className="text-2xl font-bold text-gray-900 mb-4"
+                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                >
+                  Faster Delivery
+                </h3>
+                <p className="text-gray-700 leading-relaxed text-lg">
+                  Freelancers don't have agency bureaucracy. Decisions and
+                  changes happen quickly, cutting project time by weeks or even
+                  months.
+                </p>
+              </motion.div>
+
+              {/* Benefit Card 4 */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -10, scale: 1.02 }}
+                className="h-full p-8 border-2 shadow-lg hover:shadow-2xl transition-all duration-300 group rounded-3xl bg-orange-50 border-orange-200 hover:bg-orange-100"
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <motion.div
+                    className="text-5xl"
+                    whileHover={{ scale: 1.2, rotate: 10 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    🤝💎
+                  </motion.div>
+                  <motion.div
+                    className="text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    animate={{
+                      rotate: [0, 15, -15, 0],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    👥❤️
+                  </motion.div>
+                </div>
+                <h3
+                  className="text-2xl font-bold text-gray-900 mb-4"
+                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                >
+                  Personal Attention
+                </h3>
+                <p className="text-gray-700 leading-relaxed text-lg">
+                  Freelancers take on fewer clients than agencies, ensuring your
+                  project gets the focused attention it deserves.
+                </p>
+              </motion.div>
+
+              {/* Benefit Card 5 */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -10, scale: 1.02 }}
+                className="h-full p-8 border-2 shadow-lg hover:shadow-2xl transition-all duration-300 group rounded-3xl bg-yellow-50 border-yellow-200 hover:bg-yellow-100"
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <motion.div
+                    className="text-5xl"
+                    whileHover={{ scale: 1.2, rotate: 10 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    💡🎨
+                  </motion.div>
+                  <motion.div
+                    className="text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    animate={{
+                      rotate: [0, 15, -15, 0],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    🌈✨
+                  </motion.div>
+                </div>
+                <h3
+                  className="text-2xl font-bold text-gray-900 mb-4"
+                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                >
+                  Creative Freedom
+                </h3>
+                <p className="text-gray-700 leading-relaxed text-lg">
+                  Freelancers aren't bound by rigid agency processes, allowing
+                  for more creative approaches and innovative solutions to your
+                  challenges.
+                </p>
+              </motion.div>
+
+              {/* Benefit Card 6 */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -10, scale: 1.02 }}
+                className="h-full p-8 border-2 shadow-lg hover:shadow-2xl transition-all duration-300 group rounded-3xl bg-cyan-50 border-cyan-200 hover:bg-cyan-100"
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <motion.div
+                    className="text-5xl"
+                    whileHover={{ scale: 1.2, rotate: 10 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    🎯🔧
+                  </motion.div>
+                  <motion.div
+                    className="text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    animate={{
+                      rotate: [0, 15, -15, 0],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    🏆💯
+                  </motion.div>
+                </div>
+                <h3
+                  className="text-2xl font-bold text-gray-900 mb-4"
+                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                >
+                  Specialized Expertise
+                </h3>
+                <p className="text-gray-700 leading-relaxed text-lg">
+                  Choose a freelancer with the exact skill set your project
+                  needs, rather than getting assigned whoever is available at an
+                  agency.
+                </p>
+              </motion.div>
+      
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Pricing Comparison Section */}
-        <div className="py-20 bg-gray-950">
+        <section className="py-20 md:py-32 bg-gradient-to-br from-blue-50 to-purple-50">
           <div className="container mx-auto px-4">
-            <motion.div
-              className="text-center mb-16"
-              variants={fadeInUp}
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true }}
-            >
-              <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-                The Cost Advantage
-              </h2>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                See how working with a freelancer can save you money while
-                delivering superior results.
-              </p>
-            </motion.div>
+            <div className="text-center mb-20">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -5 }}
+              >
+                <h2
+                  className="text-5xl md:text-6xl font-black text-gray-900 mb-6 flex items-center justify-center gap-6"
+                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                >
+                  <motion.span
+                    animate={{ rotate: [0, 20, -20, 0] }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    className="text-4xl"
+                  >
+                    💰
+                  </motion.span>
+                  The Cost Advantage
+                  <motion.span
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      rotate: [0, 10, 0],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: 1,
+                    }}
+                    className="text-4xl"
+                  >
+                    📊
+                  </motion.span>
+                </h2>
+                <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
+                  See how working with a freelancer can save you money while
+                  delivering superior results
+                </p>
+              </motion.div>
+            </div>
 
             <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
               {pricingData.map((plan, index) => (
                 <motion.div
                   key={plan.type}
-                  className={`relative rounded-2xl overflow-hidden ${
+                  className={`relative rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 ${
                     plan.recommended
-                      ? "border-2 border-blue-500"
-                      : "border border-gray-800"
+                      ? "border-2 border-blue-400"
+                      : "border-2 border-gray-300"
                   }`}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -519,20 +880,20 @@ export default function FreelancerAdvantage() {
                     </p>
                   </div>
 
-                  <div className="bg-gray-900 p-8">
+                  <div className="bg-white p-8">
                     <ul className="space-y-4">
                       {plan.features.map((feature, i) => (
                         <li key={i} className="flex items-start">
                           <span
                             className={`mr-2 mt-1 ${
                               plan.recommended
-                                ? "text-blue-400"
-                                : "text-gray-500"
+                                ? "text-blue-500"
+                                : "text-gray-400"
                             }`}
                           >
                             {plan.recommended ? "✓" : "•"}
                           </span>
-                          <span className="text-gray-300">{feature}</span>
+                          <span className="text-gray-700">{feature}</span>
                         </li>
                       ))}
                     </ul>
@@ -541,40 +902,71 @@ export default function FreelancerAdvantage() {
               ))}
             </div>
           </div>
-        </div>
+        </section>
 
         {/* FAQ Section */}
-        <div className="py-20 bg-gray-950">
+        <section className="py-20 md:py-32 bg-gradient-to-br from-pink-50 to-orange-50">
           <div className="container mx-auto px-4">
-            <motion.div
-              className="text-center mb-16"
-              variants={fadeInUp}
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true }}
-            >
-              <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-                Common Questions
-              </h2>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                Everything you need to know about working with a freelance web
-                developer.
-              </p>
-            </motion.div>
+            <div className="text-center mb-20">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -5 }}
+              >
+                <h2
+                  className="text-5xl md:text-6xl font-black text-gray-900 mb-6 flex items-center justify-center gap-6"
+                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                >
+                  <motion.span
+                    animate={{ rotate: [0, 20, -20, 0] }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    className="text-4xl"
+                  >
+                    ❓
+                  </motion.span>
+                  Common Questions
+                  <motion.span
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      rotate: [0, 10, 0],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: 1,
+                    }}
+                    className="text-4xl"
+                  >
+                    💭
+                  </motion.span>
+                </h2>
+                <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
+                  Everything you need to know about working with a freelance web developer
+                </p>
+              </motion.div>
+            </div>
 
             <div className="max-w-4xl mx-auto space-y-8">
               <motion.div
-                className="bg-gray-900 rounded-xl p-6"
+                className="bg-white border-2 border-orange-200 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
                 viewport={{ once: true }}
+                whileHover={{ y: -5 }}
               >
-                <h3 className="text-xl font-bold text-white mb-3">
+                <h3 className="text-xl font-bold text-gray-900 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
                   Is a single freelancer reliable enough for my business
                   website?
                 </h3>
-                <p className="text-gray-300">
+                <p className="text-gray-700 leading-relaxed">
                   Professional freelancers build their entire career on
                   reliability and reputation. They're often more dependable than
                   agencies, where your project may be just one of dozens. Top
@@ -584,16 +976,17 @@ export default function FreelancerAdvantage() {
               </motion.div>
 
               <motion.div
-                className="bg-gray-900 rounded-xl p-6"
+                className="bg-white border-2 border-orange-200 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
                 viewport={{ once: true }}
+                whileHover={{ y: -5 }}
               >
-                <h3 className="text-xl font-bold text-white mb-3">
+                <h3 className="text-xl font-bold text-gray-900 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
                   What if my project needs multiple skills or specialties?
                 </h3>
-                <p className="text-gray-300">
+                <p className="text-gray-700 leading-relaxed">
                   Many successful freelancers are full-stack developers with a
                   broad range of skills. For specialized needs, experienced
                   freelancers maintain networks of trusted colleagues they can
@@ -604,16 +997,17 @@ export default function FreelancerAdvantage() {
               </motion.div>
 
               <motion.div
-                className="bg-gray-900 rounded-xl p-6"
+                className="bg-white border-2 border-orange-200 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
                 viewport={{ once: true }}
+                whileHover={{ y: -5 }}
               >
-                <h3 className="text-xl font-bold text-white mb-3">
+                <h3 className="text-xl font-bold text-gray-900 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
                   How do I know I'm hiring a quality freelancer?
                 </h3>
-                <p className="text-gray-300">
+                <p className="text-gray-700 leading-relaxed">
                   Look for a strong portfolio, client testimonials, and examples
                   of work similar to your project. Quality freelancers will be
                   transparent about their process, provide clear timelines and
@@ -624,16 +1018,17 @@ export default function FreelancerAdvantage() {
               </motion.div>
 
               <motion.div
-                className="bg-gray-900 rounded-xl p-6"
+                className="bg-white border-2 border-orange-200 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
                 viewport={{ once: true }}
+                whileHover={{ y: -5 }}
               >
-                <h3 className="text-xl font-bold text-white mb-3">
+                <h3 className="text-xl font-bold text-gray-900 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
                   What about ongoing maintenance and updates?
                 </h3>
-                <p className="text-gray-300">
+                <p className="text-gray-700 leading-relaxed">
                   Professional freelancers typically offer maintenance packages
                   or retainer arrangements for ongoing support. Many clients
                   find that the same freelancer who built their site can
@@ -644,38 +1039,70 @@ export default function FreelancerAdvantage() {
               </motion.div>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Contact Section */}
-        <div
+        <section
           id="contact-section"
-          className="py-20 bg-black/80 backdrop-blur-sm"
+          className="py-20 md:py-32 bg-gradient-to-br from-cyan-50 to-blue-50"
         >
           <div className="container mx-auto px-4">
-            <motion.div
-              className="text-center mb-16"
-              variants={fadeInUp}
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true }}
-            >
-              <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-                Work With Me
-              </h2>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                Let's create something amazing together. Reach out to discuss
-                your project and how I can help.
-              </p>
-            </motion.div>
+            <div className="text-center mb-20">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -5 }}
+              >
+                <h2
+                  className="text-5xl md:text-6xl font-black text-gray-900 mb-6 flex items-center justify-center gap-6"
+                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                >
+                  <motion.span
+                    animate={{ rotate: [0, 20, -20, 0] }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    className="text-4xl"
+                  >
+                    🤝
+                  </motion.span>
+                  Work With Me
+                  <motion.span
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      rotate: [0, 10, 0],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: 1,
+                    }}
+                    className="text-4xl"
+                  >
+                    ✨
+                  </motion.span>
+                </h2>
+                <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
+                  Let's create something amazing together. Reach out to discuss
+                  your project and how I can help.
+                </p>
+              </motion.div>
+            </div>
 
             <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
               {/* About Me Section */}
               <motion.div
-                className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-sm p-8 md:p-10 rounded-2xl border border-gray-800 shadow-xl"
+                className="bg-white/90 backdrop-blur-sm border-2 border-blue-200 p-8 md:p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
                 viewport={{ once: true }}
+                whileHover={{ y: -5 }}
               >
                 <div className="flex items-center mb-8">
                   <div className="relative w-24 h-24 overflow-hidden rounded-full border-4 border-blue-500 mr-6">
@@ -691,10 +1118,10 @@ export default function FreelancerAdvantage() {
                     />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold text-white">
+                    <h3 className="text-2xl font-bold text-gray-900" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
                       Karthik Nishanth
                     </h3>
-                    <p className="text-blue-400 text-lg">
+                    <p className="text-blue-600 text-lg font-semibold">
                       Full Stack Developer
                     </p>
                   </div>
@@ -702,10 +1129,10 @@ export default function FreelancerAdvantage() {
 
                 <div className="space-y-6">
                   <div>
-                    <h4 className="text-xl font-semibold text-white mb-3">
+                    <h4 className="text-xl font-semibold text-gray-900 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
                       My Approach
                     </h4>
-                    <p className="text-gray-300">
+                    <p className="text-gray-700 leading-relaxed">
                       I believe in creating clean, efficient, and user-focused
                       websites that deliver real business results. My hands-on
                       approach ensures your project gets my undivided attention
@@ -714,7 +1141,7 @@ export default function FreelancerAdvantage() {
                   </div>
 
                   <div>
-                    <h4 className="text-xl font-semibold text-white mb-3">
+                    <h4 className="text-xl font-semibold text-gray-900 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
                       Expertise
                     </h4>
                     <div className="flex flex-wrap gap-2">
@@ -730,7 +1157,7 @@ export default function FreelancerAdvantage() {
                       ].map((skill) => (
                         <span
                           key={skill}
-                          className="px-3 py-1 bg-blue-900/40 text-blue-300 rounded-full text-sm"
+                          className="px-3 py-1 bg-blue-100 text-blue-700 border border-blue-300 rounded-full text-sm font-medium"
                         >
                           {skill}
                         </span>
@@ -739,10 +1166,10 @@ export default function FreelancerAdvantage() {
                   </div>
 
                   <div>
-                    <h4 className="text-xl font-semibold text-white mb-3">
+                    <h4 className="text-xl font-semibold text-gray-900 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
                       Experience
                     </h4>
-                    <p className="text-gray-300">
+                    <p className="text-gray-700 leading-relaxed">
                       With over 5 years of experience building websites and web
                       applications for clients across industries, I understand
                       what it takes to deliver high-quality results on time and
@@ -751,50 +1178,50 @@ export default function FreelancerAdvantage() {
                   </div>
 
                   <div className="pt-4">
-                    <h4 className="text-xl font-semibold text-white mb-3">
+                    <h4 className="text-xl font-semibold text-gray-900 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
                       My Process
                     </h4>
                     <ol className="space-y-2">
                       <li className="flex items-start">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600/30 text-blue-400 flex items-center justify-center mr-3 mt-0.5">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center mr-3 mt-0.5 font-semibold text-xs">
                           1
                         </span>
-                        <span className="text-gray-300">
+                        <span className="text-gray-700">
                           Discovery: Understanding your business and goals
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600/30 text-blue-400 flex items-center justify-center mr-3 mt-0.5">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center mr-3 mt-0.5 font-semibold text-xs">
                           2
                         </span>
-                        <span className="text-gray-300">
+                        <span className="text-gray-700">
                           Planning: Mapping the project and setting clear
                           milestones
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600/30 text-blue-400 flex items-center justify-center mr-3 mt-0.5">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center mr-3 mt-0.5 font-semibold text-xs">
                           3
                         </span>
-                        <span className="text-gray-300">
+                        <span className="text-gray-700">
                           Development: Building with best practices and regular
                           updates
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600/30 text-blue-400 flex items-center justify-center mr-3 mt-0.5">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center mr-3 mt-0.5 font-semibold text-xs">
                           4
                         </span>
-                        <span className="text-gray-300">
+                        <span className="text-gray-700">
                           Deployment: Launching your project with thorough
                           testing
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600/30 text-blue-400 flex items-center justify-center mr-3 mt-0.5">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center mr-3 mt-0.5 font-semibold text-xs">
                           5
                         </span>
-                        <span className="text-gray-300">
+                        <span className="text-gray-700">
                           Support: Ongoing maintenance and updates as needed
                         </span>
                       </li>
@@ -807,7 +1234,7 @@ export default function FreelancerAdvantage() {
                     href="https://github.com/karthiknish"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 bg-gray-800 hover:bg-gray-700 rounded-full text-white transition-colors"
+                    className="p-2 bg-blue-100 hover:bg-blue-200 border border-blue-300 rounded-full text-blue-700 hover:text-blue-800 transition-colors"
                     aria-label="GitHub Profile"
                   >
                     <svg
@@ -824,7 +1251,7 @@ export default function FreelancerAdvantage() {
                     href="https://linkedin.com/in/karthiknishanth"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 bg-gray-800 hover:bg-gray-700 rounded-full text-white transition-colors"
+                    className="p-2 bg-blue-100 hover:bg-blue-200 border border-blue-300 rounded-full text-blue-700 hover:text-blue-800 transition-colors"
                     aria-label="LinkedIn Profile"
                   >
                     <svg
@@ -841,7 +1268,7 @@ export default function FreelancerAdvantage() {
                     href="https://twitter.com/karthiknish"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 bg-gray-800 hover:bg-gray-700 rounded-full text-white transition-colors"
+                    className="p-2 bg-blue-100 hover:bg-blue-200 border border-blue-300 rounded-full text-blue-700 hover:text-blue-800 transition-colors"
                     aria-label="Twitter Profile"
                   >
                     <svg
@@ -858,17 +1285,18 @@ export default function FreelancerAdvantage() {
 
               {/* Contact Form */}
               <motion.div
-                className="bg-gradient-to-br from-blue-900/40 to-gray-900/40 backdrop-blur-sm p-8 md:p-10 rounded-2xl border border-blue-500/20 shadow-xl"
+                className="bg-white/90 backdrop-blur-sm border-2 border-cyan-200 p-8 md:p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
                 viewport={{ once: true }}
+                whileHover={{ y: -5 }}
               >
                 <div className="mb-8">
-                  <h3 className="text-2xl font-bold text-white mb-3">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
                     Get In Touch
                   </h3>
-                  <p className="text-gray-300">
+                  <p className="text-gray-700 leading-relaxed">
                     Fill out the form below and I'll get back to you within 24
                     hours to discuss how I can help with your project.
                   </p>
@@ -878,18 +1306,18 @@ export default function FreelancerAdvantage() {
                   <motion.div
                     className={`rounded-lg p-6 text-center ${
                       formStatus.success
-                        ? "bg-green-900/50 border border-green-600"
-                        : "bg-red-900/50 border border-red-600"
+                        ? "bg-green-100 border-2 border-green-400"
+                        : "bg-red-100 border-2 border-red-400"
                     }`}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                   >
-                    <h4 className="text-xl font-semibold mb-2 text-white">
+                    <h4 className="text-xl font-semibold mb-2 text-gray-900" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
                       {formStatus.success
                         ? "Message Sent!"
                         : "Something went wrong"}
                     </h4>
-                    <p className="text-gray-300">{formStatus.message}</p>
+                    <p className="text-gray-700">{formStatus.message}</p>
 
                     {formStatus.success && (
                       <motion.button
@@ -909,12 +1337,12 @@ export default function FreelancerAdvantage() {
                     )}
                   </motion.div>
                 ) : (
-                  <form className="space-y-6" onSubmit={handleSubmit}>
+                  <form className="space-y-8" onSubmit={handleSubmit}>
                     <div className="grid md:grid-cols-2 gap-6">
                       <div>
                         <label
                           htmlFor="name"
-                          className="block text-gray-300 mb-2"
+                          className="block text-gray-700 mb-2 font-medium"
                         >
                           Name
                         </label>
@@ -924,7 +1352,7 @@ export default function FreelancerAdvantage() {
                           name="name"
                           value={formData.name}
                           onChange={handleInputChange}
-                          className="w-full bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full bg-white border-2 border-gray-300 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-400"
                           placeholder="Your name"
                           required
                         />
@@ -932,7 +1360,7 @@ export default function FreelancerAdvantage() {
                       <div>
                         <label
                           htmlFor="email"
-                          className="block text-gray-300 mb-2"
+                          className="block text-gray-700 mb-2 font-medium"
                         >
                           Email
                         </label>
@@ -942,7 +1370,7 @@ export default function FreelancerAdvantage() {
                           name="email"
                           value={formData.email}
                           onChange={handleInputChange}
-                          className="w-full bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full bg-white border-2 border-gray-300 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-400"
                           placeholder="your@email.com"
                           required
                         />
@@ -952,7 +1380,7 @@ export default function FreelancerAdvantage() {
                     <div>
                       <label
                         htmlFor="budget"
-                        className="block text-gray-300 mb-2"
+                        className="block text-gray-700 mb-2 font-medium"
                       >
                         Budget Range
                       </label>
@@ -961,7 +1389,7 @@ export default function FreelancerAdvantage() {
                         name="budget"
                         value={formData.budget}
                         onChange={handleInputChange}
-                        className="w-full bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full bg-white border-2 border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       >
                         <option value="">Select budget range</option>
                         <option value="$1,000 - $5,000">$1,000 - $5,000</option>
@@ -978,7 +1406,7 @@ export default function FreelancerAdvantage() {
                     <div>
                       <label
                         htmlFor="timeline"
-                        className="block text-gray-300 mb-2"
+                        className="block text-gray-700 mb-2 font-medium"
                       >
                         Timeline
                       </label>
@@ -987,7 +1415,7 @@ export default function FreelancerAdvantage() {
                         name="timeline"
                         value={formData.timeline}
                         onChange={handleInputChange}
-                        className="w-full bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full bg-white border-2 border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       >
                         <option value="">Select timeline</option>
                         <option value="Less than 1 month">
@@ -1002,7 +1430,7 @@ export default function FreelancerAdvantage() {
                     <div>
                       <label
                         htmlFor="project"
-                        className="block text-gray-300 mb-2"
+                        className="block text-gray-700 mb-2 font-medium"
                       >
                         Project Details
                       </label>
@@ -1012,7 +1440,7 @@ export default function FreelancerAdvantage() {
                         value={formData.project}
                         onChange={handleInputChange}
                         rows={5}
-                        className="w-full bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full bg-white border-2 border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="Tell me about your project goals, target audience, and any specific features you need..."
                         required
                       ></textarea>
@@ -1021,7 +1449,7 @@ export default function FreelancerAdvantage() {
                     <div>
                       <motion.button
                         type="submit"
-                        className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 rounded-lg py-4 text-white font-semibold shadow-xl hover:shadow-blue-500/20 transition duration-300 flex justify-center items-center"
+                        className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 rounded-2xl py-4 text-white font-bold text-lg shadow-2xl hover:shadow-blue-500/30 transition-all duration-300 flex justify-center items-center"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         disabled={isSubmitting}
@@ -1051,7 +1479,10 @@ export default function FreelancerAdvantage() {
                             Processing...
                           </>
                         ) : (
-                          "Let's Connect"
+                          <>
+                            <span className="mr-2 text-xl">🚀</span>
+                            Let's Connect
+                          </>
                         )}
                       </motion.button>
                     </div>
@@ -1060,7 +1491,7 @@ export default function FreelancerAdvantage() {
               </motion.div>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Floating CTA Button */}
         {isClient && (
@@ -1097,7 +1528,7 @@ export default function FreelancerAdvantage() {
             </motion.button>
           </motion.div>
         )}
-      </PageContainer>
+      </div>
     </>
   );
 }
