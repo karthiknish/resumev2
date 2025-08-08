@@ -64,7 +64,7 @@ const Index = () => {
                 }}
                 className="text-xl"
               >
-                🚀
+                
               </motion.span>
               <span>Explore my work</span>
               <motion.span
@@ -103,7 +103,7 @@ const Index = () => {
                 }}
                 className="inline-block ml-4 text-yellow-400"
               >
-                ⭐
+                
               </motion.span>
             </h1>
             
@@ -125,7 +125,7 @@ const Index = () => {
                 }}
                 className="inline-block ml-2"
               >
-                ✨
+                
               </motion.span>
             </p>
           </motion.div>
@@ -140,7 +140,7 @@ const Index = () => {
             <div className="flex flex-col sm:flex-row items-center gap-6 mb-8">
               <div className="flex items-center gap-3">
                 <span className="text-gray-700 font-semibold text-lg whitespace-nowrap">
-                  🏷️ Category:
+                   Category:
                 </span>
               </div>
               
@@ -155,7 +155,7 @@ const Index = () => {
                   } py-3 px-6 rounded-xl transition-all duration-300 text-base font-semibold`}
                   onClick={() => setSelectedTab("fullstack")}
                 >
-                  <span className="mr-2">💻</span>
+                  <span className="mr-2"></span>
                   Full Stack
                 </motion.button>
                 <motion.button
@@ -168,7 +168,7 @@ const Index = () => {
                   } py-3 px-6 rounded-xl transition-all duration-300 text-base font-semibold`}
                   onClick={() => setSelectedTab("analytics")}
                 >
-                  <span className="mr-2">📊</span>
+                  <span className="mr-2"></span>
                   Analytics
                 </motion.button>
               </div>
@@ -204,7 +204,7 @@ const Index = () => {
                         className="absolute top-4 left-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg z-10"
                         whileHover={{ scale: 1.1 }}
                       >
-                        {selectedTab === "fullstack" ? "💻 Full Stack" : "📊 Analytics"}
+                        {selectedTab === "fullstack" ? " Full Stack" : " Analytics"}
                       </motion.span>
                     </div>
                     
@@ -228,7 +228,7 @@ const Index = () => {
                             }}
                             className="text-lg"
                           >
-                            🎯
+                            
                           </motion.span>
                           <span className="text-purple-600 font-bold text-lg">
                             {project.meta}

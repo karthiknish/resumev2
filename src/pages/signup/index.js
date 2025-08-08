@@ -109,7 +109,7 @@ export default function SignUp() {
                   }}
                   className="text-xl"
                 >
-                  ✨
+                  
                 </motion.span>
                 <span>Join the community!</span>
               </motion.div>
@@ -126,7 +126,7 @@ export default function SignUp() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="mb-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 text-red-700 rounded-2xl text-sm font-medium shadow-lg flex items-center gap-3"
               >
-                <span className="text-xl">⚠️</span>
+                <span className="text-xl"></span>
                 {error}
               </motion.div>
             )}
@@ -170,7 +170,7 @@ export default function SignUp() {
                 htmlFor="password"
                 className="block text-lg font-bold text-gray-800 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}
               >
-                🔑 Password
+                 Password
               </label>
               <input
                 type="password"
@@ -187,7 +187,7 @@ export default function SignUp() {
                 htmlFor="confirmPassword"
                 className="block text-lg font-bold text-gray-800 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}
               >
-                🔒 Confirm Password
+                 Confirm Password
               </label>
               <input
                 type="password"
@@ -230,7 +230,7 @@ export default function SignUp() {
                   whileTap={{ scale: 0.95 }}
                   className="bg-white border-2 border-purple-200 text-purple-600 hover:bg-purple-50 hover:border-purple-300 px-8 py-3 rounded-2xl font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-3 mx-auto"
                 >
-                  <span className="text-xl">🔐</span>
+                  <span className="text-xl"></span>
                   Sign In Instead
                 </motion.button>
               </Link>

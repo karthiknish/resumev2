@@ -86,7 +86,7 @@ function ByteSlide({ byte, isActive }) {
                 className="text-gray-600 font-semibold flex items-center gap-2"
                 whileHover={{ scale: 1.05 }}
               >
-                <span className="text-lg">📅</span>
+                <span className="text-lg"></span>
                 {formatDate(byte.createdAt)}
               </motion.span>
               {byte.link && (
@@ -144,7 +144,7 @@ function IntroSlide() {
           }}
           className="text-8xl mb-8"
         >
-          ⚡
+          
         </motion.div>
         <motion.h1 
           className="text-6xl md:text-8xl lg:text-9xl font-black mb-6 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent"
@@ -170,7 +170,7 @@ function IntroSlide() {
             }}
             className="inline-block ml-3 text-2xl"
           >
-            💭
+            
           </motion.span>
         </motion.p>
         <motion.div
@@ -180,7 +180,7 @@ function IntroSlide() {
           transition={{ duration: 0.6, delay: 0.6 }}
           whileHover={{ scale: 1.05, y: -2 }}
         >
-          <span className="text-2xl">👆</span>
+          <span className="text-2xl"></span>
           <span className="text-gray-700 font-bold text-lg">
             Scroll or use arrow keys to navigate
           </span>
@@ -284,7 +284,7 @@ function BytesPage() {
                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                 className="text-3xl"
               >
-                ⚡
+                
               </motion.div>
               <span className="text-gray-700 font-bold text-xl">Loading Bytes...</span>
             </motion.div>
@@ -297,7 +297,7 @@ function BytesPage() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="text-6xl mb-4">😕</div>
+              <div className="text-6xl mb-4"></div>
               <h3 className="text-2xl font-black text-gray-800 mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
                 Oops! Something went wrong
               </h3>
@@ -413,7 +413,7 @@ function BytesPage() {
                 }}
                 className="text-6xl mb-6"
               >
-                📝
+                
               </motion.div>
               <h3 className="text-3xl font-black text-gray-800 mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
                 No Bytes Yet

@@ -29,7 +29,7 @@ export default function CookiePolicy() {
                   }}
                   className="text-6xl"
                 >
-                  🍪
+                  
                 </motion.div>
                 <h1
                   className="text-4xl md:text-6xl lg:text-7xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent"

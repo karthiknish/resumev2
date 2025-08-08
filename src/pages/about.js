@@ -82,7 +82,7 @@ const skillsByCategory = {
     { name: "React Native", icon: <FaReact className="text-sky-400 w-5 h-5" /> },
     { name: "iOS Development", icon: <div className="w-5 h-5 bg-gray-800 rounded-sm flex items-center justify-center text-white text-xs font-bold">📱</div> },
     { name: "Android Development", icon: <div className="w-5 h-5 bg-green-500 rounded-sm flex items-center justify-center text-white text-xs font-bold">🤖</div> },
-    { name: "Cross-Platform Apps", icon: <div className="w-5 h-5 bg-purple-500 rounded-sm flex items-center justify-center text-white text-xs font-bold">⚡</div> },
+    { name: "Cross-Platform Apps", icon: <div className="w-5 h-5 bg-purple-500 rounded-sm flex items-center justify-center text-white text-xs font-bold"></div> },
     { name: "Expo", icon: <div className="w-5 h-5 bg-black rounded-sm flex items-center justify-center text-white text-xs font-bold">E</div> },
     { name: "App Store Publishing", icon: <div className="w-5 h-5 bg-blue-500 rounded-sm flex items-center justify-center text-white text-xs font-bold">🏪</div> },
   ],
@@ -107,9 +107,9 @@ const skillsByCategory = {
     },
   ],
   "Auth & Analytics": [
-    { name: "Clerk Auth", icon: <div className="w-5 h-5 bg-blue-600 rounded-sm flex items-center justify-center text-white text-xs font-bold">🔐</div> },
-    { name: "PostHog", icon: <div className="w-5 h-5 bg-yellow-500 rounded-sm flex items-center justify-center text-white text-xs font-bold">📊</div> },
-    { name: "NextAuth.js", icon: <div className="w-5 h-5 bg-purple-500 rounded-sm flex items-center justify-center text-white text-xs font-bold">🔑</div> },
+    { name: "Clerk Auth", icon: <div className="w-5 h-5 bg-blue-600 rounded-sm flex items-center justify-center text-white text-xs font-bold"></div> },
+    { name: "PostHog", icon: <div className="w-5 h-5 bg-yellow-500 rounded-sm flex items-center justify-center text-white text-xs font-bold"></div> },
+    { name: "NextAuth.js", icon: <div className="w-5 h-5 bg-purple-500 rounded-sm flex items-center justify-center text-white text-xs font-bold"></div> },
     { name: "Firebase Auth", icon: <div className="w-5 h-5 bg-orange-600 rounded-sm flex items-center justify-center text-white text-xs font-bold">🔥</div> },
   ],
   "DevOps & Cloud": [
@@ -160,11 +160,11 @@ const skillsByCategory = {
   ],
   "AI & Machine Learning": [
     { name: "OpenAI GPT", icon: <div className="w-5 h-5 bg-green-600 rounded-sm flex items-center justify-center text-white text-xs font-bold">🤖</div> },
-    { name: "Google Gemini", icon: <div className="w-5 h-5 bg-blue-500 rounded-sm flex items-center justify-center text-white text-xs font-bold">✨</div> },
+    { name: "Google Gemini", icon: <div className="w-5 h-5 bg-blue-500 rounded-sm flex items-center justify-center text-white text-xs font-bold"></div> },
     { name: "Claude AI", icon: <div className="w-5 h-5 bg-orange-500 rounded-sm flex items-center justify-center text-white text-xs font-bold">🧠</div> },
     { name: "LangChain", icon: <div className="w-5 h-5 bg-purple-600 rounded-sm flex items-center justify-center text-white text-xs font-bold">🔗</div> },
-    { name: "AI Integration", icon: <div className="w-5 h-5 bg-indigo-500 rounded-sm flex items-center justify-center text-white text-xs font-bold">⚡</div> },
-    { name: "Vector Databases", icon: <div className="w-5 h-5 bg-red-500 rounded-sm flex items-center justify-center text-white text-xs font-bold">🔍</div> },
+    { name: "AI Integration", icon: <div className="w-5 h-5 bg-indigo-500 rounded-sm flex items-center justify-center text-white text-xs font-bold"></div> },
+    { name: "Vector Databases", icon: <div className="w-5 h-5 bg-red-500 rounded-sm flex items-center justify-center text-white text-xs font-bold"></div> },
   ],
   "Testing & Quality": [
     { name: "Jest", icon: <SiJest className="text-red-500 w-5 h-5" /> },
@@ -172,7 +172,7 @@ const skillsByCategory = {
     { name: "React Testing Library", icon: <div className="w-5 h-5 bg-red-400 rounded-sm flex items-center justify-center text-white text-xs font-bold">🧪</div> },
     { name: "Playwright", icon: <div className="w-5 h-5 bg-green-700 rounded-sm flex items-center justify-center text-white text-xs font-bold">🎭</div> },
     { name: "Unit Testing", icon: <div className="w-5 h-5 bg-blue-600 rounded-sm flex items-center justify-center text-white text-xs font-bold">✓</div> },
-    { name: "E2E Testing", icon: <div className="w-5 h-5 bg-purple-600 rounded-sm flex items-center justify-center text-white text-xs font-bold">🔄</div> },
+    { name: "E2E Testing", icon: <div className="w-5 h-5 bg-purple-600 rounded-sm flex items-center justify-center text-white text-xs font-bold"></div> },
   ],
 };
 
@@ -248,7 +248,7 @@ function About() {
                     }}
                     className="inline-block ml-4 text-yellow-400"
                   >
-                    ✨
+                    
                   </motion.span>
                 </motion.h1>
                 <motion.div
@@ -266,7 +266,7 @@ function About() {
                     }}
                     className="text-xl"
                   >
-                    👋
+                    
                   </motion.span>
                   <span>Hey there! Let me tell you my story</span>
                   <span className="text-xl">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
@@ -295,7 +295,7 @@ function About() {
                     }}
                     className="inline-block ml-2"
                   >
-                    🚀
+                    
                   </motion.span>
                 </motion.p>
               </section>
@@ -321,7 +321,7 @@ function About() {
                     }}
                     className="text-4xl"
                   >
-                    🎯
+                    
                   </motion.span>
                   My Approach
                   <motion.span
@@ -337,7 +337,7 @@ function About() {
                     }}
                     className="text-4xl"
                   >
-                    💡
+                    
                   </motion.span>
                 </motion.h2>
                 <motion.p
@@ -426,7 +426,7 @@ function About() {
                     }}
                     className="text-4xl"
                   >
-                    ⚡
+                    
                   </motion.span>
                   My magical toolkit
                   <motion.span
@@ -500,7 +500,7 @@ function About() {
                   }}
                   transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
                 >
-                  🌟
+                  
                 </motion.div>
                 <motion.div
                   className="absolute top-20 right-20 text-5xl opacity-20"
@@ -515,7 +515,7 @@ function About() {
                     delay: 1,
                   }}
                 >
-                  🎯
+                  
                 </motion.div>
                 
                 <motion.h2
@@ -538,7 +538,7 @@ function About() {
                     }}
                     className="text-5xl"
                   >
-                    🚀
+                    
                   </motion.span>
                   My Journey
                   <motion.span
@@ -554,7 +554,7 @@ function About() {
                     }}
                     className="text-5xl"
                   >
-                    ✨
+                    
                   </motion.span>
                 </motion.h2>
                 <motion.p
@@ -586,7 +586,7 @@ function About() {
                       }}
                       className="mr-3 text-2xl"
                     >
-                      💌
+                      
                     </motion.span>
                     Let's create magic together
                   </Link>

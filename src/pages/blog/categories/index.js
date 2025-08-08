@@ -42,15 +42,15 @@ export default function CategoriesPage() {
         <meta name="description" content="Browse all blog categories" />
       </Head>
 
-      <main className="container mx-auto px-4 py-8 min-h-screen">
+      <main className="container mx-auto px-4 py-16 min-h-screen bg-white">
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
               Blog Categories
             </h1>
             <Link
               href="/blog"
-              className="text-blue-600 hover:text-blue-800 flex items-center"
+              className="text-gray-900 hover:text-gray-700 flex items-center"
             >
               Back to Blog <FaArrowRight className="ml-2" />
             </Link>
@@ -78,16 +78,16 @@ export default function CategoriesPage() {
                   transition={{ duration: 0.3, delay: index * 0.1 }}
                 >
                   <Link href={`/blog/categories/${category.name}`}>
-                    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 flex items-center justify-between">
+                    <div className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200 flex items-center justify-between">
                       <div className="flex items-center">
-                        <div className="bg-blue-100 p-3 rounded-full mr-4">
-                          <FaFolder className="text-blue-600 text-xl" />
+                        <div className="bg-gray-100 p-3 rounded-full mr-4">
+                          <FaFolder className="text-gray-700 text-xl" />
                         </div>
                         <div>
-                          <h2 className="text-xl font-semibold text-gray-800">
+                          <h2 className="text-xl font-semibold text-gray-900">
                             {category.name}
                           </h2>
-                          <p className="text-gray-600">
+                          <p className="text-gray-700">
                             {category.count}{" "}
                             {category.count === 1 ? "post" : "posts"}
                           </p>

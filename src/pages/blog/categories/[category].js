@@ -58,17 +58,17 @@ export default function CategoryPage() {
         />
       </Head>
 
-      <main className="container mx-auto px-4 py-8 min-h-screen">
+      <main className="container mx-auto px-4 py-16 min-h-screen bg-white">
         <div className="mb-8">
           <Link
             href="/blog"
-            className="inline-flex items-center text-blue-600 hover:text-blue-800"
+            className="inline-flex items-center text-gray-900 hover:text-gray-700"
           >
             <FaArrowLeft className="mr-2" /> Back to All Posts
           </Link>
 
-          <h1 className="text-3xl md:text-4xl font-bold mt-4 mb-6 text-gray-800">
-            Category: <span className="text-blue-600">{category}</span>
+          <h1 className="text-3xl md:text-4xl font-bold mt-4 mb-6 text-gray-900">
+            Category: <span className="text-gray-700">{category}</span>
           </h1>
 
           {loading ? (
@@ -91,7 +91,7 @@ export default function CategoryPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                  className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200"
                 >
                   <Link href={`/blog/${post.slug}`}>
                     <div className="relative h-48 w-full">
@@ -103,10 +103,10 @@ export default function CategoryPage() {
                       />
                     </div>
                     <div className="p-5">
-                      <h2 className="text-xl font-semibold text-gray-800 mb-2 line-clamp-2">
+                      <h2 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
                         {post.title}
                       </h2>
-                      <p className="text-gray-600 mb-4 line-clamp-3">
+                      <p className="text-gray-700 mb-4 line-clamp-3">
                         {post.excerpt || post.content.substring(0, 150)}...
                       </p>
                       <div className="flex items-center justify-between text-sm text-gray-500">

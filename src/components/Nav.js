@@ -179,11 +179,7 @@ export default function Nav() {
   return (
     <>
       <motion.nav
-        className={`fixed top-0 left-0 right-0 w-full z-[100] ${
-          colorChange || !isHome
-            ? "bg-white/95 backdrop-blur-md shadow-2xl border-b-2 border-purple-100"
-            : "bg-gradient-to-r from-purple-50/90 via-white/90 to-blue-50/90 backdrop-blur-md"
-        } transition-all duration-300`}
+        className={`fixed top-0 left-0 right-0 w-full z-[100] bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-200 transition-all duration-300`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
@@ -191,12 +187,8 @@ export default function Nav() {
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 md:py-5">
           <div className="flex justify-between items-center">
             <FadeIn delay={0.1}>
-              <Link href="/" className="flex items-center group">
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: 10 }}
-                  transition={{ duration: 0.3 }}
-                  className="relative"
-                >
+              <Link href="/" className="flex items-center">
+                <motion.div className="relative">
                   <Image
                     src="/Logo.png"
                     alt="Logo"
@@ -206,17 +198,6 @@ export default function Nav() {
                     className="mr-2 sm:mr-3 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14"
                     priority
                   />
-                  <motion.span
-                    className="absolute -top-1 -right-1 text-xl opacity-0 group-hover:opacity-100 transition-opacity"
-                    animate={{ rotate: [0, 20, -20, 0] }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    ✨
-                  </motion.span>
                 </motion.div>
               </Link>
             </FadeIn>
@@ -229,20 +210,7 @@ export default function Nav() {
                   <HoverCard scale={1.05}>
                     <Link
                       href={link.href}
-                      className={`text-base lg:text-lg font-semibold relative group ${
-                        (link.href === "/" && router.pathname === "/") || // Home check
-                        (link.href !== "/" && // Exclude home for startsWith checks
-                          (router.pathname === link.href || // Exact match
-                            (link.href === "/blog" &&
-                              router.pathname.startsWith("/blog")) || // Blog section
-                            (link.href === "/bytes" &&
-                              router.pathname.startsWith("/bytes")))) // Bytes section
-                          ? "text-transparent bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text"
-                          : "text-gray-700"
-                      } hover:text-transparent hover:bg-gradient-to-r hover:from-purple-600 hover:to-blue-600 hover:bg-clip-text transition-all duration-300`}
-                    >
-                      {link.label}
-                      <span className={`absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ${
+                      className={`text-base lg:text-lg font-semibold relative group transition-colors duration-200 ${
                         (link.href === "/" && router.pathname === "/") ||
                         (link.href !== "/" &&
                           (router.pathname === link.href ||
@@ -250,9 +218,24 @@ export default function Nav() {
                               router.pathname.startsWith("/blog")) ||
                             (link.href === "/bytes" &&
                               router.pathname.startsWith("/bytes"))))
-                          ? "scale-x-100"
-                          : ""
-                      }`}></span>
+                          ? "text-gray-900"
+                          : "text-gray-700 hover:text-gray-900"
+                      }`}
+                    >
+                      {link.label}
+                      <span
+                        className={`absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 ${
+                          (link.href === "/" && router.pathname === "/") ||
+                          (link.href !== "/" &&
+                            (router.pathname === link.href ||
+                              (link.href === "/blog" &&
+                                router.pathname.startsWith("/blog")) ||
+                              (link.href === "/bytes" &&
+                                router.pathname.startsWith("/bytes"))))
+                            ? "scale-x-100"
+                            : ""
+                        }`}
+                      ></span>
                     </Link>
                   </HoverCard>
                 </SlideInRight>
@@ -266,16 +249,20 @@ export default function Nav() {
                       <HoverCard scale={1.05}>
                         <Link
                           href="/admin"
-                          className={`text-lg font-semibold relative group ${
+                          className={`text-lg font-semibold relative group transition-colors duration-200 ${
                             router.pathname.startsWith("/admin")
-                              ? "text-transparent bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text"
-                              : "text-gray-700"
-                          } hover:text-transparent hover:bg-gradient-to-r hover:from-purple-600 hover:to-blue-600 hover:bg-clip-text transition-all duration-300`}
+                              ? "text-gray-900"
+                              : "text-gray-700 hover:text-gray-900"
+                          }`}
                         >
                           Admin
-                          <span className={`absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ${
-                            router.pathname.startsWith("/admin") ? "scale-x-100" : ""
-                          }`}></span>
+                          <span
+                            className={`absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 ${
+                              router.pathname.startsWith("/admin")
+                                ? "scale-x-100"
+                                : ""
+                            }`}
+                          ></span>
                         </Link>
                       </HoverCard>
                     </SlideInRight>
@@ -285,10 +272,10 @@ export default function Nav() {
                     <HoverCard scale={1.05}>
                       <button
                         onClick={handleSignOut}
-                        className="text-lg font-semibold text-gray-700 hover:text-transparent hover:bg-gradient-to-r hover:from-purple-600 hover:to-blue-600 hover:bg-clip-text transition-all duration-300 relative group"
+                        className="text-lg font-semibold text-gray-700 hover:text-gray-900 transition-colors duration-200 relative group"
                       >
                         Sign Out
-                        <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                        <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
                       </button>
                     </HoverCard>
                   </SlideInRight>
@@ -298,12 +285,12 @@ export default function Nav() {
               {/* Search Icon */}
               <motion.button
                 onClick={toggleSearch}
-                className="text-gray-700 hover:text-purple-600 transition-all duration-300 p-2 lg:p-3 rounded-xl hover:bg-purple-100 group"
+                className="text-gray-700 hover:text-gray-900 transition-colors duration-200 p-2 lg:p-3 rounded-xl hover:bg-gray-100"
                 aria-label="Open Search"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
               >
-                <FaSearch className="w-5 h-5 lg:w-6 lg:h-6 group-hover:rotate-12 transition-transform duration-300" />
+                <FaSearch className="w-5 h-5 lg:w-6 lg:h-6" />
               </motion.button>
             </div>
 
@@ -312,22 +299,26 @@ export default function Nav() {
               {/* Search Icon (Mobile) */}
               <motion.button
                 onClick={toggleSearch}
-                className="text-gray-700 hover:text-purple-600 transition-all duration-300 p-2 rounded-xl hover:bg-purple-100"
+                className="text-gray-700 hover:text-gray-900 transition-colors duration-200 p-2 rounded-xl hover:bg-gray-100"
                 aria-label="Open Search"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
               >
                 <FaSearch className="w-5 h-5 sm:w-6 sm:h-6" />
               </motion.button>
               {/* Hamburger Icon */}
               <motion.button
                 onClick={toggleMenu}
-                className="text-gray-700 p-2 rounded-xl hover:bg-purple-100 hover:text-purple-600 transition-all duration-300"
+                className="text-gray-700 p-2 rounded-xl hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
                 aria-label={isOpen ? "Close menu" : "Open menu"}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
               >
-                {isOpen ? <FaTimes className="w-6 h-6 sm:w-7 sm:h-7" /> : <FaBars className="w-6 h-6 sm:w-7 sm:h-7" />}
+                {isOpen ? (
+                  <FaTimes className="w-6 h-6 sm:w-7 sm:h-7" />
+                ) : (
+                  <FaBars className="w-6 h-6 sm:w-7 sm:h-7" />
+                )}
               </motion.button>
             </motion.div>
           </div>
@@ -339,7 +330,7 @@ export default function Nav() {
         {isOpen && (
           <motion.div
             id="mobile-nav"
-            className="md:hidden bg-gradient-to-br from-purple-50 via-white to-blue-50 text-gray-800 pt-6 sm:pt-8 pb-6 sm:pb-8 shadow-2xl z-[100] fixed top-[72px] sm:top-[80px] md:top-[88px] left-0 right-0 h-[calc(100vh-72px)] sm:h-[calc(100vh-80px)] md:h-[calc(100vh-88px)] w-full overflow-y-auto border-t-2 border-purple-100"
+            className="md:hidden bg-white text-gray-800 pt-6 sm:pt-8 pb-6 sm:pb-8 shadow-2xl z-[100] fixed top-[72px] sm:top-[80px] md:top-[88px] left-0 right-0 h-[calc(100vh-72px)] sm:h-[calc(100vh-80px)] md:h-[calc(100vh-88px)] w-full overflow-y-auto border-t border-gray-200"
             initial={{ opacity: 0, x: "100%" }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
@@ -351,7 +342,7 @@ export default function Nav() {
                 <motion.a
                   key={link.href}
                   href={link.href}
-                  className={`block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-bold rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-all duration-300 w-full max-w-xs ${
+                  className={`block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-bold rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-colors duration-200 w-full max-w-xs ${
                     (link.href === "/" && router.pathname === "/") ||
                     (link.href !== "/" &&
                       (router.pathname === link.href ||
@@ -359,12 +350,12 @@ export default function Nav() {
                           router.pathname.startsWith("/blog")) ||
                         (link.href === "/bytes" &&
                           router.pathname.startsWith("/bytes"))))
-                      ? "text-transparent bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text bg-purple-100"
-                      : "text-gray-800 hover:bg-purple-100 hover:text-purple-600"
+                      ? "text-gray-900 bg-gray-100"
+                      : "text-gray-800 hover:bg-gray-100 hover:text-gray-900"
                   }`}
                   onClick={handleLinkClick}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   {link.label}
                 </motion.a>
@@ -375,14 +366,14 @@ export default function Nav() {
                   {session?.user?.role === "admin" && (
                     <motion.a
                       href="/admin"
-                      className={`block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-bold rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-all duration-300 w-full max-w-xs ${
+                      className={`block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-bold rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-colors duration-200 w-full max-w-xs ${
                         router.pathname.startsWith("/admin")
-                          ? "text-transparent bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text bg-purple-100"
-                          : "text-gray-800 hover:bg-purple-100 hover:text-purple-600"
+                          ? "text-gray-900 bg-gray-100"
+                          : "text-gray-800 hover:bg-gray-100 hover:text-gray-900"
                       }`}
                       onClick={handleLinkClick}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                     >
                       Admin
                     </motion.a>
@@ -390,13 +381,13 @@ export default function Nav() {
 
                   <motion.a
                     href="#"
-                    className="block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-bold rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-all duration-300 w-full max-w-xs text-gray-800 hover:bg-purple-100 hover:text-purple-600"
+                    className="block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-bold rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-colors duration-200 w-full max-w-xs text-gray-800 hover:bg-gray-100 hover:text-gray-900"
                     onClick={() => {
                       handleSignOut();
                       handleLinkClick();
                     }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
                     Sign Out
                   </motion.a>

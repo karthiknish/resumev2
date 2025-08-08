@@ -9,7 +9,7 @@ export default function PrivacyPolicy() {
         <title>Privacy Policy - Karthik Nishanth</title>
         <meta name="description" content="Website Privacy Policy" />
       </Head>
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
+      <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-brandSecondary/10">
         <PageContainer className="mt-20 md:mt-24">
           <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
             {/* Hero Section */}
@@ -28,11 +28,9 @@ export default function PrivacyPolicy() {
                     ease: "easeInOut",
                   }}
                   className="text-6xl"
-                >
-                  🔒
-                </motion.div>
+                ></motion.div>
                 <h1
-                  className="text-4xl md:text-6xl lg:text-7xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent"
+                  className="text-4xl md:text-6xl lg:text-7xl font-black bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent"
                   style={{ fontFamily: "Space Grotesk, sans-serif" }}
                 >
                   Privacy Policy
@@ -49,21 +47,19 @@ export default function PrivacyPolicy() {
                     ease: "easeInOut",
                   }}
                   className="inline-block ml-2 text-2xl"
-                >
-                  🛡️
-                </motion.span>
+                ></motion.span>
               </p>
             </motion.div>
 
             {/* Content Container */}
             <motion.div
-              className="bg-gradient-to-br from-green-50/90 via-white/85 to-teal-50/90 backdrop-blur-sm border-2 border-purple-200 rounded-3xl p-8 md:p-12 shadow-2xl"
+              className="bg-gradient-to-br from-green-50/90 via-white/90 to-teal-50/90 border-2 border-brandSecondary rounded-3xl p-8 md:p-12 shadow-2xl"
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
               <div
-                className="prose prose-lg max-w-none prose-p:text-gray-700 prose-headings:text-gray-800 prose-a:text-purple-600 hover:prose-a:text-purple-800 prose-headings:font-black prose-h2:text-3xl prose-h3:text-2xl prose-strong:text-gray-800 prose-li:text-gray-700"
+                className="prose prose-lg max-w-none prose-p:text-gray-700 prose-headings:text-gray-800 prose-a:text-primary hover:prose-a:text-brandSecondary prose-headings:font-black prose-h2:text-3xl prose-h3:text-2xl prose-strong:text-gray-800 prose-li:text-gray-700"
                 style={{ fontFamily: "Inter, sans-serif" }}
               >
                 <p>

@@ -100,7 +100,7 @@ export default function FourOhFour() {
                 transition={{ delay: 0.5, duration: 0.5 }}
                 className="text-6xl mb-6"
               >
-                🔍
+                
               </motion.div>
 
               <h2
@@ -122,7 +122,7 @@ export default function FourOhFour() {
                     whileTap={{ scale: 0.95 }}
                     className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center gap-3"
                   >
-                    <span className="text-xl">🏠</span>
+                    <span className="text-xl"></span>
                     Go Home
                     <motion.span
                       animate={{ x: [0, 5, 0] }}

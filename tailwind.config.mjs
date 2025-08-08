@@ -28,6 +28,10 @@ export default {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
         },
+        brandSecondary: {
+          DEFAULT: "hsl(var(--brand-secondary))",
+          foreground: "hsl(var(--brand-secondary-foreground))",
+        },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",

@@ -52,7 +52,7 @@ export default function Contact() {
       </Head>
       <PageContainer>
         <div
-          className="min-h-screen mt-24 bg-gradient-to-br from-purple-50 via-white to-blue-50 p-4 sm:p-6 md:p-8 lg:p-16 max-w-6xl mx-auto relative"
+          className="min-h-screen mt-24 bg-gradient-to-br from-primary/10 via-background to-brandSecondary/10 p-4 sm:p-6 md:p-8 lg:p-16 max-w-6xl mx-auto relative"
           style={{ fontFamily: "Inter, sans-serif" }}
         >
           <FadeIn>
@@ -62,35 +62,9 @@ export default function Contact() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 bg-white/80 backdrop-blur-sm border border-purple-200 rounded-full text-purple-700 text-xs sm:text-sm font-semibold mb-6 sm:mb-8 shadow-lg"
+                className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 bg-white border border-brandSecondary rounded-full text-brandSecondary text-xs sm:text-sm font-semibold mb-6 sm:mb-8 shadow-lg"
               >
-                <motion.span
-                  animate={{ rotate: [0, 15, -15, 0] }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="text-xl"
-                >
-                  👋
-                </motion.span>
-                <span>Ready to create something amazing?</span>
-                <motion.span
-                  animate={{
-                    scale: [1, 1.2, 1],
-                    rotate: [0, 10, 0],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 1,
-                  }}
-                  className="text-xl"
-                >
-                  💬
-                </motion.span>
+                <span>Ready to get started?</span>
               </motion.div>
 
               <motion.h1
@@ -100,7 +74,7 @@ export default function Contact() {
                 className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-6 sm:mb-8 leading-tight tracking-tight"
                 style={{ fontFamily: "Space Grotesk, sans-serif" }}
               >
-                <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent">
                   Get In Touch
                 </span>
                 <motion.span
@@ -115,9 +89,7 @@ export default function Contact() {
                     delay: 1,
                   }}
                   className="inline-block ml-4 text-yellow-400"
-                >
-                  🚀
-                </motion.span>
+                ></motion.span>
               </motion.h1>
 
               <motion.p
@@ -128,7 +100,7 @@ export default function Contact() {
               >
                 Have a{" "}
                 <motion.span
-                  className="inline-block bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent font-bold"
+                  className="inline-block bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent font-bold"
                   whileHover={{ scale: 1.05 }}
                 >
                   brilliant idea
@@ -143,9 +115,7 @@ export default function Contact() {
                     ease: "easeInOut",
                   }}
                   className="inline-block ml-2"
-                >
-                  ✨
-                </motion.span>
+                ></motion.span>
               </motion.p>
             </div>
           </FadeIn>
@@ -157,7 +127,7 @@ export default function Contact() {
 
           {/* --- Booking Section Start --- */}
           <FadeIn delay={0.3}>
-            <section className="mt-12 sm:mt-16 bg-white/80 backdrop-blur-sm p-4 sm:p-6 md:p-8 rounded-3xl shadow-2xl border-2 border-purple-200">
+            <section className="mt-12 sm:mt-16 bg-white p-4 sm:p-6 md:p-8 rounded-3xl shadow-2xl border-2 border-brandSecondary">
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -177,27 +147,10 @@ export default function Contact() {
                     ease: "easeInOut",
                   }}
                   className="text-4xl"
-                >
-                  📅
-                </motion.span>
-                <span className="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent text-center sm:text-left">
+                ></motion.span>
+                <span className="bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent text-center sm:text-left">
                   Schedule a Consultation
                 </span>
-                <motion.span
-                  animate={{
-                    y: [0, -8, 0],
-                    rotate: [0, 5, -5, 0],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 0.5,
-                  }}
-                  className="text-4xl"
-                >
-                  ☕
-                </motion.span>
               </motion.h2>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -210,7 +163,7 @@ export default function Contact() {
                 you using the scheduler below. Let's grab a virtual coffee and
                 chat about your vision!
               </motion.p>
-              <div className="min-h-[350px] sm:min-h-[400px] bg-gradient-to-br from-purple-50 to-blue-50 rounded-3xl flex items-center justify-center border-2 border-purple-200 shadow-inner">
+              <div className="min-h-[350px] sm:min-h-[400px] bg-white rounded-3xl flex items-center justify-center border-2 border-brandSecondary/30 shadow-inner">
                 {/* Cal.com Embed */}
                 <Cal
                   namespace="15min"
@@ -234,7 +187,7 @@ export default function Contact() {
           </FadeIn>
 
           <FadeIn delay={0.6}>
-            <section className="mt-12 sm:mt-16 bg-gradient-to-br from-purple-600 to-blue-600 p-6 sm:p-8 md:p-12 rounded-3xl shadow-2xl text-white relative overflow-hidden">
+            <section className="mt-12 sm:mt-16 bg-gradient-to-br from-primary to-brandSecondary p-6 sm:p-8 md:p-12 rounded-3xl shadow-2xl text-white relative overflow-hidden">
               {/* Floating Elements */}
               <motion.div
                 className="absolute top-6 left-6 sm:top-10 sm:left-10 text-3xl sm:text-4xl opacity-30"
@@ -247,9 +200,7 @@ export default function Contact() {
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-              >
-                🌟
-              </motion.div>
+              ></motion.div>
               <motion.div
                 className="absolute bottom-6 right-6 sm:bottom-10 sm:right-20 text-2xl sm:text-3xl opacity-25"
                 animate={{
@@ -262,9 +213,7 @@ export default function Contact() {
                   ease: "easeInOut",
                   delay: 2,
                 }}
-              >
-                ✨
-              </motion.div>
+              ></motion.div>
 
               <motion.h2
                 initial={{ opacity: 0, y: 30 }}
@@ -285,9 +234,7 @@ export default function Contact() {
                     ease: "easeInOut",
                   }}
                   className="text-5xl"
-                >
-                  🚀
-                </motion.span>
+                ></motion.span>
                 Let's Build Something Amazing
                 <motion.span
                   animate={{
@@ -301,9 +248,7 @@ export default function Contact() {
                     delay: 1,
                   }}
                   className="text-5xl"
-                >
-                  🎉
-                </motion.span>
+                ></motion.span>
               </motion.h2>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -319,12 +264,12 @@ export default function Contact() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12 relative z-10">
                 {[
                   {
-                    icon: "⚡",
+                    icon: "",
                     title: "Quick Response",
                     desc: "I typically respond to all inquiries within 24 hours.",
                   },
                   {
-                    icon: "🤝",
+                    icon: "",
                     title: "Flexible Collaboration",
                     desc: "Available for both short-term projects and long-term partnerships.",
                   },

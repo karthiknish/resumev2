@@ -80,7 +80,7 @@ export default function Testimonials({ testimonials }) {
                     }}
                     className="text-xl"
                   >
-                    💬
+                    
                   </motion.span>
                   <span>What People Say</span>
                 </motion.div>
@@ -115,7 +115,7 @@ export default function Testimonials({ testimonials }) {
                         : "bg-white/90 backdrop-blur-sm border-2 border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300"
                     }`}
                   >
-                    <span className="mr-2">🌟</span>
+                    <span className="mr-2"></span>
                     All Reviews
                   </motion.button>
                   <motion.button
@@ -128,7 +128,7 @@ export default function Testimonials({ testimonials }) {
                         : "bg-white/90 backdrop-blur-sm border-2 border-green-200 text-green-700 hover:bg-green-50 hover:border-green-300"
                     }`}
                   >
-                    <span className="mr-2">🤝</span>
+                    <span className="mr-2"></span>
                     Clients
                   </motion.button>
                   <motion.button
@@ -220,7 +220,7 @@ export default function Testimonials({ testimonials }) {
                           ? "bg-green-100 text-green-700 border border-green-200"
                           : "bg-orange-100 text-orange-700 border border-orange-200"
                       }`}>
-                        <span>{testimonial.category === "client" ? "🤝" : "👥"}</span>
+                        <span>{testimonial.category === "client" ? "" : "👥"}</span>
                         {testimonial.category === "client" ? "Client" : "Colleague"}
                       </div>
                     </div>
@@ -259,7 +259,7 @@ export default function Testimonials({ testimonials }) {
                       whileTap={{ scale: 0.95 }}
                       className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center gap-3 mx-auto"
                     >
-                      <span className="text-xl">📝</span>
+                      <span className="text-xl"></span>
                       Submit a Testimonial
                       <motion.span
                         animate={{ x: [0, 5, 0] }}

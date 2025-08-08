@@ -191,7 +191,7 @@ export default function Services() {
         {serviceSchemas.map((schema, index) => (
           <JsonLd key={`service-schema-${index}`} data={schema} />
         ))}
-        
+
         {/* Google Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -205,7 +205,10 @@ export default function Services() {
         />
       </Head>
       <PageContainer>
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 py-24 md:py-32" style={{ fontFamily: "Inter, sans-serif" }}>
+        <div
+          className="min-h-screen bg-background py-24 md:py-32"
+          style={{ fontFamily: "Inter, sans-serif" }}
+        >
           <div className="max-w-7xl mx-auto px-6">
             {/* Hero Section */}
             <motion.div
@@ -214,84 +217,20 @@ export default function Services() {
               transition={{ duration: 0.6 }}
               className="text-center mb-20"
             >
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="inline-flex items-center gap-3 px-6 py-3 bg-white/80 backdrop-blur-sm border border-purple-200 rounded-full text-purple-700 text-sm font-semibold mb-8 shadow-lg"
-              >
-                <motion.span
-                  animate={{ rotate: [0, 15, -15, 0] }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="text-xl"
-                >
-                  ⚡
-                </motion.span>
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-card border text-sm font-semibold mb-8 shadow-sm rounded-full border-brandSecondary text-brandSecondary">
                 <span>Professional Development Services</span>
-                <motion.span
-                  animate={{
-                    scale: [1, 1.2, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 1,
-                  }}
-                  className="text-xl"
-                >
-                  ✨
-                </motion.span>
-              </motion.div>
-              
+              </div>
+
               <h1
                 className="text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight"
                 style={{ fontFamily: "Space Grotesk, sans-serif" }}
               >
-                <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-                  My Services
-                </span>
-                <motion.span
-                  animate={{
-                    rotate: [0, 20, -20, 0],
-                    scale: [1, 1.2, 1],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 1,
-                  }}
-                  className="inline-block ml-4 text-yellow-400"
-                >
-                  🚀
-                </motion.span>
+                <span className="text-foreground">My Services</span>
               </h1>
-              
-              <p className="text-2xl md:text-3xl text-gray-700 max-w-5xl mx-auto leading-relaxed font-medium mb-12">
-                Comprehensive{" "}
-                <motion.span
-                  className="inline-block bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent font-bold"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  development solutions
-                </motion.span>{" "}
-                to bring your digital vision to life. From stunning websites to powerful applications.
-                <motion.span
-                  animate={{ rotate: [0, 5, -5, 0] }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="inline-block ml-2"
-                >
-                  💻
-                </motion.span>
+
+              <p className="text-2xl md:text-3xl text-foreground/70 max-w-5xl mx-auto leading-relaxed font-medium mb-12">
+                Comprehensive development solutions to bring your digital vision
+                to life — from modern websites to scalable applications.
               </p>
             </motion.div>
 
@@ -306,15 +245,15 @@ export default function Services() {
               {services.map((service, index) => {
                 const slug = generateSlug(service.title);
                 const href = `/services/${slug}`;
-                
+
                 // Define unique gradient colors for each service
                 const gradients = [
-                  "from-blue-500 to-cyan-500",
-                  "from-green-500 to-emerald-500", 
-                  "from-pink-500 to-rose-500",
-                  "from-orange-500 to-amber-500",
-                  "from-red-500 to-pink-500",
-                  "from-indigo-500 to-purple-500"
+                  "from-primary to-brandSecondary",
+                  "from-primary to-brandSecondary",
+                  "from-primary to-brandSecondary",
+                  "from-primary to-brandSecondary",
+                  "from-primary to-brandSecondary",
+                  "from-primary to-brandSecondary",
                 ];
 
                 return (
@@ -328,7 +267,7 @@ export default function Services() {
                     className="group"
                   >
                     <Link href={href} className="block h-full">
-                      <div className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 p-8 rounded-3xl shadow-xl hover:shadow-2xl hover:border-purple-300 transition-all duration-300 h-full flex flex-col group-hover:bg-white/90">
+                      <div className="bg-card border-2 border-border p-8 rounded-3xl shadow-sm hover:shadow transition-all duration-300 h-full flex flex-col">
                         {/* Service Icon with unique gradient */}
                         <motion.div
                           className={`w-20 h-20 bg-gradient-to-r ${gradients[index]} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}
@@ -338,22 +277,22 @@ export default function Services() {
                           <div className="text-white text-3xl">
                             {React.cloneElement(service.icon, {
                               className: "text-3xl",
-                              style: { color: "white" }
+                              style: { color: "white" },
                             })}
                           </div>
                         </motion.div>
-                        
+
                         <h2
-                          className="text-3xl font-black mb-4 text-gray-900 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-blue-600 group-hover:bg-clip-text transition-all duration-300"
+                          className="text-3xl font-black mb-4 text-foreground"
                           style={{ fontFamily: "Space Grotesk, sans-serif" }}
                         >
                           {service.title}
                         </h2>
-                        
+
                         <p className="text-gray-700 mb-6 flex-grow text-lg leading-relaxed">
                           {service.description}
                         </p>
-                        
+
                         {/* Feature List */}
                         <ul className="space-y-3 mb-6">
                           {service.features.slice(0, 3).map((feature, idx) => (
@@ -382,13 +321,13 @@ export default function Services() {
                             </li>
                           ))}
                         </ul>
-                        
+
                         {/* CTA */}
                         <motion.div
-                          className="mt-auto pt-6 border-t-2 border-purple-100"
+                          className="mt-auto pt-6 border-t border-border"
                           whileHover={{ x: 5 }}
                         >
-                          <span className="inline-flex items-center gap-2 text-purple-600 font-bold text-lg group-hover:text-blue-600 transition-colors">
+                          <span className="inline-flex items-center gap-2 text-brandSecondary font-bold text-lg">
                             Learn More
                             <motion.span
                               animate={{ x: [0, 5, 0] }}
@@ -415,7 +354,7 @@ export default function Services() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               viewport={{ once: true }}
-              className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 p-8 md:p-12 rounded-3xl shadow-2xl mb-16"
+              className="bg-card border-2 border-border p-8 md:p-12 rounded-3xl shadow mb-16"
             >
               <motion.h2
                 className="text-5xl md:text-6xl font-black mb-8 flex items-center gap-4"
@@ -425,27 +364,14 @@ export default function Services() {
                 transition={{ duration: 0.6, delay: 0.1 }}
                 viewport={{ once: true }}
               >
-                <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                  FAQ
-                </span>
-                <motion.span
-                  animate={{ rotate: [0, 15, -15, 0] }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="text-4xl"
-                >
-                  ❓
-                </motion.span>
+                <span className="text-foreground">FAQ</span>
               </motion.h2>
-              
+
               <div className="space-y-6">
                 {faqs.map((faq, index) => (
                   <motion.div
                     key={index}
-                    className="border-b-2 border-purple-100 pb-6 last:border-b-0"
+                    className="border-b border-border pb-6 last:border-b-0"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -453,10 +379,13 @@ export default function Services() {
                   >
                     <motion.button
                       onClick={() => toggleFaq(index)}
-                      className="flex justify-between items-center w-full text-left font-bold text-gray-900 hover:text-purple-600 transition-colors group"
+                      className="flex justify-between items-center w-full text-left font-bold text-foreground hover:text-primary transition-colors group"
                       whileHover={{ x: 5 }}
                     >
-                      <span className="text-xl md:text-2xl pr-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                      <span
+                        className="text-xl md:text-2xl pr-4"
+                        style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                      >
                         {faq.question}
                       </span>
                       <motion.div
@@ -465,9 +394,9 @@ export default function Services() {
                         className="flex-shrink-0"
                       >
                         {expandedFaq === index ? (
-                          <FaChevronUp className="text-purple-600 text-xl" />
+                          <FaChevronUp className="text-primary text-xl" />
                         ) : (
-                          <FaChevronDown className="text-gray-500 group-hover:text-purple-600 text-xl transition-colors" />
+                          <FaChevronDown className="text-foreground/50 group-hover:text-primary text-xl transition-colors" />
                         )}
                       </motion.div>
                     </motion.button>
@@ -477,9 +406,9 @@ export default function Services() {
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="mt-6 bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-2xl border border-purple-200"
+                        className="mt-6 bg-secondary p-6 rounded-2xl border border-border"
                       >
-                        <p className="text-lg leading-relaxed text-gray-700 font-medium">
+                        <p className="text-lg leading-relaxed text-foreground/70 font-medium">
                           {faq.answer}
                         </p>
                       </motion.div>
@@ -495,35 +424,10 @@ export default function Services() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
               viewport={{ once: true }}
-              className="bg-gradient-to-br from-purple-600 to-blue-600 p-12 md:p-16 rounded-3xl shadow-2xl text-center relative overflow-hidden"
+              className="bg-brandSecondary p-12 md:p-16 rounded-3xl shadow text-center relative overflow-hidden text-white"
             >
-              {/* Floating Elements */}
-              <motion.div
-                className="absolute top-10 left-10 text-6xl opacity-20"
-                animate={{
-                  y: [0, -30, 0],
-                  rotate: [0, 360],
-                }}
-                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-              >
-                💫
-              </motion.div>
-              <motion.div
-                className="absolute bottom-10 right-20 text-5xl opacity-20"
-                animate={{
-                  scale: [1, 1.4, 1],
-                  rotate: [0, -45, 0],
-                }}
-                transition={{
-                  duration: 6,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 2,
-                }}
-              >
-                ⭐
-              </motion.div>
-              
+              {/* Decorative floating elements removed for a cleaner CTA */}
+
               <motion.h2
                 className="text-4xl md:text-6xl font-black text-white mb-8 relative z-10"
                 style={{ fontFamily: "Space Grotesk, sans-serif" }}
@@ -532,26 +436,19 @@ export default function Services() {
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
               >
-                Ready to Start?
-                <motion.span
-                  animate={{ rotate: [0, 20, -20, 0] }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="inline-block ml-4 text-yellow-300"
-                >
-                  🚀
-                </motion.span>
+                Ready to start?
               </motion.h2>
-              
+
               <p className="text-xl md:text-2xl text-purple-100 mb-12 max-w-4xl mx-auto leading-relaxed font-medium relative z-10">
-                Let's discuss how I can help bring your ideas to life. Contact me for a
-                <span className="font-bold text-white"> free consultation </span>
+                Let's discuss how I can help bring your ideas to life. Contact
+                me for a
+                <span className="font-bold text-white">
+                  {" "}
+                  free consultation{" "}
+                </span>
                 and project estimate.
               </p>
-              
+
               <motion.div
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
@@ -559,30 +456,10 @@ export default function Services() {
               >
                 <Link
                   href="/contact"
-                  className="inline-flex items-center gap-3 px-12 py-6 bg-white text-purple-600 hover:text-blue-600 font-black text-xl rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl"
+                  className="inline-flex items-center gap-3 px-12 py-6 bg-white text-brandSecondary border-2 border-brandSecondary font-black text-xl rounded-2xl transition-all duration-300 shadow hover:shadow-md"
                 >
-                  <motion.span
-                    animate={{ y: [0, -3, 0] }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="text-2xl"
-                  >
-                    💬
-                  </motion.span>
-                  Get in Touch
-                  <motion.span
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    →
-                  </motion.span>
+                  Contact me
+                  <span>→</span>
                 </Link>
               </motion.div>
             </motion.div>

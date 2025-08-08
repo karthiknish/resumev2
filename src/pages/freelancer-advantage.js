@@ -264,7 +264,7 @@ export default function FreelancerAdvantage() {
             }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           >
-            💻
+            
           </motion.div>
           <motion.div
             className="absolute top-20 right-40 text-5xl opacity-60"
@@ -280,7 +280,7 @@ export default function FreelancerAdvantage() {
               delay: 1,
             }}
           >
-            🚀
+            
           </motion.div>
           <motion.div
             className="absolute bottom-40 left-40 text-4xl opacity-50"
@@ -363,7 +363,7 @@ export default function FreelancerAdvantage() {
                   }}
                   className="inline-block ml-4 text-yellow-400"
                 >
-                  ⚡
+                  
                 </motion.span>
               </motion.h1>
 
@@ -390,7 +390,7 @@ export default function FreelancerAdvantage() {
                   }}
                   className="inline-block ml-2"
                 >
-                  ✨
+                  
                 </motion.span>
               </motion.p>
 
@@ -410,7 +410,7 @@ export default function FreelancerAdvantage() {
                   }}
                   className="text-2xl"
                 >
-                  🎯
+                  
                 </motion.span>
               </motion.div>
 
@@ -435,7 +435,7 @@ export default function FreelancerAdvantage() {
                     }}
                     className="text-2xl"
                   >
-                    🚀
+                    
                   </motion.span>
                   Let's build something amazing
                 </motion.button>
@@ -549,7 +549,7 @@ export default function FreelancerAdvantage() {
                     whileHover={{ scale: 1.2, rotate: 10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    💰✨
+                    💰
                   </motion.div>
                   <motion.div
                     className="text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -562,7 +562,7 @@ export default function FreelancerAdvantage() {
                       ease: "easeInOut",
                     }}
                   >
-                    💵🎉
+                    💵
                   </motion.div>
                 </div>
                 <h3
@@ -593,7 +593,7 @@ export default function FreelancerAdvantage() {
                     whileHover={{ scale: 1.2, rotate: 10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    💬🌟
+                    
                   </motion.div>
                   <motion.div
                     className="text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -606,7 +606,7 @@ export default function FreelancerAdvantage() {
                       ease: "easeInOut",
                     }}
                   >
-                    🗣️✨
+                    🗣️
                   </motion.div>
                 </div>
                 <h3
@@ -637,7 +637,7 @@ export default function FreelancerAdvantage() {
                     whileHover={{ scale: 1.2, rotate: 10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    🚀⚡
+                    
                   </motion.div>
                   <motion.div
                     className="text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -650,7 +650,7 @@ export default function FreelancerAdvantage() {
                       ease: "easeInOut",
                     }}
                   >
-                    ⏱️💨
+                    💨
                   </motion.div>
                 </div>
                 <h3
@@ -681,7 +681,7 @@ export default function FreelancerAdvantage() {
                     whileHover={{ scale: 1.2, rotate: 10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    🤝💎
+                    💎
                   </motion.div>
                   <motion.div
                     className="text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -724,7 +724,7 @@ export default function FreelancerAdvantage() {
                     whileHover={{ scale: 1.2, rotate: 10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    💡🎨
+                    
                   </motion.div>
                   <motion.div
                     className="text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -737,7 +737,7 @@ export default function FreelancerAdvantage() {
                       ease: "easeInOut",
                     }}
                   >
-                    🌈✨
+                    🌈
                   </motion.div>
                 </div>
                 <h3
@@ -768,7 +768,7 @@ export default function FreelancerAdvantage() {
                     whileHover={{ scale: 1.2, rotate: 10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    🎯🔧
+                    🔧
                   </motion.div>
                   <motion.div
                     className="text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -841,7 +841,7 @@ export default function FreelancerAdvantage() {
                     }}
                     className="text-4xl"
                   >
-                    📊
+                    
                   </motion.span>
                 </h2>
                 <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
@@ -944,7 +944,7 @@ export default function FreelancerAdvantage() {
                     }}
                     className="text-4xl"
                   >
-                    💭
+                    
                   </motion.span>
                 </h2>
                 <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
@@ -1068,7 +1068,7 @@ export default function FreelancerAdvantage() {
                     }}
                     className="text-4xl"
                   >
-                    🤝
+                    
                   </motion.span>
                   Work With Me
                   <motion.span
@@ -1084,7 +1084,7 @@ export default function FreelancerAdvantage() {
                     }}
                     className="text-4xl"
                   >
-                    ✨
+                    
                   </motion.span>
                 </h2>
                 <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
@@ -1480,7 +1480,7 @@ export default function FreelancerAdvantage() {
                           </>
                         ) : (
                           <>
-                            <span className="mr-2 text-xl">🚀</span>
+                            <span className="mr-2 text-xl"></span>
                             Let's Connect
                           </>
                         )}

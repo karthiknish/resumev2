@@ -56,7 +56,7 @@ export default function SignIn() {
       <Head>
         <title>Sign In - Karthik Nishanth</title>
         <meta name="description" content="Sign in to your account" />
-        
+
         {/* Google Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -69,7 +69,10 @@ export default function SignIn() {
           rel="stylesheet"
         />
       </Head>
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 relative flex items-center justify-center overflow-hidden" style={{ fontFamily: "Inter, sans-serif" }}>
+      <div
+        className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-brandSecondary/10 relative flex items-center justify-center overflow-hidden"
+        style={{ fontFamily: "Inter, sans-serif" }}
+      >
         {/* Decorative Color Splashes */}
         <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-purple-200/20 to-pink-200/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-blue-200/20 to-cyan-200/20 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
@@ -81,7 +84,7 @@ export default function SignIn() {
           transition={{ duration: 0.5 }}
           className="w-full max-w-md relative z-10"
         >
-          <div className="bg-white/90 backdrop-blur-sm border-2 border-purple-200 rounded-3xl shadow-2xl p-8">
+          <div className="bg-white border-2 border-brandSecondary rounded-3xl shadow-2xl p-8">
             <div className="text-center mb-8">
               <motion.div
                 initial={{ scale: 0 }}
@@ -97,17 +100,20 @@ export default function SignIn() {
                     ease: "easeInOut",
                   }}
                   className="text-xl"
-                >
-                  🔐
-                </motion.span>
+                ></motion.span>
                 <span>Welcome back!</span>
               </motion.div>
-              <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
-                <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+              <h1
+                className="text-4xl md:text-5xl font-black text-gray-900 mb-4"
+                style={{ fontFamily: "Space Grotesk, sans-serif" }}
+              >
+                <span className="bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent">
                   Sign In
                 </span>
               </h1>
-              <p className="text-gray-600 text-lg font-medium">Access your account to continue</p>
+              <p className="text-gray-600 text-lg font-medium">
+                Access your account to continue
+              </p>
             </div>
             {error && (
               <motion.div
@@ -115,66 +121,68 @@ export default function SignIn() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="mb-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 text-red-700 rounded-2xl text-sm font-medium shadow-lg flex items-center gap-3"
               >
-                <span className="text-xl">⚠️</span>
+                <span className="text-xl"></span>
                 {error}
               </motion.div>
             )}
             <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-lg font-bold text-gray-800 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}
-              >
-                📧 Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-4 rounded-2xl bg-gradient-to-r from-purple-50 to-blue-50 border-2 border-purple-200 text-gray-800 placeholder-gray-500 focus:outline-none focus:border-purple-400 focus:ring-4 focus:ring-purple-200 font-medium text-lg transition-all duration-300"
-                placeholder="Enter your email address"
-                required
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-lg font-bold text-gray-800 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}
-              >
-                🔑 Password
-              </label>
-              <div className="relative">
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-lg font-bold text-gray-800 mb-3"
+                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                >
+                  📧 Email Address
+                </label>
                 <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full p-4 pr-14 rounded-2xl bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 text-gray-800 placeholder-gray-500 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-200 font-medium text-lg transition-all duration-300"
-                  placeholder="Enter your password"
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full p-4 rounded-2xl bg-gradient-to-r from-purple-50 to-blue-50 border-2 border-purple-200 text-gray-800 placeholder-gray-500 focus:outline-none focus:border-purple-400 focus:ring-4 focus:ring-purple-200 font-medium text-lg transition-all duration-300"
+                  placeholder="Enter your email address"
                   required
                 />
-                <motion.button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-blue-600 transition-colors p-2 rounded-xl hover:bg-blue-50"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {showPassword ? (
-                    <AiOutlineEyeInvisible size={24} />
-                  ) : (
-                    <AiOutlineEye size={24} />
-                  )}
-                </motion.button>
               </div>
-            </div>
+              <div>
+                <label
+                  htmlFor="password"
+                  className="block text-lg font-bold text-gray-800 mb-3"
+                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                >
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full p-4 pr-14 rounded-2xl bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 text-gray-800 placeholder-gray-500 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-200 font-medium text-lg transition-all duration-300"
+                    placeholder="Enter your password"
+                    required
+                  />
+                  <motion.button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-blue-600 transition-colors p-2 rounded-xl hover:bg-blue-50"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {showPassword ? (
+                      <AiOutlineEyeInvisible size={24} />
+                    ) : (
+                      <AiOutlineEye size={24} />
+                    )}
+                  </motion.button>
+                </div>
+              </div>
               <motion.button
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                className="w-full bg-brandSecondary hover:bg-brandSecondary/90 text-white py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
               >
                 {isLoading ? (
                   <>
@@ -183,7 +191,7 @@ export default function SignIn() {
                   </>
                 ) : (
                   <>
-                    <span className="text-xl">🚀</span>
+                    <span className="text-xl"></span>
                     Sign In
                   </>
                 )}
@@ -191,14 +199,14 @@ export default function SignIn() {
               <div className="text-center mt-6">
                 <Link
                   href="/forgot-password"
-                  className="text-purple-600 hover:text-blue-600 font-medium text-lg transition-colors inline-flex items-center gap-2 hover:underline"
+                  className="text-primary hover:text-brandSecondary font-medium text-lg transition-colors inline-flex items-center gap-2 hover:underline"
                 >
-                  <span className="text-xl">🔓</span>
+                  <span className="text-xl"></span>
                   Forgot Password?
                 </Link>
               </div>
             </form>
-            
+
             <div className="mt-8 pt-6 border-t-2 border-purple-100 text-center">
               <p className="text-gray-600 text-lg font-medium mb-4">
                 Don't have an account?
@@ -207,16 +215,16 @@ export default function SignIn() {
                 <motion.button
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-white border-2 border-purple-200 text-purple-600 hover:bg-purple-50 hover:border-purple-300 px-8 py-3 rounded-2xl font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-3 mx-auto"
+                  className="bg-white border-2 border-brandSecondary text-brandSecondary hover:bg-brandSecondary/10 hover:border-brandSecondary/80 px-8 py-3 rounded-2xl font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-3 mx-auto"
                 >
-                  <span className="text-xl">✨</span>
+                  <span className="text-xl"></span>
                   Create Account
                 </motion.button>
               </Link>
             </div>
           </div>
         </motion.div>
-        
+
         {/* Back to Home Link */}
         <motion.div
           initial={{ opacity: 0 }}

@@ -145,7 +145,7 @@ function Id() {
                           }}
                           className="text-2xl"
                         >
-                          🛠️
+                          
                         </motion.span>
                         <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                           Tech Stack
@@ -189,7 +189,7 @@ function Id() {
                         whileHover={{ scale: 1.1, rotate: 5 }}
                         className="text-4xl sm:text-5xl"
                       >
-                        📊
+                        
                       </motion.div>
                       <div>
                         <h1
@@ -237,7 +237,7 @@ function Id() {
                           }}
                           className="text-2xl"
                         >
-                          📋
+                          
                         </motion.span>
                         <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                           Project Overview
@@ -270,7 +270,7 @@ function Id() {
                             }}
                             className="text-2xl"
                           >
-                            🎯
+                            
                           </motion.span>
                           Key Achievement
                         </h3>
@@ -325,7 +325,7 @@ function Id() {
                             className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold rounded-2xl shadow-lg transition-all duration-300 px-6 py-3"
                             onClick={() => window.open(project.extlink)}
                           >
-                            <span className="mr-2">🚀</span>
+                            <span className="mr-2"></span>
                             View Live Project
                             <span className="ml-2">→</span>
                           </Button>
@@ -341,7 +341,7 @@ function Id() {
                             size="lg"
                             className="border-2 border-green-300 text-green-700 hover:bg-green-50 hover:border-green-400 font-bold rounded-2xl shadow-lg transition-all duration-300 px-6 py-3"
                           >
-                            <span className="mr-2">💬</span>
+                            <span className="mr-2"></span>
                             Discuss Your Project
                             <span className="ml-2">→</span>
                           </Button>
@@ -378,7 +378,7 @@ function Id() {
                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                     className="text-6xl mb-4"
                   >
-                    ⚙️
+                    
                   </motion.div>
                   <h2
                     className="text-2xl sm:text-3xl font-bold text-gray-700"

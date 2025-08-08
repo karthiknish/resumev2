@@ -145,7 +145,7 @@ function AdminDashboard() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center">
         <div className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 rounded-2xl px-8 py-6 shadow-xl flex items-center gap-4">
-          <div className="animate-spin text-3xl">⚡</div>
+          <div className="animate-spin text-3xl"></div>
           <span className="text-gray-700 font-bold text-xl">
             Loading Admin Dashboard...
           </span>
@@ -159,7 +159,7 @@ function AdminDashboard() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center">
         <div className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 rounded-2xl px-8 py-6 shadow-xl flex items-center gap-4">
-          <div className="text-3xl">🔐</div>
+          <div className="text-3xl"></div>
           <span className="text-gray-700 font-bold text-xl">
             Redirecting to sign in...
           </span>
@@ -173,7 +173,7 @@ function AdminDashboard() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center">
         <div className="bg-white/80 backdrop-blur-sm border-2 border-orange-200 rounded-2xl px-8 py-6 shadow-xl flex items-center gap-4">
-          <div className="text-3xl">🔍</div>
+          <div className="text-3xl"></div>
           <span className="text-gray-700 font-bold text-xl">
             Checking access or redirecting...
           </span>
@@ -195,7 +195,7 @@ function AdminDashboard() {
             <SlideInLeft delay={0.2}>
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
                 <div className="flex items-center gap-4">
-                  <div className="text-6xl animate-pulse">⚡</div>
+                  <div className="text-6xl animate-pulse"></div>
                   <h1
                     className="text-4xl md:text-6xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent"
                     style={{ fontFamily: "Space Grotesk, sans-serif" }}

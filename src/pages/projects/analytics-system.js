@@ -100,7 +100,7 @@ export default function AnalyticsSystemProject() {
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     className="text-4xl sm:text-5xl"
                   >
-                    📊
+                    
                   </motion.div>
                   <div>
                     <h1
@@ -155,7 +155,7 @@ export default function AnalyticsSystemProject() {
                       }}
                       className="text-2xl"
                     >
-                      📋
+                      
                     </motion.span>
                     <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                       Project Overview
@@ -187,7 +187,7 @@ export default function AnalyticsSystemProject() {
                       }}
                       className="text-2xl"
                     >
-                      ⚠️
+                      
                     </motion.span>
                     <span className="bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
                       Challenges Faced
@@ -240,7 +240,7 @@ export default function AnalyticsSystemProject() {
                       }}
                       className="text-2xl"
                     >
-                      ⚙️
+                      
                     </motion.span>
                     <span className="bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
                       Solutions Implemented
@@ -300,7 +300,7 @@ export default function AnalyticsSystemProject() {
                       }}
                       className="text-2xl"
                     >
-                      🎯
+                      
                     </motion.span>
                     <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                       Key Results
@@ -352,7 +352,7 @@ export default function AnalyticsSystemProject() {
                       }}
                       className="text-2xl"
                     >
-                      🛠️
+                      
                     </motion.span>
                     <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                       Key Technologies & Skills
@@ -381,7 +381,7 @@ export default function AnalyticsSystemProject() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold rounded-2xl shadow-lg transition-all duration-300"
                         >
-                          <span>🚀</span>
+                          <span></span>
                           Explore Dashboard
                           <span>→</span>
                         </Link>

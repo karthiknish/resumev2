@@ -33,7 +33,7 @@ export default function Success() {
           style={{ fontFamily: "Inter, sans-serif" }}
         >
           {/* Modern Gradient Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-brandSecondary/10"></div>
 
           {/* Decorative Color Splashes */}
           <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-purple-200/20 to-pink-200/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
@@ -76,9 +76,7 @@ export default function Success() {
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
                 className="text-8xl md:text-9xl mb-6"
-              >
-                🎉
-              </motion.div>
+              ></motion.div>
 
               <h1
                 className="text-4xl md:text-6xl font-black text-gray-900 mb-6"
@@ -148,14 +146,14 @@ export default function Success() {
                 </h3>
                 <ul className="text-green-700 text-sm space-y-2 font-medium">
                   <li className="flex items-center gap-2">
-                    <span>⏰</span> I typically respond within 24-48 hours
+                    <span></span> I typically respond within 24-48 hours
                   </li>
                   <li className="flex items-center gap-2">
                     <span>📧</span> You'll receive a response at the email you
                     provided
                   </li>
                   <li className="flex items-center gap-2">
-                    <span>💬</span> We can schedule a call if needed for your
+                    <span></span> We can schedule a call if needed for your
                     project
                   </li>
                 </ul>
@@ -166,9 +164,9 @@ export default function Success() {
                   <motion.button
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
-                    className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center gap-3"
+                    className="bg-brandSecondary hover:bg-brandSecondary/90 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center gap-3"
                   >
-                    <span className="text-xl">🏠</span>
+                    <span className="text-xl"></span>
                     Return Home
                     <motion.span
                       animate={{ x: [0, 5, 0] }}
@@ -189,7 +187,7 @@ export default function Success() {
                     whileTap={{ scale: 0.95 }}
                     className="bg-white border-2 border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300 px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-3"
                   >
-                    <span className="text-xl">📝</span>
+                    <span className="text-xl"></span>
                     Read Blog
                   </motion.button>
                 </Link>

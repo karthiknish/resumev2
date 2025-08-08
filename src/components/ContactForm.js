@@ -57,39 +57,14 @@ export default function ContactForm() {
   };
 
   return (
-    <motion.section 
+    <motion.section
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
       viewport={{ once: true }}
-      className="mt-8 sm:mt-12 lg:mt-16 bg-white/80 backdrop-blur-sm p-6 sm:p-8 md:p-10 lg:p-12 rounded-2xl sm:rounded-3xl shadow-2xl border-2 border-purple-200 relative overflow-hidden"
+      className="mt-8 sm:mt-12 lg:mt-16 bg-white p-6 sm:p-8 md:p-10 lg:p-12 rounded-2xl sm:rounded-3xl shadow-2xl border-2 border-brandSecondary relative"
     >
-      {/* Floating Elements */}
-      <motion.div
-        className="absolute top-4 right-4 sm:top-6 sm:right-6 md:top-10 md:right-10 text-2xl sm:text-3xl md:text-4xl opacity-20"
-        animate={{
-          y: [0, -20, 0],
-          rotate: [0, 360],
-        }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-      >
-        ✉️
-      </motion.div>
-      <motion.div
-        className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 md:bottom-10 md:left-10 text-xl sm:text-2xl md:text-3xl opacity-15"
-        animate={{
-          scale: [1, 1.3, 1],
-          rotate: [0, -20, 0],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 2,
-        }}
-      >
-        💌
-      </motion.div>
+      {/* Removed floating emoji for professional tone */}
 
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
@@ -99,38 +74,9 @@ export default function ContactForm() {
         className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-6 sm:mb-8 text-center flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6"
         style={{ fontFamily: "Space Grotesk, sans-serif" }}
       >
-        <motion.span
-          animate={{
-            rotate: [0, 20, -20, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="text-2xl sm:text-3xl md:text-4xl"
-        >
-          📝
-        </motion.span>
-        <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+        <span className="bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent">
           Get in Touch
         </span>
-        <motion.span
-          animate={{
-            y: [0, -10, 0],
-            rotate: [0, 10, -10, 0],
-          }}
-          transition={{
-            duration: 2.5,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1,
-          }}
-          className="text-2xl sm:text-3xl md:text-4xl"
-        >
-          ✨
-        </motion.span>
       </motion.h2>
 
       <motion.p
@@ -140,11 +86,12 @@ export default function ContactForm() {
         viewport={{ once: true }}
         className="text-base sm:text-lg md:text-xl text-gray-600 text-center mb-6 sm:mb-8 md:mb-10 max-w-2xl mx-auto leading-relaxed font-medium px-2 sm:px-0"
       >
-        Have a project in mind? Drop me a message and let's create something amazing together!
+        Have a project in mind? Drop me a message and let's create something
+        valuable and reliable together.
       </motion.p>
 
       {error && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className="p-3 sm:p-4 mb-4 sm:mb-6 bg-red-50 border-2 border-red-200 text-red-600 rounded-xl sm:rounded-2xl text-center font-medium text-sm sm:text-base"
@@ -153,7 +100,10 @@ export default function ContactForm() {
         </motion.div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 max-w-2xl mx-auto">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 sm:space-y-6 max-w-2xl mx-auto"
+      >
         <div className="space-y-4 sm:space-y-6">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -161,9 +111,11 @@ export default function ContactForm() {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <label htmlFor="name" className="block text-gray-700 font-semibold mb-2 sm:mb-3 text-base sm:text-lg">
+            <label
+              htmlFor="name"
+              className="block text-gray-800 font-semibold mb-2 sm:mb-3 text-base sm:text-lg"
+            >
               Your Name
-              <span className="ml-2 text-xl sm:text-2xl inline-block">👤</span>
             </label>
             <input
               id="name"
@@ -171,7 +123,7 @@ export default function ContactForm() {
               value={formData.name}
               onChange={handleChange}
               type="text"
-              className="w-full px-4 sm:px-6 py-3 sm:py-4 text-gray-800 bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 rounded-xl sm:rounded-2xl focus:border-purple-400 focus:ring-4 focus:ring-purple-200 focus:outline-none transition-all duration-300 font-medium text-base sm:text-lg"
+              className="w-full px-4 sm:px-6 py-3 sm:py-4 text-gray-900 bg-white border-2 border-gray-200 rounded-xl sm:rounded-2xl focus:border-brandSecondary focus:ring-4 focus:ring-brandSecondary/20 focus:outline-none transition-all duration-300 font-medium text-base sm:text-lg"
               placeholder="John Doe"
               required
             />
@@ -183,9 +135,11 @@ export default function ContactForm() {
             transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true }}
           >
-            <label htmlFor="email" className="block text-gray-700 font-semibold mb-2 sm:mb-3 text-base sm:text-lg">
+            <label
+              htmlFor="email"
+              className="block text-gray-800 font-semibold mb-2 sm:mb-3 text-base sm:text-lg"
+            >
               Your Email
-              <span className="ml-2 text-xl sm:text-2xl inline-block">📧</span>
             </label>
             <input
               id="email"
@@ -193,7 +147,7 @@ export default function ContactForm() {
               value={formData.email}
               onChange={handleChange}
               type="email"
-              className="w-full px-4 sm:px-6 py-3 sm:py-4 text-gray-800 bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-xl sm:rounded-2xl focus:border-blue-400 focus:ring-4 focus:ring-blue-200 focus:outline-none transition-all duration-300 font-medium text-base sm:text-lg"
+              className="w-full px-4 sm:px-6 py-3 sm:py-4 text-gray-900 bg-white border-2 border-gray-200 rounded-xl sm:rounded-2xl focus:border-brandSecondary focus:ring-4 focus:ring-brandSecondary/20 focus:outline-none transition-all duration-300 font-medium text-base sm:text-lg"
               placeholder="john@example.com"
               required
             />
@@ -205,16 +159,18 @@ export default function ContactForm() {
             transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <label htmlFor="message" className="block text-gray-700 font-semibold mb-2 sm:mb-3 text-base sm:text-lg">
+            <label
+              htmlFor="message"
+              className="block text-gray-800 font-semibold mb-2 sm:mb-3 text-base sm:text-lg"
+            >
               Your Message
-              <span className="ml-2 text-xl sm:text-2xl inline-block">💬</span>
             </label>
             <textarea
               id="message"
               name="message"
               value={formData.message}
               onChange={handleChange}
-              className="w-full px-4 sm:px-6 py-3 sm:py-4 text-gray-800 bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl sm:rounded-2xl focus:border-green-400 focus:ring-4 focus:ring-green-200 focus:outline-none transition-all duration-300 font-medium text-base sm:text-lg resize-none"
+              className="w-full px-4 sm:px-6 py-3 sm:py-4 text-gray-900 bg-white border-2 border-gray-200 rounded-xl sm:rounded-2xl focus:border-brandSecondary focus:ring-4 focus:ring-brandSecondary/20 focus:outline-none transition-all duration-300 font-medium text-base sm:text-lg resize-none"
               placeholder="Tell me about your amazing project idea..."
               rows={5}
               required
@@ -226,48 +182,35 @@ export default function ContactForm() {
             whileTap={{ scale: 0.95 }}
             type="submit"
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 py-3 sm:py-4 md:py-5 text-white rounded-xl sm:rounded-2xl font-bold text-lg sm:text-xl transition-all duration-300 shadow-xl hover:shadow-2xl disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed relative overflow-hidden group"
+            className="w-full bg-brandSecondary hover:bg-brandSecondary/90 py-3 sm:py-4 md:py-5 text-white rounded-xl sm:rounded-2xl font-bold text-lg sm:text-xl transition-all duration-300 shadow-xl hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed relative group"
           >
             <span className="relative z-10 flex items-center justify-center gap-3">
               {isLoading ? (
                 <>
-                  <motion.span
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    className="text-xl sm:text-2xl"
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    viewBox="0 0 24 24"
                   >
-                    ⏳
-                  </motion.span>
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    ></path>
+                  </svg>
                   Sending your message...
                 </>
               ) : (
-                <>
-                  <motion.span
-                    animate={{ rotate: [0, 20, 0] }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="text-xl sm:text-2xl"
-                  >
-                    🚀
-                  </motion.span>
-                  Send Message
-                  <span className="text-xl sm:text-2xl">→</span>
-                </>
+                <>Send Message</>
               )}
             </span>
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
-              animate={{ x: [-200, 200] }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                ease: "linear",
-                repeatDelay: 1,
-              }}
-            />
           </motion.button>
         </div>
       </form>

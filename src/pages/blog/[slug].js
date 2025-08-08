@@ -117,7 +117,7 @@ function SlugPage({ data, relatedPosts }) {
   // getServerSideProps should already return notFound:true for missing/unpublished posts
   if (!data) {
     return (
-      <PageContainer>
+      <PageContainer bgClassName="bg-white">
         <div className="text-center text-gray-400 py-20">
           Post not found or there was an error loading it.
         </div>
@@ -249,15 +249,9 @@ function SlugPage({ data, relatedPosts }) {
       )}
       <PageContainer>
         <div
-          className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 py-24 relative overflow-hidden"
+          className="min-h-screen bg-white py-24 relative"
           style={{ fontFamily: "Inter, sans-serif" }}
         >
-          {/* Decorative Color Splashes */}
-          <div className="absolute top-0 left-0 w-80 h-80 bg-gradient-to-br from-rose-200/15 to-pink-200/15 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-          <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-bl from-indigo-200/15 to-purple-200/15 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
-          <div className="absolute bottom-0 left-0 w-88 h-88 bg-gradient-to-tr from-teal-200/15 to-green-200/15 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2"></div>
-          <div className="absolute bottom-0 right-0 w-76 h-76 bg-gradient-to-tl from-amber-200/15 to-orange-200/15 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
-          
           <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 relative z-10">
             {/* Back Button */}
             <motion.div
@@ -268,9 +262,9 @@ function SlugPage({ data, relatedPosts }) {
             >
               <Link href="/blog" passHref legacyBehavior>
                 <motion.a
-                  className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl bg-white/80 backdrop-blur-sm border-2 border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300 font-bold shadow-lg transition-all duration-300"
-                  whileHover={{ scale: 1.05, x: -5 }}
-                  whileTap={{ scale: 0.95 }}
+                  className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 font-semibold shadow-sm transition-colors duration-200"
+                  whileHover={{ x: -3 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   <motion.svg
                     className="w-5 h-5 sm:w-6 sm:h-6"
@@ -278,9 +272,9 @@ function SlugPage({ data, relatedPosts }) {
                     stroke="currentColor"
                     strokeWidth="2"
                     viewBox="0 0 24 24"
-                    animate={{ x: [0, -5, 0] }}
+                    animate={{ x: [0, -2, 0] }}
                     transition={{
-                      duration: 1.5,
+                      duration: 1.2,
                       repeat: Infinity,
                       ease: "easeInOut",
                     }}
@@ -291,7 +285,9 @@ function SlugPage({ data, relatedPosts }) {
                       d="M15 19l-7-7 7-7"
                     />
                   </motion.svg>
-                  <span className="text-base sm:text-lg">Back to all articles</span>
+                  <span className="text-base sm:text-lg">
+                    Back to all articles
+                  </span>
                 </motion.a>
               </Link>
             </motion.div>
@@ -302,7 +298,7 @@ function SlugPage({ data, relatedPosts }) {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 p-6 sm:p-8 md:p-12 rounded-3xl shadow-2xl"
+              className="bg-white border border-gray-200 p-6 sm:p-8 md:p-12 rounded-3xl shadow-sm"
             >
               <motion.div
                 variants={staggerContainerVariants}
@@ -315,7 +311,7 @@ function SlugPage({ data, relatedPosts }) {
                     variants={fadeInUpVariants}
                     className="relative mb-12"
                   >
-                    <div className="relative w-full h-[250px] sm:h-[300px] md:h-[500px] rounded-3xl shadow-xl overflow-hidden group">
+                    <div className="relative w-full h-[250px] sm:h-[300px] md:h-[500px] rounded-3xl shadow overflow-hidden group">
                       <Image
                         src={data.imageUrl}
                         alt={data.title}
@@ -325,18 +321,18 @@ function SlugPage({ data, relatedPosts }) {
                         style={{ objectFit: "cover" }}
                         className="transition-transform duration-500 group-hover:scale-110"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                     </div>
                     {data.tags && data.tags.length > 0 && (
                       <div className="absolute top-4 right-4 sm:top-6 sm:right-6 flex flex-wrap gap-2 sm:gap-3">
                         {data.tags.map((tag) => (
                           <motion.span
                             key={tag}
-                            className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-3 sm:px-4 py-1 sm:py-2 rounded-full font-semibold shadow-lg text-xs sm:text-sm"
-                            whileHover={{ scale: 1.1 }}
-                            initial={{ opacity: 0, scale: 0.8 }}
+                            className="bg-white text-gray-800 px-3 sm:px-4 py-1 sm:py-2 rounded-full font-medium shadow border border-gray-300 text-xs sm:text-sm"
+                            whileHover={{ scale: 1.02 }}
+                            initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.3 }}
+                            transition={{ duration: 0.2 }}
                           >
                             {tag}
                           </motion.span>
@@ -348,12 +344,10 @@ function SlugPage({ data, relatedPosts }) {
                   <div className="flex flex-col">
                     <motion.h1
                       variants={fadeInUpVariants}
-                      className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black mb-6 sm:mb-8 leading-tight tracking-tight"
+                      className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black mb-6 sm:mb-8 leading-tight tracking-tight text-gray-900"
                       style={{ fontFamily: "Space Grotesk, sans-serif" }}
                     >
-                      <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-                        {data.title}
-                      </span>
+                      {data.title}
                     </motion.h1>
                     {/* Admin-only Edit Button */}
                     {isAdmin && (
@@ -373,7 +367,7 @@ function SlugPage({ data, relatedPosts }) {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                           >
-                            <span className="text-xl">✏️</span>
+                            <span className="text-xl"></span>
                             Edit Article
                           </motion.a>
                         </Link>
@@ -382,20 +376,9 @@ function SlugPage({ data, relatedPosts }) {
 
                     <motion.div
                       variants={fadeInUpVariants}
-                      className="flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-3 sm:gap-y-4 text-gray-600 mb-6 sm:mb-8 bg-gradient-to-r from-purple-50 to-blue-50 p-4 sm:p-6 rounded-2xl border border-purple-200"
+                      className="flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-3 sm:gap-y-4 text-gray-600 mb-6 sm:mb-8 bg-white p-4 sm:p-6 rounded-2xl border border-gray-200"
                     >
                       <div className="flex items-center gap-2">
-                        <motion.span
-                          animate={{ rotate: [0, 10, -10, 0] }}
-                          transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                          }}
-                          className="text-2xl"
-                        >
-                          📅
-                        </motion.span>
                         <span className="font-semibold text-base sm:text-lg">
                           {new Date(
                             data.createdAt || Date.now()
@@ -408,18 +391,6 @@ function SlugPage({ data, relatedPosts }) {
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <motion.span
-                          animate={{ scale: [1, 1.2, 1] }}
-                          transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                            delay: 1,
-                          }}
-                          className="text-2xl"
-                        >
-                          ⏱️
-                        </motion.span>
                         <span className="font-semibold text-base sm:text-lg">
                           {readingTime} min read
                         </span>
@@ -427,16 +398,16 @@ function SlugPage({ data, relatedPosts }) {
 
                       {/* Social Share Buttons */}
                       <div className="flex items-center gap-2 sm:gap-4 ml-0 md:ml-auto">
-                        <span className="font-bold text-base sm:text-lg hidden md:inline flex items-center gap-2">
-                          <span className="text-2xl">📤</span>
+                        <span className="font-bold text-base sm:text-lg hidden md:inline-flex items-center gap-2">
+                          <span className="text-2xl"></span>
                           Share:
                         </span>
                         <motion.button
                           onClick={() => shareArticle("twitter")}
-                          className="p-2 sm:p-3 bg-blue-400 hover:bg-blue-500 text-white rounded-2xl transition-all duration-300 shadow-lg"
+                          className="p-2 sm:p-3 bg-gray-900 hover:bg-gray-800 text-white rounded-2xl transition-colors duration-200 shadow-sm"
                           aria-label="Share on Twitter"
-                          whileHover={{ scale: 1.1, y: -2 }}
-                          whileTap={{ scale: 0.95 }}
+                          whileHover={{ y: -1 }}
+                          whileTap={{ scale: 0.98 }}
                         >
                           <svg
                             className="w-6 h-6"
@@ -448,10 +419,10 @@ function SlugPage({ data, relatedPosts }) {
                         </motion.button>
                         <motion.button
                           onClick={() => shareArticle("facebook")}
-                          className="p-2 sm:p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl transition-all duration-300 shadow-lg"
+                          className="p-2 sm:p-3 bg-gray-900 hover:bg-gray-800 text-white rounded-2xl transition-colors duration-200 shadow-sm"
                           aria-label="Share on Facebook"
-                          whileHover={{ scale: 1.1, y: -2 }}
-                          whileTap={{ scale: 0.95 }}
+                          whileHover={{ y: -1 }}
+                          whileTap={{ scale: 0.98 }}
                         >
                           <svg
                             className="w-6 h-6"
@@ -463,10 +434,10 @@ function SlugPage({ data, relatedPosts }) {
                         </motion.button>
                         <motion.button
                           onClick={() => shareArticle("linkedin")}
-                          className="p-2 sm:p-3 bg-blue-700 hover:bg-blue-800 text-white rounded-2xl transition-all duration-300 shadow-lg"
+                          className="p-2 sm:p-3 bg-gray-900 hover:bg-gray-800 text-white rounded-2xl transition-colors duration-200 shadow-sm"
                           aria-label="Share on LinkedIn"
-                          whileHover={{ scale: 1.1, y: -2 }}
-                          whileTap={{ scale: 0.95 }}
+                          whileHover={{ y: -1 }}
+                          whileTap={{ scale: 0.98 }}
                         >
                           <svg
                             className="w-6 h-6"
@@ -478,10 +449,10 @@ function SlugPage({ data, relatedPosts }) {
                         </motion.button>
                         <motion.button
                           onClick={() => shareArticle("copy")}
-                          className="p-2 sm:p-3 bg-green-500 hover:bg-green-600 text-white rounded-2xl transition-all duration-300 shadow-lg"
+                          className="p-2 sm:p-3 bg-gray-900 hover:bg-gray-800 text-white rounded-2xl transition-colors duration-200 shadow-sm"
                           aria-label="Copy link"
-                          whileHover={{ scale: 1.1, y: -2 }}
-                          whileTap={{ scale: 0.95 }}
+                          whileHover={{ y: -1 }}
+                          whileTap={{ scale: 0.98 }}
                         >
                           <svg
                             className="w-6 h-6"
@@ -501,7 +472,7 @@ function SlugPage({ data, relatedPosts }) {
                       </div>
                     </motion.div>
 
-                    <Separator className="my-8 bg-gradient-to-r from-purple-200 via-blue-200 to-purple-200 h-0.5" />
+                    <Separator className="my-8 bg-gray-200 h-0.5" />
 
                     {/* Removed Audio Player Section */}
 
@@ -515,7 +486,7 @@ function SlugPage({ data, relatedPosts }) {
                       </motion.div>
                     )}
 
-                    <Separator className="my-12 bg-gradient-to-r from-purple-200 via-blue-200 to-purple-200 h-0.5" />
+                    <Separator className="my-12 bg-gray-200 h-0.5" />
 
                     <motion.div
                       variants={fadeInUpVariants}
@@ -523,8 +494,8 @@ function SlugPage({ data, relatedPosts }) {
                     >
                       <Link href="/blog">
                         <motion.span
-                          className="inline-flex items-center gap-2 text-purple-600 hover:text-blue-600 font-bold text-lg transition-colors duration-300"
-                          whileHover={{ x: -5 }}
+                          className="inline-flex items-center gap-2 text-gray-900 hover:text-gray-700 font-semibold text-lg transition-colors duration-200"
+                          whileHover={{ x: -3 }}
                         >
                           <motion.svg
                             className="w-6 h-6"
@@ -532,9 +503,9 @@ function SlugPage({ data, relatedPosts }) {
                             stroke="currentColor"
                             strokeWidth="2"
                             viewBox="0 0 24 24"
-                            animate={{ x: [0, -5, 0] }}
+                            animate={{ x: [0, -2, 0] }}
                             transition={{
-                              duration: 1.5,
+                              duration: 1.2,
                               repeat: Infinity,
                               ease: "easeInOut",
                             }}
@@ -552,14 +523,14 @@ function SlugPage({ data, relatedPosts }) {
                       {data.tags && data.tags.length > 0 && (
                         <div className="flex items-center flex-wrap gap-3">
                           <span className="flex items-center gap-2 text-gray-700 font-semibold">
-                            <span className="text-2xl">🏷️</span>
+                            <span className="text-2xl"></span>
                             Tags:
                           </span>
                           {data.tags.map((tag) => (
                             <motion.span
                               key={tag}
-                              className="bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 px-4 py-2 rounded-full font-medium border border-purple-200 hover:from-purple-200 hover:to-blue-200 transition-all duration-300"
-                              whileHover={{ scale: 1.05 }}
+                              className="bg-white text-gray-700 px-4 py-2 rounded-full font-medium border border-gray-300 hover:bg-gray-50 transition-colors duration-200"
+                              whileHover={{ scale: 1.02 }}
                               initial={{ opacity: 0, scale: 0.8 }}
                               animate={{ opacity: 1, scale: 1 }}
                               transition={{ duration: 0.3 }}

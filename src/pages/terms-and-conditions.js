@@ -29,7 +29,7 @@ export default function TermsAndConditions() {
                   }}
                   className="text-6xl"
                 >
-                  📄
+                  
                 </motion.div>
                 <h1
                   className="text-4xl md:text-6xl lg:text-7xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent"
@@ -49,7 +49,7 @@ export default function TermsAndConditions() {
                   }}
                   className="inline-block ml-2 text-2xl"
                 >
-                  ⚖️
+                  
                 </motion.span>
               </p>
             </motion.div>

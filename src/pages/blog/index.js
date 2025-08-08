@@ -155,7 +155,7 @@ function Index({ initialPosts = [], categories = [] }) {
           content="blog, web development, technology, full stack, cloud, react, nodejs, karthik, nishanth, liverpool, uk"
         />
         <meta name="author" content="Karthik Nishanth" />
-        
+
         {/* Google Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -168,100 +168,32 @@ function Index({ initialPosts = [], categories = [] }) {
           rel="stylesheet"
         />
       </Head>
-      <PageContainer>
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 py-24 md:py-32 relative overflow-hidden" style={{ fontFamily: "Inter, sans-serif" }}>
-          {/* Decorative Color Splashes */}
-          <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-purple-200/20 to-pink-200/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-          <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-blue-200/20 to-cyan-200/20 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
-          <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-green-200/20 to-emerald-200/20 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2"></div>
-          <div className="absolute bottom-0 right-0 w-88 h-88 bg-gradient-to-tl from-orange-200/20 to-yellow-200/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
-          
+      <PageContainer bgClassName="bg-white">
+        <div
+          className="min-h-screen bg-white py-24 md:py-32 relative"
+          style={{ fontFamily: "Inter, sans-serif" }}
+        >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 relative z-10">
             {/* Hero Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.4 }}
               className="text-center mb-16"
             >
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="inline-flex items-center gap-3 px-6 py-3 bg-white/80 backdrop-blur-sm border border-purple-200 rounded-full text-purple-700 text-sm font-semibold mb-8 shadow-lg"
-              >
-                <motion.span
-                  animate={{ rotate: [0, 15, -15, 0] }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="text-xl"
-                >
-                  📝
-                </motion.span>
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-white border border-gray-200 rounded-full text-gray-700 text-sm font-semibold mb-8 shadow-sm">
                 <span>Welcome to my blog</span>
-                <motion.span
-                  animate={{
-                    scale: [1, 1.2, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 1,
-                  }}
-                  className="text-xl"
-                >
-                  ✨
-                </motion.span>
-              </motion.div>
-              
+              </div>
+
               <h1
-                className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight"
+                className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight text-gray-900"
                 style={{ fontFamily: "Space Grotesk, sans-serif" }}
               >
-                <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-                  Blog & Insights
-                </span>
-                <motion.span
-                  animate={{
-                    rotate: [0, 20, -20, 0],
-                    scale: [1, 1.2, 1],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 1,
-                  }}
-                  className="inline-block ml-4 text-yellow-400"
-                >
-                  💡
-                </motion.span>
+                Blog & Insights
               </h1>
-              
-              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-700 max-w-4xl mx-auto leading-relaxed font-medium px-2">
-                Exploring the latest in{" "}
-                <motion.span
-                  className="inline-block bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent font-bold"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  technology, development,
-                </motion.span>{" "}
-                and creative innovation
-                <motion.span
-                  animate={{ rotate: [0, 5, -5, 0] }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="inline-block ml-2"
-                >
-                  🚀
-                </motion.span>
+
+              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-600 max-w-4xl mx-auto leading-relaxed font-medium px-2">
+                Insights on technology, development, and product innovation.
               </p>
             </motion.div>
 
@@ -269,26 +201,35 @@ function Index({ initialPosts = [], categories = [] }) {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 md:p-8 rounded-3xl shadow-xl border-2 border-purple-200 mb-12"
+              transition={{ duration: 0.3, delay: 0.1 }}
+              className="bg-white p-4 sm:p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200 mb-12"
             >
               <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 items-center">
                 {/* Category Filter Dropdown */}
                 <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
                   <span className="text-gray-700 font-semibold text-base sm:text-lg whitespace-nowrap">
-                    🏷️ Filter by:
+                    Filter by:
                   </span>
                   <Select
                     value={selectedCategory}
                     onValueChange={handleCategoryChange}
                   >
-                    <SelectTrigger className="w-full sm:w-48 lg:w-56 bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 text-gray-800 font-medium rounded-2xl px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg hover:border-purple-300 transition-all duration-300">
+                    <SelectTrigger className="w-full sm:w-48 lg:w-56 bg-white border border-gray-300 text-gray-800 font-medium rounded-2xl px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg hover:border-gray-400 transition-colors duration-200">
                       <SelectValue placeholder="All Categories" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border-2 border-purple-200 text-gray-800 rounded-2xl shadow-xl">
-                      <SelectItem value="All" className="text-base sm:text-lg font-medium hover:bg-purple-50">All Categories</SelectItem>
+                    <SelectContent className="bg-white border border-gray-200 text-gray-800 rounded-2xl shadow-sm">
+                      <SelectItem
+                        value="All"
+                        className="text-base sm:text-lg font-medium hover:bg-gray-50"
+                      >
+                        All Categories
+                      </SelectItem>
                       {categories.map((category) => (
-                        <SelectItem key={category} value={category} className="text-base sm:text-lg font-medium hover:bg-purple-50">
+                        <SelectItem
+                          key={category}
+                          value={category}
+                          className="text-base sm:text-lg font-medium hover:bg-gray-50"
+                        >
                           {category}
                         </SelectItem>
                       ))}
@@ -307,26 +248,39 @@ function Index({ initialPosts = [], categories = [] }) {
                       value={searchTerm}
                       onChange={handleSearchChange}
                       placeholder="Search posts..."
-                      className="px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-l-blue-200 border-t-blue-200 border-b-blue-200 border-r-0 rounded-l-2xl text-gray-800 font-medium text-base sm:text-lg placeholder:text-gray-500 focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-400 w-full sm:w-auto flex-grow transition-all duration-300"
+                      className="px-4 sm:px-6 py-3 sm:py-4 bg-white border border-gray-300 rounded-l-2xl text-gray-800 font-medium text-base sm:text-lg placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-400 w-full sm:w-auto flex-grow transition-colors duration-200"
                     />
-                    <motion.div
-                      className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-r-2xl flex items-center justify-center hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 cursor-pointer"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                    <motion.button
+                      type="button"
+                      className="bg-gray-900 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-r-2xl flex items-center justify-center hover:bg-gray-800 transition-colors duration-200 cursor-pointer"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                     >
                       <FaSearch className="text-lg sm:text-xl" />
-                    </motion.div>
+                    </motion.button>
                   </form>
                   <Select
                     onValueChange={handleSortChange}
                     defaultValue={sortOrder}
                   >
-                    <SelectTrigger className="w-full sm:w-[200px] lg:w-[220px] bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 text-gray-800 font-medium rounded-2xl px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg hover:border-green-300 transition-all duration-300">
+                    <SelectTrigger className="w-full sm:w-[200px] lg:w-[220px] bg-white border border-gray-300 text-gray-800 font-medium rounded-2xl px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg hover:border-gray-400 transition-colors duration-200">
                       <SelectValue placeholder="Sort by..." />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border-2 border-green-200 text-gray-800 rounded-2xl shadow-xl">
-                      <SelectItem value="desc" className="text-base sm:text-lg font-medium hover:bg-green-50">📅 Newest First</SelectItem>
-                      <SelectItem value="asc" className="text-base sm:text-lg font-medium hover:bg-green-50">📆 Oldest First</SelectItem>
+                    <SelectContent className="bg-white border border-gray-200 text-gray-800 rounded-2xl shadow-sm">
+                      <SelectItem
+                        value="desc"
+                        className="text-base sm:text-lg font-medium hover:bg-gray-50"
+                      >
+                        {" "}
+                        Newest First
+                      </SelectItem>
+                      <SelectItem
+                        value="asc"
+                        className="text-base sm:text-lg font-medium hover:bg-gray-50"
+                      >
+                        {" "}
+                        Oldest First
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -341,12 +295,11 @@ function Index({ initialPosts = [], categories = [] }) {
                 transition={{ duration: 0.5 }}
                 className="mb-8 text-center"
               >
-                <p className="text-gray-600 text-lg font-medium bg-white/60 backdrop-blur-sm inline-flex items-center gap-2 px-6 py-3 rounded-full border border-purple-200">
-                  <span className="text-2xl">🔍</span>
+                <p className="text-gray-600 text-lg font-medium bg-white inline-flex items-center gap-2 px-6 py-3 rounded-full border border-gray-200">
+                  <span className="text-2xl"></span>
                   Showing {filteredAndSortedContent.length} posts
                   {searchTerm.trim() !== "" && ` matching "${searchTerm}"`}
-                  {selectedCategory !== "All" &&
-                    ` in ${selectedCategory}`}
+                  {selectedCategory !== "All" && ` in ${selectedCategory}`}
                 </p>
               </motion.div>
             )}
@@ -368,7 +321,7 @@ function Index({ initialPosts = [], categories = [] }) {
                     >
                       <Link href={`/blog/${post.slug}`} passHref legacyBehavior>
                         <a className="block h-full">
-                          <Card className="h-full bg-white/80 backdrop-blur-sm border-2 border-purple-200 rounded-3xl shadow-lg hover:shadow-2xl hover:border-purple-300 transition-all duration-300 overflow-hidden">
+                          <Card className="h-full bg-white border border-gray-200 rounded-3xl shadow-sm hover:shadow-md hover:border-gray-300 transition-colors duration-200 overflow-hidden">
                             <div className="h-64 overflow-hidden relative">
                               <Image
                                 src={post.imageUrl}
@@ -378,21 +331,20 @@ function Index({ initialPosts = [], categories = [] }) {
                                 priority={index < 2}
                                 className="object-cover transition-transform duration-500 group-hover:scale-110"
                               />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                              <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                               {post.category &&
                                 post.category !== "Uncategorized" && (
-                                  <motion.span
-                                    className="absolute top-4 left-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg z-10"
-                                    whileHover={{ scale: 1.1 }}
-                                  >
+                                  <span className="absolute top-4 left-4 bg-white/90 text-gray-800 text-sm font-semibold px-3 py-1.5 rounded-full shadow border border-gray-300 z-10">
                                     {post.category}
-                                  </motion.span>
+                                  </span>
                                 )}
                             </div>
                             <div className="p-8">
                               <h2
-                                className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-blue-600 group-hover:bg-clip-text transition-all duration-300 leading-tight"
-                                style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                                className="text-2xl font-bold text-gray-900 mb-4 leading-tight"
+                                style={{
+                                  fontFamily: "Space Grotesk, sans-serif",
+                                }}
                               >
                                 {post.title}
                               </h2>
@@ -401,17 +353,6 @@ function Index({ initialPosts = [], categories = [] }) {
                               </p>
                               <div className="flex flex-col gap-4">
                                 <div className="flex items-center gap-2 text-gray-500">
-                                  <motion.span
-                                    animate={{ rotate: [0, 10, -10, 0] }}
-                                    transition={{
-                                      duration: 2,
-                                      repeat: Infinity,
-                                      ease: "easeInOut",
-                                    }}
-                                    className="text-xl"
-                                  >
-                                    📅
-                                  </motion.span>
                                   <span className="text-sm font-medium">
                                     {post.createdAtDate.toLocaleDateString(
                                       "en-US",
@@ -428,28 +369,15 @@ function Index({ initialPosts = [], categories = [] }) {
                                     post.tags.slice(0, 3).map((tag) => (
                                       <span
                                         key={tag}
-                                        className="bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 text-sm px-3 py-1 rounded-full font-medium border border-purple-200"
+                                        className="bg-white text-gray-700 text-sm px-3 py-1 rounded-full font-medium border border-gray-300"
                                       >
                                         {tag}
                                       </span>
                                     ))}
                                 </div>
-                                <motion.div
-                                  className="mt-4 inline-flex items-center gap-2 text-purple-600 font-bold text-lg group-hover:text-blue-600 transition-colors"
-                                  whileHover={{ x: 5 }}
-                                >
+                                <div className="mt-4 inline-flex items-center gap-2 text-gray-900 font-semibold text-lg">
                                   Read more
-                                  <motion.span
-                                    animate={{ x: [0, 5, 0] }}
-                                    transition={{
-                                      duration: 1.5,
-                                      repeat: Infinity,
-                                      ease: "easeInOut",
-                                    }}
-                                  >
-                                    →
-                                  </motion.span>
-                                </motion.div>
+                                </div>
                               </div>
                             </div>
                           </Card>
@@ -467,53 +395,47 @@ function Index({ initialPosts = [], categories = [] }) {
                     viewport={{ once: true }}
                     className="flex flex-wrap justify-center items-center gap-2 sm:gap-3 mt-16 px-2"
                   >
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className={`px-4 sm:px-6 py-2 sm:py-3 rounded-2xl font-bold text-base sm:text-lg border-2 transition-all duration-300 ${
+                    <button
+                      className={`px-4 sm:px-6 py-2 sm:py-3 rounded-2xl font-semibold text-base sm:text-lg border transition-colors duration-200 ${
                         currentPage === 1
                           ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
-                          : "bg-white text-purple-600 border-purple-300 hover:bg-purple-50 hover:border-purple-400"
+                          : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400"
                       }`}
                       disabled={currentPage === 1}
                       onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     >
-                      ← Previous
-                    </motion.button>
-                    
+                      Previous
+                    </button>
+
                     <div className="flex flex-wrap gap-1 sm:gap-2">
                       {Array.from({ length: totalPages }, (_, i) => (
-                        <motion.button
+                        <button
                           key={i + 1}
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.95 }}
-                          className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl font-bold text-base sm:text-lg border-2 transition-all duration-300 ${
+                          className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl font-semibold text-base sm:text-lg border transition-colors duration-200 ${
                             currentPage === i + 1
-                              ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white border-purple-600 shadow-lg"
-                              : "bg-white text-gray-600 border-gray-300 hover:border-purple-400 hover:text-purple-600"
+                              ? "bg-gray-900 text-white border-gray-900"
+                              : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50 hover:border-gray-400"
                           }`}
                           onClick={() => setCurrentPage(i + 1)}
                         >
                           {i + 1}
-                        </motion.button>
+                        </button>
                       ))}
                     </div>
-                    
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className={`px-4 sm:px-6 py-2 sm:py-3 rounded-2xl font-bold text-base sm:text-lg border-2 transition-all duration-300 ${
+
+                    <button
+                      className={`px-4 sm:px-6 py-2 sm:py-3 rounded-2xl font-semibold text-base sm:text-lg border transition-colors duration-200 ${
                         currentPage === totalPages
                           ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
-                          : "bg-white text-purple-600 border-purple-300 hover:bg-purple-50 hover:border-purple-400"
+                          : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400"
                       }`}
                       disabled={currentPage === totalPages}
                       onClick={() =>
                         setCurrentPage((p) => Math.min(totalPages, p + 1))
                       }
                     >
-                      Next →
-                    </motion.button>
+                      Next
+                    </button>
                   </motion.div>
                 )}
               </>
@@ -524,7 +446,7 @@ function Index({ initialPosts = [], categories = [] }) {
                 transition={{ duration: 0.5 }}
                 className="text-center py-20"
               >
-                <div className="bg-gradient-to-br from-cyan-50/90 via-white/85 to-blue-50/90 backdrop-blur-sm rounded-3xl p-12 border-2 border-purple-200 shadow-xl max-w-2xl mx-auto">
+                <div className="bg-white rounded-3xl p-12 border border-gray-200 shadow-sm max-w-2xl mx-auto">
                   <motion.div
                     animate={{ rotate: [0, 10, -10, 0] }}
                     transition={{
@@ -533,14 +455,16 @@ function Index({ initialPosts = [], categories = [] }) {
                       ease: "easeInOut",
                     }}
                     className="text-6xl mb-6"
+                  ></motion.div>
+                  <h3
+                    className="text-2xl font-bold text-gray-800 mb-4"
+                    style={{ fontFamily: "Space Grotesk, sans-serif" }}
                   >
-                    🔍
-                  </motion.div>
-                  <h3 className="text-2xl font-bold text-gray-800 mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
                     No posts found
                   </h3>
                   <p className="text-gray-600 text-lg">
-                    Try adjusting your search or filters to find what you're looking for!
+                    Try adjusting your search or filters to find what you're
+                    looking for!
                   </p>
                 </div>
               </motion.div>
