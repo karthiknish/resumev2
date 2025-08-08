@@ -103,7 +103,7 @@ export default function Resources() {
         <JsonLd data={websiteSchema} />
 
         <div
-          className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-brandSecondary/10 py-24 md:py-32"
+          className="min-h-screen bg-primary/10 py-24 md:py-32"
           style={{ fontFamily: "Inter, sans-serif" }}
         >
           <div className="max-w-7xl mx-auto px-6">
@@ -120,70 +120,22 @@ export default function Resources() {
                 transition={{ duration: 0.6 }}
                 className="inline-flex items-center gap-3 px-6 py-3 bg-white border border-brandSecondary rounded-full text-brandSecondary text-sm font-semibold mb-8 shadow-lg"
               >
-                <motion.span
-                  animate={{ rotate: [0, 15, -15, 0] }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="text-xl"
-                ></motion.span>
                 <span>Curated Developer Resources</span>
-                <motion.span
-                  animate={{
-                    scale: [1, 1.2, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 1,
-                  }}
-                  className="text-xl"
-                ></motion.span>
               </motion.div>
 
               <h1
-                className="text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight"
+                className="text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight text-brandSecondary"
                 style={{ fontFamily: "Space Grotesk, sans-serif" }}
               >
-                <span className="bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent">
-                  Dev Resources
-                </span>
-                <motion.span
-                  animate={{
-                    rotate: [0, 20, -20, 0],
-                    scale: [1, 1.2, 1],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 1,
-                  }}
-                  className="inline-block ml-4 text-yellow-400"
-                ></motion.span>
+                Dev Resources
               </h1>
 
-              <p className="text-2xl md:text-3xl text-gray-700 max-w-5xl mx-auto leading-relaxed font-medium mb-12">
+              <p className="text-2xl md:text-3xl text-brandSecondary/70 max-w-5xl mx-auto leading-relaxed font-medium mb-12">
                 A curated collection of{" "}
-                <motion.span
-                  className="inline-block bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent font-bold"
-                  whileHover={{ scale: 1.05 }}
-                >
+                <span className="font-bold text-brandSecondary">
                   tools, tutorials, and resources
-                </motion.span>{" "}
+                </span>{" "}
                 that I find valuable in my development work across the UK.
-                <motion.span
-                  animate={{ rotate: [0, 5, -5, 0] }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="inline-block ml-2"
-                ></motion.span>
               </p>
             </motion.div>
 
@@ -254,7 +206,7 @@ export default function Resources() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
               viewport={{ once: true }}
-              className="bg-gradient-to-br from-primary to-brandSecondary p-12 md:p-16 rounded-3xl shadow-2xl text-center relative overflow-hidden"
+              className="bg-gradient-to-br from-blue-800 to-blue-900 p-12 md:p-16 rounded-3xl shadow-2xl text-center relative overflow-hidden"
             >
               {/* Floating Elements */}
               <motion.div

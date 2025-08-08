@@ -2,6 +2,17 @@ import Head from "next/head";
 import React from "react";
 import { motion } from "framer-motion";
 import { ArrowRightIcon, StarIcon } from "@heroicons/react/24/outline";
+import {
+  PiggyBank,
+  Zap,
+  Handshake,
+  Paintbrush,
+  Smartphone,
+  GaugeCircle,
+  Puzzle,
+  Cloud,
+  Rocket,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -84,34 +95,40 @@ const capabilities = [
     title: "Beautiful Interfaces",
     description:
       "Crafting pixel‑perfect user experiences users trust and enjoy.",
+    icon: Paintbrush,
     color: "bg-pink-50 border-pink-200 hover:bg-pink-100",
   },
   {
     title: "Cross-Platform Apps",
     description:
       "Building native‑quality mobile apps that work seamlessly across iOS and Android.",
+    icon: Smartphone,
     color: "bg-purple-50 border-purple-200 hover:bg-purple-100",
   },
   {
     title: "High Performance",
     description:
       "Optimizing applications for speed, efficiency, and scalability.",
+    icon: GaugeCircle,
     color: "bg-yellow-50 border-yellow-200 hover:bg-yellow-100",
   },
   {
     title: "Custom Solutions",
     description: "Developing tailored software that fits your business needs.",
+    icon: Puzzle,
     color: "bg-blue-50 border-blue-200 hover:bg-blue-100",
   },
   {
     title: "Cloud Infrastructure",
     description: "Setting up robust, scalable cloud environments for growth.",
+    icon: Cloud,
     color: "bg-cyan-50 border-cyan-200 hover:bg-cyan-100",
   },
   {
     title: "Rapid Development",
     description:
       "Delivering high‑quality products quickly using modern practices.",
+    icon: Rocket,
     color: "bg-green-50 border-green-200 hover:bg-green-100",
   },
 ];
@@ -310,7 +327,7 @@ const HomeScreen = () => {
               <Link href="/contact">
                 <Button
                   size="lg"
-                  className="bg-brandSecondary text-white hover:bg-brandSecondary/90 px-6 sm:px-10 py-4 sm:py-5 text-lg sm:text-xl font-bold rounded-2xl shadow"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-10 py-4 sm:py-5 text-lg sm:text-xl font-bold rounded-2xl shadow"
                 >
                   Start a project
                   <ArrowRightIcon className="ml-3 h-6 w-6" />
@@ -320,7 +337,7 @@ const HomeScreen = () => {
               <Link href="#work">
                 <Button
                   size="lg"
-                  className="bg-transparent border border-brandSecondary text-brandSecondary hover:bg-brandSecondary/10 px-6 sm:px-10 py-4 sm:py-5 text-lg sm:text-xl font-bold rounded-2xl transition-all duration-300"
+                  className="bg-transparent border border-blue-600 text-blue-600 hover:bg-blue-50 px-6 sm:px-10 py-4 sm:py-5 text-lg sm:text-xl font-bold rounded-2xl transition-all duration-300"
                 >
                   View my work
                 </Button>
@@ -374,7 +391,7 @@ const HomeScreen = () => {
         </section>
 
         {/* Capabilities Section */}
-        <section className="py-20 md:py-32 bg-secondary">
+        <section className="py-20 md:py-32 bg-gradient-to-br from-primary/10 via-background to-brandSecondary/10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
             <div className="text-center mb-20">
               <motion.div
@@ -407,15 +424,21 @@ const HomeScreen = () => {
                   whileHover={{ y: -10, scale: 1.02 }}
                 >
                   <Card
-                    className={`h-full p-8 border-2 shadow-lg hover:shadow-2xl transition-all duration-300 group rounded-3xl ${capability.color}`}
+                    className={`h-full p-10 border-0 shadow-xl hover:shadow-2xl hover:scale-[1.03] transition-all duration-300 group rounded-3xl bg-gradient-to-br from-white via-background to-primary/10`}
                   >
-                    <div className="mb-2" />
-                    <h3
-                      className="text-2xl font-bold text-gray-900 mb-4"
-                      style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                    >
-                      {capability.title}
-                    </h3>
+                    <div className="flex items-center mb-6">
+                      {capability.icon && (
+                        <span className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 mr-4">
+                          <capability.icon className="w-7 h-7 text-primary" />
+                        </span>
+                      )}
+                      <h3
+                        className="text-2xl font-bold text-gray-900"
+                        style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                      >
+                        {capability.title}
+                      </h3>
+                    </div>
                     <p className="text-gray-700 leading-relaxed text-lg">
                       {capability.description}
                     </p>
@@ -499,7 +522,7 @@ const HomeScreen = () => {
 
             <div className="text-center mt-16">
               <Link href="/projects">
-                <Button className="bg-gradient-to-r from-primary to-brandSecondary hover:from-primary/90 hover:to-brandSecondary/90 text-white px-8 py-4 text-lg font-bold rounded-2xl shadow border-0">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg font-bold rounded-2xl shadow border-0">
                   View all projects
                   <ArrowRightIcon className="ml-2 h-5 w-5" />
                 </Button>
@@ -508,77 +531,10 @@ const HomeScreen = () => {
           </div>
         </section>
 
-        {/* Testimonials Section */}
-        <section className="py-20 md:py-32 bg-secondary">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-            <div className="text-center mb-20">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                viewport={{ once: true }}
-              >
-                <h2
-                  className="text-5xl md:text-6xl font-black bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent mb-6 text-center"
-                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                >
-                  Client feedback
-                </h2>
-                <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
-                  What clients say about partnering together.
-                </p>
-              </motion.div>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {testimonials.map((testimonial, index) => (
-                <motion.div
-                  key={testimonial.name}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  whileHover={{ y: -5, scale: 1.02 }}
-                >
-                  <Card className="h-full p-8 border-2 border-pink-200 shadow-lg hover:shadow-2xl bg-white rounded-3xl">
-                    <div className="flex items-center mb-6">
-                      <div className="text-4xl mr-4" aria-hidden="true"></div>
-                      <div className="flex items-center">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <motion.div
-                            key={i}
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ duration: 0.3, delay: i * 0.1 }}
-                          >
-                            <StarIcon className="w-6 h-6 text-yellow-400 fill-current" />
-                          </motion.div>
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-gray-700 mb-6 leading-relaxed text-lg italic font-medium">
-                      "{testimonial.content}"
-                    </p>
-                    <div>
-                      <div
-                        className="font-bold text-gray-900 text-lg"
-                        style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                      >
-                        {testimonial.name}
-                      </div>
-                      <div className="text-gray-600 font-medium">
-                        {testimonial.role}
-                      </div>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* Client Feedback section removed for a cleaner home page */}
 
         {/* Freelancer Advantage Section */}
-        <section className="py-20 md:py-32 bg-gradient-to-br from-orange-50 to-yellow-50">
+        <section className="py-20 md:py-32 bg-gradient-to-br from-primary/10 via-background to-brandSecondary/10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
             <div className="text-center mb-20">
               <motion.div
@@ -608,8 +564,12 @@ const HomeScreen = () => {
                 whileHover={{ y: -5, scale: 1.02 }}
                 className="bg-white border-2 border-green-200 p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 group"
               >
-                <div className="text-center">
-                  <div className="mb-6" />
+                <div className="text-center flex flex-col items-center">
+                  <div className="mb-6">
+                    <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-green-50 border-2 border-green-200 mb-2">
+                      <PiggyBank className="w-8 h-8 text-green-500" />
+                    </span>
+                  </div>
                   <h3
                     className="text-2xl font-bold text-gray-900 mb-4"
                     style={{ fontFamily: "Space Grotesk, sans-serif" }}
@@ -631,8 +591,12 @@ const HomeScreen = () => {
                 whileHover={{ y: -5, scale: 1.02 }}
                 className="bg-white border-2 border-blue-200 p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 group"
               >
-                <div className="text-center">
-                  <div className="mb-6" />
+                <div className="text-center flex flex-col items-center">
+                  <div className="mb-6">
+                    <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-blue-50 border-2 border-blue-200 mb-2">
+                      <Zap className="w-8 h-8 text-blue-500" />
+                    </span>
+                  </div>
                   <h3
                     className="text-2xl font-bold text-gray-900 mb-4"
                     style={{ fontFamily: "Space Grotesk, sans-serif" }}
@@ -654,8 +618,12 @@ const HomeScreen = () => {
                 whileHover={{ y: -5, scale: 1.02 }}
                 className="bg-white border-2 border-purple-200 p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 group"
               >
-                <div className="text-center">
-                  <div className="mb-6" />
+                <div className="text-center flex flex-col items-center">
+                  <div className="mb-6">
+                    <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-50 border-2 border-purple-200 mb-2">
+                      <Handshake className="w-8 h-8 text-purple-500" />
+                    </span>
+                  </div>
                   <h3
                     className="text-2xl font-bold text-gray-900 mb-4"
                     style={{ fontFamily: "Space Grotesk, sans-serif" }}
@@ -674,7 +642,7 @@ const HomeScreen = () => {
               <Link href="/freelancer-advantage">
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-primary to-brandSecondary hover:from-primary/90 hover:to-brandSecondary/90 text-white px-6 sm:px-8 md:px-10 py-4 sm:py-5 text-lg sm:text-xl font-bold rounded-2xl shadow-2xl transition-all duration-300 border-0"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 md:px-10 py-4 sm:py-5 text-lg sm:text-xl font-bold rounded-2xl shadow-2xl transition-all duration-300 border-0"
                 >
                   Learn why freelancers win
                   <ArrowRightIcon className="ml-3 h-6 w-6" />
@@ -685,7 +653,7 @@ const HomeScreen = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-20 md:py-32 bg-gradient-to-br from-purple-600 to-blue-600 relative overflow-hidden">
+        <section className="py-20 md:py-32 bg-gradient-to-br from-blue-800 to-blue-900 relative overflow-hidden">
           {/* Decorative floating elements removed */}
 
           <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 text-center relative z-10">
@@ -709,7 +677,7 @@ const HomeScreen = () => {
                 <Link href="/contact">
                   <Button
                     size="lg"
-                    className="bg-white text-purple-700 hover:bg-purple-50 px-10 py-5 text-xl font-bold rounded-2xl shadow-2xl border-0"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-5 text-xl font-bold rounded-2xl shadow-2xl border-0"
                   >
                     Contact me
                   </Button>
@@ -718,7 +686,7 @@ const HomeScreen = () => {
                 <Link href="/services">
                   <Button
                     size="lg"
-                    className="bg-transparent border-2 border-white text-white hover:bg-white/10 px-10 py-5 text-xl font-bold rounded-2xl transition-all duration-300"
+                    className="bg-white border border-blue-600 text-blue-600 hover:bg-blue-50 px-10 py-5 text-xl font-bold rounded-2xl transition-all duration-300"
                   >
                     Explore services
                   </Button>

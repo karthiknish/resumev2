@@ -31,7 +31,7 @@ export default function Services() {
 
   const services = [
     {
-      icon: <FaCode className="text-5xl" style={{ color: "#5BD3F3" }} />,
+      icon: <FaCode className="text-5xl text-brandSecondary" />,
       title: "Frontend Development",
       description:
         "Creating responsive, interactive, and visually appealing user interfaces using modern frameworks like React, Next.js, and Vue.js.",
@@ -44,7 +44,7 @@ export default function Services() {
       ],
     },
     {
-      icon: <FaServer className="text-5xl" style={{ color: "#5B9853" }} />,
+      icon: <FaServer className="text-5xl text-brandSecondary" />,
       title: "Backend Development",
       description:
         "Building robust server-side applications and APIs using Node.js, Express, and other modern technologies.",
@@ -57,7 +57,7 @@ export default function Services() {
       ],
     },
     {
-      icon: <FaMobileAlt className="text-5xl" style={{ color: "#E535AB" }} />,
+      icon: <FaMobileAlt className="text-5xl text-brandSecondary" />,
       title: "Mobile App Development",
       description:
         "Developing cross-platform mobile applications using React Native that work seamlessly on both iOS and Android devices.",
@@ -70,7 +70,7 @@ export default function Services() {
       ],
     },
     {
-      icon: <FaDatabase className="text-5xl" style={{ color: "#FF9900" }} />,
+      icon: <FaDatabase className="text-5xl text-brandSecondary" />,
       title: "Database Design", // Note: Slug will be database-design
       description:
         "Designing and implementing efficient database solutions using SQL and NoSQL technologies.",
@@ -83,7 +83,7 @@ export default function Services() {
       ],
     },
     {
-      icon: <FaRocket className="text-5xl" style={{ color: "#DD4B25" }} />,
+      icon: <FaRocket className="text-5xl text-brandSecondary" />,
       title: "Performance Optimization",
       description:
         "Improving the speed and efficiency of web applications through various optimization techniques.",
@@ -96,7 +96,7 @@ export default function Services() {
       ],
     },
     {
-      icon: <FaTools className="text-5xl" style={{ color: "#3178C6" }} />,
+      icon: <FaTools className="text-5xl text-brandSecondary" />,
       title: "Technical Consultation",
       description:
         "Providing expert advice on technology stack selection, architecture design, and best practices.",
@@ -206,7 +206,7 @@ export default function Services() {
       </Head>
       <PageContainer>
         <div
-          className="min-h-screen bg-background py-24 md:py-32"
+          className="min-h-screen bg-primary/10 py-24 md:py-32"
           style={{ fontFamily: "Inter, sans-serif" }}
         >
           <div className="max-w-7xl mx-auto px-6">
@@ -217,18 +217,18 @@ export default function Services() {
               transition={{ duration: 0.6 }}
               className="text-center mb-20"
             >
-              <div className="inline-flex items-center gap-3 px-6 py-3 bg-card border text-sm font-semibold mb-8 shadow-sm rounded-full border-brandSecondary text-brandSecondary">
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-white border-2 border-brandSecondary text-sm font-semibold mb-8 shadow-sm rounded-full text-brandSecondary">
                 <span>Professional Development Services</span>
               </div>
 
               <h1
-                className="text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight"
+                className="text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight text-brandSecondary"
                 style={{ fontFamily: "Space Grotesk, sans-serif" }}
               >
-                <span className="text-foreground">My Services</span>
+                My Services
               </h1>
 
-              <p className="text-2xl md:text-3xl text-foreground/70 max-w-5xl mx-auto leading-relaxed font-medium mb-12">
+              <p className="text-2xl md:text-3xl text-brandSecondary/70 max-w-5xl mx-auto leading-relaxed font-medium mb-12">
                 Comprehensive development solutions to bring your digital vision
                 to life — from modern websites to scalable applications.
               </p>
@@ -246,14 +246,14 @@ export default function Services() {
                 const slug = generateSlug(service.title);
                 const href = `/services/${slug}`;
 
-                // Define unique gradient colors for each service
-                const gradients = [
-                  "from-primary to-brandSecondary",
-                  "from-primary to-brandSecondary",
-                  "from-primary to-brandSecondary",
-                  "from-primary to-brandSecondary",
-                  "from-primary to-brandSecondary",
-                  "from-primary to-brandSecondary",
+                // Use solid theme color for icon backgrounds
+                const iconBgColors = [
+                  "bg-brandSecondary",
+                  "bg-primary",
+                  "bg-brandSecondary",
+                  "bg-primary",
+                  "bg-brandSecondary",
+                  "bg-primary",
                 ];
 
                 return (
@@ -267,10 +267,10 @@ export default function Services() {
                     className="group"
                   >
                     <Link href={href} className="block h-full">
-                      <div className="bg-card border-2 border-border p-8 rounded-3xl shadow-sm hover:shadow transition-all duration-300 h-full flex flex-col">
-                        {/* Service Icon with unique gradient */}
+                      <div className="bg-white border-2 border-brandSecondary p-8 rounded-3xl shadow-sm hover:shadow transition-all duration-300 h-full flex flex-col">
+                        {/* Service Icon with solid theme color */}
                         <motion.div
-                          className={`w-20 h-20 bg-gradient-to-r ${gradients[index]} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                          className={`w-20 h-20 ${iconBgColors[index]} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}
                           whileHover={{ rotate: [0, -10, 10, 0] }}
                           transition={{ duration: 0.5 }}
                         >
@@ -283,7 +283,7 @@ export default function Services() {
                         </motion.div>
 
                         <h2
-                          className="text-3xl font-black mb-4 text-foreground"
+                          className="text-3xl font-black mb-4 text-brandSecondary"
                           style={{ fontFamily: "Space Grotesk, sans-serif" }}
                         >
                           {service.title}
@@ -298,7 +298,7 @@ export default function Services() {
                           {service.features.slice(0, 3).map((feature, idx) => (
                             <li key={idx} className="flex items-center gap-3">
                               <motion.div
-                                className={`w-6 h-6 bg-gradient-to-r ${gradients[index]} rounded-full flex items-center justify-center flex-shrink-0`}
+                                className={`w-6 h-6 ${iconBgColors[index]} rounded-full flex items-center justify-center flex-shrink-0`}
                                 whileHover={{ scale: 1.2 }}
                               >
                                 <svg
@@ -424,7 +424,7 @@ export default function Services() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
               viewport={{ once: true }}
-              className="bg-brandSecondary p-12 md:p-16 rounded-3xl shadow text-center relative overflow-hidden text-white"
+              className="bg-gradient-to-br from-blue-800 to-blue-900 p-12 md:p-16 rounded-3xl shadow text-center relative overflow-hidden text-white"
             >
               {/* Decorative floating elements removed for a cleaner CTA */}
 

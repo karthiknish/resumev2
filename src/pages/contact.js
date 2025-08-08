@@ -52,11 +52,11 @@ export default function Contact() {
       </Head>
       <PageContainer>
         <div
-          className="min-h-screen mt-24 bg-gradient-to-br from-primary/10 via-background to-brandSecondary/10 p-4 sm:p-6 md:p-8 lg:p-16 max-w-6xl mx-auto relative"
+          className="min-h-screen mt-24 pt-4 bg-gradient-to-br from-primary/10 via-background to-brandSecondary/10 w-full relative"
           style={{ fontFamily: "Inter, sans-serif" }}
         >
           <FadeIn>
-            <div className="text-center mb-12 sm:mb-16">
+            <div className="text-center mb-12 sm:mb-16 px-4 sm:px-8 md:px-16 lg:px-32 mt-8 sm:mt-12 md:mt-16">
               {/* Animated Introduction */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -77,19 +77,7 @@ export default function Contact() {
                 <span className="bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent">
                   Get In Touch
                 </span>
-                <motion.span
-                  animate={{
-                    rotate: [0, 20, -20, 0],
-                    scale: [1, 1.2, 1],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 1,
-                  }}
-                  className="inline-block ml-4 text-yellow-400"
-                ></motion.span>
+                {/* Emoji removed for a more professional look */}
               </motion.h1>
 
               <motion.p
@@ -99,35 +87,25 @@ export default function Contact() {
                 className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-700 mb-8 sm:mb-12 max-w-4xl mx-auto leading-relaxed font-medium px-2"
               >
                 Have a{" "}
-                <motion.span
-                  className="inline-block bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent font-bold"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  brilliant idea
-                </motion.span>{" "}
+                <span className="inline-block bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent font-bold">
+                  project in mind
+                </span>{" "}
                 or want to discuss a potential collaboration? Let's turn your
-                vision into reality!
-                <motion.span
-                  animate={{ rotate: [0, 5, -5, 0] }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="inline-block ml-2"
-                ></motion.span>
+                vision into reality.
               </motion.p>
             </div>
           </FadeIn>
 
           <FadeIn delay={0.2}>
             {/* Services Section */}
-            <Services />
+            <div className="px-4 sm:px-8 md:px-16 lg:px-32 mt-8 sm:mt-12 md:mt-16">
+              <Services />
+            </div>
           </FadeIn>
 
           {/* --- Booking Section Start --- */}
           <FadeIn delay={0.3}>
-            <section className="mt-12 sm:mt-16 bg-white p-4 sm:p-6 md:p-8 rounded-3xl shadow-2xl border-2 border-brandSecondary">
+            <section className="mt-12 sm:mt-16 bg-white p-4 sm:p-6 md:p-8 rounded-3xl shadow-2xl border-2 border-brandSecondary px-4 sm:px-8 md:px-16 lg:px-32">
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -136,18 +114,7 @@ export default function Contact() {
                 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 sm:mb-6 flex flex-wrap items-center justify-center gap-3 sm:gap-6"
                 style={{ fontFamily: "Space Grotesk, sans-serif" }}
               >
-                <motion.span
-                  animate={{
-                    scale: [1, 1.2, 1],
-                    rotate: [0, 15, -15, 0],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="text-4xl"
-                ></motion.span>
+                {/* Emoji removed for a more professional look */}
                 <span className="bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent text-center sm:text-left">
                   Schedule a Consultation
                 </span>
@@ -183,11 +150,13 @@ export default function Contact() {
 
           <FadeIn delay={0.4}>
             {/* Render the ContactForm component instead of the inline form */}
-            <ContactForm />
+            <div className="px-4 sm:px-8 md:px-16 lg:px-32 mt-8 sm:mt-12 md:mt-16">
+              <ContactForm />
+            </div>
           </FadeIn>
 
           <FadeIn delay={0.6}>
-            <section className="mt-12 sm:mt-16 bg-gradient-to-br from-primary to-brandSecondary p-6 sm:p-8 md:p-12 rounded-3xl shadow-2xl text-white relative overflow-hidden">
+            <section className="mt-12 sm:mt-16 bg-gradient-to-br from-primary to-brandSecondary p-6 sm:p-8 md:p-12 rounded-3xl shadow-2xl text-white relative overflow-hidden px-4 sm:px-8 md:px-16 lg:px-32">
               {/* Floating Elements */}
               <motion.div
                 className="absolute top-6 left-6 sm:top-10 sm:left-10 text-3xl sm:text-4xl opacity-30"
@@ -223,32 +192,7 @@ export default function Contact() {
                 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-6 sm:mb-8 flex flex-wrap items-center justify-center gap-3 sm:gap-6 relative z-10 text-center"
                 style={{ fontFamily: "Space Grotesk, sans-serif" }}
               >
-                <motion.span
-                  animate={{
-                    scale: [1, 1.3, 1],
-                    rotate: [0, 10, -10, 0],
-                  }}
-                  transition={{
-                    duration: 2.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="text-5xl"
-                ></motion.span>
                 Let's Build Something Amazing
-                <motion.span
-                  animate={{
-                    y: [0, -15, 0],
-                    rotate: [0, 25, 0],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 1,
-                  }}
-                  className="text-5xl"
-                ></motion.span>
               </motion.h2>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -264,17 +208,14 @@ export default function Contact() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12 relative z-10">
                 {[
                   {
-                    icon: "",
                     title: "Quick Response",
                     desc: "I typically respond to all inquiries within 24 hours.",
                   },
                   {
-                    icon: "",
                     title: "Flexible Collaboration",
                     desc: "Available for both short-term projects and long-term partnerships.",
                   },
                   {
-                    icon: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
                     title: "UK-Based",
                     desc: "Located in Liverpool, available for both remote and local work.",
                   },
@@ -288,13 +229,6 @@ export default function Contact() {
                     whileHover={{ y: -10, scale: 1.05 }}
                     className="bg-white/20 backdrop-blur-sm p-4 sm:p-6 rounded-3xl border border-white/30 text-center hover:bg-white/30 transition-all duration-300"
                   >
-                    <motion.div
-                      className="text-3xl sm:text-4xl mb-3 sm:mb-4"
-                      whileHover={{ scale: 1.2, rotate: 10 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {item.icon}
-                    </motion.div>
                     <h4
                       className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3"
                       style={{ fontFamily: "Space Grotesk, sans-serif" }}

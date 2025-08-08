@@ -302,7 +302,6 @@ function Chatbot() {
       {/* Chat button - Modern vibrant design */}
       <motion.button
         className={`fixed z-[1100] right-6 p-4 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white flex items-center shadow-xl hover:shadow-2xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-purple-300 ${
-          // Adjust bottom only for mobile overlap prevention when open
           isOpen ? "bottom-[80px] md:bottom-6" : "bottom-6"
         }`}
         onClick={() => setIsOpen(!isOpen)}
@@ -313,15 +312,15 @@ function Chatbot() {
           boxShadow: [
             "0 10px 30px rgba(147, 51, 234, 0.3)",
             "0 15px 40px rgba(59, 130, 246, 0.4)",
-            "0 10px 30px rgba(147, 51, 234, 0.3)"
-          ]
+            "0 10px 30px rgba(147, 51, 234, 0.3)",
+          ],
         }}
         transition={{
           boxShadow: {
             duration: 3,
             repeat: Infinity,
-            ease: "easeInOut"
-          }
+            ease: "easeInOut",
+          },
         }}
       >
         <AnimatePresence mode="wait">
@@ -336,20 +335,7 @@ function Chatbot() {
             {isOpen ? (
               <BiX className="text-3xl" />
             ) : (
-              <>
-                <BiMessageSquareDots className="text-3xl" />
-                <motion.span
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                  className="text-xl ml-1"
-                >
-                  ✨
-                </motion.span>
-              </>
+              <BiMessageSquareDots className="text-3xl" />
             )}
           </motion.div>
         </AnimatePresence>
@@ -361,10 +347,7 @@ function Chatbot() {
             exit={{ opacity: 0, y: 10, scale: 0.8 }}
             transition={{ delay: 1, duration: 0.3 }}
           >
-            <span className="flex items-center gap-2">
-              <span className="text-lg">💬</span>
-              Chat with me!
-            </span>
+            <span className="flex items-center gap-2">Chat with me!</span>
             <div className="absolute -bottom-2 right-4 w-4 h-4 bg-white border-r-2 border-b-2 border-purple-200 transform rotate-45"></div>
           </motion.div>
         )}
@@ -398,13 +381,16 @@ function Chatbot() {
                   transition={{
                     duration: 3,
                     repeat: Infinity,
-                    ease: "easeInOut"
+                    ease: "easeInOut",
                   }}
                 >
-                  <span className="text-2xl">🤖</span>
+                  {/* Removed emoji for professional tone */}
                 </motion.div>
                 <div>
-                  <h3 className="text-white font-black text-xl" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                  <h3
+                    className="text-white font-black text-xl"
+                    style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                  >
                     Cline AI
                   </h3>
                   <p className="text-purple-100 text-sm font-medium">
@@ -443,14 +429,14 @@ function Chatbot() {
                         rotate: {
                           duration: 3,
                           repeat: Infinity,
-                          ease: "easeInOut"
-                        }
+                          ease: "easeInOut",
+                        },
                       }}
                     >
-                      <span className="text-xl">🤖</span>
+                      {/* Removed emoji for professional tone */}
                     </motion.div>
                   )}
-                  
+
                   {/* User Avatar */}
                   {msg.role === "user" && (
                     <motion.div
@@ -480,7 +466,9 @@ function Chatbot() {
                     {renderMessageContent(msg)}
                     <motion.span
                       className={`block text-xs mt-2 text-right font-medium ${
-                        msg.role === "assistant" ? "text-gray-500" : "text-purple-200"
+                        msg.role === "assistant"
+                          ? "text-gray-500"
+                          : "text-purple-200"
                       }`}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 0.7 }}
@@ -504,10 +492,10 @@ function Chatbot() {
                     transition={{
                       duration: 2,
                       repeat: Infinity,
-                      ease: "linear"
+                      ease: "linear",
                     }}
                   >
-                    <span className="text-xl">🤖</span>
+                    {/* Removed emoji for professional tone */}
                   </motion.div>
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
@@ -525,7 +513,7 @@ function Chatbot() {
                         transition={{
                           duration: 1,
                           repeat: Infinity,
-                          delay: 0
+                          delay: 0,
                         }}
                       />
                       <motion.div
@@ -534,7 +522,7 @@ function Chatbot() {
                         transition={{
                           duration: 1,
                           repeat: Infinity,
-                          delay: 0.3
+                          delay: 0.3,
                         }}
                       />
                       <motion.div
@@ -543,7 +531,7 @@ function Chatbot() {
                         transition={{
                           duration: 1,
                           repeat: Infinity,
-                          delay: 0.6
+                          delay: 0.6,
                         }}
                       />
                     </div>
@@ -588,8 +576,8 @@ function Chatbot() {
                         rotate: {
                           duration: 2,
                           repeat: Infinity,
-                          ease: "easeInOut"
-                        }
+                          ease: "easeInOut",
+                        },
                       }}
                     >
                       <FaEnvelope className="text-white text-lg" />
@@ -613,10 +601,10 @@ function Chatbot() {
                       transition={{
                         duration: 2,
                         repeat: Infinity,
-                        ease: "easeInOut"
+                        ease: "easeInOut",
                       }}
                     >
-                      <span className="text-xl">💬</span>
+                      {/* Removed emoji for professional tone */}
                     </motion.div>
                     <Input
                       className="flex-grow bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 text-gray-800 placeholder-gray-500 font-medium rounded-2xl px-6 py-4 text-lg focus:ring-4 focus:ring-purple-200 focus:border-purple-400 transition-all duration-300"
@@ -646,7 +634,7 @@ function Chatbot() {
                       transition={{
                         duration: 1,
                         repeat: Infinity,
-                        ease: "easeInOut"
+                        ease: "easeInOut",
                       }}
                     >
                       <FaCheck className="w-6 h-6" />
@@ -657,7 +645,7 @@ function Chatbot() {
                       transition={{
                         duration: 1.5,
                         repeat: Infinity,
-                        ease: "easeInOut"
+                        ease: "easeInOut",
                       }}
                     >
                       <BiSend className="w-6 h-6" />

@@ -129,21 +129,11 @@ export default function CommentsSection({ blogPostId }) {
         transition={{ duration: 0.6, delay: 0.1 }}
         viewport={{ once: true }}
       >
-        <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+        <span className="bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent">
           Comments
         </span>
-        <motion.span
-          animate={{ rotate: [0, 15, -15, 0] }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="text-3xl"
-        >
-          💬
-        </motion.span>
-        <span className="bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 px-3 sm:px-4 py-1 sm:py-2 rounded-full text-lg sm:text-xl font-bold">
+
+        <span className="bg-gradient-to-r from-primary/10 to-brandSecondary/10 text-primary px-3 sm:px-4 py-1 sm:py-2 rounded-full text-lg sm:text-xl font-bold border border-primary/20">
           {comments.length}
         </span>
       </motion.h2>
@@ -162,17 +152,6 @@ export default function CommentsSection({ blogPostId }) {
           style={{ fontFamily: "Space Grotesk, sans-serif" }}
         >
           Share your thoughts
-          <motion.span
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className="text-xl"
-          >
-            ✨
-          </motion.span>
         </h3>
         {/* Show Name input only if not logged in */}
         {status === "unauthenticated" && (
@@ -186,7 +165,20 @@ export default function CommentsSection({ blogPostId }) {
               htmlFor="anonymousName"
               className="block text-base sm:text-lg font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2"
             >
-              <span className="text-xl">👤</span>
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary">
+                {/* Lucide icon: User */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <circle cx="12" cy="7" r="4" />
+                  <path d="M5.5 21a7.5 7.5 0 0 1 13 0" />
+                </svg>
+              </span>
               Name (Optional)
             </label>
             <Input
@@ -209,7 +201,20 @@ export default function CommentsSection({ blogPostId }) {
           className="mb-4 sm:mb-6"
         >
           <label className="block text-base sm:text-lg font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2">
-            <span className="text-xl">💭</span>
+            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary">
+              {/* Lucide icon: MessageSquare */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+                <path d="M8 2v4M16 2v4M3 10h18" />
+              </svg>
+            </span>
             Your Comment
           </label>
           <Textarea
@@ -234,8 +239,10 @@ export default function CommentsSection({ blogPostId }) {
         >
           <motion.button
             type="submit"
-            disabled={isSubmitting || !newComment.trim() || status === "loading"}
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-bold text-base sm:text-lg transition-all duration-300 shadow-xl hover:shadow-2xl disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed flex items-center gap-2 sm:gap-3"
+            disabled={
+              isSubmitting || !newComment.trim() || status === "loading"
+            }
+            className="bg-brandSecondary hover:bg-brandSecondary/90 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-bold text-base sm:text-lg transition-all duration-300 shadow-xl hover:shadow-2xl disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2 sm:gap-3"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -255,7 +262,18 @@ export default function CommentsSection({ blogPostId }) {
                   }}
                   className="text-xl"
                 >
-                  🚀
+                  {/* Lucide icon: Send */}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <line x1="22" y1="2" x2="11" y2="13" />
+                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                  </svg>
                 </motion.span>
                 <span>Post Comment</span>
               </>
@@ -278,7 +296,9 @@ export default function CommentsSection({ blogPostId }) {
             animate={{ opacity: 1 }}
           >
             <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
-            <span className="ml-3 text-base sm:text-lg font-medium text-gray-600">Loading comments...</span>
+            <span className="ml-3 text-base sm:text-lg font-medium text-gray-600">
+              Loading comments...
+            </span>
           </motion.div>
         )}
         {error && !isLoading && (
@@ -288,7 +308,21 @@ export default function CommentsSection({ blogPostId }) {
             animate={{ opacity: 1, scale: 1 }}
           >
             <p className="text-red-600 font-medium text-base sm:text-lg flex items-center gap-2">
-              <span className="text-xl">⚠️</span>
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-100 text-red-600">
+                {/* Lucide icon: AlertTriangle */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+              </span>
               Error loading comments: {error}
             </p>
           </motion.div>
@@ -300,18 +334,11 @@ export default function CommentsSection({ blogPostId }) {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <motion.div
-              animate={{ rotate: [0, 10, -10, 0] }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="text-6xl mb-4"
+            {/* No emoji for empty state */}
+            <h4
+              className="text-xl sm:text-2xl font-bold text-gray-800 mb-2"
+              style={{ fontFamily: "Space Grotesk, sans-serif" }}
             >
-              💬
-            </motion.div>
-            <h4 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
               Be the first to comment!
             </h4>
             <p className="text-gray-600 text-base sm:text-lg">
@@ -353,7 +380,7 @@ export default function CommentsSection({ blogPostId }) {
                       ease: "easeInOut",
                     }}
                   >
-                    <span className="text-xs">✨</span>
+                    {/* No sparkle badge */}
                   </motion.div>
                 </div>
               </motion.div>
@@ -367,14 +394,40 @@ export default function CommentsSection({ blogPostId }) {
                     style={{ fontFamily: "Space Grotesk, sans-serif" }}
                     whileHover={{ scale: 1.05 }}
                   >
-                    <span className="text-lg">👤</span>
+                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary">
+                      {/* Lucide icon: User */}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-4 h-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <circle cx="12" cy="7" r="4" />
+                        <path d="M5.5 21a7.5 7.5 0 0 1 13 0" />
+                      </svg>
+                    </span>
                     {comment.authorName || "Anonymous"}
                   </motion.span>
                   <motion.span
                     className="text-xs sm:text-sm font-medium text-gray-500 bg-gradient-to-r from-purple-100 to-blue-100 px-2 sm:px-3 py-1 rounded-full flex items-center gap-1"
                     whileHover={{ scale: 1.05 }}
                   >
-                    <span className="text-xs">📅</span>
+                    <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-brandSecondary/10 text-brandSecondary">
+                      {/* Lucide icon: Calendar */}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-3 h-3"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <rect x="3" y="4" width="18" height="18" rx="2" />
+                        <path d="M16 2v4M8 2v4M3 10h18" />
+                      </svg>
+                    </span>
                     {formatDate(comment.createdAt)}
                   </motion.span>
                 </div>

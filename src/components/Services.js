@@ -6,7 +6,7 @@ import Link from "next/link";
 const services = [
   {
     icon: <FaPaintBrush className="w-8 h-8" />,
-    emoji: "🎨",
+    // emoji removed
     title: "Website Reskin",
     description:
       "Give your existing website a fresh, modern look while maintaining its core functionality. Perfect for businesses looking to update their online presence.",
@@ -24,7 +24,7 @@ const services = [
   },
   {
     icon: <FaGlobe className="w-8 h-8" />,
-    emoji: "🌍",
+    // emoji removed
     title: "Brochure Websites",
     description:
       "Professional, custom-built websites that effectively showcase your business, products, or services to potential customers.",
@@ -42,7 +42,7 @@ const services = [
   },
   {
     icon: <FaStore className="w-8 h-8" />,
-    emoji: "🛍️",
+    // emoji removed
     title: "E-commerce Solutions",
     description:
       "Full-featured online stores that help you sell products or services directly to your customers with a seamless shopping experience.",
@@ -71,39 +71,14 @@ export default function Services() {
         className="text-center mb-16"
       >
         <h2
-          className="text-5xl md:text-6xl font-black text-gray-900 mb-6 flex items-center justify-center gap-6"
+          className="text-5xl md:text-6xl font-black bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent mb-6 flex items-center justify-center gap-6"
           style={{ fontFamily: "Space Grotesk, sans-serif" }}
         >
-          <motion.span
-            animate={{ rotate: [0, 20, -20, 0] }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className="text-4xl"
-          >
-            ⚡
-          </motion.span>
           My Services
-          <motion.span
-            animate={{
-              scale: [1, 1.2, 1],
-              rotate: [0, 10, 0],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 1,
-            }}
-            className="text-4xl"
-          >
-            🚀
-          </motion.span>
         </h2>
         <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
-          Transforming ideas into digital reality with a touch of magic
+          Transforming ideas into digital reality with modern, scalable
+          solutions
         </p>
       </motion.div>
 
@@ -121,7 +96,7 @@ export default function Services() {
               <div
                 className={`h-full p-8 rounded-3xl border-2 shadow-lg hover:shadow-2xl transition-all duration-300 group cursor-pointer ${service.color} ${service.borderColor}`}
               >
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center mb-6">
                   <motion.div
                     className={`p-4 bg-gradient-to-r ${service.iconBg} rounded-2xl`}
                     whileHover={{ scale: 1.2, rotate: 10 }}
@@ -130,19 +105,6 @@ export default function Services() {
                     {React.cloneElement(service.icon, {
                       className: `w-8 h-8 ${service.textColor}`,
                     })}
-                  </motion.div>
-                  <motion.div
-                    className="text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    animate={{
-                      rotate: [0, 15, -15, 0],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    {service.emoji}
                   </motion.div>
                 </div>
                 <h3
@@ -164,13 +126,15 @@ export default function Services() {
                       viewport={{ once: true }}
                       className="flex items-center gap-3 text-gray-600"
                     >
-                      <span className="text-green-500 text-xl">✓</span>
+                      <span className="text-brandSecondary text-xl">✓</span>
                       <span className="text-sm font-medium">{feature}</span>
                     </motion.li>
                   ))}
                 </ul>
                 <div className="mt-6 flex items-center justify-between">
-                  <span className={`text-sm font-bold ${service.textColor} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}>
+                  <span
+                    className={`text-sm font-bold ${service.textColor} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+                  >
                     Learn More →
                   </span>
                   <motion.div
@@ -200,19 +164,8 @@ export default function Services() {
       >
         <Link
           href="/contact"
-          className="inline-block bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-10 py-5 text-xl font-bold rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105"
+          className="inline-block bg-gradient-to-r from-primary to-brandSecondary hover:from-primary/90 hover:to-brandSecondary/90 text-white px-10 py-5 text-xl font-bold rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105"
         >
-          <motion.span
-            animate={{ rotate: [0, 20, 0] }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className="mr-3 text-2xl inline-block"
-          >
-            💬
-          </motion.span>
           Discuss Your Project Needs
           <span className="ml-2">→</span>
         </Link>

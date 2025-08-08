@@ -57,30 +57,16 @@ export default function NewsletterSignup() {
   return (
     <div className="bg-white/10 backdrop-blur-sm p-8 rounded-3xl border border-white/20">
       <h3
-        className="text-2xl font-bold mb-4 flex items-center gap-3"
+        className="text-2xl font-bold mb-4"
         style={{ fontFamily: "Space Grotesk, sans-serif" }}
       >
         Stay in the Loop
-        <motion.span
-          animate={{ rotate: [0, 15, -15, 0] }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="text-xl"
-        >
-          📮
-        </motion.span>
       </h3>
       <p className="text-lg text-purple-100 mb-6 leading-relaxed">
         Get magical updates and exclusive content delivered to your inbox!
       </p>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          transition={{ duration: 0.2 }}
-        >
+        <motion.div whileHover={{ scale: 1.02 }} transition={{ duration: 0.2 }}>
           <Input
             type="email"
             placeholder="your@email.com"
@@ -115,7 +101,7 @@ export default function NewsletterSignup() {
                 }}
                 className="text-xl"
               >
-                🚀
+                {/* Removed emoji for professional tone */}
               </motion.span>
               Subscribe Now
             </>

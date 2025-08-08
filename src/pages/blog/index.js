@@ -168,12 +168,43 @@ function Index({ initialPosts = [], categories = [] }) {
           rel="stylesheet"
         />
       </Head>
-      <PageContainer bgClassName="bg-white">
+      <PageContainer bgClassName="bg-gradient-to-br from-background via-white to-brandSecondary/10">
         <div
-          className="min-h-screen bg-white py-24 md:py-32 relative"
+          className="min-h-screen bg-background py-24 md:py-32 relative"
           style={{ fontFamily: "Inter, sans-serif" }}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 relative z-10">
+            {/* Background Splash */}
+            <svg
+              className="absolute left-1/2 top-0 -translate-x-1/2 -z-10 blur-2xl opacity-40 w-[900px] h-[600px] pointer-events-none select-none"
+              viewBox="0 0 900 600"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <defs>
+                <radialGradient
+                  id="blogSplash"
+                  cx="50%"
+                  cy="50%"
+                  r="80%"
+                  fx="50%"
+                  fy="50%"
+                  gradientTransform="rotate(20)"
+                >
+                  <stop offset="0%" stopColor="#6366f1" stopOpacity="0.25" />
+                  <stop offset="60%" stopColor="#a21caf" stopOpacity="0.18" />
+                  <stop offset="100%" stopColor="#f472b6" stopOpacity="0.12" />
+                </radialGradient>
+              </defs>
+              <ellipse
+                cx="450"
+                cy="300"
+                rx="420"
+                ry="220"
+                fill="url(#blogSplash)"
+              />
+            </svg>
             {/* Hero Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -181,18 +212,18 @@ function Index({ initialPosts = [], categories = [] }) {
               transition={{ duration: 0.4 }}
               className="text-center mb-16"
             >
-              <div className="inline-flex items-center gap-3 px-6 py-3 bg-white border border-gray-200 rounded-full text-gray-700 text-sm font-semibold mb-8 shadow-sm">
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-primary/10 to-brandSecondary/10 border border-primary/20 rounded-full text-primary text-sm font-semibold mb-8 shadow-sm">
                 <span>Welcome to my blog</span>
               </div>
 
               <h1
-                className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight text-gray-900"
+                className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent"
                 style={{ fontFamily: "Space Grotesk, sans-serif" }}
               >
                 Blog & Insights
               </h1>
 
-              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-600 max-w-4xl mx-auto leading-relaxed font-medium px-2">
+              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-brandSecondary max-w-4xl mx-auto leading-relaxed font-medium px-2">
                 Insights on technology, development, and product innovation.
               </p>
             </motion.div>
@@ -202,7 +233,7 @@ function Index({ initialPosts = [], categories = [] }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
-              className="bg-white p-4 sm:p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200 mb-12"
+              className="bg-white/90 p-4 sm:p-6 md:p-8 rounded-2xl shadow-sm border border-primary/20 mb-12"
             >
               <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 items-center">
                 {/* Category Filter Dropdown */}
@@ -214,13 +245,13 @@ function Index({ initialPosts = [], categories = [] }) {
                     value={selectedCategory}
                     onValueChange={handleCategoryChange}
                   >
-                    <SelectTrigger className="w-full sm:w-48 lg:w-56 bg-white border border-gray-300 text-gray-800 font-medium rounded-2xl px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg hover:border-gray-400 transition-colors duration-200">
+                    <SelectTrigger className="w-full sm:w-48 lg:w-56 bg-white border border-primary/20 text-primary font-medium rounded-2xl px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg hover:border-primary transition-colors duration-200">
                       <SelectValue placeholder="All Categories" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border border-gray-200 text-gray-800 rounded-2xl shadow-sm">
+                    <SelectContent className="bg-white border border-primary/20 text-primary rounded-2xl shadow-sm">
                       <SelectItem
                         value="All"
-                        className="text-base sm:text-lg font-medium hover:bg-gray-50"
+                        className="text-base sm:text-lg font-medium hover:bg-primary/10"
                       >
                         All Categories
                       </SelectItem>
@@ -228,7 +259,7 @@ function Index({ initialPosts = [], categories = [] }) {
                         <SelectItem
                           key={category}
                           value={category}
-                          className="text-base sm:text-lg font-medium hover:bg-gray-50"
+                          className="text-base sm:text-lg font-medium hover:bg-primary/10"
                         >
                           {category}
                         </SelectItem>
@@ -263,20 +294,20 @@ function Index({ initialPosts = [], categories = [] }) {
                     onValueChange={handleSortChange}
                     defaultValue={sortOrder}
                   >
-                    <SelectTrigger className="w-full sm:w-[200px] lg:w-[220px] bg-white border border-gray-300 text-gray-800 font-medium rounded-2xl px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg hover:border-gray-400 transition-colors duration-200">
+                    <SelectTrigger className="w-full sm:w-[200px] lg:w-[220px] bg-white border border-primary/20 text-primary font-medium rounded-2xl px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg hover:border-primary transition-colors duration-200">
                       <SelectValue placeholder="Sort by..." />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border border-gray-200 text-gray-800 rounded-2xl shadow-sm">
+                    <SelectContent className="bg-white border border-primary/20 text-primary rounded-2xl shadow-sm">
                       <SelectItem
                         value="desc"
-                        className="text-base sm:text-lg font-medium hover:bg-gray-50"
+                        className="text-base sm:text-lg font-medium hover:bg-primary/10"
                       >
                         {" "}
                         Newest First
                       </SelectItem>
                       <SelectItem
                         value="asc"
-                        className="text-base sm:text-lg font-medium hover:bg-gray-50"
+                        className="text-base sm:text-lg font-medium hover:bg-primary/10"
                       >
                         {" "}
                         Oldest First
@@ -295,7 +326,7 @@ function Index({ initialPosts = [], categories = [] }) {
                 transition={{ duration: 0.5 }}
                 className="mb-8 text-center"
               >
-                <p className="text-gray-600 text-lg font-medium bg-white inline-flex items-center gap-2 px-6 py-3 rounded-full border border-gray-200">
+                <p className="text-brandSecondary text-lg font-medium bg-white/90 inline-flex items-center gap-2 px-6 py-3 rounded-full border border-primary/20">
                   <span className="text-2xl"></span>
                   Showing {filteredAndSortedContent.length} posts
                   {searchTerm.trim() !== "" && ` matching "${searchTerm}"`}
@@ -321,7 +352,7 @@ function Index({ initialPosts = [], categories = [] }) {
                     >
                       <Link href={`/blog/${post.slug}`} passHref legacyBehavior>
                         <a className="block h-full">
-                          <Card className="h-full bg-white border border-gray-200 rounded-3xl shadow-sm hover:shadow-md hover:border-gray-300 transition-colors duration-200 overflow-hidden">
+                          <Card className="h-full bg-gradient-to-br from-white via-background to-brandSecondary/10 border border-primary/20 rounded-3xl shadow-md hover:shadow-lg hover:border-brandSecondary transition-all duration-200 overflow-hidden">
                             <div className="h-64 overflow-hidden relative">
                               <Image
                                 src={post.imageUrl}
@@ -334,21 +365,21 @@ function Index({ initialPosts = [], categories = [] }) {
                               <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                               {post.category &&
                                 post.category !== "Uncategorized" && (
-                                  <span className="absolute top-4 left-4 bg-white/90 text-gray-800 text-sm font-semibold px-3 py-1.5 rounded-full shadow border border-gray-300 z-10">
+                                  <span className="absolute top-4 left-4 bg-white text-primary text-sm font-bold px-3 py-1.5 rounded-full shadow-lg border border-primary/20 z-20">
                                     {post.category}
                                   </span>
                                 )}
                             </div>
                             <div className="p-8">
                               <h2
-                                className="text-2xl font-bold text-gray-900 mb-4 leading-tight"
+                                className="text-2xl font-bold bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent mb-4 leading-tight"
                                 style={{
                                   fontFamily: "Space Grotesk, sans-serif",
                                 }}
                               >
                                 {post.title}
                               </h2>
-                              <p className="text-gray-700 mb-6 line-clamp-3 text-lg leading-relaxed">
+                              <p className="text-brandSecondary mb-6 line-clamp-3 text-lg leading-relaxed">
                                 {post.description}
                               </p>
                               <div className="flex flex-col gap-4">
@@ -369,7 +400,7 @@ function Index({ initialPosts = [], categories = [] }) {
                                     post.tags.slice(0, 3).map((tag) => (
                                       <span
                                         key={tag}
-                                        className="bg-white text-gray-700 text-sm px-3 py-1 rounded-full font-medium border border-gray-300"
+                                        className="bg-gradient-to-r from-primary/10 to-brandSecondary/10 text-primary text-xs px-3 py-1 rounded-full font-semibold border border-primary/20"
                                       >
                                         {tag}
                                       </span>

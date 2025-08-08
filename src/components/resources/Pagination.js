@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const Pagination = ({
   currentPage,
@@ -32,7 +32,7 @@ const Pagination = ({
             whileHover={currentPage !== 1 ? { scale: 1.05 } : {}}
             whileTap={currentPage !== 1 ? { scale: 0.95 } : {}}
           >
-            <FaChevronLeft />
+            <ChevronLeft className="w-5 h-5" />
           </motion.button>
 
           {/* Page numbers */}
@@ -51,7 +51,9 @@ const Pagination = ({
 
             {/* Ellipsis for large gaps */}
             {currentPage > 3 && (
-              <span className="flex items-center px-3 text-gray-500 font-bold text-lg">...</span>
+              <span className="flex items-center px-3 text-gray-500 font-bold text-lg">
+                ...
+              </span>
             )}
 
             {/* Previous page (if not first) */}
@@ -94,7 +96,9 @@ const Pagination = ({
 
             {/* Ellipsis for large gaps */}
             {currentPage < totalPages - 2 && (
-              <span className="flex items-center px-3 text-gray-500 font-bold text-lg">...</span>
+              <span className="flex items-center px-3 text-gray-500 font-bold text-lg">
+                ...
+              </span>
             )}
 
             {/* Last page */}
@@ -122,7 +126,7 @@ const Pagination = ({
             whileHover={currentPage !== totalPages ? { scale: 1.05 } : {}}
             whileTap={currentPage !== totalPages ? { scale: 0.95 } : {}}
           >
-            <FaChevronRight />
+            <ChevronRight className="w-5 h-5" />
           </motion.button>
         </motion.div>
       )}
@@ -135,12 +139,32 @@ const Pagination = ({
         transition={{ duration: 0.6, delay: 0.2 }}
         viewport={{ once: true }}
       >
-        <div className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 rounded-2xl px-6 py-3 inline-flex items-center gap-2 shadow-lg">
-          <span className="text-xl">📄</span>
-          <span className="text-gray-700 font-semibold text-lg">
+        <div className="bg-white/80 backdrop-blur-sm border-2 border-primary/20 rounded-2xl px-6 py-3 inline-flex items-center gap-2 shadow-lg">
+          <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary">
+            {/* Lucide icon: List */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <line x1="8" y1="6" x2="21" y2="6" />
+              <line x1="8" y1="12" x2="21" y2="12" />
+              <line x1="8" y1="18" x2="21" y2="18" />
+              <circle cx="3" cy="6" r="1" />
+              <circle cx="3" cy="12" r="1" />
+              <circle cx="3" cy="18" r="1" />
+            </svg>
+          </span>
+          <span className="text-primary font-semibold text-lg">
             Showing {indexOfFirstItem + 1}-
             {Math.min(indexOfLastItem, filteredResourcesLength)} of{" "}
-            <span className="text-purple-600 font-bold">{filteredResourcesLength}</span> resources
+            <span className="text-primary font-bold">
+              {filteredResourcesLength}
+            </span>{" "}
+            resources
           </span>
         </div>
       </motion.div>

@@ -200,7 +200,7 @@ function About() {
           content="https://karthiknish.com/images/og-image.jpg" // Consider updating OG image
         />
         <link rel="canonical" href="https://karthiknish.com/about" />
-        
+
         {/* Google Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -213,16 +213,19 @@ function About() {
           rel="stylesheet"
         />
       </Head>
-      <PageContainer>
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 text-gray-800 pt-24 pb-16 md:pt-32 md:pb-24 relative overflow-hidden" style={{ fontFamily: "Inter, sans-serif" }}>
+      <PageContainer bgClassName="bg-gradient-to-br from-primary/10 via-background to-brandSecondary/10">
+        <div
+          className="min-h-screen text-gray-800 pt-24 pb-16 md:pt-32 md:pb-24 w-full relative overflow-hidden"
+          style={{ fontFamily: "Inter, sans-serif" }}
+        >
           {/* Decorative Color Splashes */}
           <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-violet-200/15 to-purple-200/15 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
           <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-cyan-200/15 to-blue-200/15 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
           <div className="absolute bottom-0 left-0 w-88 h-88 bg-gradient-to-tr from-emerald-200/15 to-green-200/15 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2"></div>
           <div className="absolute bottom-0 right-0 w-72 h-72 bg-gradient-to-tl from-rose-200/15 to-pink-200/15 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
-          
+
           <FadeIn>
-            <div className="container mx-auto px-4 max-w-5xl relative z-10">
+            <div className="w-full px-4 sm:px-8 md:px-16 lg:px-32 relative z-10">
               {/* Intro Section */}
               <section className="mb-16 md:mb-24 text-center">
                 <motion.h1
@@ -247,9 +250,7 @@ function About() {
                       delay: 1,
                     }}
                     className="inline-block ml-4 text-yellow-400"
-                  >
-                    
-                  </motion.span>
+                  ></motion.span>
                 </motion.h1>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -265,13 +266,10 @@ function About() {
                       ease: "easeInOut",
                     }}
                     className="text-xl"
-                  >
-                    
-                  </motion.span>
+                  ></motion.span>
                   <span>Hey there! Let me tell you my story</span>
-                  <span className="text-xl">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
                 </motion.div>
-                
+
                 <motion.p
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -285,7 +283,9 @@ function About() {
                   >
                     magical digital experiences
                   </motion.span>{" "}
-                  that work everywhere — from stunning web applications to native-quality mobile apps, transforming ideas into cross-platform solutions that drive real business growth.
+                  that work everywhere — from stunning web applications to
+                  native-quality mobile apps, transforming ideas into
+                  cross-platform solutions that drive real business growth.
                   <motion.span
                     animate={{ rotate: [0, 5, -5, 0] }}
                     transition={{
@@ -294,9 +294,7 @@ function About() {
                       ease: "easeInOut",
                     }}
                     className="inline-block ml-2"
-                  >
-                    
-                  </motion.span>
+                  ></motion.span>
                 </motion.p>
               </section>
 
@@ -320,9 +318,7 @@ function About() {
                       ease: "easeInOut",
                     }}
                     className="text-4xl"
-                  >
-                    
-                  </motion.span>
+                  ></motion.span>
                   My Approach
                   <motion.span
                     animate={{
@@ -336,9 +332,7 @@ function About() {
                       delay: 1,
                     }}
                     className="text-4xl"
-                  >
-                    
-                  </motion.span>
+                  ></motion.span>
                 </motion.h2>
                 <motion.p
                   initial={{ opacity: 0, y: 20 }}
@@ -347,7 +341,8 @@ function About() {
                   transition={{ duration: 0.6, delay: 0.2 }}
                   className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium text-center mb-16"
                 >
-                  Building the future with passion, precision, and a touch of magic
+                  Building the future with passion, precision, and a touch of
+                  magic
                 </motion.p>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                   {[
@@ -396,7 +391,9 @@ function About() {
                       >
                         {item.title}
                       </h3>
-                      <p className="text-gray-700 leading-relaxed text-lg">{item.desc}</p>
+                      <p className="text-gray-700 leading-relaxed text-lg">
+                        {item.desc}
+                      </p>
                     </motion.div>
                   ))}
                 </div>
@@ -425,21 +422,8 @@ function About() {
                       ease: "easeInOut",
                     }}
                     className="text-4xl"
-                  >
-                    
-                  </motion.span>
+                  ></motion.span>
                   My magical toolkit
-                  <motion.span
-                    animate={{ rotate: [0, 360] }}
-                    transition={{
-                      duration: 4,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                    className="text-4xl"
-                  >
-                    ⚛️
-                  </motion.span>
                 </motion.h2>
                 <motion.p
                   initial={{ opacity: 0, y: 20 }}
@@ -477,7 +461,9 @@ function About() {
                               <span className="flex-shrink-0 p-2 bg-white/80 rounded-lg shadow-sm">
                                 {React.cloneElement(skill.icon)}
                               </span>
-                              <span className="text-base font-medium">{skill.name}</span>
+                              <span className="text-base font-medium">
+                                {skill.name}
+                              </span>
                             </motion.li>
                           ))}
                         </ul>
@@ -490,7 +476,8 @@ function About() {
               <Separator className="my-12 md:my-16 bg-gray-200" />
 
               {/* Journey & CTA */}
-              <section className="text-center bg-gradient-to-br from-purple-600 to-blue-600 py-20 px-8 rounded-3xl text-white relative overflow-hidden">
+              <section className="text-center bg-gradient-to-br from-primary/10 via-background to-brandSecondary/10 py-20 px-4 sm:px-8 md:px-16 lg:px-32 rounded-3xl text-gray-900 relative overflow-hidden">
+                <div className="absolute inset-0 bg-white/70 pointer-events-none rounded-3xl" />
                 {/* Floating Elements */}
                 <motion.div
                   className="absolute top-10 left-10 text-4xl opacity-30"
@@ -498,10 +485,12 @@ function About() {
                     y: [0, -30, 0],
                     rotate: [0, 360],
                   }}
-                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  
-                </motion.div>
+                  transition={{
+                    duration: 6,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                ></motion.div>
                 <motion.div
                   className="absolute top-20 right-20 text-5xl opacity-20"
                   animate={{
@@ -514,10 +503,8 @@ function About() {
                     ease: "easeInOut",
                     delay: 1,
                   }}
-                >
-                  
-                </motion.div>
-                
+                ></motion.div>
+
                 <motion.h2
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
@@ -537,9 +524,7 @@ function About() {
                       ease: "easeInOut",
                     }}
                     className="text-5xl"
-                  >
-                    
-                  </motion.span>
+                  ></motion.span>
                   My Journey
                   <motion.span
                     animate={{
@@ -553,9 +538,7 @@ function About() {
                       delay: 1,
                     }}
                     className="text-5xl"
-                  >
-                    
-                  </motion.span>
+                  ></motion.span>
                 </motion.h2>
                 <motion.p
                   initial={{ opacity: 0, y: 20 }}
@@ -564,7 +547,13 @@ function About() {
                   transition={{ duration: 0.5, delay: 0.1 }}
                   className="text-2xl text-purple-100 leading-relaxed max-w-3xl mx-auto mb-12 font-medium relative z-10"
                 >
-                  With over 5 years navigating the dynamic tech landscape, I've honed my skills across web and mobile development. From building cross-platform React Native apps to creating powerful web applications, I collaborate with innovative startups and established businesses, delivering solutions that truly resonate with user needs and business goals across all platforms.
+                  With over 5 years navigating the dynamic tech landscape, I've
+                  honed my skills across web and mobile development. From
+                  building cross-platform React Native apps to creating powerful
+                  web applications, I collaborate with innovative startups and
+                  established businesses, delivering solutions that truly
+                  resonate with user needs and business goals across all
+                  platforms.
                 </motion.p>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -585,9 +574,7 @@ function About() {
                         ease: "easeInOut",
                       }}
                       className="mr-3 text-2xl"
-                    >
-                      
-                    </motion.span>
+                    ></motion.span>
                     Let's create magic together
                   </Link>
                 </motion.div>

@@ -16,7 +16,7 @@ const PageContainer = ({
   return (
     <div className={`min-h-screen relative ${bgClassName}`}>
       <div className="page-content">
-        <div className={`max-w-6xl mx-auto p-8 ${className}`}>{children}</div>
+        <div className={`w-full p-0 ${className}`}>{children}</div>
       </div>
     </div>
   );

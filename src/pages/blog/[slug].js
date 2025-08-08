@@ -249,10 +249,10 @@ function SlugPage({ data, relatedPosts }) {
       )}
       <PageContainer>
         <div
-          className="min-h-screen bg-white py-24 relative"
+          className="min-h-screen bg-primary/10 py-24 relative"
           style={{ fontFamily: "Inter, sans-serif" }}
         >
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 relative z-10">
+          <div className="max-w-5xl mx-auto px-4 pt-4 sm:px-6 md:px-8 relative z-10">
             {/* Back Button */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -298,7 +298,7 @@ function SlugPage({ data, relatedPosts }) {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="bg-white border border-gray-200 p-6 sm:p-8 md:p-12 rounded-3xl shadow-sm"
+              className="bg-white border-2 border-primary/20 p-6 sm:p-8 md:p-12 rounded-3xl shadow-xl"
             >
               <motion.div
                 variants={staggerContainerVariants}
@@ -328,7 +328,7 @@ function SlugPage({ data, relatedPosts }) {
                         {data.tags.map((tag) => (
                           <motion.span
                             key={tag}
-                            className="bg-white text-gray-800 px-3 sm:px-4 py-1 sm:py-2 rounded-full font-medium shadow border border-gray-300 text-xs sm:text-sm"
+                            className="bg-white text-brandSecondary px-3 sm:px-4 py-1 sm:py-2 rounded-full font-medium shadow border border-brandSecondary/30 text-xs sm:text-sm"
                             whileHover={{ scale: 1.02 }}
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -344,7 +344,7 @@ function SlugPage({ data, relatedPosts }) {
                   <div className="flex flex-col">
                     <motion.h1
                       variants={fadeInUpVariants}
-                      className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black mb-6 sm:mb-8 leading-tight tracking-tight text-gray-900"
+                      className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black mb-6 sm:mb-8 leading-tight tracking-tight text-brandSecondary"
                       style={{ fontFamily: "Space Grotesk, sans-serif" }}
                     >
                       {data.title}
@@ -376,7 +376,7 @@ function SlugPage({ data, relatedPosts }) {
 
                     <motion.div
                       variants={fadeInUpVariants}
-                      className="flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-3 sm:gap-y-4 text-gray-600 mb-6 sm:mb-8 bg-white p-4 sm:p-6 rounded-2xl border border-gray-200"
+                      className="flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-3 sm:gap-y-4 text-gray-700 mb-6 sm:mb-8 bg-primary/5 p-4 sm:p-6 rounded-2xl border-2 border-primary/20"
                     >
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-base sm:text-lg">
@@ -472,7 +472,7 @@ function SlugPage({ data, relatedPosts }) {
                       </div>
                     </motion.div>
 
-                    <Separator className="my-8 bg-gray-200 h-0.5" />
+                    <Separator className="my-8 bg-primary/20 h-0.5" />
 
                     {/* Removed Audio Player Section */}
 
@@ -486,7 +486,7 @@ function SlugPage({ data, relatedPosts }) {
                       </motion.div>
                     )}
 
-                    <Separator className="my-12 bg-gray-200 h-0.5" />
+                    <Separator className="my-12 bg-primary/20 h-0.5" />
 
                     <motion.div
                       variants={fadeInUpVariants}
@@ -522,14 +522,14 @@ function SlugPage({ data, relatedPosts }) {
 
                       {data.tags && data.tags.length > 0 && (
                         <div className="flex items-center flex-wrap gap-3">
-                          <span className="flex items-center gap-2 text-gray-700 font-semibold">
+                          <span className="flex items-center gap-2 text-primary font-semibold">
                             <span className="text-2xl"></span>
                             Tags:
                           </span>
                           {data.tags.map((tag) => (
                             <motion.span
                               key={tag}
-                              className="bg-white text-gray-700 px-4 py-2 rounded-full font-medium border border-gray-300 hover:bg-gray-50 transition-colors duration-200"
+                              className="bg-primary/10 text-primary px-4 py-2 rounded-full font-medium border border-primary/30 hover:bg-primary/20 transition-colors duration-200"
                               whileHover={{ scale: 1.02 }}
                               initial={{ opacity: 0, scale: 0.8 }}
                               animate={{ opacity: 1, scale: 1 }}
@@ -548,8 +548,10 @@ function SlugPage({ data, relatedPosts }) {
               {/* Render Related Posts Section */}
               <RelatedPosts posts={relatedPosts} />
 
-              {/* Render Comments Section */}
-              <CommentsSection blogPostId={data._id} />
+              {/* Render Comments Section with themed container */}
+              <div className="mt-16">
+                <CommentsSection blogPostId={data._id} />
+              </div>
             </motion.article>
           </div>
         </div>
