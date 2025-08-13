@@ -1,52 +1,26 @@
 import React from "react";
 import Head from "next/head";
 import Link from "next/link";
-import {
-  FaStore,
-  FaShoppingCart,
-  FaCreditCard,
-  FaLock,
-  FaMobileAlt,
-} from "react-icons/fa"; // Added more icons
+import { FaStore } from "react-icons/fa";
 import PageContainer from "@/components/PageContainer";
 import { FadeIn } from "@/components/animations/MotionComponents";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
 
 // Data specific to this service
 const service = {
-  icon: <FaStore className="w-10 h-10 text-lime-400" />, // Adjusted color
+  icon: <FaStore className="text-5xl mb-4" style={{ color: "#84CC16" }} />,
   title: "E-commerce Solutions",
-  headline: "Build a Powerful Online Store That Drives Sales & Growth",
   description:
-    "Ready to sell online? I build robust, secure, and user-friendly e-commerce websites that provide a seamless shopping experience for your customers and are easy for you to manage. From product catalogs to secure checkouts, get everything you need to succeed online.",
+    "Build a powerful online store that drives sales and growth with a seamless shopping experience for your customers and easy management for you.",
   features: [
-    {
-      icon: <FaShoppingCart className="text-green-400" />,
-      text: "Intuitive Product Catalog & Management.",
-    },
-    {
-      icon: <FaCreditCard className="text-green-400" />,
-      text: "Secure Payment Gateway Integration (Stripe, PayPal, etc.).",
-    },
-    {
-      icon: <FaLock className="text-green-400" />,
-      text: "User Accounts & Order Management System.",
-    },
-    {
-      icon: <FaMobileAlt className="text-green-400" />,
-      text: "Mobile-Optimized Design for shopping on any device.",
-    },
+    "Intuitive Product Catalog & Management System",
+    "Secure Payment Gateway Integration (Stripe, PayPal, etc.)",
+    "User Accounts & Order Management System",
+    "Mobile-Optimized Design for shopping on any device",
+    "Inventory tracking and management",
+    "Shipping and tax calculation automation",
+    "Customer reviews and rating system",
+    "Analytics and sales reporting dashboard",
   ],
-  benefits: [
-    "Expand your reach and sell to customers anywhere, anytime.",
-    "Provide a convenient and secure shopping experience.",
-    "Streamline your sales process with integrated inventory and order management.",
-    "Gain valuable insights into customer behavior and sales trends.",
-    "Build a scalable platform that grows with your business.",
-  ],
-  cta: "Start Selling Online",
-  ctaLink: "/contact?subject=Ecommerce%20Solutions%20Inquiry",
 };
 
 export default function EcommerceSolutionsService() {
@@ -54,89 +28,165 @@ export default function EcommerceSolutionsService() {
     <>
       <Head>
         <title>{service.title} - Karthik Nishanth</title>
-        <meta name="description" content={service.headline} />
+        <meta
+          name="description"
+          content={`Professional ${service.title} services by Karthik Nishanth. ${service.description}`}
+        />
         <link
           rel="canonical"
           href="https://karthiknish.com/services/ecommerce-solutions"
         />
       </Head>
-      <PageContainer className="mt-10">
-        <div className="min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 text-white p-8 md:p-16">
+      <PageContainer>
+        <div className="min-h-screen p-8 md:p-16 max-w-4xl mx-auto">
           <FadeIn>
-            <div className="max-w-4xl mx-auto">
-              <div className="text-center mb-12">
-                <div className="inline-block p-4 bg-gray-800 rounded-full mb-4">
-                  {service.icon}
-                </div>
-                <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 font-calendas">
-                  {service.title}
-                </h1>
-                <p className="text-xl md:text-2xl text-lime-300 font-medium">
-                  {service.headline}
-                </p>
-              </div>
+            <div className="flex items-center mb-6">
+              {service.icon}
+              <h1 className="text-4xl md:text-5xl font-bold text-white ml-4">
+                {service.title}
+              </h1>
+            </div>
+            <div className="w-24 h-1 bg-lime-500 mb-8 rounded-full"></div>
 
-              <Separator className="my-8 bg-gray-700" />
+            <p className="text-gray-300 mb-8 text-lg leading-relaxed">
+              {service.description} From product catalogs to secure checkouts,
+              I build everything you need to succeed in the competitive online
+              marketplace.
+            </p>
 
-              <div className="grid md:grid-cols-2 gap-8 items-center mb-12">
-                <div>
-                  <h2 className="text-3xl font-semibold text-white mb-4">
-                    Ready to Launch Your Online Store?
-                  </h2>
-                  <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                    {service.description} I leverage powerful platforms and
-                    custom development to create online stores that not only
-                    look great but are also secure, scalable, and optimized for
-                    conversions.
-                  </p>
-                </div>
-                <div className="space-y-4">
-                  {service.features.map((feature, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center bg-gray-800/50 p-4 rounded-lg border border-gray-700"
+            <h2 className="text-3xl font-semibold text-lime-400 mb-4">
+              Key Features
+            </h2>
+            <ul className="space-y-3 mb-12">
+              {service.features.map((feature, idx) => (
+                <li key={idx} className="flex items-start">
+                  <div className="bg-lime-500 p-1 rounded-full mr-3 mt-1 flex-shrink-0">
+                    <svg
+                      className="w-4 h-4 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      <span className="mr-3 flex-shrink-0">{feature.icon}</span>
-                      <span className="text-gray-200">{feature.text}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      ></path>
+                    </svg>
+                  </div>
+                  <p className="text-gray-300">{feature}</p>
+                </li>
+              ))}
+            </ul>
 
-              <h2 className="text-3xl font-semibold text-white mb-4 text-center">
-                Benefits of a Professional E-commerce Site
+            {/* --- New Sections Start --- */}
+
+            <h2 className="text-3xl font-semibold text-lime-400 mt-12 mb-4">
+              The Challenge
+            </h2>
+            <p className="text-gray-300 mb-8 text-lg leading-relaxed">
+              Many businesses struggle with complex, expensive e-commerce
+              platforms that are difficult to manage or lack essential features.
+              Others try to build their own solutions without proper expertise,
+              resulting in security vulnerabilities, poor user experience, or
+              scalability issues.
+            </p>
+
+            <h2 className="text-3xl font-semibold text-lime-400 mt-12 mb-4">
+              My Solution & Approach
+            </h2>
+            <p className="text-gray-300 mb-8 text-lg leading-relaxed">
+              I build custom e-commerce solutions tailored to your specific
+              business needs. My approach combines modern web technologies with
+              proven e-commerce best practices to create secure, scalable, and
+              user-friendly online stores. I focus on creating intuitive shopping
+              experiences that convert visitors into customers while providing
+              you with the tools you need to efficiently manage your store.
+            </p>
+
+            <h2 className="text-3xl font-semibold text-lime-400 mt-12 mb-4">
+              Technologies I Use
+            </h2>
+            <div className="flex flex-wrap gap-2 mb-12">
+              {[
+                "Next.js",
+                "React",
+                "Node.js",
+                "MongoDB",
+                "Stripe",
+                "PayPal",
+                "Tailwind CSS",
+                "Framer Motion",
+              ].map((tech) => (
+                <span
+                  key={tech}
+                  className="bg-gray-700 text-lime-300 px-3 py-1 rounded-full text-sm"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+
+            <h2 className="text-3xl font-semibold text-lime-400 mt-12 mb-4">
+              Why Choose My E-commerce Solutions?
+            </h2>
+            <ul className="list-disc list-inside space-y-2 text-gray-300 mb-12 text-lg">
+              <li>
+                <span className="font-semibold text-white">
+                  Custom Solutions:
+                </span>{" "}
+                Tailored to your specific business requirements and goals.
+              </li>
+              <li>
+                <span className="font-semibold text-white">
+                  Security Focused:
+                </span>{" "}
+                PCI-compliant payment processing and robust security measures.
+              </li>
+              <li>
+                <span className="font-semibold text-white">
+                  Scalable Architecture:
+                </span>{" "}
+                Built to grow with your business and handle increased traffic.
+              </li>
+              <li>
+                <span className="font-semibold text-white">
+                  User Experience:
+                </span>{" "}
+                Intuitive design that guides customers through the purchase process.
+              </li>
+              <li>
+                <span className="font-semibold text-white">
+                  Easy Management:
+                </span>{" "}
+                Admin dashboard for effortless product and order management.
+              </li>
+            </ul>
+
+            {/* --- New Sections End --- */}
+
+            <div className="text-center mt-16 p-8 bg-gradient-to-r from-lime-900/30 to-green-900/30 rounded-lg">
+              <h2 className="text-3xl font-bold text-white mb-4">
+                Ready to Start Selling Online?
               </h2>
-              <ul className="list-none space-y-3 mb-12 text-center">
-                {service.benefits.map((benefit, idx) => (
-                  <li key={idx} className="text-gray-300 text-lg">
-                    ✓ {benefit}
-                  </li>
-                ))}
-              </ul>
-
-              <Separator className="my-8 bg-gray-700" />
-
-              <div className="text-center mt-12 p-8 bg-gradient-to-r from-lime-900/30 to-green-900/30 rounded-lg">
-                <h2 className="text-3xl font-bold text-white mb-4">
-                  Turn Clicks into Customers
-                </h2>
-                <p className="text-gray-300 mb-6 max-w-xl mx-auto">
-                  Let's build an e-commerce platform that drives sales and grows
-                  your business online. Get started today!
-                </p>
-                <Link
-                  href={service.ctaLink}
-                  className="inline-block px-8 py-3 bg-lime-500 hover:bg-lime-600 text-black font-semibold rounded-md transition-colors mr-4"
-                >
-                  {service.cta} →
-                </Link>
-                <Link
-                  href="/services"
-                  className="inline-block px-6 py-3 border border-gray-700 hover:bg-gray-800 text-gray-300 font-semibold rounded-md transition-colors mt-4 sm:mt-0"
-                >
-                  View Other Services
-                </Link>
-              </div>
+              <p className="text-gray-300 mb-6 max-w-xl mx-auto">
+                Let's build a powerful e-commerce store that drives sales and
+                grows your business.
+              </p>
+              <Link
+                href="/contact?subject=Ecommerce%20Solutions%20Inquiry"
+                className="inline-block px-8 py-3 bg-lime-500 hover:bg-lime-600 text-white font-semibold rounded-md transition-colors mr-4"
+              >
+                Discuss Your Project →
+              </Link>
+              <Link
+                href="/services"
+                className="inline-block px-8 py-3 border border-gray-700 hover:bg-gray-800 text-gray-300 font-semibold rounded-md transition-colors"
+              >
+                ← Back to Services
+              </Link>
             </div>
           </FadeIn>
         </div>

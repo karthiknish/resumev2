@@ -254,6 +254,15 @@ export default function SignIn() {
               </motion.button>
             </form>
 
+            <div className="mt-4 text-center">
+              <Link
+                href="/forgot-password"
+                className="text-primary hover:text-primary/80 font-medium transition-colors duration-200 text-sm"
+              >
+                Forgot Password?
+              </Link>
+            </div>
+
             <div className="mt-8 pt-6 border-t-2 border-primary/10 text-center">
               <p className="text-muted-foreground text-lg font-medium mb-4">
                 Don't have an account?

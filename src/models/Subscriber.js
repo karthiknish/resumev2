@@ -13,6 +13,13 @@ const SubscriberSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  preferences: {
+    weeklyDigest: { type: Boolean, default: true },
+    projectUpdates: { type: Boolean, default: true },
+    careerTips: { type: Boolean, default: true },
+    industryNews: { type: Boolean, default: true },
+    productUpdates: { type: Boolean, default: true },
+  },
   // Add other fields if needed, e.g., name, source
 });
 

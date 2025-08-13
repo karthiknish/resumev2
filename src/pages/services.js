@@ -108,6 +108,42 @@ export default function Services() {
         "Technical documentation",
       ],
     },
+    {
+      icon: <FaGlobe className="text-5xl text-brandSecondary" />,
+      title: "Professional Brochure Websites",
+      description:
+        "Establish your online presence with a stunning, custom-built website that showcases your services and attracts new customers.",
+      features: [
+        "Unique Custom Design",
+        "Mobile-First Responsive layout",
+        "Basic SEO Optimization",
+        "Clear Calls-to-Action",
+      ],
+    },
+    {
+      icon: <FaPaintBrush className="text-5xl text-brandSecondary" />,
+      title: "Website Reskin & Modernization",
+      description:
+        "Transform your outdated website into a high-performing conversion machine without the cost and time of a full rebuild.",
+      features: [
+        "Stunning Visual Redesign",
+        "Fully Responsive layout",
+        "Performance Optimization",
+        "Improved User Experience",
+      ],
+    },
+    {
+      icon: <FaStore className="text-5xl text-brandSecondary" />,
+      title: "E-commerce Solutions",
+      description:
+        "Build a powerful online store that drives sales and growth with a seamless shopping experience.",
+      features: [
+        "Product Catalog Management",
+        "Secure Payment Integration",
+        "Order Management System",
+        "Mobile-Optimized Design",
+      ],
+    },
   ];
 
   const faqs = [
