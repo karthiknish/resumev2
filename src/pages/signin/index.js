@@ -1,12 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
-import { signOut } from "@/lib/authUtils";
+import { signIn, signOut } from "@/lib/authUtils";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -35,17 +36,16 @@ export default function SignIn() {
     setError("");
 
     try {
-      const result = await signIn("credentials", {
-        redirect: false,
+      const result = await signIn({
         email,
         password,
-        callbackUrl: session?.user?.role === "admin" ? "/admin" : "/",
+        rememberMe,
       });
 
       if (result?.error) {
         setError("Invalid email or password");
-      } else if (result?.ok) {
-        toast.success("Successfully signed in!");
+      } else if (result?.success) {
+        // Redirect based on user role is handled by the auth utility
       }
     } catch (error) {
       setError("An error occurred. Please try again.");

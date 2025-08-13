@@ -1,5 +1,26 @@
-import { signOut as nextAuthSignOut } from "next-auth/react";
-import { toast } from "sonner";
+import AuthService from "./AuthService";
+
+/**
+ * Sign in with credentials or redirect to sign in page
+ * @param {string|Object} provider - Authentication provider or credentials object
+ * @param {Object} options - Sign in options
+ * @returns {Promise<Object>} Sign in result
+ */
+export async function signIn(provider, options) {
+  return AuthService.signIn(provider, options);
+}
+
+/**
+ * Sign up a new user
+ * @param {Object} userData - User registration data
+ * @param {string} userData.name - User name
+ * @param {string} userData.email - User email
+ * @param {string} userData.password - User password
+ * @returns {Promise<Object>} Sign up result
+ */
+export async function signUp({ name, email, password }) {
+  return AuthService.signUp({ name, email, password });
+}
 
 /**
  * Sign out the user and clear session data
@@ -8,28 +29,28 @@ import { toast } from "sonner";
  * @returns {Promise<void>}
  */
 export async function signOut({ callbackUrl = "/" } = {}) {
-  try {
-    // Call the signout API endpoint for additional cleanup
-    const response = await fetch("/api/auth/signout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+  return AuthService.signOut({ callbackUrl });
+}
 
-    if (!response.ok) {
-      throw new Error("Failed to sign out from server");
-    }
+/**
+ * Request password reset
+ * @param {string} email - User email
+ * @returns {Promise<Object>} Password reset result
+ */
+export async function forgotPassword(email) {
+  return AuthService.forgotPassword(email);
+}
 
-    // Sign out from NextAuth
-    await nextAuthSignOut({ callbackUrl });
-    toast.success("Successfully signed out!");
-  } catch (error) {
-    console.error("Sign out error:", error);
-    toast.error("Error signing out. Please try again.");
-    // Even if server signout fails, still sign out locally
-    await nextAuthSignOut({ callbackUrl });
-  }
+/**
+ * Reset password
+ * @param {Object} resetData - Password reset data
+ * @param {string} resetData.token - Reset token
+ * @param {string} resetData.email - User email
+ * @param {string} resetData.password - New password
+ * @returns {Promise<Object>} Password reset result
+ */
+export async function resetPassword({ token, email, password }) {
+  return AuthService.resetPassword({ token, email, password });
 }
 
 /**
@@ -38,7 +59,7 @@ export async function signOut({ callbackUrl = "/" } = {}) {
  * @returns {boolean}
  */
 export function checkAdminStatus(session) {
-  return session?.user?.role === "admin";
+  return AuthService.isAdmin(session);
 }
 
 /**
@@ -47,7 +68,7 @@ export function checkAdminStatus(session) {
  * @returns {boolean}
  */
 export function isAuthenticated(session) {
-  return !!session?.user;
+  return AuthService.isAuthenticated(session);
 }
 
 /**
@@ -56,7 +77,7 @@ export function isAuthenticated(session) {
  * @returns {string|null}
  */
 export function getUserRole(session) {
-  return session?.user?.role || null;
+  return AuthService.getUserRole(session);
 }
 
 /**
@@ -66,5 +87,5 @@ export function getUserRole(session) {
  * @returns {boolean}
  */
 export function hasRole(session, role) {
-  return session?.user?.role === role;
+  return AuthService.hasRole(session, role);
 }

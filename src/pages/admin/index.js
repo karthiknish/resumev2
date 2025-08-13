@@ -12,7 +12,8 @@ import {
 } from "react-icons/ai";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useSession, signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { signIn } from "@/lib/authUtils";
 import { FaComments, FaUserCheck } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
