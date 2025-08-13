@@ -290,7 +290,7 @@ export default function FreelancerAdvantage() {
             }}
             transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
           >
-            ⚛️
+            
           </motion.div>
           <motion.div
             className="absolute bottom-32 right-32 text-5xl opacity-60"
@@ -306,7 +306,7 @@ export default function FreelancerAdvantage() {
               delay: 0.5,
             }}
           >
-            📱
+            
           </motion.div>
 
           <div className="max-w-6xl mx-auto px-6 relative z-10 text-center">
@@ -322,17 +322,6 @@ export default function FreelancerAdvantage() {
                 transition={{ duration: 0.6 }}
                 className="inline-flex items-center gap-3 px-6 py-3 bg-white/80 backdrop-blur-sm border border-purple-200 rounded-full text-purple-700 text-sm font-semibold mb-8 shadow-lg"
               >
-                <motion.span
-                  animate={{ rotate: [0, 15, -15, 0] }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="text-xl"
-                >
-                  💼
-                </motion.span>
                 <span>Freelancer Advantage</span>
               </motion.div>
 
@@ -350,21 +339,6 @@ export default function FreelancerAdvantage() {
                 <span className="bg-gradient-to-r from-pink-500 via-red-500 to-orange-500 bg-clip-text text-transparent">
                   Cost-Effective.
                 </span>
-                <motion.span
-                  animate={{
-                    rotate: [0, 20, -20, 0],
-                    scale: [1, 1.2, 1],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 1,
-                  }}
-                  className="inline-block ml-4 text-yellow-400"
-                >
-                  
-                </motion.span>
               </motion.h1>
 
               <motion.p
@@ -455,7 +429,7 @@ export default function FreelancerAdvantage() {
                     }}
                     className="text-2xl"
                   >
-                    👀
+                    
                   </motion.span>
                   See the advantages
                 </motion.a>
@@ -477,7 +451,7 @@ export default function FreelancerAdvantage() {
                   }}
                   className="text-4xl"
                 >
-                  👇
+                  
                 </motion.div>
               </motion.div>
             </motion.div>
@@ -499,33 +473,17 @@ export default function FreelancerAdvantage() {
                   className="text-5xl md:text-6xl font-black text-gray-900 mb-6 flex items-center justify-center gap-6"
                   style={{ fontFamily: "Space Grotesk, sans-serif" }}
                 >
-                  <motion.span
-                    animate={{ rotate: [0, 20, -20, 0] }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
+                  <span
                     className="text-4xl"
                   >
-                    🔮
-                  </motion.span>
+                    
+                  </span>
                   Why Choose a Freelancer?
-                  <motion.span
-                    animate={{
-                      scale: [1, 1.2, 1],
-                      rotate: [0, 10, 0],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                      delay: 1,
-                    }}
+                  <span
                     className="text-4xl"
                   >
-                    💫
-                  </motion.span>
+                    
+                  </span>
                 </h2>
                 <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
                   Make the smart choice for your business website by going direct to the source
@@ -549,20 +507,7 @@ export default function FreelancerAdvantage() {
                     whileHover={{ scale: 1.2, rotate: 10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    💰
-                  </motion.div>
-                  <motion.div
-                    className="text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    animate={{
-                      rotate: [0, 15, -15, 0],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    💵
+                    <FaDollarSign className="text-green-500" />
                   </motion.div>
                 </div>
                 <h3
@@ -593,20 +538,7 @@ export default function FreelancerAdvantage() {
                     whileHover={{ scale: 1.2, rotate: 10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    
-                  </motion.div>
-                  <motion.div
-                    className="text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    animate={{
-                      rotate: [0, 15, -15, 0],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    🗣️
+                    <FaComments className="text-blue-500" />
                   </motion.div>
                 </div>
                 <h3
@@ -637,20 +569,7 @@ export default function FreelancerAdvantage() {
                     whileHover={{ scale: 1.2, rotate: 10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    
-                  </motion.div>
-                  <motion.div
-                    className="text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    animate={{
-                      rotate: [0, 15, -15, 0],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    💨
+                    <FaRocket className="text-purple-500" />
                   </motion.div>
                 </div>
                 <h3
@@ -681,20 +600,7 @@ export default function FreelancerAdvantage() {
                     whileHover={{ scale: 1.2, rotate: 10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    💎
-                  </motion.div>
-                  <motion.div
-                    className="text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    animate={{
-                      rotate: [0, 15, -15, 0],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    👥❤️
+                    <FaHandshake className="text-orange-500" />
                   </motion.div>
                 </div>
                 <h3
@@ -724,20 +630,7 @@ export default function FreelancerAdvantage() {
                     whileHover={{ scale: 1.2, rotate: 10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    
-                  </motion.div>
-                  <motion.div
-                    className="text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    animate={{
-                      rotate: [0, 15, -15, 0],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    🌈
+                    <FaLightbulb className="text-yellow-500" />
                   </motion.div>
                 </div>
                 <h3
@@ -768,20 +661,7 @@ export default function FreelancerAdvantage() {
                     whileHover={{ scale: 1.2, rotate: 10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    🔧
-                  </motion.div>
-                  <motion.div
-                    className="text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    animate={{
-                      rotate: [0, 15, -15, 0],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    🏆💯
+                    <FaBullseye className="text-cyan-500" />
                   </motion.div>
                 </div>
                 <h3
@@ -816,33 +696,17 @@ export default function FreelancerAdvantage() {
                   className="text-5xl md:text-6xl font-black text-gray-900 mb-6 flex items-center justify-center gap-6"
                   style={{ fontFamily: "Space Grotesk, sans-serif" }}
                 >
-                  <motion.span
-                    animate={{ rotate: [0, 20, -20, 0] }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="text-4xl"
-                  >
-                    💰
-                  </motion.span>
-                  The Cost Advantage
-                  <motion.span
-                    animate={{
-                      scale: [1, 1.2, 1],
-                      rotate: [0, 10, 0],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                      delay: 1,
-                    }}
+                  <span
                     className="text-4xl"
                   >
                     
-                  </motion.span>
+                  </span>
+                  The Cost Advantage
+                  <span
+                    className="text-4xl"
+                  >
+                    
+                  </span>
                 </h2>
                 <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
                   See how working with a freelancer can save you money while
@@ -919,33 +783,17 @@ export default function FreelancerAdvantage() {
                   className="text-5xl md:text-6xl font-black text-gray-900 mb-6 flex items-center justify-center gap-6"
                   style={{ fontFamily: "Space Grotesk, sans-serif" }}
                 >
-                  <motion.span
-                    animate={{ rotate: [0, 20, -20, 0] }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="text-4xl"
-                  >
-                    ❓
-                  </motion.span>
-                  Common Questions
-                  <motion.span
-                    animate={{
-                      scale: [1, 1.2, 1],
-                      rotate: [0, 10, 0],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                      delay: 1,
-                    }}
+                  <span
                     className="text-4xl"
                   >
                     
-                  </motion.span>
+                  </span>
+                  Common Questions
+                  <span
+                    className="text-4xl"
+                  >
+                    
+                  </span>
                 </h2>
                 <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
                   Everything you need to know about working with a freelance web developer
@@ -1059,33 +907,17 @@ export default function FreelancerAdvantage() {
                   className="text-5xl md:text-6xl font-black text-gray-900 mb-6 flex items-center justify-center gap-6"
                   style={{ fontFamily: "Space Grotesk, sans-serif" }}
                 >
-                  <motion.span
-                    animate={{ rotate: [0, 20, -20, 0] }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
+                  <span
                     className="text-4xl"
                   >
                     
-                  </motion.span>
+                  </span>
                   Work With Me
-                  <motion.span
-                    animate={{
-                      scale: [1, 1.2, 1],
-                      rotate: [0, 10, 0],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                      delay: 1,
-                    }}
+                  <span
                     className="text-4xl"
                   >
                     
-                  </motion.span>
+                  </span>
                 </h2>
                 <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
                   Let's create something amazing together. Reach out to discuss

@@ -31,18 +31,44 @@ export default async function handler(req, res) {
     // Construct the prompt for Gemini
     // Focus on SEO and preview suitability
     const prompt = `
-      Analyze the following blog post title and content snippet.
-      Generate 2-3 concise and compelling meta descriptions (excerpts) for this blog post.
-      Each description should be:
-      - Between 120 and 155 characters long.
-      - Accurately reflect the main topic of the post.
-      - Include relevant keywords naturally.
-      - Be engaging and encourage clicks (suitable for search results and social previews).
+      Act as Karthik Nishanth, a skilled technical writer who crafts compelling meta descriptions that both rank well in search engines and drive clicks. Your meta descriptions should:
 
-      Output *only* the suggested descriptions, each on a new line. Do not add numbering, labels, or any other text.
-
+      Context:
       Title: ${title || "N/A"}
       Content Snippet: ${content ? content.substring(0, 800) + "..." : "N/A"}
+
+      Guidelines for effective meta descriptions:
+      - Length: Between 120 and 155 characters (critical for search snippet display)
+      - Clarity: Clearly communicate what the reader will learn/gain
+      - Appeal: Spark curiosity or address a specific pain point
+      - Keywords: Include primary keywords naturally (don't keyword stuff)
+      - Voice: Match the tone of the blog post (technical but accessible)
+      - Value: Promise specific, actionable takeaways
+      - Uniqueness: Sound like it was written by a human expert, not AI
+
+      Your audience consists of:
+      - Developers seeking to improve their skills
+      - Engineering leads evaluating technologies
+      - Students learning web development
+      - Business stakeholders making tech decisions
+
+      Meta descriptions should:
+      - Start with a benefit or intriguing statement
+      - Include a specific number when relevant (e.g., "5 techniques", "3 mistakes")
+      - Use active voice and strong verbs
+      - Create a sense of urgency or relevance when appropriate
+      - Avoid generic phrases like "Learn more" or "Find out how"
+
+      Examples of effective meta descriptions:
+      "Master React performance with these 5 proven techniques that boosted our app speed by 60%"
+      "Avoid these 3 common database design mistakes that cost startups millions in scaling issues"
+      "The one Next.js feature you're missing that could cut your build times in half"
+
+      Output format:
+      - Provide exactly 3 meta descriptions
+      - Each description on a new line
+      - No numbering, labels, explanations, or any other text
+      - Each description must be between 120-155 characters
 
       Suggested Descriptions (each on a new line):
     `;

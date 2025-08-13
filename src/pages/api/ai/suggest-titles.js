@@ -33,16 +33,43 @@ export default async function handler(req, res) {
 
     // Construct the prompt for Gemini
     const prompt = `
-      Act as an expert SEO copywriter and blog title generator.
-      Given the following blog post title (and optional content snippet), generate 3-5 alternative titles that are more engaging, clear, and optimized for search engines (SEO).
-      Consider using keywords naturally, creating curiosity, or highlighting the main benefit/topic. Keep titles reasonably concise.
+      Act as a world-class copywriter and SEO expert who specializes in creating compelling headlines for technical content. Your goal is to craft titles that:
+      - Immediately grab attention and curiosity
+      - Clearly communicate the article's value
+      - Include relevant keywords for search visibility
+      - Feel human-written, not formulaic
+      - Appeal to developers, tech leads, and business decision-makers
 
-      Output *only* the suggested titles, each on a new line. Do not add numbering, labels, explanations, or any other text.
+      You're helping Karthik Nishanth, a full-stack developer with expertise in modern web technologies, improve his blog titles to increase engagement and search visibility.
+
+      Given the following current title (and optional content snippet), generate 5 alternative titles that are more engaging, clear, and optimized for search engines.
 
       Current Title: ${currentTitle}
       Content Snippet (Optional): ${
         contentSnippet ? contentSnippet.substring(0, 500) + "..." : "N/A"
       }
+
+      Guidelines for effective titles:
+      - Use power words that evoke emotion or curiosity (e.g., "Ultimate Guide", "Secrets", "Mistakes", "Proven", "Essential")
+      - Include numbers when appropriate (e.g., "7 Tips", "3 Common Mistakes")
+      - Address the reader directly when possible (e.g., "You're Making This Mistake")
+      - Promise specific, valuable outcomes (e.g., "Boost Performance by 50%")
+      - Keep under 60 characters for optimal SEO, but prioritize clarity over strict character limits
+      - Avoid clickbait - be honest about what the article delivers
+      - Consider different approaches: How-to, List, Question, Statement, Controversial opinion
+
+      Output format:
+      - Provide exactly 5 titles
+      - Each title on a new line
+      - No numbering, labels, explanations, or any other text
+      - Titles should vary in approach (how-to, list, question, statement, etc.)
+
+      Example titles:
+      "The Ultimate Guide to React Performance Optimization"
+      "7 Common Database Design Mistakes Developers Make"
+      "Why Your Next.js App is Slower Than It Should Be"
+      "Building Scalable APIs: 5 Principles You Need to Know"
+      "The One Thing You're Missing in Your Technical Interview Prep"
 
       Suggested Titles (each on a new line):
     `;

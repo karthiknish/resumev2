@@ -3,7 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Loader2 } from "lucide-react";
+import { ButtonLoader } from "@/components/ui/app-loader";
 
 function ActionButtons({
   isLoading,
@@ -46,7 +46,7 @@ function ActionButtons({
           disabled={isLoading || isSaveDisabled}
           onClick={onSubmit} // Keep onClick if not using form onSubmit directly
         >
-          {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+          {isLoading ? <ButtonLoader size="sm" className="mr-2" /> : null}
           {isLoading ? "Saving..." : saveButtonText}
         </Button>
 

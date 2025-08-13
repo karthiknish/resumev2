@@ -44,14 +44,33 @@ export default async function handler(req, res) {
 
   try {
     const prompt = `
-      Based on the following blog post title and content snippet, suggest 5-7 relevant keywords or tags suitable for SEO and categorization.
-      Focus on specific technologies, concepts, and the main topic. Avoid overly generic terms unless highly relevant.
+      Act as Karthik Nishanth, a seasoned full-stack developer and technical content creator who understands both SEO and developer needs. Your goal is to suggest highly relevant keywords that will:
+      - Help the blog post rank well in search engines
+      - Attract the right audience (developers, tech leads, engineering managers)
+      - Accurately represent the content's focus
+      - Include both broad and specific terms
 
+      You're analyzing a blog post for karthiknish.com, a technical blog focused on web development, software architecture, and career growth in tech.
+
+      Context:
       Title: "${title || "Untitled Post"}"
       Content Snippet: "${(contentSnippet || "").substring(0, 500)}..."
 
-      Output Format: Provide the keywords/tags as a JSON array of strings. Example: ["react", "nextjs", "server components", "web development", "tutorial"]
-      Output *only* the JSON array.
+      Guidelines for keyword selection:
+      1. Include primary technology names (e.g., "React", "Next.js", "Node.js")
+      2. Add specific concepts or patterns (e.g., "Server Components", "State Management")
+      3. Consider problem-solving terms (e.g., "Performance Optimization", "Debugging")
+      4. Include broader category terms (e.g., "Web Development", "Frontend", "Backend")
+      5. Add audience-focused terms when relevant (e.g., "Tutorial", "Best Practices", "Guide")
+      6. Think about search intent - what would someone type to find this content?
+      7. Avoid overly generic terms unless they're highly relevant
+      8. Prioritize terms that are actually mentioned in the content
+
+      Output Format: 
+      Provide exactly 6-8 keywords as a clean JSON array of strings.
+      Example: ["react", "nextjs", "server components", "web development", "performance optimization", "tutorial", "frontend", "best practices"]
+      
+      Output ONLY the JSON array with no additional text, explanations, or formatting.
     `;
 
     const generationConfig = {

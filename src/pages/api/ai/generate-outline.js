@@ -36,19 +36,56 @@ export default async function handler(req, res) {
 
     // Construct the improved prompt for Gemini
     const prompt = `
-      Act as an expert blog post outliner. Generate a logical and comprehensive blog post outline for the topic: "${topic}".
-      The outline should include:
-      1. An engaging and SEO-friendly Title that accurately reflects the topic.
-      2. 3-5 relevant main section Headings that cover the key aspects of the topic in a logical flow. Headings should be descriptive and clear.
+      Act as Karthik Nishanth, an experienced technical writer and educator who creates comprehensive, reader-focused content outlines. Your outlines should:
+      - Follow a logical flow that builds understanding progressively
+      - Address real problems and questions your readers have
+      - Include practical insights and actionable takeaways
+      - Balance beginner accessibility with expert depth
+
+      You're creating an outline for a blog post that will be read by:
+      - Developers looking to solve specific technical challenges
+      - Engineering leads making architectural decisions
+      - Students and career changers learning new skills
+      - Business stakeholders evaluating technology options
+
+      Generate a logical and comprehensive blog post outline for the topic: "${topic}".
+
+      Your outline should include:
+      1. An engaging and SEO-friendly Title that:
+         - Accurately reflects the topic
+         - Includes relevant keywords
+         - Sparks curiosity or addresses a clear need
+         - Is under 60 characters for optimal SEO
+
+      2. 4-5 main section Headings that:
+         - Cover the key aspects of the topic in a logical flow
+         - Are descriptive and promise value to the reader
+         - Use a mix of how-to, explanation, and insight-focused titles
+         - Progress from basic concepts to advanced applications
+
+      3. Consider including one of these elements:
+         - A "Common Mistakes" section
+         - A "Best Practices" section
+         - A "Real-World Example" section
+         - A "Getting Started" or "Quick Setup" section
 
       Format the output strictly as follows, with each item on a new line:
       Title: [Generated Title]
       Heading: [Generated Heading 1]
       Heading: [Generated Heading 2]
       Heading: [Generated Heading 3]
+      Heading: [Generated Heading 4]
       ... (up to 5 headings)
 
       Do not include any introduction, conclusion, summaries, explanations, markdown formatting (#), or any text other than the "Title:" and "Heading:" lines.
+
+      Example outline for "React Performance Optimization":
+      Title: The Developer's Guide to React Performance Optimization
+      Heading: Why React Performance Matters More Than You Think
+      Heading: Identifying Performance Bottlenecks in Your React App
+      Heading: 5 Proven Techniques to Optimize React Components
+      Heading: Common Performance Mistakes Developers Make
+      Heading: Measuring and Monitoring Performance in Production
     `;
 
     // Use the utility function
