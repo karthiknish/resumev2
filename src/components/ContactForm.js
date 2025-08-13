@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { useRouter } from "next/router";
 
 export default function ContactForm() {
-  const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -47,8 +45,10 @@ export default function ContactForm() {
         message: "",
       });
 
-      // Use router.push with await to ensure navigation completes
-      await router.push("/success");
+      // Redirect to success page using window.location
+      if (typeof window !== "undefined") {
+        window.location.href = "/success";
+      }
     } catch (error) {
       setError(error.message);
     } finally {

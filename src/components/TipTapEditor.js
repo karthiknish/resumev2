@@ -32,6 +32,9 @@ import {
   ListTodo,
   RemoveFormatting,
   Table as TableIcon,
+  MoreHorizontal,
+  Type,
+  AlignJustify,
 } from "lucide-react";
 import UnderlineExtension from "@tiptap/extension-underline";
 import Highlight from "@tiptap/extension-highlight";
@@ -84,6 +87,196 @@ const MenuBar = ({ editor }) => {
     return null;
   }
 
+  // Group buttons for better organization
+  const textFormattingButtons = [
+    { action: () => editor.chain().focus().toggleBold().run(), 
+      active: editor.isActive("bold"), 
+      icon: Bold, 
+      title: "Bold", 
+      disabled: !editor.can().chain().focus().toggleBold().run() },
+    { action: () => editor.chain().focus().toggleItalic().run(), 
+      active: editor.isActive("italic"), 
+      icon: Italic, 
+      title: "Italic", 
+      disabled: !editor.can().chain().focus().toggleItalic().run() },
+    { action: () => editor.chain().focus().toggleUnderline().run(), 
+      active: editor.isActive("underline"), 
+      icon: Underline, 
+      title: "Underline", 
+      disabled: !editor.can().chain().focus().toggleUnderline().run() },
+    { action: () => editor.chain().focus().toggleStrike().run(), 
+      active: editor.isActive("strike"), 
+      icon: Strikethrough, 
+      title: "Strikethrough", 
+      disabled: !editor.can().chain().focus().toggleStrike().run() },
+    { action: () => editor.chain().focus().toggleCode().run(), 
+      active: editor.isActive("code"), 
+      icon: Code, 
+      title: "Inline Code", 
+      disabled: !editor.can().chain().focus().toggleCode().run() },
+    { action: () => editor.chain().focus().toggleHighlight().run(), 
+      active: editor.isActive("highlight"), 
+      icon: Highlighter, 
+      title: "Highlight", 
+      disabled: !editor.can().chain().focus().toggleHighlight().run() },
+  ];
+
+  const headingButtons = [
+    { action: () => editor.chain().focus().toggleHeading({ level: 1 }).run(), 
+      active: editor.isActive("heading", { level: 1 }), 
+      icon: Heading1, 
+      title: "Heading 1", 
+      disabled: !editor.can().chain().focus().toggleHeading({ level: 1 }).run() },
+    { action: () => editor.chain().focus().toggleHeading({ level: 2 }).run(), 
+      active: editor.isActive("heading", { level: 2 }), 
+      icon: Heading2, 
+      title: "Heading 2", 
+      disabled: !editor.can().chain().focus().toggleHeading({ level: 2 }).run() },
+    { action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(), 
+      active: editor.isActive("heading", { level: 3 }), 
+      icon: Heading3, 
+      title: "Heading 3", 
+      disabled: !editor.can().chain().focus().toggleHeading({ level: 3 }).run() },
+  ];
+
+  const listButtons = [
+    { action: () => editor.chain().focus().toggleBulletList().run(), 
+      active: editor.isActive("bulletList"), 
+      icon: List, 
+      title: "Bullet List", 
+      disabled: !editor.can().chain().focus().toggleBulletList().run() },
+    { action: () => editor.chain().focus().toggleOrderedList().run(), 
+      active: editor.isActive("orderedList"), 
+      icon: ListOrdered, 
+      title: "Ordered List", 
+      disabled: !editor.can().chain().focus().toggleOrderedList().run() },
+    { action: () => editor.chain().focus().toggleTaskList().run(), 
+      active: editor.isActive("taskList"), 
+      icon: ListTodo, 
+      title: "Task List", 
+      disabled: !editor.can().chain().focus().toggleTaskList().run() },
+  ];
+
+  const alignmentButtons = [
+    { action: () => editor.chain().focus().setTextAlign("left").run(), 
+      active: editor.isActive({ textAlign: "left" }), 
+      icon: AlignLeft, 
+      title: "Align Left", 
+      disabled: !editor.can().chain().focus().setTextAlign("left").run() },
+    { action: () => editor.chain().focus().setTextAlign("center").run(), 
+      active: editor.isActive({ textAlign: "center" }), 
+      icon: AlignCenter, 
+      title: "Align Center", 
+      disabled: !editor.can().chain().focus().setTextAlign("center").run() },
+    { action: () => editor.chain().focus().setTextAlign("right").run(), 
+      active: editor.isActive({ textAlign: "right" }), 
+      icon: AlignRight, 
+      title: "Align Right", 
+      disabled: !editor.can().chain().focus().setTextAlign("right").run() },
+    { action: () => editor.chain().focus().setTextAlign("justify").run(), 
+      active: editor.isActive({ textAlign: "justify" }), 
+      icon: AlignJustify, 
+      title: "Justify", 
+      disabled: !editor.can().chain().focus().setTextAlign("justify").run() },
+  ];
+
+  const blockButtons = [
+    { action: () => editor.chain().focus().toggleBlockquote().run(), 
+      active: editor.isActive("blockquote"), 
+      icon: Quote, 
+      title: "Blockquote", 
+      disabled: !editor.can().chain().focus().toggleBlockquote().run() },
+    { action: () => editor.chain().focus().toggleCodeBlock().run(), 
+      active: editor.isActive("codeBlock"), 
+      icon: Code2, 
+      title: "Code Block", 
+      disabled: !editor.can().chain().focus().toggleCodeBlock().run() },
+    { action: () => editor.chain().focus().setHorizontalRule().run(), 
+      active: false, 
+      icon: Minus, 
+      title: "Horizontal Rule", 
+      disabled: !editor.can().chain().focus().setHorizontalRule().run() },
+  ];
+
+  const linkImageButtons = [
+    { action: () => {
+        const url = window.prompt("Enter the URL");
+        if (url) {
+          editor.chain().focus().setLink({ href: url }).run();
+        }
+      }, 
+      active: editor.isActive("link"), 
+      icon: LinkIcon, 
+      title: "Insert Link", 
+      disabled: !editor.can().chain().focus().setLink({ href: "" }).run() },
+    { action: () => {
+        const url = window.prompt("Enter the image URL");
+        if (url) {
+          editor.chain().focus().setImage({ src: url }).run();
+        }
+      }, 
+      active: false, 
+      icon: ImageIcon, 
+      title: "Insert Image", 
+      disabled: !editor.can().chain().focus().setImage({ src: "" }).run() },
+  ];
+
+  const tableButtons = [
+    { action: () => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(), 
+      active: false, 
+      icon: TableIcon, 
+      title: "Insert Table", 
+      disabled: !editor.can().chain().focus().insertTable().run() },
+    { action: () => editor.chain().focus().addColumnBefore().run(), 
+      active: false, 
+      icon: MoreHorizontal, 
+      title: "Add Column Before", 
+      disabled: !editor.can().chain().focus().addColumnBefore().run() },
+    { action: () => editor.chain().focus().addColumnAfter().run(), 
+      active: false, 
+      icon: MoreHorizontal, 
+      title: "Add Column After", 
+      disabled: !editor.can().chain().focus().addColumnAfter().run() },
+    { action: () => editor.chain().focus().deleteColumn().run(), 
+      active: false, 
+      icon: Minus, 
+      title: "Delete Column", 
+      disabled: !editor.can().chain().focus().deleteColumn().run() },
+    { action: () => editor.chain().focus().addRowBefore().run(), 
+      active: false, 
+      icon: Type, 
+      title: "Add Row Before", 
+      disabled: !editor.can().chain().focus().addRowBefore().run() },
+    { action: () => editor.chain().focus().addRowAfter().run(), 
+      active: false, 
+      icon: Type, 
+      title: "Add Row After", 
+      disabled: !editor.can().chain().focus().addRowAfter().run() },
+    { action: () => editor.chain().focus().deleteRow().run(), 
+      active: false, 
+      icon: Minus, 
+      title: "Delete Row", 
+      disabled: !editor.can().chain().focus().deleteRow().run() },
+  ];
+
+  const utilityButtons = [
+    { action: () => editor.chain().focus().undo().run(), 
+      active: false, 
+      icon: Undo, 
+      title: "Undo", 
+      disabled: !editor.can().chain().focus().undo().run() },
+    { action: () => editor.chain().focus().redo().run(), 
+      active: false, 
+      icon: Redo, 
+      title: "Redo", 
+      disabled: !editor.can().chain().focus().redo().run() },
+    { action: () => editor.chain().focus().unsetAllMarks().run(), 
+      active: false, 
+      icon: RemoveFormatting, 
+      title: "Clear Formatting", 
+      disabled: !editor.can().chain().focus().unsetAllMarks().run() },
+  ];
+
   // Color Picker Component
   const ColorPickerButton = ({ editor }) => {
     const [showPicker, setShowPicker] = useState(false);
@@ -94,6 +287,8 @@ const MenuBar = ({ editor }) => {
       "#10B981", // Green
       "#3B82F6", // Blue
       "#8B5CF6", // Violet
+      "#EC4899", // Pink
+      "#000000", // Black
     ];
 
     const handleColorClick = (color) => {
@@ -106,19 +301,30 @@ const MenuBar = ({ editor }) => {
         <button
           type="button"
           onClick={() => setShowPicker(!showPicker)}
-          className={`p-1 px-2 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-50`}
+          className={`p-2 rounded-lg transition-all duration-200 ${
+            editor.isActive("textStyle", { color: "#9CA3AF" }) ||
+            editor.isActive("textStyle", { color: "#EF4444" }) ||
+            editor.isActive("textStyle", { color: "#F59E0B" }) ||
+            editor.isActive("textStyle", { color: "#10B981" }) ||
+            editor.isActive("textStyle", { color: "#3B82F6" }) ||
+            editor.isActive("textStyle", { color: "#8B5CF6" }) ||
+            editor.isActive("textStyle", { color: "#EC4899" }) ||
+            editor.isActive("textStyle", { color: "#000000" })
+              ? "bg-blue-600 text-white"
+              : "bg-gray-700 hover:bg-gray-600 text-gray-200"
+          } disabled:opacity-50 flex items-center justify-center`}
           title="Text Color"
         >
           <Palette className="w-4 h-4" />
         </button>
         {showPicker && (
-          <div className="absolute z-10 top-full mt-1 p-2 bg-gray-800 border border-gray-700 rounded shadow-lg flex gap-1">
+          <div className="absolute z-20 top-full mt-2 p-3 bg-gray-800 border border-gray-700 rounded-lg shadow-xl flex flex-wrap gap-2 w-48">
             {colors.map((color) => (
               <button
                 key={color}
                 type="button"
                 onClick={() => handleColorClick(color)}
-                className="w-5 h-5 rounded-full border border-gray-600 hover:scale-110 transition-transform"
+                className="w-6 h-6 rounded-full border-2 border-gray-600 hover:scale-110 transition-transform"
                 style={{ backgroundColor: color }}
                 title={`Set color to ${color}`}
               />
@@ -130,10 +336,10 @@ const MenuBar = ({ editor }) => {
                 editor.chain().focus().unsetColor().run();
                 setShowPicker(false);
               }}
-              className="w-5 h-5 rounded-full border border-gray-600 bg-white text-black flex items-center justify-center text-xs hover:scale-110 transition-transform"
+              className="w-6 h-6 rounded-full border-2 border-gray-600 bg-white text-black flex items-center justify-center text-xs hover:scale-110 transition-transform"
               title="Remove Color"
             >
-              X
+              ✕
             </button>
           </div>
         )}
@@ -141,381 +347,110 @@ const MenuBar = ({ editor }) => {
     );
   };
 
+  // Toolbar Group Component
+  const ToolbarGroup = ({ title, children }) => (
+    <div className="flex items-center">
+      <div className="flex flex-wrap gap-1 p-1 bg-gray-800 rounded-lg">
+        {children}
+      </div>
+    </div>
+  );
+
+  // Toolbar Button Component
+  const ToolbarButton = ({ action, active, icon: Icon, title, disabled }) => (
+    <button
+      type="button"
+      onClick={action}
+      disabled={disabled}
+      className={`p-2 rounded-lg transition-all duration-200 ${
+        active
+          ? "bg-blue-600 text-white shadow-inner"
+          : "bg-gray-700 hover:bg-gray-600 text-gray-200"
+      } disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center`}
+      title={title}
+    >
+      <Icon className="w-4 h-4" />
+    </button>
+  );
+
   return (
-    <div className="flex flex-wrap gap-2 mb-4 p-2 bg-gray-800 rounded-md">
-      {/* Undo/Redo - Use standard button */}
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().undo().run()}
-        disabled={!editor?.can().chain().focus().undo().run()}
-        className="p-1 px-2 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-50"
-        title="Undo"
-      >
-        <Undo className="w-4 h-4" />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().redo().run()}
-        disabled={!editor?.can().chain().focus().redo().run()}
-        className="p-1 px-2 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-50"
-        title="Redo"
-      >
-        <Redo className="w-4 h-4" />
-      </button>
+    <div className="flex flex-col gap-3 p-3 bg-gray-900 rounded-lg border border-gray-700 mb-4">
+      {/* Primary Tools - Always Visible */}
+      <div className="flex flex-wrap gap-2">
+        {/* Undo/Redo */}
+        <ToolbarGroup title="History">
+          {utilityButtons.slice(0, 2).map((button, index) => (
+            <ToolbarButton key={index} {...button} />
+          ))}
+        </ToolbarGroup>
 
-      {/* Basic Formatting - Use standard button */}
-      <button
-        type="button"
-        onClick={() => {
-          console.log("Tiptap Selection State:", editor.state.selection);
-          console.log(
-            "Selected Text:",
-            editor.state.doc.textBetween(
-              editor.state.selection.from,
-              editor.state.selection.to
-            )
-          );
-          editor.chain().focus().toggleBold().run();
-        }}
-        disabled={!editor?.can().chain().focus().toggleBold().run()}
-        className={`p-1 px-2 rounded ${
-          editor.isActive("bold")
-            ? "bg-blue-600"
-            : "bg-gray-700 hover:bg-gray-600"
-        } disabled:opacity-50`}
-        title="Bold"
-      >
-        <Bold className="w-4 h-4" />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleUnderline().run()}
-        disabled={!editor?.can().chain().focus().toggleUnderline().run()}
-        className={`p-1 px-2 rounded ${
-          editor.isActive("underline")
-            ? "bg-blue-600"
-            : "bg-gray-700 hover:bg-gray-600"
-        } disabled:opacity-50`}
-        title="Underline"
-      >
-        <Underline className="w-4 h-4" />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleHighlight().run()}
-        className={`p-1 px-2 rounded ${
-          editor.isActive("highlight")
-            ? "bg-yellow-500 text-black"
-            : "bg-gray-700 hover:bg-gray-600"
-        } disabled:opacity-50`}
-        title="Highlight"
-        disabled={!editor?.can().chain().focus().toggleHighlight().run()}
-      >
-        <Highlighter className="w-4 h-4" />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleItalic().run()}
-        disabled={!editor?.can().chain().focus().toggleItalic().run()}
-        className={`p-1 px-2 rounded ${
-          editor.isActive("italic")
-            ? "bg-blue-600"
-            : "bg-gray-700 hover:bg-gray-600"
-        } disabled:opacity-50`}
-        title="Italic"
-      >
-        <Italic className="w-4 h-4" />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleStrike().run()}
-        disabled={!editor?.can().chain().focus().toggleStrike().run()}
-        className={`p-1 px-2 rounded ${
-          editor.isActive("strike")
-            ? "bg-blue-600"
-            : "bg-gray-700 hover:bg-gray-600"
-        } disabled:opacity-50`}
-        title="Strikethrough"
-      >
-        <Strikethrough className="w-4 h-4" />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleCode().run()}
-        disabled={!editor?.can().chain().focus().toggleCode().run()}
-        className={`p-1 px-2 rounded ${
-          editor.isActive("code")
-            ? "bg-blue-600"
-            : "bg-gray-700 hover:bg-gray-600"
-        } disabled:opacity-50`}
-        title="Inline Code"
-      >
-        <Code className="w-4 h-4" />
-      </button>
+        {/* Text Formatting */}
+        <ToolbarGroup title="Text Formatting">
+          {textFormattingButtons.map((button, index) => (
+            <ToolbarButton key={index} {...button} />
+          ))}
+          <ColorPickerButton editor={editor} />
+        </ToolbarGroup>
 
-      {/* Headings - Already standard button */}
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        className={`p-1 px-2 rounded ${
-          editor.isActive("heading", { level: 1 })
-            ? "bg-blue-600"
-            : "bg-gray-700 hover:bg-gray-600"
-        } disabled:opacity-50`}
-        title="Heading 1"
-        disabled={
-          !editor?.can().chain().focus().toggleHeading({ level: 1 }).run()
-        }
-      >
-        <Heading1 className="w-4 h-4" />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        className={`p-1 px-2 rounded ${
-          editor.isActive("heading", { level: 2 })
-            ? "bg-blue-600"
-            : "bg-gray-700 hover:bg-gray-600"
-        } disabled:opacity-50`}
-        title="Heading 2"
-        disabled={
-          !editor?.can().chain().focus().toggleHeading({ level: 2 }).run()
-        }
-      >
-        <Heading2 className="w-4 h-4" />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-        className={`p-1 px-2 rounded ${
-          editor.isActive("heading", { level: 3 })
-            ? "bg-blue-600"
-            : "bg-gray-700 hover:bg-gray-600"
-        } disabled:opacity-50`}
-        title="Heading 3"
-        disabled={
-          !editor?.can().chain().focus().toggleHeading({ level: 3 }).run()
-        }
-      >
-        <Heading3 className="w-4 h-4" />
-      </button>
+        {/* Headings */}
+        <ToolbarGroup title="Headings">
+          {headingButtons.map((button, index) => (
+            <ToolbarButton key={index} {...button} />
+          ))}
+        </ToolbarGroup>
 
-      {/* Lists - Use standard button */}
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleBulletList().run()}
-        className={`p-1 px-2 rounded ${
-          editor.isActive("bulletList")
-            ? "bg-blue-600"
-            : "bg-gray-700 hover:bg-gray-600"
-        } disabled:opacity-50`}
-        title="Bullet List"
-        disabled={!editor?.can().chain().focus().toggleBulletList().run()}
-      >
-        <List className="w-4 h-4" />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        className={`p-1 px-2 rounded ${
-          editor.isActive("orderedList")
-            ? "bg-blue-600"
-            : "bg-gray-700 hover:bg-gray-600"
-        } disabled:opacity-50`}
-        title="Ordered List"
-        disabled={!editor?.can().chain().focus().toggleOrderedList().run()}
-      >
-        <ListOrdered className="w-4 h-4" />
-      </button>
+        {/* Lists */}
+        <ToolbarGroup title="Lists">
+          {listButtons.map((button, index) => (
+            <ToolbarButton key={index} {...button} />
+          ))}
+        </ToolbarGroup>
 
-      {/* Alignment - Use standard button */}
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().setTextAlign("left").run()}
-        className={`p-1 px-2 rounded ${
-          editor.isActive({ textAlign: "left" })
-            ? "bg-blue-600"
-            : "bg-gray-700 hover:bg-gray-600"
-        } disabled:opacity-50`}
-        title="Align Left"
-        disabled={!editor?.can().chain().focus().setTextAlign("left").run()}
-      >
-        <AlignLeft className="w-4 h-4" />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().setTextAlign("center").run()}
-        className={`p-1 px-2 rounded ${
-          editor.isActive({ textAlign: "center" })
-            ? "bg-blue-600"
-            : "bg-gray-700 hover:bg-gray-600"
-        } disabled:opacity-50`}
-        title="Align Center"
-        disabled={!editor?.can().chain().focus().setTextAlign("center").run()}
-      >
-        <AlignCenter className="w-4 h-4" />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().setTextAlign("right").run()}
-        className={`p-1 px-2 rounded ${
-          editor.isActive({ textAlign: "right" })
-            ? "bg-blue-600"
-            : "bg-gray-700 hover:bg-gray-600"
-        } disabled:opacity-50`}
-        title="Align Right"
-        disabled={!editor?.can().chain().focus().setTextAlign("right").run()}
-      >
-        <AlignRight className="w-4 h-4" />
-      </button>
+        {/* Alignment */}
+        <ToolbarGroup title="Alignment">
+          {alignmentButtons.map((button, index) => (
+            <ToolbarButton key={index} {...button} />
+          ))}
+        </ToolbarGroup>
 
-      {/* Link/Image - Use standard button */}
-      <button
-        type="button"
-        onClick={() => {
-          const url = window.prompt("Enter the URL");
-          if (url) {
-            editor.chain().focus().setLink({ href: url }).run();
-          }
-        }}
-        className={`p-1 px-2 rounded ${
-          editor.isActive("link")
-            ? "bg-blue-600"
-            : "bg-gray-700 hover:bg-gray-600"
-        } disabled:opacity-50`}
-        title="Insert Link"
-        disabled={!editor?.can().chain().focus().setLink({ href: "" }).run()}
-      >
-        <LinkIcon className="w-4 h-4" />
-      </button>
-      <button
-        type="button"
-        onClick={() => {
-          const url = window.prompt("Enter the image URL");
-          if (url) {
-            editor.chain().focus().setImage({ src: url }).run();
-          }
-        }}
-        className="p-1 px-2 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-50"
-        title="Insert Image"
-        disabled={!editor?.can().chain().focus().setImage({ src: "" }).run()}
-      >
-        <ImageIcon className="w-4 h-4" />
-      </button>
+        {/* Links and Media */}
+        <ToolbarGroup title="Links & Media">
+          {linkImageButtons.map((button, index) => (
+            <ToolbarButton key={index} {...button} />
+          ))}
+        </ToolbarGroup>
 
-      {/* Blocks - Use standard button */}
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-        className={`p-1 px-2 rounded ${
-          editor.isActive("codeBlock")
-            ? "bg-blue-600"
-            : "bg-gray-700 hover:bg-gray-600"
-        } disabled:opacity-50`}
-        title="Code Block"
-        disabled={!editor?.can().chain().focus().toggleCodeBlock().run()}
-      >
-        <Code2 className="w-4 h-4" />
-      </button>
-      <button
-        type="button"
-        onClick={() => {
-          console.log("Blockquote button clicked!");
-          editor.chain().focus().toggleBlockquote().run();
-        }}
-        className={`p-1 px-2 rounded ${
-          editor.isActive("blockquote")
-            ? "bg-blue-600"
-            : "bg-gray-700 hover:bg-gray-600"
-        } disabled:opacity-50`}
-        title="Blockquote"
-        disabled={!editor?.can().chain().focus().toggleBlockquote().run()}
-      >
-        <Quote className="w-4 h-4" />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().setHorizontalRule().run()}
-        className="p-1 px-2 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-50"
-        title="Horizontal Rule"
-        disabled={!editor?.can().chain().focus().setHorizontalRule().run()}
-      >
-        <Minus className="w-4 h-4" />
-      </button>
+        {/* Blocks */}
+        <ToolbarGroup title="Blocks">
+          {blockButtons.map((button, index) => (
+            <ToolbarButton key={index} {...button} />
+          ))}
+        </ToolbarGroup>
 
-      {/* Superscript/Subscript - Use standard button */}
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleSuperscript().run()}
-        disabled={!editor?.can().chain().focus().toggleSuperscript().run()}
-        className={`p-1 px-2 rounded ${
-          editor.isActive("superscript")
-            ? "bg-blue-600"
-            : "bg-gray-700 hover:bg-gray-600"
-        } disabled:opacity-50`}
-        title="Superscript"
-      >
-        <SuperscriptIcon className="w-4 h-4" />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleSubscript().run()}
-        disabled={!editor?.can().chain().focus().toggleSubscript().run()}
-        className={`p-1 px-2 rounded ${
-          editor.isActive("subscript")
-            ? "bg-blue-600"
-            : "bg-gray-700 hover:bg-gray-600"
-        } disabled:opacity-50`}
-        title="Subscript"
-      >
-        <SubscriptIcon className="w-4 h-4" />
-      </button>
+        {/* Tables */}
+        <ToolbarGroup title="Tables">
+          {tableButtons.slice(0, 1).map((button, index) => (
+            <ToolbarButton key={index} {...button} />
+          ))}
+        </ToolbarGroup>
 
-      {/* Color Picker - Already uses standard button trigger */}
-      <ColorPickerButton editor={editor} />
+        {/* Clear Formatting */}
+        <ToolbarGroup title="Utilities">
+          <ToolbarButton {...utilityButtons[2]} />
+        </ToolbarGroup>
+      </div>
 
-      {/* Clear Formatting - Use standard button */}
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().unsetAllMarks().run()}
-        className="p-1 px-2 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-50"
-        title="Clear Formatting"
-        disabled={!editor?.can().chain().focus().unsetAllMarks().run()}
-      >
-        <RemoveFormatting className="w-4 h-4" />
-      </button>
-
-      {/* Task List Button - Use standard button */}
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleTaskList().run()}
-        className={`p-1 px-2 rounded ${
-          editor.isActive("taskList")
-            ? "bg-blue-600"
-            : "bg-gray-700 hover:bg-gray-600"
-        } disabled:opacity-50`}
-        title="Task List"
-        disabled={!editor?.can().chain().focus().toggleTaskList().run()}
-      >
-        <ListTodo className="w-4 h-4" />
-      </button>
-
-      {/* Table Button - Use standard button */}
-      <button
-        type="button"
-        onClick={() =>
-          editor
-            .chain()
-            .focus()
-            .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
-            .run()
-        }
-        className={`p-1 px-2 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-50`}
-        title="Insert Table"
-        disabled={!editor?.can().chain().focus().insertTable().run()}
-      >
-        <TableIcon className="w-4 h-4" />
-      </button>
+      {/* Secondary Tools - Collapsible */}
+      <div className="flex flex-wrap gap-2">
+        {/* Table Tools (when table is active) */}
+        {editor.isActive("table") && (
+          <ToolbarGroup title="Table Editing">
+            {tableButtons.slice(1).map((button, index) => (
+              <ToolbarButton key={`table-${index}`} {...button} />
+            ))}
+          </ToolbarGroup>
+        )}
+      </div>
     </div>
   );
 };
@@ -545,6 +480,9 @@ const TipTapEditor = ({ content, onUpdate }) => {
       Image.configure({
         inline: false, // Allow images to be block elements
         allowBase64: true, // Allow pasting base64 images (optional)
+        HTMLAttributes: {
+          class: "rounded-lg border border-gray-700",
+        },
       }),
       TextAlign.configure({
         types: ["heading", "paragraph"],
@@ -557,19 +495,36 @@ const TipTapEditor = ({ content, onUpdate }) => {
       TaskList,
       TaskItem.configure({
         nested: true,
+        HTMLAttributes: {
+          class: "flex items-start my-2",
+        },
       }),
       // Configure CodeBlockLowlight with languages
       CodeBlockLowlight.configure({
         lowlight: lowlightInstance,
         defaultLanguage: "plaintext",
+        HTMLAttributes: {
+          class: "rounded-lg border border-gray-700 bg-gray-800 p-4 my-4",
+        },
       }),
       // Add Table extensions
       Table.configure({
         resizable: true, // Allow column resizing
+        HTMLAttributes: {
+          class: "table-auto border-collapse border border-gray-700 rounded-lg overflow-hidden my-4",
+        },
       }),
       TableRow,
-      TableHeader,
-      TableCell,
+      TableHeader.configure({
+        HTMLAttributes: {
+          class: "bg-gray-800 border border-gray-700",
+        },
+      }),
+      TableCell.configure({
+        HTMLAttributes: {
+          class: "border border-gray-700 px-3 py-2",
+        },
+      }),
     ],
     content: content || "", // Use provided content or empty string
     onUpdate: ({ editor }) => {
@@ -580,7 +535,7 @@ const TipTapEditor = ({ content, onUpdate }) => {
     editorProps: {
       attributes: {
         class:
-          "prose prose-invert max-w-none focus:outline-none min-h-[300px] p-4 border border-gray-700 rounded-md bg-gray-900",
+          "prose prose-invert max-w-none focus:outline-none min-h-[400px] p-6 border border-gray-700 rounded-b-lg bg-gray-900 text-gray-100 prose-headings:text-gray-100 prose-a:text-blue-400 prose-blockquote:text-gray-300 prose-code:before:content-none prose-code:after:content-none prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-800 prose-pre:p-0 prose-li:marker:text-gray-400 prose-table:text-gray-100",
       },
     },
   });
@@ -637,14 +592,43 @@ const TipTapEditor = ({ content, onUpdate }) => {
   };
 
   return (
-    <div className="bg-gray-900 border border-gray-700 rounded-md">
+    <div className="bg-gray-900 border border-gray-700 rounded-lg shadow-lg">
       <MenuBar editor={editor} />
-      {isCompleting && (
-        <div className="absolute top-0 right-0 p-2 text-xs text-blue-400 animate-pulse">
-          AI thinking...
+      <div className="relative">
+        {isCompleting && (
+          <div className="absolute top-4 right-4 z-10 bg-blue-900/80 text-blue-200 px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-2">
+            <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+            AI thinking...
+          </div>
+        )}
+        <EditorContent editor={editor} />
+      </div>
+      <div className="px-6 py-3 bg-gray-800/50 border-t border-gray-700 rounded-b-lg text-xs text-gray-400 flex justify-between items-center">
+        <div>
+          {editor && (
+            <span>
+              {editor.storage.characterCount.words()} words ·{" "}
+              {editor.storage.characterCount.characters()} characters
+            </span>
+          )}
         </div>
-      )}
-      <EditorContent editor={editor} />
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleSentenceCompletion}
+            disabled={isCompleting}
+            className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium disabled:opacity-50 transition-colors flex items-center gap-1"
+          >
+            {isCompleting ? (
+              <>
+                <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Generating...
+              </>
+            ) : (
+              "AI Complete"
+            )}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

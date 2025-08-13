@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { FaBars, FaTimes, FaSearch, FaTimesCircle } from "react-icons/fa"; // Added FaSearch, FaTimesCircle
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { useSession, signOut } from "next-auth/react";
+import { signOut } from "@/lib/authUtils";
 import useDebounce from "@/hooks/useDebounce"; // Make sure this hook exists at this path
 import dynamic from "next/dynamic"; // <-- Add this import
 import {
@@ -36,7 +36,6 @@ export default function Nav() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const isHome = router.pathname === "/";
-  const searchInputRef = useRef(null); // Ref for search input focus
 
   // Debounce search query
   const debouncedSearchQuery = useDebounce(searchQuery, 300); // 300ms debounce
@@ -208,20 +207,20 @@ export default function Nav() {
               {navLinks.map((link) => (
                 <SlideInRight key={link.href} delay={link.delay}>
                   <HoverCard scale={1.05}>
-                    <Link
-                      href={link.href}
-                      className={`text-base lg:text-lg font-semibold relative group transition-colors duration-200 ${
-                        (link.href === "/" && router.pathname === "/") ||
-                        (link.href !== "/" &&
-                          (router.pathname === link.href ||
-                            (link.href === "/blog" &&
-                              router.pathname.startsWith("/blog")) ||
-                            (link.href === "/bytes" &&
-                              router.pathname.startsWith("/bytes"))))
-                          ? "text-gray-900"
-                          : "text-gray-700 hover:text-gray-900"
-                      }`}
-                    >
+                                          <Link
+                        href={link.href}
+                        className={`text-base lg:text-lg font-semibold relative group transition-colors duration-200 ${
+                          (link.href === "/" && router.pathname === "/") ||
+                          (link.href !== "/" &&
+                            (router.pathname === link.href ||
+                              (link.href === "/blog" &&
+                                router.pathname.startsWith("/blog")) ||
+                              (link.href === "/bytes" &&
+                                router.pathname.startsWith("/bytes"))))
+                            ? "text-gray-900"
+                            : "text-gray-700 hover:text-gray-900"
+                        }`}
+                      >
                       {link.label}
                       <span
                         className={`absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 ${

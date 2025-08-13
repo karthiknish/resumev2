@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 const WORK_DURATION = 25 * 60; // 25 minutes in seconds
 const BREAK_DURATION = 5 * 60; // 5 minutes in seconds
@@ -31,11 +34,13 @@ const PomodoroTimer = () => {
   const handleSessionEnd = useCallback(() => {
     setIsActive(false);
     // Play a sound or show notification (optional)
-    alert(
-      isWorkSession
-        ? "Work session finished! Time for a break."
-        : "Break finished! Time to work."
-    );
+    if (typeof window !== "undefined" && window.alert) {
+      alert(
+        isWorkSession
+          ? "Work session finished! Time for a break."
+          : "Break finished! Time to work."
+      );
+    }
 
     if (isWorkSession) {
       setCyclesCompleted((prev) => prev + 1);
@@ -63,42 +68,54 @@ const PomodoroTimer = () => {
   }, [isActive, timeLeft, handleSessionEnd]);
 
   return (
-    <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg max-w-sm mx-auto mt-10 text-center">
-      <h2 className="text-2xl font-bold mb-4">Pomodoro Timer</h2>
-      <div
-        className={`mb-4 p-4 rounded-md ${
-          isWorkSession ? "bg-blue-600" : "bg-green-600"
-        }`}
-      >
-        <p className="text-lg font-semibold">
-          {isWorkSession ? "Work Session" : "Break Time"}
-        </p>
-        <p className="text-6xl font-mono font-bold my-4">
-          {formatTime(timeLeft)}
-        </p>
-      </div>
-      <div className="flex justify-center space-x-4 mb-4">
-        <button
-          onClick={toggleTimer}
-          className={`px-6 py-2 rounded font-semibold text-white transition-colors duration-200 ${
-            isActive
-              ? "bg-yellow-500 hover:bg-yellow-600"
-              : "bg-green-500 hover:bg-green-600"
+    <Card className="bg-card border border-primary/20 text-foreground max-w-md mx-auto mt-6 shadow-lg">
+      <CardHeader className="text-center">
+        <CardTitle className="text-2xl font-bold">🍅 Pomodoro Timer</CardTitle>
+        <Badge 
+          variant="secondary" 
+          className={`text-lg px-3 py-1 ${
+            isWorkSession 
+              ? "bg-red-500/20 text-red-700 hover:bg-red-500/30" 
+              : "bg-green-500/20 text-green-700 hover:bg-green-500/30"
           }`}
         >
-          {isActive ? "Pause" : "Start"}
-        </button>
-        <button
-          onClick={resetTimer}
-          className="px-6 py-2 rounded font-semibold bg-red-500 hover:bg-red-600 text-white transition-colors duration-200"
-        >
-          Reset
-        </button>
-      </div>
-      <p className="text-sm text-gray-400">
-        Cycles Completed: {cyclesCompleted}
-      </p>
-    </div>
+          {isWorkSession ? "Work Session" : "Break Time"}
+        </Badge>
+      </CardHeader>
+      <CardContent className="text-center">
+        <div className={`mb-6 p-6 rounded-2xl ${
+          isWorkSession 
+            ? "bg-red-500/10 border border-red-500/20" 
+            : "bg-green-500/10 border border-green-500/20"
+        }`}>
+          <p className="text-7xl font-mono font-bold my-4 text-foreground">
+            {formatTime(timeLeft)}
+          </p>
+        </div>
+        <div className="flex justify-center gap-4 mb-6">
+          <Button
+            onClick={toggleTimer}
+            className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 ${
+              isActive
+                ? "bg-yellow-500 hover:bg-yellow-600 text-yellow-50"
+                : "bg-gradient-to-r from-primary to-brandSecondary hover:from-primary/90 hover:to-brandSecondary/90 text-primary-foreground"
+            }`}
+          >
+            {isActive ? "Pause" : "Start"}
+          </Button>
+          <Button
+            onClick={resetTimer}
+            variant="outline"
+            className="px-8 py-3 rounded-xl font-semibold border-primary/20 text-primary hover:bg-primary/5"
+          >
+            Reset
+          </Button>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Cycles Completed: <span className="font-bold text-foreground">{cyclesCompleted}</span>
+        </p>
+      </CardContent>
+    </Card>
   );
 };
 

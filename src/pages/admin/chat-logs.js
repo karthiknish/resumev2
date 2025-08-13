@@ -30,7 +30,12 @@ export default function ChatLogs() {
     limit: 25,
     pages: 0,
   });
+  const [isClient, setIsClient] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Handle authentication
   const handleLogin = (e) => {
@@ -194,12 +199,14 @@ export default function ChatLogs() {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Chat Logs</h1>
           <div className="flex gap-4">
-            <button
-              onClick={() => router.push("/admin")}
-              className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded transition"
-            >
-              Back to Admin
-            </button>
+            {isClient && (
+              <button
+                onClick={() => router.push("/admin")}
+                className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded transition"
+              >
+                Back to Admin
+              </button>
+            )}
             <button
               onClick={exportChatLogs}
               className="bg-green-700 hover:bg-green-600 px-4 py-2 rounded flex items-center gap-2 transition"

@@ -39,7 +39,7 @@ export default async function handler(req, res) {
 
     let prompt;
     let generationConfig = {
-      temperature: 0.7,
+      temperature: 0.8, // Increased for more human-like variation
       topK: 40,
       topP: 0.95,
       maxOutputTokens: 8192, // Default max tokens
@@ -57,47 +57,72 @@ export default async function handler(req, res) {
       `;
 
       prompt = `
-        Act as an expert content writer, technical blogger, and SEO specialist. Your target audience is likely other developers, tech enthusiasts, or potential clients seeking web development services. Write a high-quality, well-structured, and engaging blog post about "${effectiveTopic}".
+        Act as an expert blogger who specializes in writing engaging, human-like content that resonates with readers. Your audience consists of developers, tech enthusiasts, and potential clients seeking web development services. Your goal is to create content that feels authentic and valuable, not AI-generated.
+
+        **Topic:** "${effectiveTopic}"
 
         **Instructions:**
         - **Tone:** ${
           tone
-            ? `Adopt a ${tone} tone. Ensure clarity and accuracy.`
-            : "Adopt a professional, informative, and slightly enthusiastic tone."
+            ? `Write in a ${tone} tone that connects with readers on a human level.`
+            : "Write in a friendly, professional tone that's informative yet approachable."
         }
         - **Length:** ${
           length
-            ? `Aim for a length of approximately ${length} words. Focus on quality and depth over strict word count.`
-            : "Aim for a length of approximately 800 words."
+            ? `Aim for approximately ${length} words. Focus on quality and depth over strict word count.`
+            : "Aim for approximately 800 words."
         }
         - **Keywords:** ${
           keywords && keywords.length > 0
-            ? `Naturally and strategically integrate the following keywords throughout the text, focusing on readability: ${keywords.join(
+            ? `Naturally integrate the following keywords: ${keywords.join(
                 ", "
-              )}. Avoid keyword stuffing.`
-            : "Optimize for relevant keywords related to the topic naturally within the content."
+              )}. Prioritize readability over keyword placement.`
+            : "Naturally incorporate relevant keywords related to the topic."
         }
         ${outlineInstructions}
-        - **Readability:** Ensure paragraphs are well-structured and sentences flow logically. Use transition words where appropriate. Use HTML formatting effectively (<h2>, <p>, <strong>, <ul>, <li>, etc.).
-        - **Output:** Return the entire response, starting directly with the HTML title (<h1>Title</h1>), as a single block of valid, well-formatted HTML. Do not include any preamble, notes, disclaimers, or explanations before or after the HTML content itself. Do not wrap the output in code blocks.
+        - **Structure & Flow:** 
+          * Start with an engaging introduction that hooks the reader
+          * Organize content with clear sections using headings
+          * Use transition phrases to create smooth flow between ideas
+          * Include practical examples, insights, or personal observations where relevant
+          * End with a conclusion that reinforces key points and provides value
+        - **Writing Style:**
+          * Use contractions (don't, can't, it's) to sound more conversational
+          * Vary sentence length for better rhythm
+          * Ask rhetorical questions to engage readers
+          * Include real-world analogies when helpful
+          * Address the reader directly ("you") to create connection
+        - **HTML Formatting:**
+          * Use <h2> tags for main section headings
+          * Wrap paragraphs in <p> tags
+          * Use <strong> for emphasis on key terms
+          * Use <ul> and <li> for lists
+          * Keep formatting clean and semantic
+        - **Output Requirements:**
+          * Return only the HTML content, starting directly with the content (no title <h1>)
+          * Do not include any preamble, notes, or explanations
+          * Do not wrap in code blocks
       `;
       // Keep default maxOutputTokens for full post generation
     } else {
       // --- Prompt for generating DRAFT from TITLE only ---
       prompt = `
-        Act as a content writer. Generate a draft blog post in simple HTML format based only on the provided title.
+        Act as a skilled blogger who creates human-like, engaging content. Generate a draft blog post based on the provided title that feels authentic and valuable to readers.
 
         **Title:** "${effectiveTopic}"
 
         **Instructions:**
-        - Create a reasonable introduction (1-2 paragraphs using <p> tags).
-        - Develop 2-4 body paragraphs discussing potential aspects related to the title (using <p> tags).
-        - Write a brief conclusion (1 paragraph using <p> tags).
-        - Use basic HTML formatting (paragraphs <p>, maybe one or two <h2> subheadings if appropriate). Keep it relatively simple.
-        - Focus on generating coherent text relevant to the title.
-        - Output only the generated HTML content (starting with <p> or <h2>). Do not include the title itself (like <h1>Title</h1>) in the output. Do not add any preamble, notes, or explanations. Do not wrap the output in code blocks.
+        - Write an engaging introduction that hooks the reader (1-2 paragraphs with <p> tags)
+        - Develop 2-4 body sections that explore different aspects of the topic (using <p> tags and <h2> headings)
+        - Include a thoughtful conclusion that provides value (1 paragraph with <p> tag)
+        - Use a conversational tone that feels natural and human
+        - Prioritize clarity and reader engagement over perfection
+        - Use HTML formatting appropriately (<p>, <h2>, <strong>, <ul>, <li>)
+        - Keep the content focused and avoid fluff
+        - Output only the HTML content (no title <h1> tag, no preamble, no explanations)
       `;
       generationConfig.maxOutputTokens = 2048; // Use fewer tokens for a draft
+      generationConfig.temperature = 0.9; // Even more creative for drafts
     }
 
     // Call the utility function to call Gemini

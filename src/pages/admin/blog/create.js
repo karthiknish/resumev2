@@ -5,7 +5,8 @@ import { useRouter } from "next/router";
 import PageContainer from "@/components/PageContainer";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch"; // Import Switch
+import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
 
 // Import the refactored components
 import BannerImageSection from "@/components/admin/blog-editor/BannerImageSection";
@@ -71,6 +72,7 @@ function CreateBlogNotionStyle() {
       const errorMsg = `Missing required field(s): ${missingFields.join(", ")}`;
       setError(errorMsg);
       setSubmitStatus([false, errorMsg]);
+      toast.error(errorMsg);
       return;
     }
 
@@ -84,6 +86,7 @@ function CreateBlogNotionStyle() {
       });
 
       if (response.data.success) {
+        toast.success("Blog post created successfully!");
         // Redirect to the edit page of the newly created post
         router.push(
           `/admin/blog/edit/${
@@ -95,6 +98,7 @@ function CreateBlogNotionStyle() {
           response.data.message || "Failed to create blog post";
         setError(apiErrorMsg);
         setSubmitStatus([false, apiErrorMsg]);
+        toast.error(apiErrorMsg);
       }
     } catch (err) {
       console.error("Blog creation error:", err);
@@ -104,6 +108,7 @@ function CreateBlogNotionStyle() {
         "Error creating blog post";
       setError(errorMsg);
       setSubmitStatus([false, errorMsg]);
+      toast.error(errorMsg);
     } finally {
       setIsLoading(false);
     }
@@ -111,13 +116,13 @@ function CreateBlogNotionStyle() {
 
   // --- Preview Modal --- (Copied from Edit page for consistency)
   const BlogPreview = () => (
-    <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-80 flex items-start justify-center p-4">
-      <div className="bg-gray-900 rounded-lg w-full max-w-4xl my-8 overflow-hidden shadow-2xl">
-        <div className="flex justify-between items-center p-4 border-b border-gray-700">
-          <h2 className="text-xl font-bold text-white">Blog Preview</h2>
+    <div className="fixed inset-0 z-50 overflow-auto bg-black/80 backdrop-blur-sm flex items-start justify-center p-4">
+      <div className="bg-card rounded-lg w-full max-w-4xl my-8 overflow-hidden shadow-2xl border border-primary/20">
+        <div className="flex justify-between items-center p-4 border-b border-primary/10">
+          <h2 className="text-xl font-bold text-foreground">Blog Preview</h2>
           <button
-            onClick={togglePreview} // Use the defined toggle function
-            className="text-gray-400 hover:text-white"
+            onClick={togglePreview}
+            className="text-muted-foreground hover:text-foreground"
           >
             <AiOutlineClose size={24} />
           </button>
@@ -132,10 +137,10 @@ function CreateBlogNotionStyle() {
               />
             </div>
           )}
-          <h1 className="text-3xl font-bold text-white mb-6">
+          <h1 className="text-3xl font-bold text-foreground mb-6">
             {formData.title}
           </h1>
-          <div className="prose prose-invert max-w-none prose-headings:text-white prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:text-gray-300 prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-ul:text-gray-300 prose-ol:text-gray-300 prose-li:my-1">
+          <div className="prose prose-invert max-w-none prose-headings:text-foreground prose-p:text-foreground prose-a:text-primary hover:prose-a:underline">
             <TipTapRenderer content={formData.content} />
           </div>
         </div>
@@ -149,14 +154,20 @@ function CreateBlogNotionStyle() {
       <Head>
         <title>Create New Blog Post</title>
       </Head>
-      <div className="min-h-screen bg-gray-900 text-gray-100">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-brandSecondary/10 text-foreground">
         <PageContainer>
-          <h1 className="text-4xl font-bold text-white font-calendas text-center mb-8 pt-8">
-            Create New Blog Post
-          </h1>
+          <div className="text-center mb-8 pt-8">
+            <h1 className="text-4xl font-bold text-foreground font-calendas mb-2">
+              Create New Blog Post
+            </h1>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Write and publish your blog post. Use the AI assistant to help generate content 
+              or format your existing text.
+            </p>
+          </div>
           <form
             onSubmit={handleSubmit}
-            className="bg-gray-800 rounded-lg p-6 shadow-lg space-y-6 max-w-4xl mx-auto"
+            className="bg-card rounded-lg p-6 shadow-lg space-y-6 max-w-4xl mx-auto border border-primary/20"
           >
             <BannerImageSection
               imageUrl={formData.imageUrl}
@@ -166,17 +177,17 @@ function CreateBlogNotionStyle() {
             <MetadataSection
               formData={formData}
               onFormChange={handleFormChange}
-              isPublished={formData.isPublished} // Pass isPublished state
+              isPublished={formData.isPublished}
               onPublishChange={(checked) =>
                 handleFormChange({ isPublished: checked })
-              } // Pass handler
+              }
             />
 
             <ContentSection
               content={formData.content}
               setContent={handleContentChange}
-              onTogglePreview={togglePreview} // Pass toggle function
-              blogTitle={formData.title} // Pass the current title
+              onTogglePreview={togglePreview}
+              blogTitle={formData.title}
             />
 
             <ActionButtons
@@ -187,10 +198,10 @@ function CreateBlogNotionStyle() {
                 !formData.imageUrl ||
                 !formData.excerpt
               }
-              onSubmit={handleSubmit} // Pass submit handler
+              onSubmit={handleSubmit}
               submitStatus={submitStatus}
               error={error}
-              saveButtonText="Create Post" // Customize button text
+              saveButtonText="Create Post"
               isPublished={formData.isPublished}
               onPublishChange={(checked) =>
                 handleFormChange({ isPublished: checked })

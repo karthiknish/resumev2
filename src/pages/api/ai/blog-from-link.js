@@ -122,35 +122,42 @@ export default async function handler(req, res) {
 
     // Compose prompt for AI model using sanitized text
     const prompt = `
-You are an expert blogger, analyst, and content strategist writing for Karthik Nishanth's website. Your task is to read the source article content and generate a new, original blog post, along with metadata suggestions.
+You are an expert human-like blogger and content strategist creating original content for Karthik Nishanth's website. Your task is to read the source article and transform it into a fresh, engaging blog post that provides unique value to readers.
 
-**Instructions for Blog Post:**
-- Write in a tone and style consistent with the user's previous blog posts.${
-      styleInstructions
-        ? ` Specific style instructions: ${styleInstructions}`
-        : ""
-    }
-- Analyze the source content, don't just summarize. Provide unique insights, critical evaluation, and practical takeaways.
-- Structure the post logically (Introduction, Key Insights, Implications, Conclusion).
-- Use standard HTML formatting (<h2>, <p>, <ul><li>, <strong>, etc.).
-- Do not reference the source article directly.
+**Your Approach:**
+- Don't just summarize the source content - analyze it critically and provide your own insights
+- Write in a conversational, human tone that connects with readers
+- Focus on practical takeaways that readers can apply
+- Structure your thoughts clearly with engaging headings
 
-**Instructions for Metadata:**
-- Suggest 3-5 relevant keywords (comma-separated).
-- Suggest 2-3 concise meta descriptions (120-155 chars each, suitable for SEO, each on a new line).
-- Suggest 2-4 relevant categories (comma-separated).
+**Blog Post Structure:**
+1. Introduction: Hook the reader and set context
+2. Key Insights: Extract and expand on the most valuable points
+3. Practical Applications: Show how readers can use this information
+4. Conclusion: Reinforce key takeaways and provide closure
 
-**Source Article Metadata:**
+**Formatting Requirements:**
+- Use standard HTML tags (<h2>, <p>, <ul><li>, <strong>)
+- Keep paragraphs digestible (2-4 sentences each)
+- Use bullet points for lists of related items
+- Emphasize key terms with <strong> tags
+
+**Metadata Requirements:**
+- Suggest 3-5 relevant keywords (comma-separated)
+- Suggest 2-3 concise meta descriptions (each on a new line)
+- Suggest 2-4 relevant categories (comma-separated)
+
+**Source Information:**
 - Title: ${originalTitle || "Untitled"}
 ${author ? `- Author: ${author}` : ""}
 ${date ? `- Date: ${date}` : ""}
 
-**Source Article Content:**
+**Source Content:**
 ---
 ${sanitizedText}
 ---
 
-**OUTPUT FORMAT (Strictly follow this structure):**
+**OUTPUT FORMAT (Follow this exact structure):**
 
 KEYWORDS: [comma-separated keywords]
 DESCRIPTIONS:
@@ -159,7 +166,7 @@ DESCRIPTIONS:
 [suggested description 3]
 CATEGORIES: [comma-separated categories]
 BODY:
-[full HTML blog post content starts here, without any wrapping \`\`\`html or other fences]
+[Write your full HTML blog post here, starting directly with content - no title tag, no code fences]
 `;
 
     // Explicitly trim the final prompt before sending
@@ -178,7 +185,7 @@ BODY:
       {
         // Pass config overrides as the second argument
         maxOutputTokens: 4096,
-        temperature: 0.7,
+        temperature: 0.8, // Increased for more human-like variation
       }
     );
 

@@ -43,7 +43,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Loader2, Wand2, Settings, Link, BookOpen } from "lucide-react";
+import { Loader2, Wand2, Settings, Link, BookOpen, Sparkles } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { checkAdminStatus } from "@/lib/authUtils";
 
@@ -57,11 +57,11 @@ const toneOptions = [
 ];
 
 const lengthOptions = [
-  { value: "500", label: "Short (~500 words)" },
-  { value: "800", label: "Medium (~800 words)" },
-  { value: "1200", label: "Long (~1200 words)" },
-  { value: "1500", label: "Very Long (~1500 words)" },
-  { value: "2000", label: "Epic (~2000 words)" },
+  { value: "500", label: "Short (~500 words) " },
+  { value: "800", label: "Medium (~800 words) " },
+  { value: "1200", label: "Long (~1200 words) " },
+  { value: "1500", label: "Very Long (~1500 words) " },
+  { value: "2000", label: "Epic (~2000 words) " },
 ];
 
 export default function AICreateBlog() {
@@ -69,7 +69,7 @@ export default function AICreateBlog() {
   const router = useRouter();
 
   const [topic, setTopic] = useState("");
-  const [tone, setTone] = useState(toneOptions[0].value);
+  const [tone, setTone] = useState(toneOptions[3].value); // Default to conversational
   const [length, setLength] = useState(lengthOptions[1].value);
   const [keywords, setKeywords] = useState("");
   const [generatedContent, setGeneratedContent] = useState(null);
@@ -387,17 +387,22 @@ export default function AICreateBlog() {
     setGeneratedContent(null);
 
     try {
-      const response = await fetch("/api/ai/generate-full-post", {
+      const response = await fetch("/api/ai/generate-blog", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic }),
+        body: JSON.stringify({ 
+          topic,
+          tone,
+          length,
+          keywords: keywords.split(",").map(k => k.trim()).filter(k => k)
+        }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Failed");
 
       setGeneratedContent({
-        title: result.title || "Generated Post",
-        content: result.content || "",
+        title: result.data.title || "Generated Post",
+        content: result.data.content || "",
       });
 
       toast.success("Blog post generated!");
@@ -406,7 +411,7 @@ export default function AICreateBlog() {
       if (typeof window.gtag === "function") {
         window.gtag("event", "generate_full_post", {
           event_category: "ai_generator",
-          event_label: topic || result.title || "Generated Post",
+          event_label: topic || result.data.title || "Generated Post",
           value: 1,
         });
       }
@@ -421,8 +426,8 @@ export default function AICreateBlog() {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <Loader2 className="h-12 w-12 animate-spin text-blue-500" />
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-brandSecondary/10 flex items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
     );
   }
@@ -441,10 +446,19 @@ export default function AICreateBlog() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="text-4xl font-bold text-center mb-10 text-white font-calendas glow-blue"
+          className="text-4xl font-bold text-center mb-4 text-foreground font-calendas"
         >
           AI Blog Post Generator
         </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="text-muted-foreground text-center mb-10 text-lg max-w-3xl mx-auto"
+        >
+          Turn ideas into engaging blog posts with AI assistance. Start with a topic, 
+          generate an outline, and create human-like content.
+        </motion.p>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
           <motion.div
@@ -453,48 +467,34 @@ export default function AICreateBlog() {
             transition={{ delay: 0.2 }}
             className="lg:col-span-1 space-y-6"
           >
-            <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card">
+            <Card className="bg-card border border-primary/20 text-foreground shadow-lg">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-xl font-semibold text-blue-400">
-                  <AiOutlineBulb /> Start with a Topic
+                <CardTitle className="flex items-center gap-2 text-xl font-semibold text-primary">
+                  <Sparkles className="h-5 w-5" /> Start with a Topic
                 </CardTitle>
                 <CardDescription>
-                  Enter a topic or suggest ideas to begin.
+                  Enter a topic or get inspiration from AI suggestions.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="topic" className="text-gray-300">
+                  <Label htmlFor="topic" className="text-foreground">
                     Topic / Idea
                   </Label>
                   <Input
                     id="topic"
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
-                    placeholder="e.g., Introduction to React Server Components"
-                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-500"
+                    placeholder="e.g., How to optimize React performance"
+                    className="bg-background border-input text-foreground placeholder-muted-foreground"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
                   <Button
-                    onClick={() => handleSuggestTopics()}
-                    variant="outline"
-                    size="sm"
-                    className="border-blue-500 text-blue-400 hover:bg-blue-900/30 flex-1"
-                    disabled={loadingSection === "topics"}
-                  >
-                    {loadingSection === "topics" ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                      <AiOutlineTags className="mr-2 h-4 w-4" />
-                    )}
-                    Suggest Topics
-                  </Button>
-                  <Button
                     onClick={handleGenerateOutline}
                     variant="outline"
                     size="sm"
-                    className="border-blue-500 text-blue-400 hover:bg-blue-900/30 flex-1"
+                    className="border-primary text-primary hover:bg-primary/10 flex-1"
                     disabled={!topic.trim() || loadingSection === "outline"}
                   >
                     {loadingSection === "outline" ? (
@@ -507,28 +507,28 @@ export default function AICreateBlog() {
                 </div>
 
                 <AnimatePresence>
-                  {suggestedTopics.length > 0 && (
+                  {generatedOutline && !generatedContent && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="pt-4 space-y-2"
+                      className="pt-4 space-y-3 border-t border-primary/10"
                     >
-                      <h4 className="text-sm font-medium text-gray-400">
-                        Suggested Topics:
+                      <h4 className="text-sm font-medium text-foreground">
+                        Generated Outline:
                       </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {suggestedTopics.map((st, index) => (
-                          <Button
-                            key={index}
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => useSuggestedTopic(st)}
-                            className="bg-gray-700 hover:bg-gray-600 text-gray-300"
-                          >
-                            {st}
-                          </Button>
-                        ))}
+                      <div className="space-y-2">
+                        <p className="text-sm font-medium text-primary">
+                          {generatedOutline.title}
+                        </p>
+                        <ul className="space-y-1">
+                          {generatedOutline.headings.map((h, i) => (
+                            <li key={i} className="text-sm text-muted-foreground flex items-start">
+                              <span className="mr-2">•</span>
+                              <span>{h}</span>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     </motion.div>
                   )}
@@ -536,18 +536,18 @@ export default function AICreateBlog() {
               </CardContent>
             </Card>
 
-            <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card">
+            <Card className="bg-card border border-primary/20 text-foreground shadow-lg">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-xl font-semibold text-blue-400">
-                  <Link /> Generate from Link
+                <CardTitle className="flex items-center gap-2 text-xl font-semibold text-primary">
+                  <Link className="h-5 w-5" /> Transform Existing Content
                 </CardTitle>
                 <CardDescription>
-                  Paste an article URL to generate a blog post based on it.
+                  Paste an article URL to create a fresh blog post based on it.
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
-                  <Label htmlFor="articleUrl" className="text-gray-300">
+                <div className="space-y-3">
+                  <Label htmlFor="articleUrl" className="text-foreground">
                     Article URL
                   </Label>
                   <Input
@@ -556,11 +556,11 @@ export default function AICreateBlog() {
                     value={articleUrl}
                     onChange={(e) => setArticleUrl(e.target.value)}
                     placeholder="https://example.com/article"
-                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-500"
+                    className="bg-background border-input text-foreground placeholder-muted-foreground"
                   />
                   <Button
                     onClick={handleConvertLink}
-                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    className="w-full bg-gradient-to-r from-primary to-brandSecondary hover:from-primary/90 hover:to-brandSecondary/90 text-primary-foreground"
                     disabled={!articleUrl.trim() || loadingSection === "link"}
                   >
                     {loadingSection === "link" ? (
@@ -568,119 +568,34 @@ export default function AICreateBlog() {
                     ) : (
                       <FiRefreshCw className="mr-2 h-4 w-4" />
                     )}
-                    Generate from URL
+                    Generate Blog Post
                   </Button>
                 </div>
-
-                <AnimatePresence>
-                  {(suggestedKeywords.length > 0 ||
-                    suggestedDescriptions.length > 0 ||
-                    suggestedCategories.length > 0) &&
-                    loadingSection !== "link" && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="pt-4 space-y-3 border-t border-gray-700 mt-4"
-                      >
-                        <h4 className="text-sm font-medium text-gray-400">
-                          Suggestions from Link:
-                        </h4>
-
-                        {suggestedKeywords.length > 0 && (
-                          <div>
-                            <Label className="text-xs text-gray-500">
-                              Keywords
-                            </Label>
-                            <div className="flex flex-wrap gap-1.5 mt-1">
-                              {suggestedKeywords.map((kw, index) => (
-                                <Button
-                                  key={`link-kw-${index}`}
-                                  type="button"
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => addKeyword(kw)}
-                                  className="text-xs border-gray-600 text-gray-300 hover:bg-gray-700 h-auto py-0.5 px-1.5"
-                                >
-                                  {kw}
-                                </Button>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {suggestedDescriptions.length > 0 && (
-                          <div>
-                            <Label className="text-xs text-gray-500">
-                              Descriptions
-                            </Label>
-                            <div className="space-y-1.5 mt-1">
-                              {suggestedDescriptions.map((desc, index) => (
-                                <Button
-                                  key={`link-desc-${index}`}
-                                  type="button"
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => useDescription(desc)}
-                                  className="text-xs border-gray-600 text-gray-300 hover:bg-gray-700 h-auto py-1 px-2 w-full text-left justify-start truncate"
-                                  title={desc}
-                                >
-                                  {desc}
-                                </Button>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {suggestedCategories.length > 0 && (
-                          <div>
-                            <Label className="text-xs text-gray-500">
-                              Categories
-                            </Label>
-                            <div className="flex flex-wrap gap-1.5 mt-1">
-                              {suggestedCategories.map((cat, index) => (
-                                <Button
-                                  key={`link-cat-${index}`}
-                                  type="button"
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => addCategory(cat)}
-                                  className="text-xs border-gray-600 text-gray-300 hover:bg-gray-700 h-auto py-0.5 px-1.5"
-                                >
-                                  {cat}
-                                </Button>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </motion.div>
-                    )}
-                </AnimatePresence>
               </CardContent>
             </Card>
 
-            <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card">
+            <Card className="bg-card border border-primary/20 text-foreground shadow-lg">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-xl font-semibold text-blue-400">
-                  <Settings /> Configuration
+                <CardTitle className="flex items-center gap-2 text-xl font-semibold text-primary">
+                  <Settings className="h-5 w-5" /> Writing Preferences
                 </CardTitle>
                 <CardDescription>
-                  Adjust generation parameters (optional).
+                  Customize the tone and length of your content.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="tone" className="text-gray-300">
+                  <Label htmlFor="tone" className="text-foreground">
                     Tone
                   </Label>
                   <Select value={tone} onValueChange={setTone}>
                     <SelectTrigger
                       id="tone"
-                      className="bg-gray-700 border-gray-600 text-white"
+                      className="bg-background border-input text-foreground"
                     >
                       <SelectValue placeholder="Select Tone" />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-gray-700 text-white">
+                    <SelectContent className="bg-popover border-input text-popover-foreground">
                       {toneOptions.map((opt) => (
                         <SelectItem key={opt.value} value={opt.value}>
                           {opt.label}
@@ -690,17 +605,17 @@ export default function AICreateBlog() {
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="length" className="text-gray-300">
+                  <Label htmlFor="length" className="text-foreground">
                     Length
                   </Label>
                   <Select value={length} onValueChange={setLength}>
                     <SelectTrigger
                       id="length"
-                      className="bg-gray-700 border-gray-600 text-white"
+                      className="bg-background border-input text-foreground"
                     >
                       <SelectValue placeholder="Select Length" />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-gray-700 text-white">
+                    <SelectContent className="bg-popover border-input text-popover-foreground">
                       {lengthOptions.map((opt) => (
                         <SelectItem key={opt.value} value={opt.value}>
                           {opt.label}
@@ -710,67 +625,16 @@ export default function AICreateBlog() {
                   </Select>
                 </div>
                 <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <Label htmlFor="keywords" className="text-gray-300">
-                      Keywords (comma-separated)
-                    </Label>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() =>
-                        handleSuggestKeywords(generatedContent?.content)
-                      }
-                      disabled={
-                        loadingSection === "keywords" ||
-                        (!topic && !generatedContent)
-                      }
-                      className="text-blue-400 hover:text-blue-300 px-1 h-auto"
-                      title="Suggest Keywords based on Topic/Content"
-                    >
-                      {loadingSection === "keywords" ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <AiOutlineBulb className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
+                  <Label htmlFor="keywords" className="text-foreground">
+                    Keywords (comma-separated)
+                  </Label>
                   <Input
                     id="keywords"
                     value={keywords}
                     onChange={(e) => setKeywords(e.target.value)}
-                    placeholder="e.g., react, typescript, state management"
-                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-500"
+                    placeholder="e.g., react, performance, optimization"
+                    className="bg-background border-input text-foreground placeholder-muted-foreground"
                   />
-                  <AnimatePresence>
-                    {suggestedKeywords.length > 0 &&
-                      loadingSection === "keywords" && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="pt-3 space-y-1"
-                        >
-                          <h4 className="text-xs font-medium text-gray-400">
-                            Suggestions:
-                          </h4>
-                          <div className="flex flex-wrap gap-1.5">
-                            {suggestedKeywords.map((kw, index) => (
-                              <Button
-                                key={index}
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() => addKeyword(kw)}
-                                className="text-xs border-gray-600 text-gray-300 hover:bg-gray-700 h-auto py-0.5 px-1.5"
-                              >
-                                {kw}
-                              </Button>
-                            ))}
-                          </div>
-                        </motion.div>
-                      )}
-                  </AnimatePresence>
                 </div>
               </CardContent>
             </Card>
@@ -784,54 +648,23 @@ export default function AICreateBlog() {
           >
             <div className="space-y-6 flex-shrink-0">
               {!generatedContent && (generatedOutline || topic) && (
-                <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card">
+                <Card className="bg-card border border-primary/20 text-foreground shadow-lg">
                   <CardContent className="pt-6">
                     <Button
                       onClick={handleGenerateFullPost}
-                      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg py-3"
-                      disabled={loadingSection === "full"}
+                      className="w-full bg-gradient-to-r from-primary to-brandSecondary hover:from-primary/90 hover:to-brandSecondary/90 text-primary-foreground text-lg py-3"
+                      disabled={loadingSection === "generate"}
                     >
-                      {loadingSection === "full" ? (
+                      {loadingSection === "generate" ? (
                         <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                       ) : (
                         <AiOutlineRobot className="mr-2 h-5 w-5" />
                       )}
-                      Generate Full Blog Post
+                      Generate Blog Post
                     </Button>
                   </CardContent>
                 </Card>
               )}
-
-              <AnimatePresence>
-                {generatedOutline && !generatedContent && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                  >
-                    <Card className="bg-gray-750 border-gray-600 text-white">
-                      <CardHeader>
-                        <CardTitle className="text-lg font-medium text-blue-300">
-                          Generated Outline
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-1 text-sm">
-                        <p>
-                          <strong>Title:</strong> {generatedOutline.title}
-                        </p>
-                        <div>
-                          <strong>Headings:</strong>
-                          <ul className="list-disc list-inside ml-4 text-gray-300">
-                            {generatedOutline.headings.map((h, i) => (
-                              <li key={i}>{h}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </div>
 
             <div className="flex-grow flex flex-col min-h-0">
@@ -844,26 +677,26 @@ export default function AICreateBlog() {
                     exit={{ opacity: 0, scale: 0.95 }}
                     className="flex flex-col flex-grow min-h-0"
                   >
-                    <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card flex flex-col flex-grow min-h-0">
+                    <Card className="bg-card border border-primary/20 text-foreground shadow-lg flex flex-col flex-grow min-h-0">
                       <CardHeader className="flex-shrink-0">
-                        <CardTitle className="flex items-center justify-between text-xl font-semibold text-blue-400">
+                        <CardTitle className="flex items-center justify-between text-xl font-semibold text-primary">
                           <span>Generated Content Preview</span>
                           <Button
                             variant="ghost"
                             size="icon"
                             onClick={clearGeneratedContent}
-                            className="text-gray-400 hover:text-red-500"
+                            className="text-muted-foreground hover:text-destructive"
                           >
                             <AiOutlineClose />
                           </Button>
                         </CardTitle>
                         <CardDescription>
-                          Review the generated HTML content below.
+                          Review and edit your generated content before saving.
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="flex-grow overflow-hidden p-0">
                         <ScrollArea className="h-full p-4">
-                          <h2 className="text-2xl font-bold mb-4 pb-2 border-b border-gray-700 flex-shrink-0">
+                          <h2 className="text-2xl font-bold mb-4 pb-2 border-b border-primary/10 flex-shrink-0">
                             {generatedContent.title}
                           </h2>
                           <div className="prose prose-invert max-w-none prose-p:my-2 prose-h2:mt-4 prose-h2:mb-1 prose-h3:mt-3 prose-h3:mb-1 prose-ul:my-2 prose-li:my-0.5">
@@ -878,18 +711,37 @@ export default function AICreateBlog() {
                 )}
               </AnimatePresence>
               {!generatedContent && !loadingSection && !generatedOutline && (
-                <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card flex-grow flex items-center justify-center">
-                  <div className="text-center text-gray-500 p-8">
-                    <AiOutlineRobot size={48} className="mx-auto mb-4" />
-                    <p>Generated content will appear here.</p>
+                <Card className="bg-card border border-primary/20 text-foreground shadow-lg flex-grow flex items-center justify-center">
+                  <div className="text-center text-muted-foreground p-8 max-w-md">
+                    <AiOutlineRobot size={48} className="mx-auto mb-4 text-primary/50" />
+                    <h3 className="text-xl font-semibold mb-2 text-foreground">AI Blog Generator</h3>
+                    <p className="mb-4">
+                      Start by entering a topic, generating an outline, or transforming existing content.
+                      Your AI-generated blog post will appear here.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                      <Badge variant="secondary" className="px-3 py-1">Step 1: Enter Topic</Badge>
+                      <Badge variant="secondary" className="px-3 py-1">Step 2: Generate Outline</Badge>
+                      <Badge variant="secondary" className="px-3 py-1">Step 3: Create Content</Badge>
+                    </div>
                   </div>
                 </Card>
               )}
-              {loadingSection === "full" && (
-                <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card flex-grow flex items-center justify-center">
-                  <div className="text-center text-gray-400 p-8">
-                    <Loader2 size={48} className="mx-auto mb-4 animate-spin" />
-                    <p>Generating blog post...</p>
+              {loadingSection === "generate" && (
+                <Card className="bg-card border border-primary/20 text-foreground shadow-lg flex-grow flex items-center justify-center">
+                  <div className="text-center text-muted-foreground p-8">
+                    <Loader2 size={48} className="mx-auto mb-4 animate-spin text-primary" />
+                    <h3 className="text-xl font-semibold mb-2">Generating Blog Post</h3>
+                    <p>Creating human-like content based on your topic...</p>
+                  </div>
+                </Card>
+              )}
+              {loadingSection === "link" && (
+                <Card className="bg-card border border-primary/20 text-foreground shadow-lg flex-grow flex items-center justify-center">
+                  <div className="text-center text-muted-foreground p-8">
+                    <Loader2 size={48} className="mx-auto mb-4 animate-spin text-primary" />
+                    <h3 className="text-xl font-semibold mb-2">Processing Article</h3>
+                    <p>Transforming the content into a fresh blog post...</p>
                   </div>
                 </Card>
               )}
@@ -904,16 +756,19 @@ export default function AICreateBlog() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
                   >
-                    <Card className="bg-gray-800 border-gray-700 text-white shadow-lg glow-card">
+                    <Card className="bg-card border border-primary/20 text-foreground shadow-lg">
                       <CardHeader>
-                        <CardTitle className="text-xl font-semibold text-blue-400">
-                          Actions
+                        <CardTitle className="text-xl font-semibold text-primary">
+                          Ready to Save
                         </CardTitle>
+                        <CardDescription>
+                          Save your generated content as a draft to continue editing.
+                        </CardDescription>
                       </CardHeader>
                       <CardContent>
                         <Button
                           onClick={handleSaveDraft}
-                          className="w-full bg-green-600 hover:bg-green-700"
+                          className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-primary-foreground"
                           disabled={
                             loadingSection === "save" ||
                             saveStatus.state === "success"
@@ -931,7 +786,7 @@ export default function AICreateBlog() {
                             : "Save as Draft"}
                         </Button>
                         {saveStatus.state === "error" && (
-                          <p className="mt-2 text-sm text-red-500">
+                          <p className="mt-2 text-sm text-destructive">
                             Error: {saveStatus.message}
                           </p>
                         )}
@@ -946,7 +801,7 @@ export default function AICreateBlog() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="mt-4 p-3 bg-red-900/50 border border-red-700 rounded text-red-300 text-center text-sm"
+                className="p-3 bg-destructive/10 border border-destructive/20 rounded text-destructive text-center text-sm"
               >
                 {error}
               </motion.div>

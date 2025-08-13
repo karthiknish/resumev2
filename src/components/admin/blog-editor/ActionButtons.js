@@ -32,17 +32,17 @@ function ActionButtons({
       {/* Display general form error */}
       {error &&
         !submitStatus[0] && ( // Show general error if submit status isn't success
-          <div className="p-3 bg-red-900/50 border border-red-700 text-red-300 rounded-md text-sm mb-4">
+          <div className="p-3 bg-destructive/10 border border-destructive/20 text-destructive rounded-md text-sm mb-4">
             {error}
           </div>
         )}
 
       {/* Action Buttons & Publish Toggle */}
-      <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-gray-700 justify-between items-center">
+      <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-primary/10 justify-between items-center">
         {/* Save Button */}
         <Button
           type="submit"
-          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 disabled:opacity-50 order-1 sm:order-none"
+          className="w-full sm:w-auto bg-gradient-to-r from-primary to-brandSecondary hover:from-primary/90 hover:to-brandSecondary/90 text-primary-foreground disabled:opacity-50 order-1 sm:order-none"
           disabled={isLoading || isSaveDisabled}
           onClick={onSubmit} // Keep onClick if not using form onSubmit directly
         >
@@ -62,7 +62,7 @@ function ActionButtons({
               />
               <Label
                 htmlFor="isPublishedToggle"
-                className="text-gray-300 cursor-pointer"
+                className="text-foreground cursor-pointer"
               >
                 {isPublished ? "Published" : "Draft"}
               </Label>

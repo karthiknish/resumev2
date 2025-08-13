@@ -9,7 +9,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger, // Keep DialogTrigger for the manual URL button
+  DialogTrigger,
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
@@ -33,8 +33,8 @@ function BannerImageSection({ imageUrl, onImageUrlChange }) {
 
   return (
     <div className="space-y-2">
-      <Label className="block text-white">Cover Image</Label>
-      <div className="h-48 md:h-64 bg-gray-700 rounded-lg relative flex items-center justify-center border border-dashed border-gray-600 overflow-hidden">
+      <Label className="block text-foreground">Cover Image</Label>
+      <div className="h-48 md:h-64 bg-muted rounded-lg relative flex items-center justify-center border border-dashed border-input overflow-hidden">
         {imageUrl ? (
           <>
             <img
@@ -68,7 +68,7 @@ function BannerImageSection({ imageUrl, onImageUrlChange }) {
             </Button>
           </>
         ) : (
-          <div className="text-center text-gray-400 flex flex-col items-center gap-4">
+          <div className="text-center text-muted-foreground flex flex-col items-center gap-4">
             <ImagePlus size={40} />
             <div className="flex gap-2">
               {/* Pexels Button - Now just sets state, DialogTrigger removed */}
@@ -91,7 +91,7 @@ function BannerImageSection({ imageUrl, onImageUrlChange }) {
                     <LinkIcon className="mr-2 h-4 w-4" /> Add via URL
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px] bg-gray-900 border-gray-700 text-white">
+                <DialogContent className="sm:max-w-[425px] bg-popover border-input text-popover-foreground">
                   <DialogHeader>
                     <DialogTitle>Add Image URL</DialogTitle>
                   </DialogHeader>
@@ -101,7 +101,7 @@ function BannerImageSection({ imageUrl, onImageUrlChange }) {
                       placeholder="https://example.com/image.jpg"
                       value={manualImageUrl}
                       onChange={(e) => setManualImageUrl(e.target.value)}
-                      className="col-span-3 bg-gray-800 border-gray-600"
+                      className="col-span-3 bg-background border-input"
                     />
                   </div>
                   <DialogFooter>
@@ -122,7 +122,7 @@ function BannerImageSection({ imageUrl, onImageUrlChange }) {
       <Dialog open={showPexelsSearch} onOpenChange={setShowPexelsSearch}>
         {/* No DialogTrigger needed here as it's controlled by state */}
         {/* Added max-h and overflow to DialogContent */}
-        <DialogContent className="sm:max-w-[800px] bg-gray-900 border-gray-700 text-white max-h-[85vh] flex flex-col">
+        <DialogContent className="sm:max-w-[800px] bg-popover border-input text-popover-foreground max-h-[85vh] flex flex-col">
           <DialogHeader className="flex-shrink-0">
             {" "}
             {/* Prevent header from shrinking */}
@@ -150,7 +150,7 @@ function BannerImageSection({ imageUrl, onImageUrlChange }) {
         value={imageUrl || ""}
         type="text"
         onChange={(e) => onImageUrlChange(e.target.value)}
-        className="block w-full px-4 py-2 text-gray-300 bg-gray-700 border-gray-600 rounded-lg focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none mt-2"
+        className="block w-full px-4 py-2 text-foreground bg-background border-input rounded-lg focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none mt-2"
         placeholder="Image URL will appear here or paste directly"
         required
       />

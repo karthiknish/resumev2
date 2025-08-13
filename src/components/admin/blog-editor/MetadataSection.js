@@ -174,7 +174,7 @@ function MetadataSection({
   };
 
   return (
-    <div className="space-y-6 border-y border-gray-700 py-6">
+    <div className="space-y-6 border-y border-primary/10 py-6">
       {/* Title Input with Suggestion Button */}
       <div className="space-y-2">
         <div className="flex items-center gap-2">
@@ -183,7 +183,7 @@ function MetadataSection({
             value={formData.title || ""}
             onChange={handleChange}
             type="text"
-            className="flex-grow text-3xl md:text-4xl font-bold bg-transparent border-none focus:ring-0 focus:outline-none h-auto p-0 placeholder-gray-500 text-white"
+            className="flex-grow text-3xl md:text-4xl font-bold bg-background border-input focus:ring-0 focus:outline-none h-auto p-0 placeholder-muted-foreground text-foreground"
             placeholder="Untitled Blog Post"
             required
           />
@@ -195,7 +195,7 @@ function MetadataSection({
             disabled={
               isSuggestingTitle || (!formData.title && !formData.content)
             }
-            className="text-purple-400 hover:text-purple-300 disabled:text-gray-500 flex-shrink-0"
+            className="text-primary hover:text-primary/80 disabled:text-muted-foreground flex-shrink-0"
             title="Suggest better titles (AI)"
           >
             {isSuggestingTitle ? (
@@ -206,17 +206,17 @@ function MetadataSection({
           </Button>
         </div>
         {titleSuggestionError && (
-          <p className="text-xs text-red-500 mt-1">{titleSuggestionError}</p>
+          <p className="text-xs text-destructive mt-1">{titleSuggestionError}</p>
         )}
         {titleSuggestions.length > 0 && (
           <div className="flex flex-col gap-1 mt-1 pl-2">
-            <span className="text-xs text-gray-400">Suggestions:</span>
+            <span className="text-xs text-muted-foreground">Suggestions:</span>
             {titleSuggestions.map((suggestion, index) => (
               <button
                 key={index}
                 type="button"
                 onClick={() => onFormChange({ ...formData, title: suggestion })}
-                className="px-1.5 py-0.5 text-sm text-left bg-gray-700 text-gray-300 rounded hover:bg-blue-600 hover:text-white transition-colors"
+                className="px-1.5 py-0.5 text-sm text-left bg-muted text-foreground rounded hover:bg-primary hover:text-primary-foreground transition-colors"
               >
                 {suggestion}
               </button>
@@ -229,7 +229,7 @@ function MetadataSection({
         {/* Description / Excerpt */}
         <div className="space-y-2 md:col-span-2">
           <div className="flex justify-between items-center">
-            <Label htmlFor="description" className="text-gray-400">
+            <Label htmlFor="description" className="text-foreground">
               Description / Excerpt
             </Label>
             <Button
@@ -240,7 +240,7 @@ function MetadataSection({
               disabled={
                 isSuggestingDesc || (!formData.title && !formData.content)
               }
-              className="text-purple-400 hover:text-purple-300 disabled:text-gray-500 px-2 py-1 text-xs"
+              className="text-primary hover:text-primary/80 disabled:text-muted-foreground px-2 py-1 text-xs"
               title="Suggest Descriptions (uses Title/Content)"
             >
               {isSuggestingDesc ? (
@@ -258,17 +258,17 @@ function MetadataSection({
             onChange={(e) =>
               onFormChange({ ...formData, excerpt: e.target.value })
             }
-            className="bg-gray-800 border-gray-700 focus:border-blue-500 focus:ring-blue-500"
+            className="bg-background border-input focus:border-primary focus:ring-primary"
             placeholder="A short summary for previews and SEO (120-155 chars recommended)..."
             rows={3}
             required
           />
           {descSuggestionError && (
-            <p className="text-xs text-red-500 mt-1">{descSuggestionError}</p>
+            <p className="text-xs text-destructive mt-1">{descSuggestionError}</p>
           )}
           {descSuggestions.length > 0 && (
             <div className="flex flex-col gap-1 mt-1">
-              <span className="text-xs text-gray-400">Suggestions:</span>
+              <span className="text-xs text-muted-foreground">Suggestions:</span>
               {descSuggestions.map((suggestion, index) => (
                 <button
                   key={index}
@@ -276,7 +276,7 @@ function MetadataSection({
                   onClick={() =>
                     onFormChange({ ...formData, excerpt: suggestion })
                   }
-                  className="px-1.5 py-0.5 text-xs text-left bg-gray-700 text-gray-300 rounded hover:bg-blue-600 hover:text-white transition-colors"
+                  className="px-1.5 py-0.5 text-xs text-left bg-muted text-foreground rounded hover:bg-primary hover:text-primary-foreground transition-colors"
                 >
                   {suggestion}
                 </button>
@@ -288,7 +288,7 @@ function MetadataSection({
         {/* Category */}
         <div className="space-y-2">
           <div className="flex justify-between items-center">
-            <Label htmlFor="category" className="text-gray-400">
+            <Label htmlFor="category" className="text-foreground">
               Category
             </Label>
             <Button
@@ -299,7 +299,7 @@ function MetadataSection({
               disabled={
                 isSuggestingCat || (!formData.title && !formData.content)
               }
-              className="text-purple-400 hover:text-purple-300 disabled:text-gray-500 px-2 py-1 text-xs"
+              className="text-primary hover:text-primary/80 disabled:text-muted-foreground px-2 py-1 text-xs"
               title="Suggest Categories (uses Title/Content)"
             >
               {isSuggestingCat ? (
@@ -316,11 +316,11 @@ function MetadataSection({
             value={formData.category || ""}
             onChange={handleChange}
             type="text"
-            className="bg-gray-800 border-gray-700 focus:border-blue-500 focus:ring-blue-500"
+            className="bg-background border-input focus:border-primary focus:ring-primary"
             placeholder="e.g., Tech"
           />
           {catSuggestionError && (
-            <p className="text-xs text-red-500 mt-1">{catSuggestionError}</p>
+            <p className="text-xs text-destructive mt-1">{catSuggestionError}</p>
           )}
           {catSuggestions.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-1">
@@ -331,7 +331,7 @@ function MetadataSection({
                   onClick={() =>
                     onFormChange({ ...formData, category: suggestion })
                   }
-                  className="px-1.5 py-0.5 text-xs bg-gray-700 text-gray-300 rounded hover:bg-blue-600 hover:text-white transition-colors"
+                  className="px-1.5 py-0.5 text-xs bg-muted text-foreground rounded hover:bg-primary hover:text-primary-foreground transition-colors"
                 >
                   {suggestion}
                 </button>
@@ -343,7 +343,7 @@ function MetadataSection({
         {/* Tags */}
         <div className="space-y-2">
           <div className="flex justify-between items-center">
-            <Label htmlFor="tags" className="text-gray-400">
+            <Label htmlFor="tags" className="text-foreground">
               Tags (comma-separated)
             </Label>
             <Button
@@ -354,7 +354,7 @@ function MetadataSection({
               disabled={
                 isSuggestingKeywords || (!formData.title && !formData.content)
               }
-              className="text-purple-400 hover:text-purple-300 disabled:text-gray-500 px-2 py-1 text-xs"
+              className="text-primary hover:text-primary/80 disabled:text-muted-foreground px-2 py-1 text-xs"
               title="Suggest Keywords/Tags (uses Title/Content)"
             >
               {isSuggestingKeywords ? (
@@ -371,17 +371,17 @@ function MetadataSection({
             value={formData.tags?.join(", ") || ""} // Join array for display
             onChange={handleTagsChange}
             type="text"
-            className="bg-gray-800 border-gray-700 focus:border-blue-500 focus:ring-blue-500"
+            className="bg-background border-input focus:border-primary focus:ring-primary"
             placeholder="e.g., react, nextjs, tutorial"
           />
           {keywordSuggestionError && (
-            <p className="text-xs text-red-500 mt-1">
+            <p className="text-xs text-destructive mt-1">
               {keywordSuggestionError}
             </p>
           )}
           {keywordSuggestions.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-1">
-              <span className="text-xs text-gray-400 w-full mb-1">
+              <span className="text-xs text-muted-foreground w-full mb-1">
                 Suggestions (click to add):
               </span>
               {keywordSuggestions
@@ -397,7 +397,7 @@ function MetadataSection({
                     key={index}
                     type="button"
                     onClick={() => addSuggestedTag(suggestion)} // Use add function
-                    className="px-1.5 py-0.5 text-xs bg-gray-700 text-gray-300 rounded hover:bg-blue-600 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-1.5 py-0.5 text-xs bg-muted text-foreground rounded hover:bg-primary hover:text-primary-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={(formData.tags || []).includes(suggestion)} // Disable if already added
                   >
                     {suggestion}

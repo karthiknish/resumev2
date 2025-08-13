@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Loader2, Clock, User, MessageSquare, Bot, Sparkles } from "lucide-react";
+import { Loader2, Clock, User, MessageSquare, Bot, Sparkles, Search } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import {
   Accordion,
   AccordionContent,
@@ -26,8 +27,10 @@ const formatDate = (dateString) => {
 
 export default function ChatHistoryTab() {
   const [chatHistories, setChatHistories] = useState([]);
+  const [filteredHistories, setFilteredHistories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchChatHistories = async () => {
@@ -43,9 +46,15 @@ export default function ChatHistoryTab() {
         }
         const data = await response.json();
         if (data.success && data.data && Array.isArray(data.data)) {
-          setChatHistories(data.data);
+          // Sort by most recent first
+          const sortedHistories = data.data.sort((a, b) => 
+            new Date(b.timestamp || b.lastUpdated) - new Date(a.timestamp || a.lastUpdated)
+          );
+          setChatHistories(sortedHistories);
+          setFilteredHistories(sortedHistories);
         } else {
           setChatHistories([]);
+          setFilteredHistories([]);
           setError("No chat histories found or invalid response format");
         }
       } catch (err) {
@@ -58,17 +67,109 @@ export default function ChatHistoryTab() {
     fetchChatHistories();
   }, []);
 
+  // Filter chat histories based on search term
+  useEffect(() => {
+    if (!searchTerm) {
+      setFilteredHistories(chatHistories);
+      return;
+    }
+    
+    const filtered = chatHistories.filter(history => {
+      // Search in email
+      if (history.email && history.email.toLowerCase().includes(searchTerm.toLowerCase())) {
+        return true;
+      }
+      
+      // Search in messages
+      if (history.messages && Array.isArray(history.messages)) {
+        return history.messages.some(msg => {
+          // Check different message formats
+          let content = "";
+          if (Array.isArray(msg.parts) && msg.parts.length > 0) {
+            content = msg.parts.map(part => part?.text ?? "").join("");
+          } else if (typeof msg.text === "string") {
+            content = msg.text;
+          } else if (typeof msg.content === "string") {
+            content = msg.content;
+          }
+          
+          return content.toLowerCase().includes(searchTerm.toLowerCase());
+        });
+      }
+      
+      return false;
+    });
+    
+    setFilteredHistories(filtered);
+  }, [searchTerm, chatHistories]);
+
+  // Filter chat histories based on search term
+  useEffect(() => {
+    if (!searchTerm) {
+      setFilteredChatHistories(chatHistories);
+      return;
+    }
+    
+    const filtered = chatHistories.filter(history => {
+      // Search in email
+      if (history.email && history.email.toLowerCase().includes(searchTerm.toLowerCase())) {
+        return true;
+      }
+      
+      // Search in messages
+      if (history.messages && Array.isArray(history.messages)) {
+        return history.messages.some(msg => {
+          // Check different message formats
+          let content = "";
+          if (Array.isArray(msg.parts) && msg.parts.length > 0) {
+            content = msg.parts.map(part => part?.text ?? "").join("");
+          } else if (typeof msg.text === "string") {
+            content = msg.text;
+          } else if (typeof msg.content === "string") {
+            content = msg.content;
+          }
+          
+          return content.toLowerCase().includes(searchTerm.toLowerCase());
+        });
+      }
+      
+      return false;
+    });
+    
+    setFilteredChatHistories(filtered);
+  }, [searchTerm, chatHistories]);
+
   // Helper function to render message content safely
   const renderMessageContent = (msg) => {
+    // Handle different message formats
+    let content = "";
+    
+    // Gemini API format
     if (Array.isArray(msg.parts) && msg.parts.length > 0) {
-      return msg.parts.map((part, partIndex) => (
-        <span key={partIndex}>{part?.text ?? ""}</span>
-      ));
-    } else if (typeof msg.text === "string") {
-      return <span>{msg.text}</span>;
+      content = msg.parts.map(part => part?.text ?? "").join("");
+    } 
+    // Standard text formats
+    else if (typeof msg.text === "string") {
+      content = msg.text;
     } else if (typeof msg.content === "string") {
-      return <span>{msg.content}</span>;
+      content = msg.content;
     }
+    
+    // If we have content, render it with proper formatting
+    if (content) {
+      return (
+        <div className="whitespace-pre-wrap break-words leading-relaxed">
+          {content.split("\n").map((line, i) => (
+            <React.Fragment key={i}>
+              {line}
+              {i < content.split("\n").length - 1 && <br />}
+            </React.Fragment>
+          ))}
+        </div>
+      );
+    }
+    
+    // Fallback for empty or unreadable messages
     return (
       <span className="italic text-gray-500">
         [Empty or unreadable message]
@@ -95,6 +196,20 @@ export default function ChatHistoryTab() {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
+        {/* Search Bar */}
+        <div className="mb-6">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Input
+              type="text"
+              placeholder="Search conversations by email or message content..."
+              className="pl-10 pr-4 py-6 bg-white border-2 border-purple-200 rounded-2xl focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-300"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+        
         {isLoading && (
           <motion.div 
             className="flex flex-col justify-center items-center py-16"
@@ -121,27 +236,46 @@ export default function ChatHistoryTab() {
             </div>
           </motion.div>
         )}
-        {!isLoading && !error && chatHistories.length === 0 && (
+        {!isLoading && !error && filteredHistories.length === 0 && (
           <motion.div 
             className="text-center py-16"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
             <div className="bg-gray-50 border border-gray-200 rounded-2xl p-8">
-              <div className="text-gray-400 text-6xl mb-4">💬</div>
-              <p className="text-gray-600 font-semibold text-xl mb-2">No Conversations Yet</p>
-              <p className="text-gray-500">Chat conversations will appear here once users start chatting with the AI.</p>
+              <div className="text-gray-400 text-6xl mb-4">🔍</div>
+              <p className="text-gray-600 font-semibold text-xl mb-2">
+                {searchTerm ? "No Matching Conversations" : "No Conversations Yet"}
+              </p>
+              <p className="text-gray-500">
+                {searchTerm 
+                  ? `No conversations found matching "${searchTerm}". Try a different search term.` 
+                  : "Chat conversations will appear here once users start chatting with the AI."}
+              </p>
             </div>
           </motion.div>
         )}
-        {!isLoading && !error && chatHistories.length > 0 && (
+        {!isLoading && !error && filteredHistories.length > 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, staggerChildren: 0.1 }}
           >
+            <div className="mb-4 flex justify-between items-center">
+              <p className="text-gray-600">
+                Showing {filteredHistories.length} of {chatHistories.length} conversations
+              </p>
+              {searchTerm && (
+                <button 
+                  onClick={() => setSearchTerm("")}
+                  className="text-sm text-purple-600 hover:text-purple-800 font-medium"
+                >
+                  Clear search
+                </button>
+              )}
+            </div>
             <Accordion type="single" collapsible className="w-full space-y-4">
-              {chatHistories.map((history, index) => (
+              {filteredHistories.map((history, index) => (
                 <motion.div
                   key={history._id || index}
                   initial={{ opacity: 0, x: -20 }}
@@ -199,14 +333,17 @@ export default function ChatHistoryTab() {
                                 </div>
                               )}
                               <div
-                                className={`max-w-[75%] px-4 py-3 rounded-2xl shadow-sm ${
+                                className={`max-w-[85%] px-4 py-3 rounded-2xl shadow-sm ${
                                   isUser
                                     ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-br-md"
                                     : "bg-white border border-gray-200 text-gray-800 rounded-bl-md"
                                 }`}
                               >
-                                <div className="whitespace-pre-wrap break-words leading-relaxed">
-                                  {renderMessageContent(msg)}
+                                {renderMessageContent(msg)}
+                                <div className={`text-xs mt-2 ${
+                                  isUser ? "text-purple-100" : "text-gray-500"
+                                }`}>
+                                  {formatDate(msg.timestamp)}
                                 </div>
                               </div>
                               {isUser && (

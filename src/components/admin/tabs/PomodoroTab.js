@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const PomodoroTab = () => {
   const [pomodoroData, setPomodoroData] = useState([
@@ -35,7 +36,7 @@ const PomodoroTab = () => {
 
   return (
     <div>
-      <h2 className="text-3xl font-black mb-8 bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+      <h2 className="text-3xl font-black mb-8 bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
         🍅 Pomodoro Productivity
       </h2>
       {/* Render the Pomodoro Timer */}
@@ -44,66 +45,80 @@ const PomodoroTab = () => {
       {/* Additional Features */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Weekly Pomodoros Bar Chart */}
-        <div className="bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-xl border-2 border-red-200">
-          <h3 className="text-lg font-bold text-red-700 mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
-            📊 Weekly Pomodoros
-          </h3>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={pomodoroData}
-                layout="horizontal"
-                margin={{ left: 10 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-                <XAxis dataKey="day" stroke="#fff" />
-                <YAxis stroke="#fff" allowDecimals={false} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#333",
-                    border: "none",
-                    borderRadius: "4px",
-                    color: "#fff",
-                  }}
-                  labelStyle={{ color: "#fff" }}
-                />
-                <Bar dataKey="count" fill="#3b82f6" radius={[0, 0, 4, 4]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          <p className="text-sm text-gray-400 mt-2">
-            Total this week: {totalPomodoros}
-          </p>
-        </div>
+        <Card className="bg-card border border-primary/20 text-foreground shadow-lg">
+          <CardHeader>
+            <CardTitle className="text-lg font-bold text-primary">
+              📊 Weekly Pomodoros
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={pomodoroData}
+                  layout="horizontal"
+                  margin={{ left: 10 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="day" stroke="hsl(var(--foreground))" />
+                  <YAxis stroke="hsl(var(--foreground))" allowDecimals={false} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "var(--radius)",
+                      color: "hsl(var(--foreground))",
+                    }}
+                    labelStyle={{ color: "hsl(var(--foreground))" }}
+                  />
+                  <Bar dataKey="count" fill="hsl(var(--primary))" radius={[0, 0, 4, 4]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <p className="text-sm text-muted-foreground mt-2">
+              Total this week: {totalPomodoros}
+            </p>
+          </CardContent>
+        </Card>
 
         {/* Work Mode Toggle */}
-        <div className="bg-gray-800/50 backdrop-blur-sm p-4 rounded-lg shadow border border-gray-700/50">
-          <h3 className="text-lg font-medium text-white mb-2">Work Mode</h3>
-          <div className="flex items-center justify-between">
-            <span className="text-base text-gray-300 capitalize">
-              Current: {workMode}
-            </span>
-            <Button
-              onClick={toggleWorkMode}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              Switch to {workMode === "sitting" ? "Standing" : "Sitting"}
-            </Button>
-          </div>
-          <p className="text-sm text-gray-400 mt-4">
-            Switching between sitting and standing can reduce fatigue.
-          </p>
-        </div>
+        <Card className="bg-card border border-primary/20 text-foreground shadow-lg">
+          <CardHeader>
+            <CardTitle className="text-lg font-bold text-primary">
+              Work Mode
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between">
+              <span className="text-base text-muted-foreground capitalize">
+                Current: {workMode}
+              </span>
+              <Button
+                onClick={toggleWorkMode}
+                className="bg-gradient-to-r from-primary to-brandSecondary hover:from-primary/90 hover:to-brandSecondary/90 text-primary-foreground"
+              >
+                Switch to {workMode === "sitting" ? "Standing" : "Sitting"}
+              </Button>
+            </div>
+            <p className="text-sm text-muted-foreground mt-4">
+              Switching between sitting and standing can reduce fatigue.
+            </p>
+          </CardContent>
+        </Card>
 
         {/* Placeholder for Pomodoro Activity Heatmap */}
-        <div className="bg-gray-800/50 backdrop-blur-sm p-4 rounded-lg shadow border border-gray-700/50">
-          <h3 className="text-lg font-medium text-white mb-2">
-            Activity Heatmap
-          </h3>
-          <div className="h-48">
-            <Heatmap />
-          </div>
-        </div>
+        <Card className="bg-card border border-primary/20 text-foreground shadow-lg">
+          <CardHeader>
+            <CardTitle className="text-lg font-bold text-primary">
+              Activity Heatmap
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-48">
+              <Heatmap />
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
@@ -121,11 +136,11 @@ const Heatmap = () => {
 
   // Function to get color based on value (0-4 Pomodoros)
   const getColor = (value) => {
-    if (value === 0) return "bg-gray-700";
-    if (value === 1) return "bg-blue-500/30";
-    if (value === 2) return "bg-blue-500/50";
-    if (value === 3) return "bg-blue-500/70";
-    return "bg-blue-500";
+    if (value === 0) return "bg-muted";
+    if (value === 1) return "bg-primary/20";
+    if (value === 2) return "bg-primary/40";
+    if (value === 3) return "bg-primary/60";
+    return "bg-primary";
   };
 
   return (
@@ -134,15 +149,15 @@ const Heatmap = () => {
       <div className="flex h-6 mb-1">
         <div className="w-8" /> {/* Empty corner */}
         {days.map((day) => (
-          <div key={day} className="w-8 text-center text-xs text-gray-300">
+          <div key={day} className="w-8 text-center text-xs text-muted-foreground">
             {day}
           </div>
         ))}
       </div>
 
-      <div className="flex flex-row h-full overflow-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
+      <div className="flex flex-row h-full overflow-auto scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
         {/* Hour Labels */}
-        <div className="w-8 flex flex-col justify-between text-right text-xs text-gray-300 py-2">
+        <div className="w-8 flex flex-col justify-between text-right text-xs text-muted-foreground py-2">
           <span>0:00</span>
           <span>6:00</span>
           <span>12:00</span>
@@ -168,21 +183,21 @@ const Heatmap = () => {
       </div>
 
       {/* Legend */}
-      <div className="flex justify-center mt-2 text-xs text-gray-400">
+      <div className="flex justify-center mt-2 text-xs text-muted-foreground">
         <span className="flex items-center mr-2">
-          <span className="w-3 h-3 bg-gray-700 rounded-sm mr-1"></span> 0
+          <span className="w-3 h-3 bg-muted rounded-sm mr-1"></span> 0
         </span>
         <span className="flex items-center mr-2">
-          <span className="w-3 h-3 bg-blue-500/30 rounded-sm mr-1"></span> 1
+          <span className="w-3 h-3 bg-primary/20 rounded-sm mr-1"></span> 1
         </span>
         <span className="flex items-center mr-2">
-          <span className="w-3 h-3 bg-blue-500/50 rounded-sm mr-1"></span> 2
+          <span className="w-3 h-3 bg-primary/40 rounded-sm mr-1"></span> 2
         </span>
         <span className="flex items-center mr-2">
-          <span className="w-3 h-3 bg-blue-500/70 rounded-sm mr-1"></span> 3
+          <span className="w-3 h-3 bg-primary/60 rounded-sm mr-1"></span> 3
         </span>
         <span className="flex items-center">
-          <span className="w-3 h-3 bg-blue-500 rounded-sm mr-1"></span> 4+
+          <span className="w-3 h-3 bg-primary rounded-sm mr-1"></span> 4+
         </span>
       </div>
     </div>

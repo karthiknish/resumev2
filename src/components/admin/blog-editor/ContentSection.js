@@ -23,6 +23,7 @@ function ContentSection({
   const handleGenerateContent = useCallback(async () => {
     if (!blogTitle?.trim()) {
       setContentGenError("Please enter a blog title first.");
+      toast.error("Please enter a blog title first.");
       return;
     }
     setIsGeneratingContent(true);
@@ -39,6 +40,7 @@ function ContentSection({
       if (response.data.success && response.data.data?.content) {
         console.log("[ContentSection] Content generated successfully.");
         setContent(response.data.data.content); // Update parent state
+        toast.success("Content generated successfully!");
       } else {
         console.error(
           "[ContentSection] Content generation API call failed:",
@@ -55,6 +57,7 @@ function ContentSection({
           err.message ||
           "Error generating content."
       );
+      toast.error("Error generating content. Please try again.");
     } finally {
       setIsGeneratingContent(false);
     }
@@ -71,19 +74,19 @@ function ContentSection({
     try {
       console.log("[ContentSection] Requesting content formatting...");
       const response = await axios.post("/api/ai/format-content", {
-        htmlContent: content, // Send the current HTML content
+        content: content, // Send the current HTML content
       });
 
-      if (response.data.success && response.data.formattedContent) {
+      if (response.data.success && response.data.data) {
         console.log("[ContentSection] Content formatted successfully.");
-        setContent(response.data.formattedContent); // Update parent state with formatted HTML
+        setContent(response.data.data); // Update parent state with formatted HTML
         toast.success("Content formatted successfully!");
       } else {
         console.error(
           "[ContentSection] Content formatting API call failed:",
           response.data
         );
-        throw new Error(response.data.message || "Failed to format content.");
+        throw new Error(response.data.message || "Failed to format content");
       }
     } catch (err) {
       console.error("[ContentSection] Error formatting content:", err);
@@ -105,7 +108,7 @@ function ContentSection({
         {/* Added flex-wrap */}
         <Label
           htmlFor="blog-content-editor"
-          className="block text-white mb-2 sm:mb-0"
+          className="block text-foreground mb-2 sm:mb-0 font-medium"
         >
           Content
         </Label>{" "}
@@ -116,9 +119,9 @@ function ContentSection({
             type="button" // Prevent form submission
             onClick={handleFormatContent}
             disabled={isFormatting || !content?.trim()}
-            variant="secondary"
+            variant="outline"
             size="sm"
-            className="flex items-center"
+            className="flex items-center border-primary/20 text-primary hover:bg-primary/5"
             title="Format content using AI"
           >
             {isFormatting ? (
@@ -133,9 +136,9 @@ function ContentSection({
             type="button" // Prevent form submission
             onClick={onTogglePreview}
             disabled={!content?.trim()}
-            variant="secondary"
+            variant="outline"
             size="sm"
-            className="flex items-center"
+            className="flex items-center border-primary/20 text-primary hover:bg-primary/5"
           >
             <AiOutlineEye className="mr-1 h-4 w-4" />
             Preview
@@ -145,9 +148,9 @@ function ContentSection({
             type="button" // Prevent form submission
             onClick={handleGenerateContent}
             disabled={isGeneratingContent || !blogTitle?.trim()}
-            variant="secondary"
+            variant="default"
             size="sm"
-            className="flex items-center bg-green-600 hover:bg-green-700 text-white disabled:bg-gray-600"
+            className="flex items-center bg-gradient-to-r from-primary to-brandSecondary hover:from-primary/90 hover:to-brandSecondary/90 text-primary-foreground"
             title="Generate draft content based on title (AI)"
           >
             {isGeneratingContent ? (
@@ -161,11 +164,11 @@ function ContentSection({
       </div>
       {/* Display Content Generation Error */}
       {contentGenError && (
-        <p className="text-sm text-red-500 mt-1">{contentGenError}</p>
+        <p className="text-sm text-destructive mt-1">{contentGenError}</p>
       )}
       {/* Display Formatting Error */}
       {formatError && (
-        <p className="text-sm text-red-500 mt-1">Format Error: {formatError}</p>
+        <p className="text-sm text-destructive mt-1">Format Error: {formatError}</p>
       )}
       <TipTapEditor
         content={content || ""}

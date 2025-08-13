@@ -91,13 +91,21 @@ function CalendarTab() {
     const { date, displayMonth } = dayProps;
     // Check if the current day in the calendar has posts
     const hasPosts = blogDates.some((postDate) => isSameDay(postDate, date));
+    const isSelected = isSameDay(date, selectedDate);
+    const isToday = isSameDay(date, new Date());
 
     return (
       <div className="relative w-full h-full flex items-center justify-center">
         {format(date, "d")}
         {hasPosts && displayMonth === date.getMonth() && (
           <span
-            className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-blue-500 rounded-full"
+            className={`absolute bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 rounded-full ${
+              isSelected 
+                ? "bg-white" 
+                : isToday 
+                  ? "bg-purple-500 ring-2 ring-purple-300" 
+                  : "bg-purple-500"
+            }`}
             aria-hidden="true"
           ></span>
         )}
@@ -136,28 +144,29 @@ function CalendarTab() {
                 components={{ DayContent: DayContent }}
                 className="p-3" // Use className for internal padding if needed
                 classNames={{
-                  root: "bg-gray-900 text-gray-300 rounded-md border border-gray-700",
+                  months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
+                  month: "space-y-4",
                   caption: "flex justify-center pt-1 relative items-center",
-                  caption_label: "text-sm font-medium text-white",
+                  caption_label: "text-lg font-semibold text-purple-900",
                   nav: "space-x-1 flex items-center",
-                  nav_button:
-                    "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 text-gray-300",
+                  nav_button: 
+                    "h-8 w-8 bg-white border border-purple-200 rounded-md p-0 opacity-80 hover:opacity-100 text-purple-700 hover:bg-purple-50 hover:border-purple-300 transition-colors shadow-sm",
                   nav_button_previous: "absolute left-1",
                   nav_button_next: "absolute right-1",
                   table: "w-full border-collapse space-y-1",
                   head_row: "flex",
                   head_cell:
-                    "text-gray-400 rounded-md w-9 font-normal text-[0.8rem]",
+                    "text-purple-700 rounded-md w-9 font-medium text-sm",
                   row: "flex w-full mt-2",
-                  cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected])]:bg-gray-700 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-                  day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 rounded-md hover:bg-gray-800 transition-colors",
+                  cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected])]:bg-purple-100 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                  day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 rounded-md hover:bg-purple-50 transition-colors",
                   day_selected:
-                    "bg-blue-600 text-white hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white",
-                  day_today: "bg-gray-700 text-white",
-                  day_outside: "text-gray-500 opacity-50",
-                  day_disabled: "text-gray-600 opacity-50",
+                    "bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:bg-purple-700 focus:bg-purple-700 rounded-md shadow-sm",
+                  day_today: "bg-purple-100 text-purple-800 font-semibold",
+                  day_outside: "text-gray-400 opacity-70",
+                  day_disabled: "text-gray-300 opacity-50",
                   day_range_middle:
-                    "aria-selected:bg-gray-700 aria-selected:text-gray-300",
+                    "aria-selected:bg-purple-100 aria-selected:text-purple-800",
                   day_hidden: "invisible",
                 }}
               />
@@ -166,14 +175,14 @@ function CalendarTab() {
         </Card>
 
         <FadeIn delay={0.4}>
-          <Card className="glow-card">
-            <CardHeader className="bg-black rounded-t-lg">
-              <CardTitle className="text-2xl font-medium text-white font-calendas glow-blue">
+          <Card className="bg-white/90 backdrop-blur-sm border-2 border-purple-200 shadow-xl rounded-3xl overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-purple-600 to-blue-600 p-6">
+              <CardTitle className="text-2xl font-black text-white mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
                 Posts on{" "}
                 {selectedDate ? format(selectedDate, "MMMM d, yyyy") : "..."}
               </CardTitle>
             </CardHeader>
-            <CardContent className="bg-gray-900 min-h-[200px]">
+            <CardContent className="bg-gradient-to-br from-purple-50 to-blue-50 min-h-[200px] p-6">
               {" "}
               {/* Added min-height */}
               {isLoading ? (
@@ -185,12 +194,12 @@ function CalendarTab() {
                   {postsOnSelectedDate.map((post, index) => (
                     <StaggerItem key={post._id} index={index}>
                       <HoverCard>
-                        <Card className="bg-gray-700 border border-gray-600">
+                        <Card className="bg-white border border-purple-200 shadow-sm hover:shadow-md transition-shadow rounded-xl">
                           <CardContent className="p-4">
-                            <h3 className="text-lg font-medium text-white mb-2">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2">
                               {post.title}
                             </h3>
-                            <p className="text-gray-300 text-sm mb-3 line-clamp-2">
+                            <p className="text-gray-600 text-sm mb-3 line-clamp-2">
                               {post.description || "No description available"}{" "}
                               {/* Use description */}
                             </p>
@@ -201,18 +210,18 @@ function CalendarTab() {
                                 }
                                 className={
                                   post.isPublished
-                                    ? "bg-green-900 text-green-300"
-                                    : "bg-yellow-900 text-yellow-300"
+                                    ? "bg-green-100 text-green-800 hover:bg-green-100"
+                                    : "bg-yellow-100 text-yellow-800 hover:bg-yellow-100"
                                 }
                               >
                                 {post.isPublished ? "Published" : "Draft"}
                               </Badge>
                               <div className="flex space-x-2">
                                 <Button
-                                  variant="ghost"
+                                  variant="outline"
                                   size="sm"
                                   asChild
-                                  className="text-white hover:text-white hover:bg-gray-600"
+                                  className="text-purple-700 border-purple-300 hover:bg-purple-50 hover:border-purple-400"
                                 >
                                   <Link
                                     href={`/admin/blog/edit/${post._id}`} // Use ID for edit link
@@ -221,10 +230,10 @@ function CalendarTab() {
                                   </Link>
                                 </Button>
                                 <Button
-                                  variant="outline"
+                                  variant="default"
                                   size="sm"
                                   asChild
-                                  className="text-white border-gray-600 hover:text-white hover:bg-gray-600"
+                                  className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700"
                                 >
                                   <Link
                                     href={`/blog/${post.slug}`}
@@ -242,16 +251,25 @@ function CalendarTab() {
                   ))}
                 </StaggerContainer>
               ) : (
-                <p className="text-gray-300 pt-4">
-                  No posts found for this date.
-                </p>
+                <div className="flex flex-col items-center justify-center py-8 text-center">
+                  <div className="text-4xl mb-3">📝</div>
+                  <p className="text-gray-600 font-medium">
+                    No posts found for this date
+                  </p>
+                  <p className="text-gray-500 text-sm mt-1">
+                    Create a new blog post to get started
+                  </p>
+                </div>
               )}
             </CardContent>
 
-            <CardFooter className="pt-6 border-t border-gray-700 bg-black rounded-b-lg">
-              <Button className="w-full glow-button" asChild>
+            <CardFooter className="pt-6 border-t border-purple-200 bg-white/50">
+              <Button 
+                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-md" 
+                asChild
+              >
                 <Link href="/admin/blog/create">
-                  <AiOutlineFileAdd className="mr-2" />
+                  <AiOutlineFileAdd className="mr-2 h-5 w-5" />
                   Create New Blog Post
                 </Link>
               </Button>

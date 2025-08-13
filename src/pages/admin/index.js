@@ -15,14 +15,14 @@ import { useRouter } from "next/router";
 import { useSession, signIn } from "next-auth/react";
 import { FaComments, FaUserCheck } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"; // <-- Import Select components
+} from "@/components/ui/select";
 import { AnimatePresence } from "framer-motion";
 import {
   FadeIn,
@@ -41,17 +41,16 @@ import ContactsTab from "@/components/admin/tabs/ContactsTab";
 import BytesTab from "@/components/admin/tabs/BytesTab";
 import ApiStatusTab from "@/components/admin/tabs/ApiStatusTab";
 import SubscribersTab from "@/components/admin/tabs/SubscribersTab";
-import LinkedInTab from "@/components/admin/tabs/LinkedInTab"; // Import LinkedInTab
-import PomodoroTab from "@/components/admin/tabs/PomodoroTab"; // Import PomodoroTab
-import HackerNewsFeed from "@/components/admin/tabs/HackerNewsFeed"; // Import HackerNewsFeed
-import { checkAdminStatus } from "@/lib/authUtils"; // Import the utility
+import LinkedInTab from "@/components/admin/tabs/LinkedInTab";
+import PomodoroTab from "@/components/admin/tabs/PomodoroTab";
+import HackerNewsFeed from "@/components/admin/tabs/HackerNewsFeed";
+import { checkAdminStatus } from "@/lib/authUtils";
 import { toast } from "sonner";
 
 // Define tab configuration data
 const adminTabs = [
   { value: "dashboard", label: "Blogs", Icon: AiOutlineRead },
   { value: "calendar", label: "Calendar", Icon: AiOutlineCalendar },
-  { value: "chat-history", label: "Chat History", Icon: FaComments },
   {
     value: "contacts",
     label: "Contacts",
@@ -71,6 +70,11 @@ function AdminDashboard() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState(adminTabs[0].value);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // State specifically for unread count (now for Contacts)
   const [unreadContactsCount, setUnreadContactsCount] = useState(0);
@@ -84,28 +88,17 @@ function AdminDashboard() {
       return;
     }
 
-    // --- TEMPORARY LOGGING ---
-    console.log("Admin Page Session Status:", status);
-    console.log("Admin Page Session Object:", JSON.stringify(session, null, 2));
-    console.log(
-      "NEXT_PUBLIC_ADMIN_EMAIL:",
-      process.env.NEXT_PUBLIC_ADMIN_EMAIL
-    );
-    // --- END TEMPORARY LOGGING ---
-
     const isAdminCheck = checkAdminStatus(session);
-    setIsAdmin(isAdminCheck); // Update the isAdmin state
-    console.log("Admin Check Result:", isAdminCheck); // Log the result of the check
+    setIsAdmin(isAdminCheck);
 
-    if (!isAdminCheck) {
-      // Add a small delay before redirecting to allow logs to appear
-      // and prevent immediate flashing if session is briefly null
+    // Only redirect if we're in the browser and not an admin
+    if (!isAdminCheck && isClient) {
       setTimeout(() => {
         toast.error("Access Denied: Redirecting...");
-        router.push("/"); // Redirect non-admins to homepage
+        router.push("/");
       }, 100);
     }
-  }, [session, status, router]);
+  }, [session, status, router, isClient]);
 
   // Fetch unread *contacts* count
   useEffect(() => {
@@ -143,10 +136,10 @@ function AdminDashboard() {
   // Loading state
   if (status === "loading") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center">
-        <div className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 rounded-2xl px-8 py-6 shadow-xl flex items-center gap-4">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-brandSecondary/10 flex items-center justify-center">
+        <div className="bg-card/80 backdrop-blur-sm border-2 border-primary/20 rounded-2xl px-8 py-6 shadow-xl flex items-center gap-4">
           <div className="animate-spin text-3xl"></div>
-          <span className="text-gray-700 font-bold text-xl">
+          <span className="text-foreground font-bold text-xl">
             Loading Admin Dashboard...
           </span>
         </div>
@@ -157,10 +150,10 @@ function AdminDashboard() {
   // Redirect state
   if (!session && status !== "loading") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center">
-        <div className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 rounded-2xl px-8 py-6 shadow-xl flex items-center gap-4">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-brandSecondary/10 flex items-center justify-center">
+        <div className="bg-card/80 backdrop-blur-sm border-2 border-primary/20 rounded-2xl px-8 py-6 shadow-xl flex items-center gap-4">
           <div className="text-3xl"></div>
-          <span className="text-gray-700 font-bold text-xl">
+          <span className="text-foreground font-bold text-xl">
             Redirecting to sign in...
           </span>
         </div>
@@ -171,10 +164,10 @@ function AdminDashboard() {
   // Not admin state (Show temporarily while checking/redirecting if needed)
   if (status === "authenticated" && !isAdmin) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center">
-        <div className="bg-white/80 backdrop-blur-sm border-2 border-orange-200 rounded-2xl px-8 py-6 shadow-xl flex items-center gap-4">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-brandSecondary/10 flex items-center justify-center">
+        <div className="bg-card/80 backdrop-blur-sm border-2 border-orange-200 rounded-2xl px-8 py-6 shadow-xl flex items-center gap-4">
           <div className="text-3xl"></div>
-          <span className="text-gray-700 font-bold text-xl">
+          <span className="text-foreground font-bold text-xl">
             Checking access or redirecting...
           </span>
         </div>
@@ -186,7 +179,7 @@ function AdminDashboard() {
   if (status === "authenticated" && isAdmin) {
     return (
       <PageTransition>
-        <div className="admin-dashboard min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
+        <div className="admin-dashboard min-h-screen bg-gradient-to-br from-background via-background to-brandSecondary/10">
           <Head>
             <title>Admin Dashboard</title>
           </Head>
@@ -197,7 +190,7 @@ function AdminDashboard() {
                 <div className="flex items-center gap-4">
                   <div className="text-6xl animate-pulse"></div>
                   <h1
-                    className="text-4xl md:text-6xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent"
+                    className="text-4xl md:text-6xl font-black bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent"
                     style={{ fontFamily: "Space Grotesk, sans-serif" }}
                   >
                     Admin Dashboard
@@ -208,7 +201,7 @@ function AdminDashboard() {
             </SlideInLeft>
 
             <FadeIn delay={0.3}>
-              <Separator className="my-6 bg-gradient-to-r from-purple-200 to-blue-200 h-1 rounded-full" />
+              <Separator className="my-6 bg-gradient-to-r from-primary/20 to-brandSecondary/20 h-1 rounded-full" />
             </FadeIn>
 
             <Tabs
@@ -218,19 +211,19 @@ function AdminDashboard() {
             >
               <SlideUp delay={0.4}>
                 {/* Desktop TabsList (Hidden on Small Screens) */}
-                <TabsList className="hidden md:flex w-full overflow-x-auto pb-6 pt-6 mt-8 mb-8 scrollbar-thin space-x-2 bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-purple-200 shadow-xl">
+                <TabsList className="hidden md:flex w-full overflow-x-auto pb-6 pt-6 mt-8 mb-8 scrollbar-thin space-x-2 bg-card/80 backdrop-blur-sm rounded-2xl border-2 border-primary/20 shadow-xl">
                   {adminTabs.map((tab, index) => {
                     const gradients = [
-                      "from-purple-500 to-blue-500",
-                      "from-pink-500 to-rose-500",
-                      "from-orange-500 to-red-500",
-                      "from-green-500 to-teal-500",
-                      "from-indigo-500 to-purple-500",
-                      "from-cyan-500 to-blue-500",
-                      "from-violet-500 to-purple-500",
-                      "from-blue-500 to-indigo-500",
-                      "from-emerald-500 to-teal-500",
-                      "from-amber-500 to-orange-500",
+                      "from-primary to-brandSecondary",
+                      "from-secondary to-primary",
+                      "from-brandSecondary to-secondary",
+                      "from-primary/80 to-brandSecondary/80",
+                      "from-secondary/80 to-primary/80",
+                      "from-brandSecondary/80 to-secondary/80",
+                      "from-primary/90 to-brandSecondary/90",
+                      "from-secondary/90 to-primary/90",
+                      "from-brandSecondary/90 to-secondary/90",
+                      "from-primary/70 to-brandSecondary/70",
                     ];
                     const gradientClass = gradients[index % gradients.length];
 
@@ -240,8 +233,8 @@ function AdminDashboard() {
                         value={tab.value}
                         className={`flex-shrink-0 relative transition-all duration-300 rounded-xl px-4 py-3 font-bold border-2 ${
                           activeTab === tab.value
-                            ? `bg-gradient-to-r ${gradientClass} text-white border-transparent shadow-lg`
-                            : "bg-white/70 text-gray-700 border-gray-200 hover:bg-white hover:border-purple-300 hover:text-purple-600"
+                            ? `bg-gradient-to-r ${gradientClass} text-primary-foreground border-transparent shadow-lg`
+                            : "bg-card/70 text-foreground border-input hover:bg-card hover:border-primary/30 hover:text-primary"
                         }`}
                       >
                         <tab.Icon className="h-4 w-4" />{" "}
@@ -249,8 +242,8 @@ function AdminDashboard() {
                         {tab.value === "contacts" &&
                           unreadContactsCount > 0 && (
                             <span className="absolute -top-2 -right-2 flex h-5 w-5">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-5 w-5 bg-red-500 text-xs items-center justify-center text-white font-bold">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive/75 opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-5 w-5 bg-destructive text-xs items-center justify-center text-destructive-foreground font-bold">
                                 {unreadContactsCount > 9
                                   ? "9+"
                                   : unreadContactsCount}
@@ -265,10 +258,10 @@ function AdminDashboard() {
                 {/* Mobile Select (Visible only on Small Screens) */}
                 <div className="block md:hidden mb-6">
                   <Select value={activeTab} onValueChange={setActiveTab}>
-                    <SelectTrigger className="w-full bg-white/80 backdrop-blur-sm border-2 border-purple-200 text-gray-700 rounded-2xl px-6 py-4 font-bold text-lg shadow-lg">
+                    <SelectTrigger className="w-full bg-card/80 backdrop-blur-sm border-2 border-primary/20 text-foreground rounded-2xl px-6 py-4 font-bold text-lg shadow-lg">
                       <SelectValue placeholder="Select a tab" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white/90 backdrop-blur-sm border-2 border-purple-200 text-gray-700 rounded-2xl shadow-xl">
+                    <SelectContent className="bg-card/90 backdrop-blur-sm border-2 border-primary/20 text-foreground rounded-2xl shadow-xl">
                       {adminTabs.map((tab) => (
                         <SelectItem
                           key={tab.value}
@@ -280,7 +273,7 @@ function AdminDashboard() {
                             {tab.label}
                             {tab.value === "contacts" &&
                               unreadContactsCount > 0 && (
-                                <span className="ml-3 inline-flex items-center justify-center px-2 py-1 text-xs font-bold rounded-full bg-red-500 text-white">
+                                <span className="ml-3 inline-flex items-center justify-center px-2 py-1 text-xs font-bold rounded-full bg-destructive text-destructive-foreground">
                                   {unreadContactsCount > 9
                                     ? "9+"
                                     : unreadContactsCount}
@@ -295,7 +288,7 @@ function AdminDashboard() {
               </SlideUp>
 
               {/* Tab Content with Card-like Container */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border-2 border-purple-200">
+              <div className="bg-card/80 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border-2 border-primary/20">
                 <AnimatePresence mode="wait">
                   {activeTab === "dashboard" && (
                     <DashboardTab key="dashboard" />
@@ -330,7 +323,7 @@ function AdminDashboard() {
     );
   }
 
-  return null; // Fallback return for intermediate states
+  return null;
 }
 
 export default AdminDashboard;

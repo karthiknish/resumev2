@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router"; // Import useRouter
 
@@ -11,7 +11,14 @@ const ContactForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   // Removed submitSuccess state
-  const router = useRouter(); // Initialize router
+  const [router, setRouter] = useState(null); // Initialize router state
+
+  useEffect(() => {
+    // Only set router in the browser
+    if (typeof window !== "undefined") {
+      setRouter(require("next/router").useRouter());
+    }
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -48,7 +55,9 @@ const ContactForm = () => {
       setFormData({ name: "", email: "", message: "" });
 
       // Redirect to success page
-      router.push("/success");
+      if (router) {
+        router.push("/success");
+      }
     } catch (error) {
       console.error("Error submitting contact form:", error);
       setSubmitError(

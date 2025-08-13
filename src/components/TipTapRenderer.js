@@ -8,6 +8,10 @@ import Highlight from "@tiptap/extension-highlight";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import TextAlign from "@tiptap/extension-text-align";
+import Superscript from "@tiptap/extension-superscript";
+import Subscript from "@tiptap/extension-subscript";
+import TaskList from "@tiptap/extension-task-list";
+import TaskItem from "@tiptap/extension-task-item";
 
 // Import Table extensions
 import Table from '@tiptap/extension-table'
@@ -60,25 +64,55 @@ const TipTapRenderer = ({ content }) => {
       UnderlineExtension,
       Highlight,
       Link.configure({ openOnClick: true, autolink: true }), // Match editor config if needed
-      Image,
+      Image.configure({
+        HTMLAttributes: {
+          class: "rounded-lg border border-gray-700",
+        },
+      }),
       TextAlign.configure({
         types: ["heading", "paragraph"],
+      }),
+      Superscript,
+      Subscript,
+      TaskList,
+      TaskItem.configure({
+        HTMLAttributes: {
+          class: "flex items-start my-2",
+        },
       }),
       // Configure CodeBlockLowlight with languages
       CodeBlockLowlight.configure({
         lowlight: lowlightInstance, // Pass the created instance
+        HTMLAttributes: {
+          class: "rounded-lg border border-gray-700 bg-gray-800 p-4 my-4",
+        },
       }),
       // Add Table extensions
-      Table,
+      Table.configure({
+        HTMLAttributes: {
+          class: "table-auto border-collapse border border-gray-700 rounded-lg overflow-hidden my-4",
+        },
+      }),
       TableRow,
-      TableHeader,
-      TableCell,
-      // NOTE: Other extensions like Subscript, Superscript, TaskList
-      // should also be added here if they were added to the editor
-      // to ensure proper rendering.
+      TableHeader.configure({
+        HTMLAttributes: {
+          class: "bg-gray-800 border border-gray-700",
+        },
+      }),
+      TableCell.configure({
+        HTMLAttributes: {
+          class: "border border-gray-700 px-3 py-2",
+        },
+      }),
     ],
     content: content,
     editable: false,
+    editorProps: {
+      attributes: {
+        class:
+          "prose prose-invert max-w-none focus:outline-none bg-transparent text-gray-100 prose-headings:text-gray-100 prose-a:text-blue-400 prose-blockquote:text-gray-300 prose-code:before:content-none prose-code:after:content-none prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-800 prose-pre:p-0 prose-li:marker:text-gray-400 prose-table:text-gray-100",
+      },
+    },
   });
 
   // Update content when it changes externally
@@ -88,9 +122,11 @@ const TipTapRenderer = ({ content }) => {
     }
   }, [editor, content]);
 
-  // Remove the wrapper div, rely on parent styling or add specific classes for renderer
-  // The prose styling might conflict with table/code block styling
-  return <EditorContent editor={editor} />;
+  return (
+    <div className="w-full">
+      <EditorContent editor={editor} />
+    </div>
+  );
 };
 
 export default TipTapRenderer;

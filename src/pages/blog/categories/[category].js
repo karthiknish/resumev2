@@ -11,11 +11,20 @@ import { FaArrowLeft, FaTag, FaClock } from "react-icons/fa";
 import Loader from "../../../components/Loader";
 
 export default function CategoryPage() {
-  const router = useRouter();
-  const { category } = router.query;
+  const [router, setRouter] = useState(null);
+  const [category, setCategory] = useState(null);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Only set router in the browser
+    if (typeof window !== "undefined") {
+      const routerInstance = require("next/router").useRouter();
+      setRouter(routerInstance);
+      setCategory(routerInstance.query.category);
+    }
+  }, []);
 
   useEffect(() => {
     if (!category) return;

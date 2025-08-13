@@ -55,27 +55,32 @@ export default async function handler(req, res) {
 
     // Step 2: Call Gemini API for formatting refinement
     const formattingPrompt = `
-      Act as an HTML formatting expert. Review the following potentially messy HTML text and improve its formatting for readability, structure, and consistency according to standard HTML best practices.
+      Act as an expert content editor who specializes in making technical blog posts more readable and engaging. Review the following HTML content and improve its formatting to enhance readability and flow.
 
-      **Formatting Rules to Apply:**
-      - **Headings:** Ensure headings (e.g., ${h2Example}, <h3>) are used logically and consistently. Add appropriate heading tags if sections lack them. Ensure proper structure.
-      - **Paragraphs:** Ensure text content is wrapped in ${pExample} tags. Break down overly long paragraphs into shorter ones. Ensure proper spacing between paragraphs.
-      - **Lists:** Convert sequences of related items into unordered (${ulExample}) or ordered (${olExample}) lists where appropriate. Ensure correct list item structure with closing tags.
-      - **Emphasis:** Apply ${strongExample} tags for strong emphasis and ${emExample} tags for emphasis, but use them sparingly and semantically.
-      - **Code Blocks:** Ensure code snippets are enclosed in ${codeExample} tags for inline code or ${preCodeExample} blocks for multi-line code.
-      - **Links & Images:** Ensure links (${aExample}) and images (${imgExample}) are correctly formatted with necessary attributes (href, src, alt).
-      - **Whitespace:** Remove excessive whitespace within the HTML structure.
-      - **Validity & Structure:** Ensure tags are properly nested and closed. Clean up potentially malformed or invalid HTML snippets.
-      - **Consistency:** Maintain a consistent style throughout the document.
+      **Your Goal:** Transform the content to feel more human-written and engaging while maintaining technical accuracy.
+
+      **Formatting Guidelines:**
+      - **Headings:** Use ${h2Example} tags for main sections. Ensure headings are descriptive and create a logical flow. Add headings if content sections lack them.
+      - **Paragraphs:** Wrap text in ${pExample} tags. Keep paragraphs concise (2-4 sentences). Break up dense blocks of text.
+      - **Lists:** Convert related items into ${ulExample} or ${olExample} lists for better scannability. Ensure proper structure.
+      - **Emphasis:** Use ${strongExample} for key terms and concepts. Use sparingly to maintain impact.
+      - **Code:** Format code snippets with ${codeExample} for inline or ${preCodeExample} for blocks. Ensure readability.
+      - **Links & Images:** Format ${aExample} and ${imgExample} with proper attributes. Keep alt text descriptive.
+      - **Readability Enhancements:**
+        * Add transition phrases between sections
+        * Break up complex ideas into digestible parts
+        * Use contractions for a conversational tone
+        * Vary sentence structure for rhythm
+      - **Structure:** Ensure proper nesting and closing of all HTML tags.
 
       **Input HTML:**
       ${cleanedContent}
 
-      Please return only the reformatted HTML content without any markdown formatting or code block tags.
+      Return only the improved HTML content. Do not include explanations or markdown formatting.
     `.trim();
 
     const generationConfig = {
-      temperature: 0.2,
+      temperature: 0.3, // Slightly higher for more natural improvements
       maxOutputTokens: 8192,
     };
 
