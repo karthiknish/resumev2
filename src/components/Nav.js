@@ -7,6 +7,7 @@ import Image from "next/image";
 import { signOut } from "@/lib/authUtils";
 import useDebounce from "@/hooks/useDebounce"; // Make sure this hook exists at this path
 import dynamic from "next/dynamic"; // <-- Add this import
+import { useSession } from "next-auth/react";
 import {
   SlideInRight,
   // SlideUp, // Not used directly here anymore

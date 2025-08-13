@@ -11,6 +11,9 @@ import {
   FaTools,
   FaChevronDown,
   FaChevronUp,
+  FaGlobe,
+  FaPaintBrush,
+  FaStore,
 } from "react-icons/fa";
 import { FadeIn, HoverCard } from "../components/animations/MotionComponents";
 import PageContainer from "@/components/PageContainer";
