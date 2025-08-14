@@ -12,6 +12,11 @@ module.exports = {
     "<rootDir>/e2e/",
   ],
   transform: {
-    "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
+    "^.+\\.(js|jsx|ts|tsx)$": [
+      "babel-jest",
+      {
+        presets: ["next/babel"],
+      },
+    ],
   },
 };
