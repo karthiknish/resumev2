@@ -421,6 +421,59 @@ const MenuBar = ({ editor }) => {
     );
   };
 
+  const HighlightPickerButton = ({ editor }) => {
+    const [showPicker, setShowPicker] = useState(false);
+    const colors = [
+      "#fff59d",
+      "#ffcc80",
+      "#80cbc4",
+      "#a5d6a7",
+      "#90caf9",
+      "#f48fb1",
+    ];
+    const handleColorClick = (color) => {
+      editor.chain().focus().setHighlight({ color }).run();
+      setShowPicker(false);
+    };
+    const clear = () => {
+      editor.chain().focus().unsetHighlight().run();
+      setShowPicker(false);
+    };
+    return (
+      <div className="relative">
+        <button
+          type="button"
+          onClick={() => setShowPicker(!showPicker)}
+          className={`p-2 rounded-lg border border-border bg-muted hover:bg-muted/80 text-foreground`}
+          title="Highlight"
+        >
+          <Highlighter className="w-4 h-4" />
+        </button>
+        {showPicker && (
+          <div className="absolute z-20 top-full mt-2 p-3 bg-card border border-border rounded-lg shadow-xl flex flex-wrap gap-2 w-48">
+            {colors.map((color) => (
+              <button
+                key={color}
+                type="button"
+                onClick={() => handleColorClick(color)}
+                className="w-6 h-6 rounded border border-border hover:scale-110 transition-transform"
+                style={{ backgroundColor: color }}
+                title={`Highlight ${color}`}
+              />
+            ))}
+            <button
+              type="button"
+              onClick={clear}
+              className="px-2 py-1 text-xs rounded border border-border bg-muted hover:bg-muted/80"
+            >
+              Clear
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   // Toolbar Group Component
   const ToolbarGroup = ({ title, children }) => (
     <div className="flex items-center">
@@ -469,6 +522,7 @@ const MenuBar = ({ editor }) => {
               <ToolbarButton key={index} {...button} />
             ))}
             <ColorPickerButton editor={editor} />
+            <HighlightPickerButton editor={editor} />
           </ToolbarGroup>
 
           {/* Headings */}
@@ -551,7 +605,7 @@ const TipTapEditor = ({ content, onUpdate }) => {
       TextStyle,
       Color,
       UnderlineExtension,
-      Highlight,
+      Highlight.configure({ multicolor: true }),
       Link.configure({
         openOnClick: false, // Recommended for editor UX
         autolink: true,
