@@ -71,23 +71,25 @@ const PomodoroTimer = () => {
     <Card className="bg-card border border-primary/20 text-foreground max-w-md mx-auto mt-6 shadow-lg">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-bold">🍅 Pomodoro Timer</CardTitle>
-        <Badge 
-          variant="secondary" 
+        <Badge
+          variant="secondary"
           className={`text-lg px-3 py-1 ${
-            isWorkSession 
-              ? "bg-red-500/20 text-red-700 hover:bg-red-500/30" 
-              : "bg-green-500/20 text-green-700 hover:bg-green-500/30"
+            isWorkSession
+              ? "bg-brandSecondary/20 text-brandSecondary hover:bg-brandSecondary/30"
+              : "bg-primary/20 text-primary hover:bg-primary/30"
           }`}
         >
           {isWorkSession ? "Work Session" : "Break Time"}
         </Badge>
       </CardHeader>
       <CardContent className="text-center">
-        <div className={`mb-6 p-6 rounded-2xl ${
-          isWorkSession 
-            ? "bg-red-500/10 border border-red-500/20" 
-            : "bg-green-500/10 border border-green-500/20"
-        }`}>
+        <div
+          className={`mb-6 p-6 rounded-2xl ${
+            isWorkSession
+              ? "bg-brandSecondary/10 border border-brandSecondary/20"
+              : "bg-primary/10 border border-primary/20"
+          }`}
+        >
           <p className="text-7xl font-mono font-bold my-4 text-foreground">
             {formatTime(timeLeft)}
           </p>
@@ -97,7 +99,7 @@ const PomodoroTimer = () => {
             onClick={toggleTimer}
             className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 ${
               isActive
-                ? "bg-yellow-500 hover:bg-yellow-600 text-yellow-50"
+                ? "bg-brandSecondary hover:bg-brandSecondary/90 text-brandSecondary-foreground"
                 : "bg-gradient-to-r from-primary to-brandSecondary hover:from-primary/90 hover:to-brandSecondary/90 text-primary-foreground"
             }`}
           >
@@ -106,13 +108,14 @@ const PomodoroTimer = () => {
           <Button
             onClick={resetTimer}
             variant="outline"
-            className="px-8 py-3 rounded-xl font-semibold border-primary/20 text-primary hover:bg-primary/5"
+            className="px-8 py-3 rounded-xl font-semibold border-brandSecondary/30 text-brandSecondary hover:bg-brandSecondary/5"
           >
             Reset
           </Button>
         </div>
         <p className="text-sm text-muted-foreground">
-          Cycles Completed: <span className="font-bold text-foreground">{cyclesCompleted}</span>
+          Cycles Completed:{" "}
+          <span className="font-bold text-foreground">{cyclesCompleted}</span>
         </p>
       </CardContent>
     </Card>

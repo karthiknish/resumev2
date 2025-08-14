@@ -69,8 +69,11 @@ function UsersTab() {
   return (
     <FadeIn>
       <Card className="bg-white/90 backdrop-blur-sm border-2 border-blue-200 shadow-xl rounded-3xl overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 flex flex-row items-center justify-between">
-          <CardTitle className="text-2xl font-black text-white" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+        <CardHeader className="bg-blue-600 text-white p-6 flex flex-row items-center justify-between">
+          <CardTitle
+            className="text-2xl font-black text-white"
+            style={{ fontFamily: "Space Grotesk, sans-serif" }}
+          >
             👥 User Management
           </CardTitle>
           <Input
@@ -81,11 +84,13 @@ function UsersTab() {
             className="w-1/3 bg-white/90 backdrop-blur-sm border-2 border-blue-200 text-gray-800 placeholder-gray-500 rounded-xl focus:border-blue-400 focus:ring-4 focus:ring-blue-200"
           />
         </CardHeader>
-        <CardContent className="bg-gradient-to-br from-blue-50 to-indigo-50 p-0">
+        <CardContent className="bg-blue-50 p-0">
           {isLoading ? (
             <div className="flex justify-center items-center p-10">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-              <span className="ml-3 text-blue-600 font-medium">Loading users...</span>
+              <span className="ml-3 text-blue-600 font-medium">
+                Loading users...
+              </span>
             </div>
           ) : error ? (
             <div className="text-center p-10">
@@ -117,7 +122,7 @@ function UsersTab() {
                     {currentUsers.map((user) => (
                       <TableRow
                         key={user._id}
-                        className="border-blue-100 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300"
+                        className="border-blue-100 hover:bg-blue-50 transition-all duration-300"
                       >
                         <TableCell className="font-semibold text-gray-800 py-4 px-6">
                           {user.name || "N/A"}
@@ -134,8 +139,8 @@ function UsersTab() {
                             }
                             className={
                               user.role === "admin" || user.isAdmin
-                                ? "bg-gradient-to-r from-red-100 to-pink-100 text-red-700 border border-red-200 font-bold"
-                                : "bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 border border-blue-200 font-medium"
+                                ? "bg-red-100 text-red-700 border border-red-200 font-bold"
+                                : "bg-blue-100 text-blue-700 border border-blue-200 font-medium"
                             }
                           >
                             {user.role || (user.isAdmin ? "Admin" : "User")}
@@ -155,7 +160,7 @@ function UsersTab() {
               </div>
               {/* Pagination Controls */}
               {totalPages > 1 && (
-                <div className="flex justify-center items-center space-x-4 p-6 border-t-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+                <div className="flex justify-center items-center space-x-4 p-6 border-t-2 border-blue-200 bg-blue-50">
                   <Button
                     onClick={() => paginate(currentPage - 1)}
                     disabled={currentPage === 1}
@@ -183,11 +188,16 @@ function UsersTab() {
           ) : (
             <div className="text-center py-12">
               <div className="text-6xl mb-4">👥</div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+              <h3
+                className="text-xl font-bold text-gray-800 mb-2"
+                style={{ fontFamily: "Space Grotesk, sans-serif" }}
+              >
                 No users found
               </h3>
               <p className="text-gray-600">
-                {searchTerm ? "No users match your search criteria." : "No users have been created yet."}
+                {searchTerm
+                  ? "No users match your search criteria."
+                  : "No users have been created yet."}
               </p>
             </div>
           )}

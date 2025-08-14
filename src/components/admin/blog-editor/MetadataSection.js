@@ -174,7 +174,7 @@ function MetadataSection({
   };
 
   return (
-    <div className="space-y-6 border-y border-primary/10 py-6">
+    <div className="space-y-6 border-y border-blue-100 py-6">
       {/* Title Input with Suggestion Button */}
       <div className="space-y-2">
         <div className="flex items-center gap-2">
@@ -195,7 +195,7 @@ function MetadataSection({
             disabled={
               isSuggestingTitle || (!formData.title && !formData.content)
             }
-            className="text-primary hover:text-primary/80 disabled:text-muted-foreground flex-shrink-0"
+            className="text-blue-600 hover:text-blue-700 disabled:text-muted-foreground flex-shrink-0"
             title="Suggest better titles (AI)"
           >
             {isSuggestingTitle ? (
@@ -206,7 +206,9 @@ function MetadataSection({
           </Button>
         </div>
         {titleSuggestionError && (
-          <p className="text-xs text-destructive mt-1">{titleSuggestionError}</p>
+          <p className="text-xs text-destructive mt-1">
+            {titleSuggestionError}
+          </p>
         )}
         {titleSuggestions.length > 0 && (
           <div className="flex flex-col gap-1 mt-1 pl-2">
@@ -216,7 +218,7 @@ function MetadataSection({
                 key={index}
                 type="button"
                 onClick={() => onFormChange({ ...formData, title: suggestion })}
-                className="px-1.5 py-0.5 text-sm text-left bg-muted text-foreground rounded hover:bg-primary hover:text-primary-foreground transition-colors"
+                className="px-1.5 py-0.5 text-sm text-left bg-muted text-foreground rounded hover:bg-blue-600 hover:text-white transition-colors"
               >
                 {suggestion}
               </button>
@@ -240,7 +242,7 @@ function MetadataSection({
               disabled={
                 isSuggestingDesc || (!formData.title && !formData.content)
               }
-              className="text-primary hover:text-primary/80 disabled:text-muted-foreground px-2 py-1 text-xs"
+              className="text-blue-600 hover:text-blue-700 disabled:text-muted-foreground px-2 py-1 text-xs"
               title="Suggest Descriptions (uses Title/Content)"
             >
               {isSuggestingDesc ? (
@@ -258,17 +260,21 @@ function MetadataSection({
             onChange={(e) =>
               onFormChange({ ...formData, excerpt: e.target.value })
             }
-            className="bg-background border-input focus:border-primary focus:ring-primary"
+            className="bg-background border-input focus:border-blue-600 focus:ring-blue-600"
             placeholder="A short summary for previews and SEO (120-155 chars recommended)..."
             rows={3}
             required
           />
           {descSuggestionError && (
-            <p className="text-xs text-destructive mt-1">{descSuggestionError}</p>
+            <p className="text-xs text-destructive mt-1">
+              {descSuggestionError}
+            </p>
           )}
           {descSuggestions.length > 0 && (
             <div className="flex flex-col gap-1 mt-1">
-              <span className="text-xs text-muted-foreground">Suggestions:</span>
+              <span className="text-xs text-muted-foreground">
+                Suggestions:
+              </span>
               {descSuggestions.map((suggestion, index) => (
                 <button
                   key={index}
@@ -276,7 +282,7 @@ function MetadataSection({
                   onClick={() =>
                     onFormChange({ ...formData, excerpt: suggestion })
                   }
-                  className="px-1.5 py-0.5 text-xs text-left bg-muted text-foreground rounded hover:bg-primary hover:text-primary-foreground transition-colors"
+                  className="px-1.5 py-0.5 text-xs text-left bg-muted text-foreground rounded hover:bg-blue-600 hover:text-white transition-colors"
                 >
                   {suggestion}
                 </button>
@@ -299,7 +305,7 @@ function MetadataSection({
               disabled={
                 isSuggestingCat || (!formData.title && !formData.content)
               }
-              className="text-primary hover:text-primary/80 disabled:text-muted-foreground px-2 py-1 text-xs"
+              className="text-blue-600 hover:text-blue-700 disabled:text-muted-foreground px-2 py-1 text-xs"
               title="Suggest Categories (uses Title/Content)"
             >
               {isSuggestingCat ? (
@@ -316,11 +322,13 @@ function MetadataSection({
             value={formData.category || ""}
             onChange={handleChange}
             type="text"
-            className="bg-background border-input focus:border-primary focus:ring-primary"
+            className="bg-background border-input focus:border-blue-600 focus:ring-blue-600"
             placeholder="e.g., Tech"
           />
           {catSuggestionError && (
-            <p className="text-xs text-destructive mt-1">{catSuggestionError}</p>
+            <p className="text-xs text-destructive mt-1">
+              {catSuggestionError}
+            </p>
           )}
           {catSuggestions.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-1">
@@ -331,7 +339,7 @@ function MetadataSection({
                   onClick={() =>
                     onFormChange({ ...formData, category: suggestion })
                   }
-                  className="px-1.5 py-0.5 text-xs bg-muted text-foreground rounded hover:bg-primary hover:text-primary-foreground transition-colors"
+                  className="px-1.5 py-0.5 text-xs bg-muted text-foreground rounded hover:bg-blue-600 hover:text-white transition-colors"
                 >
                   {suggestion}
                 </button>
@@ -354,7 +362,7 @@ function MetadataSection({
               disabled={
                 isSuggestingKeywords || (!formData.title && !formData.content)
               }
-              className="text-primary hover:text-primary/80 disabled:text-muted-foreground px-2 py-1 text-xs"
+              className="text-blue-600 hover:text-blue-700 disabled:text-muted-foreground px-2 py-1 text-xs"
               title="Suggest Keywords/Tags (uses Title/Content)"
             >
               {isSuggestingKeywords ? (
@@ -371,7 +379,7 @@ function MetadataSection({
             value={formData.tags?.join(", ") || ""} // Join array for display
             onChange={handleTagsChange}
             type="text"
-            className="bg-background border-input focus:border-primary focus:ring-primary"
+            className="bg-background border-input focus:border-blue-600 focus:ring-blue-600"
             placeholder="e.g., react, nextjs, tutorial"
           />
           {keywordSuggestionError && (
@@ -397,7 +405,7 @@ function MetadataSection({
                     key={index}
                     type="button"
                     onClick={() => addSuggestedTag(suggestion)} // Use add function
-                    className="px-1.5 py-0.5 text-xs bg-muted text-foreground rounded hover:bg-primary hover:text-primary-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-1.5 py-0.5 text-xs bg-muted text-foreground rounded hover:bg-blue-600 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={(formData.tags || []).includes(suggestion)} // Disable if already added
                   >
                     {suggestion}

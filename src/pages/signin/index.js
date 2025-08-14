@@ -43,7 +43,7 @@ export default function SignIn() {
       });
 
       if (result?.error) {
-        setError("Invalid email or password");
+        setError(result.error || "Invalid email or password");
       } else if (result?.success) {
         // Redirect based on user role is handled by the auth utility
       }
@@ -70,10 +70,8 @@ export default function SignIn() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-brandSecondary/10 flex items-center justify-center">
         <div className="bg-card/80 backdrop-blur-sm border-2 border-primary/20 rounded-2xl px-8 py-6 shadow-xl flex items-center gap-4">
-          <div className="animate-spin text-3xl">⚡</div>
-          <span className="text-foreground font-bold text-xl">
-            Loading...
-          </span>
+          <div className="animate-spin text-3xl"></div>
+          <span className="text-foreground font-bold text-xl">Loading...</span>
         </div>
       </div>
     );
@@ -98,7 +96,7 @@ export default function SignIn() {
         />
       </Head>
       <div
-        className="min-h-screen bg-gradient-to-br from-background via-background to-brandSecondary/10 relative flex items-center justify-center overflow-hidden"
+        className="min-h-screen bg-gradient-to-br from-background via-background to-brandSecondary/10 relative flex items-center justify-center overflow-hidden py-12 sm:py-16 md:py-24"
         style={{ fontFamily: "Inter, sans-serif" }}
       >
         {/* Decorative Color Splashes */}
@@ -128,9 +126,7 @@ export default function SignIn() {
                     ease: "easeInOut",
                   }}
                   className="text-xl"
-                >
-                  🔐
-                </motion.span>
+                ></motion.span>
                 <span>Welcome back!</span>
               </motion.div>
               <h1
@@ -151,7 +147,7 @@ export default function SignIn() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="mb-6 p-4 bg-gradient-to-r from-destructive/10 to-destructive/5 border-2 border-destructive/20 text-destructive rounded-2xl text-sm font-medium shadow-lg flex items-center gap-3"
               >
-                <span className="text-xl">⚠️</span>
+                <span className="text-xl"></span>
                 {error}
               </motion.div>
             )}
@@ -162,7 +158,7 @@ export default function SignIn() {
                   className="block text-lg font-bold text-foreground mb-3"
                   style={{ fontFamily: "Space Grotesk, sans-serif" }}
                 >
-                  📧 Email Address
+                  Email Address
                 </label>
                 <input
                   type="email"
@@ -238,7 +234,7 @@ export default function SignIn() {
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-primary to-brandSecondary hover:from-primary/90 hover:to-brandSecondary/90 text-primary-foreground py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                className="w-full bg-gradient-to-r from-primary to-brandSecondary hover:from-primary/90 hover:to-brandSecondary/90 text-primary-foreground py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? (
                   <>
@@ -246,10 +242,7 @@ export default function SignIn() {
                     Signing in...
                   </>
                 ) : (
-                  <>
-                    <span className="text-xl">🔑</span>
-                    Sign In
-                  </>
+                  <>Sign In</>
                 )}
               </motion.button>
             </form>
@@ -271,9 +264,8 @@ export default function SignIn() {
                 <motion.button
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-card border-2 border-primary text-primary hover:bg-primary/5 hover:border-primary/80 px-8 py-3 rounded-2xl font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-3 mx-auto"
+                  className="bg-card border-2 border-primary text-primary hover:bg-primary/5 hover:border-primary/80 px-8 py-3 rounded-2xl font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
                 >
-                  <span className="text-xl">✨</span>
                   Create Account
                 </motion.button>
               </Link>
@@ -286,7 +278,7 @@ export default function SignIn() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
-          className="absolute top-8 left-8 z-20"
+          className="absolute top-8 left-8 z-50"
         >
           <Link href="/">
             <motion.button

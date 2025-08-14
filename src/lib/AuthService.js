@@ -8,27 +8,32 @@ class AuthService {
    * @param {Object} options - Sign in options
    * @returns {Promise<Object>} Sign in result
    */
-  static async signIn(provider = "credentials", options = {}) {
+  static async signIn(providerOrOptions = "credentials", maybeOptions = {}) {
     try {
-      // If no provider or options provided, redirect to sign in page
-      if (arguments.length === 0 || (typeof provider === 'object' && !options)) {
-        options = provider || {};
+      // Normalize arguments: allow calling with just an options object
+      let provider = "credentials";
+      let options = {};
+
+      if (typeof providerOrOptions === "string") {
+        provider = providerOrOptions || "credentials";
+        options = maybeOptions || {};
+      } else if (
+        typeof providerOrOptions === "object" &&
+        providerOrOptions !== null
+      ) {
         provider = "credentials";
+        options = providerOrOptions;
       }
-      
-      // If only options provided (no provider)
-      if (typeof provider === 'object' && !options) {
-        options = provider;
-        provider = "credentials";
-      }
-      
+
       const result = await nextAuthSignIn(provider, {
         redirect: false,
         ...options,
       });
 
-      if (result?.error) {
-        throw new Error(result.error);
+      // NextAuth returns an object with ok/error when redirect: false
+      if (!result || result.ok !== true) {
+        const message = result?.error || "Invalid email or password";
+        throw new Error(message);
       }
 
       toast.success("Successfully signed in!");
@@ -86,7 +91,7 @@ class AuthService {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-      },
+        },
       });
 
       if (!response.ok) {
@@ -129,7 +134,10 @@ class AuthService {
       return { success: true, data };
     } catch (error) {
       console.error("Forgot password error:", error);
-      toast.error(error.message || "Failed to send password reset email. Please try again.");
+      toast.error(
+        error.message ||
+          "Failed to send password reset email. Please try again."
+      );
       return { success: false, error: error.message };
     }
   }
@@ -162,7 +170,9 @@ class AuthService {
       return { success: true, data };
     } catch (error) {
       console.error("Reset password error:", error);
-      toast.error(error.message || "Failed to reset password. Please try again.");
+      toast.error(
+        error.message || "Failed to reset password. Please try again."
+      );
       return { success: false, error: error.message };
     }
   }

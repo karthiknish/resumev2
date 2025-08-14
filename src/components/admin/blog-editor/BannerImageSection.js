@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ImagePlus, LinkIcon, Search } from "lucide-react";
+import { ImagePlus, LinkIcon, Search, X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -46,22 +46,20 @@ function BannerImageSection({ imageUrl, onImageUrlChange }) {
               type="button"
               variant="destructive"
               size="icon"
-              onClick={() => onImageUrlChange("")} // Clear image URL
+              onClick={() => onImageUrlChange("")}
               className="absolute top-3 right-3 z-10 rounded-full p-1 h-auto"
               aria-label="Remove image"
             >
-              ✕
+              <X className="h-4 w-4" />
+              <span className="sr-only">Remove image</span>
             </Button>
             {/* Change Image Button - Opens Pexels Dialog via state */}
             <Button
               type="button"
               variant="secondary"
               size="sm"
-              onClick={() => {
-                console.log("[BannerImageSection] Change button clicked");
-                setShowPexelsSearch(true);
-              }} // Add log
-              className="absolute bottom-3 left-3 z-10 flex items-center"
+              onClick={() => setShowPexelsSearch(true)}
+              className="absolute bottom-3 left-3 z-10 flex items-center text-xs font-medium tracking-wide uppercase"
               aria-label="Change image using Pexels"
             >
               <Search className="mr-1 h-4 w-4" /> Change
@@ -76,10 +74,8 @@ function BannerImageSection({ imageUrl, onImageUrlChange }) {
                 type="button"
                 variant="secondary"
                 size="sm"
-                onClick={() => {
-                  console.log("[BannerImageSection] Add Cover button clicked");
-                  setShowPexelsSearch(true);
-                }}
+                onClick={() => setShowPexelsSearch(true)}
+                className="text-xs font-medium tracking-wide uppercase"
               >
                 <Search className="mr-2 h-4 w-4" /> Add Cover from Pexels
               </Button>
@@ -126,7 +122,9 @@ function BannerImageSection({ imageUrl, onImageUrlChange }) {
           <DialogHeader className="flex-shrink-0">
             {" "}
             {/* Prevent header from shrinking */}
-            <DialogTitle>Search Pexels for Cover Image</DialogTitle>
+            <DialogTitle style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+              Search Pexels for Cover Image
+            </DialogTitle>
           </DialogHeader>
           {/* Added overflow-y-auto and flex-grow to the Pexels component wrapper */}
           <div className="flex-grow overflow-y-auto pr-2">
@@ -136,7 +134,12 @@ function BannerImageSection({ imageUrl, onImageUrlChange }) {
             {" "}
             {/* Prevent footer from shrinking */}
             <DialogClose asChild>
-              <Button type="button" variant="outline">
+              <Button
+                style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                type="button"
+                variant="outline"
+                className="bg-red-700 text-white"
+              >
                 Close
               </Button>
             </DialogClose>

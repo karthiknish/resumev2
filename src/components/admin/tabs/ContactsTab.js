@@ -80,7 +80,7 @@ export default function ContactsTab() {
     <Card className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 shadow-2xl rounded-3xl">
       <CardHeader>
         <CardTitle className="flex items-center gap-3 text-2xl font-black text-gray-800" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
-          <div className="p-2 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl">
+          <div className="p-2 bg-blue-600 rounded-xl">
             <Mail className="w-6 h-6 text-white" />
           </div>
           Contact Form Submissions ({contacts.length})
@@ -89,7 +89,7 @@ export default function ContactsTab() {
       <CardContent>
         {isLoading && (
           <div className="flex items-center justify-center py-12">
-            <div className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 rounded-2xl px-8 py-6 shadow-xl flex items-center gap-4">
+            <div className="bg-white/80 backdrop-blur-sm border-2 border-blue-200 rounded-2xl px-8 py-6 shadow-xl flex items-center gap-4">
               <div className="animate-spin text-3xl">💬</div>
               <span className="text-gray-700 font-bold text-xl">Loading contacts...</span>
             </div>
@@ -121,7 +121,7 @@ export default function ContactsTab() {
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="border-purple-200 hover:bg-purple-50/50">
+                 <TableRow className="border-blue-200 hover:bg-blue-50/50">
                   <TableHead className="text-gray-700 font-bold text-lg">Name</TableHead>
                   <TableHead className="text-gray-700 font-bold text-lg">Email</TableHead>
                   <TableHead className="text-gray-700 font-bold text-lg">Message</TableHead>
@@ -133,11 +133,11 @@ export default function ContactsTab() {
                 {contacts.map((contact) => (
                   <TableRow
                     key={contact._id}
-                    className="border-purple-100 hover:bg-purple-50/30 transition-colors duration-200 align-top"
+                    className="border-blue-100 hover:bg-blue-50/30 transition-colors duration-200 align-top"
                   >
                     <TableCell className="font-semibold text-gray-800">
                       <div className="flex items-center gap-3">
-                        <div className="p-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+                        <div className="p-1 bg-blue-600 rounded-lg">
                           <User className="w-4 h-4 text-white" />
                         </div>
                         {contact.name}
@@ -146,22 +146,22 @@ export default function ContactsTab() {
                     <TableCell>
                       <a
                         href={`mailto:${contact.email}`}
-                        className="text-purple-600 hover:text-purple-800 font-medium hover:underline transition-colors duration-200"
+                         className="text-blue-600 hover:text-blue-800 font-medium hover:underline transition-colors duration-200"
                       >
                         {contact.email}
                       </a>
                     </TableCell>
                     <TableCell className="max-w-sm whitespace-pre-wrap break-words">
                       <div className="flex items-start gap-3">
-                        <div className="p-1 bg-gradient-to-r from-green-500 to-teal-500 rounded-lg mt-1">
+                        <div className="p-1 bg-blue-600 rounded-lg mt-1">
                           <MessageCircle className="w-4 h-4 text-white flex-shrink-0" />
                         </div>
                         <span className="text-gray-700 font-medium">{contact.message}</span>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2 text-gray-600">
-                        <div className="p-1 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg">
+                       <div className="flex items-center gap-2 text-gray-600">
+                         <div className="p-1 bg-blue-600 rounded-lg">
                           <CalendarDays className="w-4 h-4 text-white" />
                         </div>
                         <span className="font-medium">{formatDate(contact.createdAt)}</span>

@@ -156,19 +156,22 @@ export default function DashboardTab({ unreadCount }) {
         <StaggerItem index={0}>
           <Card className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 hover:border-purple-300 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-2xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-              <CardTitle className="text-lg font-bold text-gray-700">Total Posts</CardTitle>
-              <div className="p-2 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl">
+              <CardTitle className="text-lg font-bold text-gray-700">
+                Total Posts
+              </CardTitle>
+              <div className="p-2 bg-blue-600 rounded-xl">
                 <FileText className="h-5 w-5 text-white" />
               </div>
             </CardHeader>
             <CardContent>
               {isLoading && totalPosts === 0 ? (
                 <div className="flex items-center gap-2">
-                  <div className="animate-spin text-2xl">📊</div>
-                  <span className="text-gray-600">Loading...</span>
+                  <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
                 </div>
               ) : (
-                <div className="text-3xl font-black text-gray-800">{totalPosts}</div>
+                <div className="text-3xl font-black text-gray-800">
+                  {totalPosts}
+                </div>
               )}
             </CardContent>
           </Card>
@@ -179,13 +182,15 @@ export default function DashboardTab({ unreadCount }) {
               <CardTitle className="text-lg font-bold text-gray-700">
                 Unread Messages
               </CardTitle>
-              <div className="p-2 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl">
+              <div className="p-2 bg-blue-600 rounded-xl">
                 <MessageSquare className="h-5 w-5 text-white" />
               </div>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-black text-gray-800">
-                {unreadCount ?? <div className="flex items-center gap-2"><div className="animate-spin text-2xl">💬</div><span className="text-gray-600 text-lg">Loading...</span></div>}
+                {unreadCount ?? (
+                  <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+                )}
               </div>
             </CardContent>
           </Card>
@@ -193,8 +198,10 @@ export default function DashboardTab({ unreadCount }) {
         <StaggerItem index={2}>
           <Card className="bg-white/80 backdrop-blur-sm border-2 border-orange-200 hover:border-orange-300 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-2xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-              <CardTitle className="text-lg font-bold text-gray-700">Subscribers</CardTitle>
-              <div className="p-2 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl">
+              <CardTitle className="text-lg font-bold text-gray-700">
+                Subscribers
+              </CardTitle>
+              <div className="p-2 bg-blue-600 rounded-xl">
                 <Users className="h-5 w-5 text-white" />
               </div>
             </CardHeader>
@@ -209,7 +216,7 @@ export default function DashboardTab({ unreadCount }) {
               <CardTitle className="text-lg font-bold text-gray-700">
                 Site Visitors
               </CardTitle>
-              <div className="p-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl">
+              <div className="p-2 bg-blue-600 rounded-xl">
                 <BarChart2 className="h-5 w-5 text-white" />
               </div>
             </CardHeader>
@@ -226,23 +233,26 @@ export default function DashboardTab({ unreadCount }) {
         <StaggerItem index={1} className="lg:col-span-1">
           <Card className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 shadow-2xl rounded-3xl h-full">
             <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between space-y-4 md:space-y-0 pb-6">
-              <CardTitle className="text-2xl font-black text-gray-800" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+              <CardTitle
+                className="text-2xl font-black text-gray-800"
+                style={{ fontFamily: "Space Grotesk, sans-serif" }}
+              >
                 Recent Blog Posts
               </CardTitle>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button
                   size="sm"
                   asChild
-                  className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl"
                 >
                   <Link href="/admin/blog/ai-create">
                     <Bot className="mr-2 h-4 w-4" /> AI Generator
                   </Link>
                 </Button>
-                <Button 
-                  size="sm" 
+                <Button
+                  size="sm"
                   asChild
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl"
                 >
                   <Link href="/admin/blog/create">
                     <FilePlus className="mr-2 h-4 w-4" /> Create New
@@ -254,16 +264,17 @@ export default function DashboardTab({ unreadCount }) {
               {isLoading && (
                 <div className="flex items-center justify-center py-12">
                   <div className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 rounded-2xl px-8 py-6 shadow-xl flex items-center gap-4">
-                    <div className="animate-spin text-3xl">⚡</div>
-                    <span className="text-gray-700 font-bold text-xl">Loading posts...</span>
+                    <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
                   </div>
                 </div>
               )}
               {error && !isLoading && (
                 <div className="flex items-center justify-center py-12">
                   <div className="bg-white/80 backdrop-blur-sm border-2 border-red-200 rounded-2xl px-8 py-6 shadow-xl text-center">
-                    <div className="text-6xl mb-4">😕</div>
-                    <h3 className="text-2xl font-black text-gray-800 mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                    <h3
+                      className="text-2xl font-black text-gray-800 mb-2"
+                      style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                    >
                       Oops! Something went wrong
                     </h3>
                     <p className="text-red-600 font-medium">Error: {error}</p>
@@ -274,10 +285,15 @@ export default function DashboardTab({ unreadCount }) {
                 <div className="flex items-center justify-center py-12">
                   <div className="bg-white/80 backdrop-blur-sm border-2 border-gray-200 rounded-2xl px-8 py-6 shadow-xl text-center">
                     <div className="text-6xl mb-4">📝</div>
-                    <h3 className="text-2xl font-black text-gray-800 mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                    <h3
+                      className="text-2xl font-black text-gray-800 mb-2"
+                      style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                    >
                       No Blog Posts Yet
                     </h3>
-                    <p className="text-gray-600 font-medium">Create your first blog post to get started!</p>
+                    <p className="text-gray-600 font-medium">
+                      Create your first blog post to get started!
+                    </p>
                   </div>
                 </div>
               )}
@@ -287,7 +303,9 @@ export default function DashboardTab({ unreadCount }) {
                     <Table>
                       <TableHeader>
                         <TableRow className="border-purple-200 hover:bg-purple-50/50">
-                          <TableHead className="text-gray-700 font-bold text-lg">Title</TableHead>
+                          <TableHead className="text-gray-700 font-bold text-lg">
+                            Title
+                          </TableHead>
                           <TableHead className="text-gray-700 font-bold text-lg">
                             Status
                           </TableHead>
@@ -355,18 +373,22 @@ export default function DashboardTab({ unreadCount }) {
                                 title="Click to toggle status"
                               >
                                 {isLoading && (
-                                  <div className="animate-spin text-sm mr-1 inline">⚡</div>
+                                  <div className="text-sm mr-1 inline">
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  </div>
                                 )}
                                 {post.isPublished ? "Published" : "Draft"}
                               </Badge>
                             </TableCell>
-                            <TableCell className="text-gray-700 font-medium">{formatDate(post.createdAt)}</TableCell>
+                            <TableCell className="text-gray-700 font-medium">
+                              {formatDate(post.createdAt)}
+                            </TableCell>
                             <TableCell className="text-right space-x-2">
                               <Button
                                 variant="ghost"
                                 size="sm"
                                 asChild
-                                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                                className="bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
                               >
                                 <Link href={`/admin/blog/edit/${post._id}`}>
                                   Edit
@@ -377,7 +399,7 @@ export default function DashboardTab({ unreadCount }) {
                                   variant="outline"
                                   size="sm"
                                   asChild
-                                  className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white border-transparent font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                                  className="bg-blue-600 hover:bg-blue-700 text-white border-transparent font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
                                 >
                                   <Link
                                     href={`/blog/${post.slug}`}
@@ -400,7 +422,7 @@ export default function DashboardTab({ unreadCount }) {
                                   <Button
                                     variant="destructive"
                                     size="sm"
-                                    className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
                                     onClick={() => handleDeleteClick(post._id)}
                                   >
                                     <Trash2 className="h-4 w-4" />
@@ -410,23 +432,33 @@ export default function DashboardTab({ unreadCount }) {
                                 {postToDelete === post._id && (
                                   <AlertDialogContent className="bg-white/90 backdrop-blur-sm border-2 border-red-200 rounded-2xl shadow-2xl">
                                     <AlertDialogHeader>
-                                      <AlertDialogTitle className="flex items-center gap-3 text-2xl font-black text-gray-800" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                                      <AlertDialogTitle
+                                        className="flex items-center gap-3 text-2xl font-black text-gray-800"
+                                        style={{
+                                          fontFamily:
+                                            "Space Grotesk, sans-serif",
+                                        }}
+                                      >
                                         <div className="text-4xl">⚠️</div>
                                         Are you absolutely sure?
                                       </AlertDialogTitle>
                                       <AlertDialogDescription className="text-gray-700 font-medium text-lg">
                                         This action cannot be undone. This will
                                         permanently delete the blog post titled
-                                        <span className="font-bold text-red-600"> "
-                                        {blogPosts.find(
-                                          (p) => p._id === postToDelete
-                                        )?.title || "this post"}
-                                        "</span>.
+                                        <span className="font-bold text-red-600">
+                                          {" "}
+                                          "
+                                          {blogPosts.find(
+                                            (p) => p._id === postToDelete
+                                          )?.title || "this post"}
+                                          "
+                                        </span>
+                                        .
                                       </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter className="gap-3">
                                       <AlertDialogCancel
-                                        className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl border-transparent"
+                                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl border-transparent"
                                         onClick={() => setPostToDelete(null)}
                                       >
                                         Cancel
@@ -434,10 +466,12 @@ export default function DashboardTab({ unreadCount }) {
                                       <AlertDialogAction
                                         onClick={confirmDelete}
                                         disabled={isDeleting}
-                                        className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
                                       >
                                         {isDeleting ? (
-                                          <div className="animate-spin text-lg mr-2">⚡</div>
+                                          <div className="animate-spin text-lg mr-2">
+                                            ⚡
+                                          </div>
                                         ) : null}
                                         Yes, delete post
                                       </AlertDialogAction>

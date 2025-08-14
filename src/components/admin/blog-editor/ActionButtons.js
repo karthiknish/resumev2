@@ -38,13 +38,13 @@ function ActionButtons({
         )}
 
       {/* Action Buttons & Publish Toggle */}
-      <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-primary/10 justify-between items-center">
+      <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-blue-100 justify-between items-center">
         {/* Save Button */}
         <Button
           type="submit"
-          className="w-full sm:w-auto bg-gradient-to-r from-primary to-brandSecondary hover:from-primary/90 hover:to-brandSecondary/90 text-primary-foreground disabled:opacity-50 order-1 sm:order-none"
+          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50 order-1 sm:order-none"
           disabled={isLoading || isSaveDisabled}
-          onClick={onSubmit} // Keep onClick if not using form onSubmit directly
+          onClick={onSubmit}
         >
           {isLoading ? <ButtonLoader size="sm" className="mr-2" /> : null}
           {isLoading ? "Saving..." : saveButtonText}

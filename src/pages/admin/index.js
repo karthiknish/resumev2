@@ -6,7 +6,6 @@ import {
   AiOutlineThunderbolt,
   AiOutlineExperiment,
   AiOutlineUsergroupAdd,
-  AiFillLinkedin, // Added LinkedIn icon
   AiOutlineClockCircle, // Added Clock icon for Pomodoro
   AiOutlineFire, // Icon for News
 } from "react-icons/ai";
@@ -42,7 +41,7 @@ import ContactsTab from "@/components/admin/tabs/ContactsTab";
 import BytesTab from "@/components/admin/tabs/BytesTab";
 import ApiStatusTab from "@/components/admin/tabs/ApiStatusTab";
 import SubscribersTab from "@/components/admin/tabs/SubscribersTab";
-import LinkedInTab from "@/components/admin/tabs/LinkedInTab";
+// import LinkedInTab from "@/components/admin/tabs/LinkedInTab";
 import PomodoroTab from "@/components/admin/tabs/PomodoroTab";
 import HackerNewsFeed from "@/components/admin/tabs/HackerNewsFeed";
 import { checkAdminStatus } from "@/lib/authUtils";
@@ -60,7 +59,6 @@ const adminTabs = [
   },
   { value: "bytes", label: "Bytes", Icon: AiOutlineThunderbolt },
   { value: "subscribers", label: "Subscribers", Icon: FaUserCheck },
-  { value: "linkedin", label: "LinkedIn", Icon: AiFillLinkedin },
   { value: "api-status", label: "API Status", Icon: AiOutlineExperiment },
   { value: "pomodoro", label: "Pomodoro", Icon: AiOutlineClockCircle },
   { value: "news", label: "News", Icon: AiOutlineFire },
@@ -185,13 +183,13 @@ function AdminDashboard() {
             <title>Admin Dashboard</title>
           </Head>
 
-          <PageContainer className="mt-20">
+          <PageContainer className="pt-28 px-4 md:px-8 lg:px-12">
             <SlideInLeft delay={0.2}>
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
                 <div className="flex items-center gap-4">
                   <div className="text-6xl animate-pulse"></div>
                   <h1
-                    className="text-4xl md:text-6xl font-black bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent"
+                    className="mt-8 text-4xl sm:text-6xl font-black leading-tight tracking-tight text-foreground"
                     style={{ fontFamily: "Space Grotesk, sans-serif" }}
                   >
                     Admin Dashboard
@@ -211,31 +209,20 @@ function AdminDashboard() {
               className="mb-8 mt-2 z-10"
             >
               <SlideUp delay={0.4}>
-                {/* Desktop TabsList (Hidden on Small Screens) */}
-                <TabsList className="hidden md:flex w-full overflow-x-auto pb-6 pt-6 mt-8 mb-8 scrollbar-thin space-x-2 bg-card/80 backdrop-blur-sm rounded-2xl border-2 border-primary/20 shadow-xl">
+                {/* Desktop TabsList (Hidden below lg) */}
+                <TabsList className="hidden lg:flex w-full overflow-x-auto scrollbar-thin snap-x snap-mandatory gap-2 py-4 md:py-5 lg:py-6 my-4 md:my-6 lg:my-8 bg-card/80 backdrop-blur-sm rounded-2xl border-2 border-primary/20 shadow-xl justify-center">
                   {adminTabs.map((tab, index) => {
-                    const gradients = [
-                      "from-primary to-brandSecondary",
-                      "from-secondary to-primary",
-                      "from-brandSecondary to-secondary",
-                      "from-primary/80 to-brandSecondary/80",
-                      "from-secondary/80 to-primary/80",
-                      "from-brandSecondary/80 to-secondary/80",
-                      "from-primary/90 to-brandSecondary/90",
-                      "from-secondary/90 to-primary/90",
-                      "from-brandSecondary/90 to-secondary/90",
-                      "from-primary/70 to-brandSecondary/70",
-                    ];
-                    const gradientClass = gradients[index % gradients.length];
+                    const gradients = [];
+                    const gradientClass = "";
 
                     return (
                       <TabsTrigger
                         key={tab.value}
                         value={tab.value}
-                        className={`flex-shrink-0 relative transition-all duration-300 rounded-xl px-4 py-3 font-bold border-2 ${
+                        className={`flex-shrink-0 snap-start relative transition-all duration-300 rounded-xl px-3 md:px-4 py-2 md:py-3 font-bold border-2 min-w-[9rem] md:min-w-[10rem] ${
                           activeTab === tab.value
-                            ? `bg-gradient-to-r ${gradientClass} text-primary-foreground border-transparent shadow-lg`
-                            : "bg-card/70 text-foreground border-input hover:bg-card hover:border-primary/30 hover:text-primary"
+                            ? "bg-blue-600 text-white border-transparent shadow-lg"
+                            : "bg-card/70 text-foreground border-input hover:border-blue-300 hover:text-blue-600"
                         }`}
                       >
                         <tab.Icon className="h-4 w-4" />{" "}
@@ -256,13 +243,13 @@ function AdminDashboard() {
                   })}
                 </TabsList>
 
-                {/* Mobile Select (Visible only on Small Screens) */}
-                <div className="block md:hidden mb-6">
+                {/* Mobile/Tablet Select (Visible below lg) */}
+                <div className="block lg:hidden mb-6">
                   <Select value={activeTab} onValueChange={setActiveTab}>
                     <SelectTrigger className="w-full bg-card/80 backdrop-blur-sm border-2 border-primary/20 text-foreground rounded-2xl px-6 py-4 font-bold text-lg shadow-lg">
                       <SelectValue placeholder="Select a tab" />
                     </SelectTrigger>
-                    <SelectContent className="bg-card/90 backdrop-blur-sm border-2 border-primary/20 text-foreground rounded-2xl shadow-xl">
+                    <SelectContent className="bg-card/90 backdrop-blur-sm border-2 border-primary/20 text-foreground rounded-2xl shadow-xl max-h-[60vh] overflow-auto">
                       {adminTabs.map((tab) => (
                         <SelectItem
                           key={tab.value}
@@ -311,7 +298,7 @@ function AdminDashboard() {
                   {activeTab === "subscribers" && (
                     <SubscribersTab key="subscribers" />
                   )}
-                  {activeTab === "linkedin" && <LinkedInTab key="linkedin" />}
+                  {/* LinkedIn tab removed */}
                   {activeTab === "pomodoro" && <PomodoroTab key="pomodoro" />}
                   {activeTab === "news" && <HackerNewsFeed key="news" />}
                   {!activeTab && <EmptyPage />}

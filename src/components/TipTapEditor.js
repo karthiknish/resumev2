@@ -46,6 +46,13 @@ import Subscript from "@tiptap/extension-subscript";
 import TaskList from "@tiptap/extension-task-list";
 import TaskItem from "@tiptap/extension-task-item";
 import { toast } from "sonner";
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
+import CharacterCount from "@tiptap/extension-character-count";
 
 // Import Table extensions
 import Table from "@tiptap/extension-table";
@@ -89,192 +96,259 @@ const MenuBar = ({ editor }) => {
 
   // Group buttons for better organization
   const textFormattingButtons = [
-    { action: () => editor.chain().focus().toggleBold().run(), 
-      active: editor.isActive("bold"), 
-      icon: Bold, 
-      title: "Bold", 
-      disabled: !editor.can().chain().focus().toggleBold().run() },
-    { action: () => editor.chain().focus().toggleItalic().run(), 
-      active: editor.isActive("italic"), 
-      icon: Italic, 
-      title: "Italic", 
-      disabled: !editor.can().chain().focus().toggleItalic().run() },
-    { action: () => editor.chain().focus().toggleUnderline().run(), 
-      active: editor.isActive("underline"), 
-      icon: Underline, 
-      title: "Underline", 
-      disabled: !editor.can().chain().focus().toggleUnderline().run() },
-    { action: () => editor.chain().focus().toggleStrike().run(), 
-      active: editor.isActive("strike"), 
-      icon: Strikethrough, 
-      title: "Strikethrough", 
-      disabled: !editor.can().chain().focus().toggleStrike().run() },
-    { action: () => editor.chain().focus().toggleCode().run(), 
-      active: editor.isActive("code"), 
-      icon: Code, 
-      title: "Inline Code", 
-      disabled: !editor.can().chain().focus().toggleCode().run() },
-    { action: () => editor.chain().focus().toggleHighlight().run(), 
-      active: editor.isActive("highlight"), 
-      icon: Highlighter, 
-      title: "Highlight", 
-      disabled: !editor.can().chain().focus().toggleHighlight().run() },
+    {
+      action: () => editor.chain().focus().toggleBold().run(),
+      active: editor.isActive("bold"),
+      icon: Bold,
+      title: "Bold",
+      disabled: !editor.can().chain().focus().toggleBold().run(),
+    },
+    {
+      action: () => editor.chain().focus().toggleItalic().run(),
+      active: editor.isActive("italic"),
+      icon: Italic,
+      title: "Italic",
+      disabled: !editor.can().chain().focus().toggleItalic().run(),
+    },
+    {
+      action: () => editor.chain().focus().toggleUnderline().run(),
+      active: editor.isActive("underline"),
+      icon: Underline,
+      title: "Underline",
+      disabled: !editor.can().chain().focus().toggleUnderline().run(),
+    },
+    {
+      action: () => editor.chain().focus().toggleStrike().run(),
+      active: editor.isActive("strike"),
+      icon: Strikethrough,
+      title: "Strikethrough",
+      disabled: !editor.can().chain().focus().toggleStrike().run(),
+    },
+    {
+      action: () => editor.chain().focus().toggleCode().run(),
+      active: editor.isActive("code"),
+      icon: Code,
+      title: "Inline Code",
+      disabled: !editor.can().chain().focus().toggleCode().run(),
+    },
+    {
+      action: () => editor.chain().focus().toggleHighlight().run(),
+      active: editor.isActive("highlight"),
+      icon: Highlighter,
+      title: "Highlight",
+      disabled: !editor.can().chain().focus().toggleHighlight().run(),
+    },
   ];
 
   const headingButtons = [
-    { action: () => editor.chain().focus().toggleHeading({ level: 1 }).run(), 
-      active: editor.isActive("heading", { level: 1 }), 
-      icon: Heading1, 
-      title: "Heading 1", 
-      disabled: !editor.can().chain().focus().toggleHeading({ level: 1 }).run() },
-    { action: () => editor.chain().focus().toggleHeading({ level: 2 }).run(), 
-      active: editor.isActive("heading", { level: 2 }), 
-      icon: Heading2, 
-      title: "Heading 2", 
-      disabled: !editor.can().chain().focus().toggleHeading({ level: 2 }).run() },
-    { action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(), 
-      active: editor.isActive("heading", { level: 3 }), 
-      icon: Heading3, 
-      title: "Heading 3", 
-      disabled: !editor.can().chain().focus().toggleHeading({ level: 3 }).run() },
+    {
+      action: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
+      active: editor.isActive("heading", { level: 1 }),
+      icon: Heading1,
+      title: "Heading 1",
+      disabled: !editor.can().chain().focus().toggleHeading({ level: 1 }).run(),
+    },
+    {
+      action: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
+      active: editor.isActive("heading", { level: 2 }),
+      icon: Heading2,
+      title: "Heading 2",
+      disabled: !editor.can().chain().focus().toggleHeading({ level: 2 }).run(),
+    },
+    {
+      action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
+      active: editor.isActive("heading", { level: 3 }),
+      icon: Heading3,
+      title: "Heading 3",
+      disabled: !editor.can().chain().focus().toggleHeading({ level: 3 }).run(),
+    },
   ];
 
   const listButtons = [
-    { action: () => editor.chain().focus().toggleBulletList().run(), 
-      active: editor.isActive("bulletList"), 
-      icon: List, 
-      title: "Bullet List", 
-      disabled: !editor.can().chain().focus().toggleBulletList().run() },
-    { action: () => editor.chain().focus().toggleOrderedList().run(), 
-      active: editor.isActive("orderedList"), 
-      icon: ListOrdered, 
-      title: "Ordered List", 
-      disabled: !editor.can().chain().focus().toggleOrderedList().run() },
-    { action: () => editor.chain().focus().toggleTaskList().run(), 
-      active: editor.isActive("taskList"), 
-      icon: ListTodo, 
-      title: "Task List", 
-      disabled: !editor.can().chain().focus().toggleTaskList().run() },
+    {
+      action: () => editor.chain().focus().toggleBulletList().run(),
+      active: editor.isActive("bulletList"),
+      icon: List,
+      title: "Bullet List",
+      disabled: !editor.can().chain().focus().toggleBulletList().run(),
+    },
+    {
+      action: () => editor.chain().focus().toggleOrderedList().run(),
+      active: editor.isActive("orderedList"),
+      icon: ListOrdered,
+      title: "Ordered List",
+      disabled: !editor.can().chain().focus().toggleOrderedList().run(),
+    },
+    {
+      action: () => editor.chain().focus().toggleTaskList().run(),
+      active: editor.isActive("taskList"),
+      icon: ListTodo,
+      title: "Task List",
+      disabled: !editor.can().chain().focus().toggleTaskList().run(),
+    },
   ];
 
   const alignmentButtons = [
-    { action: () => editor.chain().focus().setTextAlign("left").run(), 
-      active: editor.isActive({ textAlign: "left" }), 
-      icon: AlignLeft, 
-      title: "Align Left", 
-      disabled: !editor.can().chain().focus().setTextAlign("left").run() },
-    { action: () => editor.chain().focus().setTextAlign("center").run(), 
-      active: editor.isActive({ textAlign: "center" }), 
-      icon: AlignCenter, 
-      title: "Align Center", 
-      disabled: !editor.can().chain().focus().setTextAlign("center").run() },
-    { action: () => editor.chain().focus().setTextAlign("right").run(), 
-      active: editor.isActive({ textAlign: "right" }), 
-      icon: AlignRight, 
-      title: "Align Right", 
-      disabled: !editor.can().chain().focus().setTextAlign("right").run() },
-    { action: () => editor.chain().focus().setTextAlign("justify").run(), 
-      active: editor.isActive({ textAlign: "justify" }), 
-      icon: AlignJustify, 
-      title: "Justify", 
-      disabled: !editor.can().chain().focus().setTextAlign("justify").run() },
+    {
+      action: () => editor.chain().focus().setTextAlign("left").run(),
+      active: editor.isActive({ textAlign: "left" }),
+      icon: AlignLeft,
+      title: "Align Left",
+      disabled: !editor.can().chain().focus().setTextAlign("left").run(),
+    },
+    {
+      action: () => editor.chain().focus().setTextAlign("center").run(),
+      active: editor.isActive({ textAlign: "center" }),
+      icon: AlignCenter,
+      title: "Align Center",
+      disabled: !editor.can().chain().focus().setTextAlign("center").run(),
+    },
+    {
+      action: () => editor.chain().focus().setTextAlign("right").run(),
+      active: editor.isActive({ textAlign: "right" }),
+      icon: AlignRight,
+      title: "Align Right",
+      disabled: !editor.can().chain().focus().setTextAlign("right").run(),
+    },
+    {
+      action: () => editor.chain().focus().setTextAlign("justify").run(),
+      active: editor.isActive({ textAlign: "justify" }),
+      icon: AlignJustify,
+      title: "Justify",
+      disabled: !editor.can().chain().focus().setTextAlign("justify").run(),
+    },
   ];
 
   const blockButtons = [
-    { action: () => editor.chain().focus().toggleBlockquote().run(), 
-      active: editor.isActive("blockquote"), 
-      icon: Quote, 
-      title: "Blockquote", 
-      disabled: !editor.can().chain().focus().toggleBlockquote().run() },
-    { action: () => editor.chain().focus().toggleCodeBlock().run(), 
-      active: editor.isActive("codeBlock"), 
-      icon: Code2, 
-      title: "Code Block", 
-      disabled: !editor.can().chain().focus().toggleCodeBlock().run() },
-    { action: () => editor.chain().focus().setHorizontalRule().run(), 
-      active: false, 
-      icon: Minus, 
-      title: "Horizontal Rule", 
-      disabled: !editor.can().chain().focus().setHorizontalRule().run() },
+    {
+      action: () => editor.chain().focus().toggleBlockquote().run(),
+      active: editor.isActive("blockquote"),
+      icon: Quote,
+      title: "Blockquote",
+      disabled: !editor.can().chain().focus().toggleBlockquote().run(),
+    },
+    {
+      action: () => editor.chain().focus().toggleCodeBlock().run(),
+      active: editor.isActive("codeBlock"),
+      icon: Code2,
+      title: "Code Block",
+      disabled: !editor.can().chain().focus().toggleCodeBlock().run(),
+    },
+    {
+      action: () => editor.chain().focus().setHorizontalRule().run(),
+      active: false,
+      icon: Minus,
+      title: "Horizontal Rule",
+      disabled: !editor.can().chain().focus().setHorizontalRule().run(),
+    },
   ];
 
   const linkImageButtons = [
-    { action: () => {
+    {
+      action: () => {
         const url = window.prompt("Enter the URL");
         if (url) {
           editor.chain().focus().setLink({ href: url }).run();
         }
-      }, 
-      active: editor.isActive("link"), 
-      icon: LinkIcon, 
-      title: "Insert Link", 
-      disabled: !editor.can().chain().focus().setLink({ href: "" }).run() },
-    { action: () => {
+      },
+      active: editor.isActive("link"),
+      icon: LinkIcon,
+      title: "Insert Link",
+      disabled: !editor.can().chain().focus().setLink({ href: "" }).run(),
+    },
+    {
+      action: () => {
         const url = window.prompt("Enter the image URL");
         if (url) {
           editor.chain().focus().setImage({ src: url }).run();
         }
-      }, 
-      active: false, 
-      icon: ImageIcon, 
-      title: "Insert Image", 
-      disabled: !editor.can().chain().focus().setImage({ src: "" }).run() },
+      },
+      active: false,
+      icon: ImageIcon,
+      title: "Insert Image",
+      disabled: !editor.can().chain().focus().setImage({ src: "" }).run(),
+    },
   ];
 
   const tableButtons = [
-    { action: () => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(), 
-      active: false, 
-      icon: TableIcon, 
-      title: "Insert Table", 
-      disabled: !editor.can().chain().focus().insertTable().run() },
-    { action: () => editor.chain().focus().addColumnBefore().run(), 
-      active: false, 
-      icon: MoreHorizontal, 
-      title: "Add Column Before", 
-      disabled: !editor.can().chain().focus().addColumnBefore().run() },
-    { action: () => editor.chain().focus().addColumnAfter().run(), 
-      active: false, 
-      icon: MoreHorizontal, 
-      title: "Add Column After", 
-      disabled: !editor.can().chain().focus().addColumnAfter().run() },
-    { action: () => editor.chain().focus().deleteColumn().run(), 
-      active: false, 
-      icon: Minus, 
-      title: "Delete Column", 
-      disabled: !editor.can().chain().focus().deleteColumn().run() },
-    { action: () => editor.chain().focus().addRowBefore().run(), 
-      active: false, 
-      icon: Type, 
-      title: "Add Row Before", 
-      disabled: !editor.can().chain().focus().addRowBefore().run() },
-    { action: () => editor.chain().focus().addRowAfter().run(), 
-      active: false, 
-      icon: Type, 
-      title: "Add Row After", 
-      disabled: !editor.can().chain().focus().addRowAfter().run() },
-    { action: () => editor.chain().focus().deleteRow().run(), 
-      active: false, 
-      icon: Minus, 
-      title: "Delete Row", 
-      disabled: !editor.can().chain().focus().deleteRow().run() },
+    {
+      action: () =>
+        editor
+          .chain()
+          .focus()
+          .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+          .run(),
+      active: false,
+      icon: TableIcon,
+      title: "Insert Table",
+      disabled: !editor.can().chain().focus().insertTable().run(),
+    },
+    {
+      action: () => editor.chain().focus().addColumnBefore().run(),
+      active: false,
+      icon: MoreHorizontal,
+      title: "Add Column Before",
+      disabled: !editor.can().chain().focus().addColumnBefore().run(),
+    },
+    {
+      action: () => editor.chain().focus().addColumnAfter().run(),
+      active: false,
+      icon: MoreHorizontal,
+      title: "Add Column After",
+      disabled: !editor.can().chain().focus().addColumnAfter().run(),
+    },
+    {
+      action: () => editor.chain().focus().deleteColumn().run(),
+      active: false,
+      icon: Minus,
+      title: "Delete Column",
+      disabled: !editor.can().chain().focus().deleteColumn().run(),
+    },
+    {
+      action: () => editor.chain().focus().addRowBefore().run(),
+      active: false,
+      icon: Type,
+      title: "Add Row Before",
+      disabled: !editor.can().chain().focus().addRowBefore().run(),
+    },
+    {
+      action: () => editor.chain().focus().addRowAfter().run(),
+      active: false,
+      icon: Type,
+      title: "Add Row After",
+      disabled: !editor.can().chain().focus().addRowAfter().run(),
+    },
+    {
+      action: () => editor.chain().focus().deleteRow().run(),
+      active: false,
+      icon: Minus,
+      title: "Delete Row",
+      disabled: !editor.can().chain().focus().deleteRow().run(),
+    },
   ];
 
   const utilityButtons = [
-    { action: () => editor.chain().focus().undo().run(), 
-      active: false, 
-      icon: Undo, 
-      title: "Undo", 
-      disabled: !editor.can().chain().focus().undo().run() },
-    { action: () => editor.chain().focus().redo().run(), 
-      active: false, 
-      icon: Redo, 
-      title: "Redo", 
-      disabled: !editor.can().chain().focus().redo().run() },
-    { action: () => editor.chain().focus().unsetAllMarks().run(), 
-      active: false, 
-      icon: RemoveFormatting, 
-      title: "Clear Formatting", 
-      disabled: !editor.can().chain().focus().unsetAllMarks().run() },
+    {
+      action: () => editor.chain().focus().undo().run(),
+      active: false,
+      icon: Undo,
+      title: "Undo",
+      disabled: !editor.can().chain().focus().undo().run(),
+    },
+    {
+      action: () => editor.chain().focus().redo().run(),
+      active: false,
+      icon: Redo,
+      title: "Redo",
+      disabled: !editor.can().chain().focus().redo().run(),
+    },
+    {
+      action: () => editor.chain().focus().unsetAllMarks().run(),
+      active: false,
+      icon: RemoveFormatting,
+      title: "Clear Formatting",
+      disabled: !editor.can().chain().focus().unsetAllMarks().run(),
+    },
   ];
 
   // Color Picker Component
@@ -350,7 +424,7 @@ const MenuBar = ({ editor }) => {
   // Toolbar Group Component
   const ToolbarGroup = ({ title, children }) => (
     <div className="flex items-center">
-      <div className="flex flex-wrap gap-1 p-1 bg-gray-800 rounded-lg">
+      <div className="flex flex-wrap gap-1 p-1 bg-card border border-border rounded-lg">
         {children}
       </div>
     </div>
@@ -358,100 +432,106 @@ const MenuBar = ({ editor }) => {
 
   // Toolbar Button Component
   const ToolbarButton = ({ action, active, icon: Icon, title, disabled }) => (
-    <button
-      type="button"
-      onClick={action}
-      disabled={disabled}
-      className={`p-2 rounded-lg transition-all duration-200 ${
-        active
-          ? "bg-blue-600 text-white shadow-inner"
-          : "bg-gray-700 hover:bg-gray-600 text-gray-200"
-      } disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center`}
-      title={title}
-    >
-      <Icon className="w-4 h-4" />
-    </button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          type="button"
+          onClick={action}
+          disabled={disabled}
+          className={`p-2 rounded-lg border border-border transition-all duration-200 ${
+            active
+              ? "bg-blue-600 text-white shadow-inner"
+              : "bg-muted hover:bg-muted/80 text-foreground"
+          } disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center`}
+        >
+          <Icon className="w-4 h-4" />
+        </button>
+      </TooltipTrigger>
+      <TooltipContent>{title}</TooltipContent>
+    </Tooltip>
   );
 
   return (
-    <div className="flex flex-col gap-3 p-3 bg-gray-900 rounded-lg border border-gray-700 mb-4">
-      {/* Primary Tools - Always Visible */}
-      <div className="flex flex-wrap gap-2">
-        {/* Undo/Redo */}
-        <ToolbarGroup title="History">
-          {utilityButtons.slice(0, 2).map((button, index) => (
-            <ToolbarButton key={index} {...button} />
-          ))}
-        </ToolbarGroup>
-
-        {/* Text Formatting */}
-        <ToolbarGroup title="Text Formatting">
-          {textFormattingButtons.map((button, index) => (
-            <ToolbarButton key={index} {...button} />
-          ))}
-          <ColorPickerButton editor={editor} />
-        </ToolbarGroup>
-
-        {/* Headings */}
-        <ToolbarGroup title="Headings">
-          {headingButtons.map((button, index) => (
-            <ToolbarButton key={index} {...button} />
-          ))}
-        </ToolbarGroup>
-
-        {/* Lists */}
-        <ToolbarGroup title="Lists">
-          {listButtons.map((button, index) => (
-            <ToolbarButton key={index} {...button} />
-          ))}
-        </ToolbarGroup>
-
-        {/* Alignment */}
-        <ToolbarGroup title="Alignment">
-          {alignmentButtons.map((button, index) => (
-            <ToolbarButton key={index} {...button} />
-          ))}
-        </ToolbarGroup>
-
-        {/* Links and Media */}
-        <ToolbarGroup title="Links & Media">
-          {linkImageButtons.map((button, index) => (
-            <ToolbarButton key={index} {...button} />
-          ))}
-        </ToolbarGroup>
-
-        {/* Blocks */}
-        <ToolbarGroup title="Blocks">
-          {blockButtons.map((button, index) => (
-            <ToolbarButton key={index} {...button} />
-          ))}
-        </ToolbarGroup>
-
-        {/* Tables */}
-        <ToolbarGroup title="Tables">
-          {tableButtons.slice(0, 1).map((button, index) => (
-            <ToolbarButton key={index} {...button} />
-          ))}
-        </ToolbarGroup>
-
-        {/* Clear Formatting */}
-        <ToolbarGroup title="Utilities">
-          <ToolbarButton {...utilityButtons[2]} />
-        </ToolbarGroup>
-      </div>
-
-      {/* Secondary Tools - Collapsible */}
-      <div className="flex flex-wrap gap-2">
-        {/* Table Tools (when table is active) */}
-        {editor.isActive("table") && (
-          <ToolbarGroup title="Table Editing">
-            {tableButtons.slice(1).map((button, index) => (
-              <ToolbarButton key={`table-${index}`} {...button} />
+    <TooltipProvider>
+      <div className="flex flex-col gap-3 p-3 bg-card rounded-lg border border-border mb-4">
+        {/* Primary Tools - Always Visible */}
+        <div className="flex flex-wrap gap-2">
+          {/* Undo/Redo */}
+          <ToolbarGroup title="History">
+            {utilityButtons.slice(0, 2).map((button, index) => (
+              <ToolbarButton key={index} {...button} />
             ))}
           </ToolbarGroup>
-        )}
+
+          {/* Text Formatting */}
+          <ToolbarGroup title="Text Formatting">
+            {textFormattingButtons.map((button, index) => (
+              <ToolbarButton key={index} {...button} />
+            ))}
+            <ColorPickerButton editor={editor} />
+          </ToolbarGroup>
+
+          {/* Headings */}
+          <ToolbarGroup title="Headings">
+            {headingButtons.map((button, index) => (
+              <ToolbarButton key={index} {...button} />
+            ))}
+          </ToolbarGroup>
+
+          {/* Lists */}
+          <ToolbarGroup title="Lists">
+            {listButtons.map((button, index) => (
+              <ToolbarButton key={index} {...button} />
+            ))}
+          </ToolbarGroup>
+
+          {/* Alignment */}
+          <ToolbarGroup title="Alignment">
+            {alignmentButtons.map((button, index) => (
+              <ToolbarButton key={index} {...button} />
+            ))}
+          </ToolbarGroup>
+
+          {/* Links and Media */}
+          <ToolbarGroup title="Links & Media">
+            {linkImageButtons.map((button, index) => (
+              <ToolbarButton key={index} {...button} />
+            ))}
+          </ToolbarGroup>
+
+          {/* Blocks */}
+          <ToolbarGroup title="Blocks">
+            {blockButtons.map((button, index) => (
+              <ToolbarButton key={index} {...button} />
+            ))}
+          </ToolbarGroup>
+
+          {/* Tables */}
+          <ToolbarGroup title="Tables">
+            {tableButtons.slice(0, 1).map((button, index) => (
+              <ToolbarButton key={index} {...button} />
+            ))}
+          </ToolbarGroup>
+
+          {/* Clear Formatting */}
+          <ToolbarGroup title="Utilities">
+            <ToolbarButton {...utilityButtons[2]} />
+          </ToolbarGroup>
+        </div>
+
+        {/* Secondary Tools - Collapsible */}
+        <div className="flex flex-wrap gap-2">
+          {/* Table Tools (when table is active) */}
+          {editor.isActive("table") && (
+            <ToolbarGroup title="Table Editing">
+              {tableButtons.slice(1).map((button, index) => (
+                <ToolbarButton key={`table-${index}`} {...button} />
+              ))}
+            </ToolbarGroup>
+          )}
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 };
 
@@ -481,7 +561,7 @@ const TipTapEditor = ({ content, onUpdate }) => {
         inline: false, // Allow images to be block elements
         allowBase64: true, // Allow pasting base64 images (optional)
         HTMLAttributes: {
-          class: "rounded-lg border border-gray-700",
+          class: "rounded-lg border border-border",
         },
       }),
       TextAlign.configure({
@@ -504,26 +584,31 @@ const TipTapEditor = ({ content, onUpdate }) => {
         lowlight: lowlightInstance,
         defaultLanguage: "plaintext",
         HTMLAttributes: {
-          class: "rounded-lg border border-gray-700 bg-gray-800 p-4 my-4",
+          class: "rounded-lg border border-border bg-muted p-4 my-4",
         },
       }),
       // Add Table extensions
       Table.configure({
         resizable: true, // Allow column resizing
         HTMLAttributes: {
-          class: "table-auto border-collapse border border-gray-700 rounded-lg overflow-hidden my-4",
+          class:
+            "table-auto border-collapse border border-border rounded-lg overflow-hidden my-4",
         },
       }),
       TableRow,
       TableHeader.configure({
         HTMLAttributes: {
-          class: "bg-gray-800 border border-gray-700",
+          class: "bg-muted border border-border",
         },
       }),
       TableCell.configure({
         HTMLAttributes: {
-          class: "border border-gray-700 px-3 py-2",
+          class: "border border-border px-3 py-2",
         },
+      }),
+      CharacterCount.configure({
+        // Optional: set a very high limit or expose via props later
+        limit: 50000,
       }),
     ],
     content: content || "", // Use provided content or empty string
@@ -535,7 +620,7 @@ const TipTapEditor = ({ content, onUpdate }) => {
     editorProps: {
       attributes: {
         class:
-          "prose prose-invert max-w-none focus:outline-none min-h-[400px] p-6 border border-gray-700 rounded-b-lg bg-gray-900 text-gray-100 prose-headings:text-gray-100 prose-a:text-blue-400 prose-blockquote:text-gray-300 prose-code:before:content-none prose-code:after:content-none prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-800 prose-pre:p-0 prose-li:marker:text-gray-400 prose-table:text-gray-100",
+          "prose max-w-none focus:outline-none min-h-[400px] p-6 border border-border rounded-b-lg bg-card text-foreground prose-headings:text-foreground prose-a:text-blue-600 prose-blockquote:text-foreground prose-code:before:content-none prose-code:after:content-none prose-code:bg-muted prose-code:px-1.5 prose-code:py-1 prose-code:rounded prose-pre:bg-muted prose-pre:p-0 prose-li:marker:text-muted-foreground prose-table:text-foreground",
       },
     },
   });
@@ -592,23 +677,23 @@ const TipTapEditor = ({ content, onUpdate }) => {
   };
 
   return (
-    <div className="bg-gray-900 border border-gray-700 rounded-lg shadow-lg">
+    <div className="bg-gray-100 border border-gray-700 rounded-lg shadow-lg">
       <MenuBar editor={editor} />
       <div className="relative">
         {isCompleting && (
-          <div className="absolute top-4 right-4 z-10 bg-blue-900/80 text-blue-200 px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-2">
-            <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+          <div className="absolute top-4 right-4 z-10 bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-2">
+            <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
             AI thinking...
           </div>
         )}
         <EditorContent editor={editor} />
       </div>
-      <div className="px-6 py-3 bg-gray-800/50 border-t border-gray-700 rounded-b-lg text-xs text-gray-400 flex justify-between items-center">
+      <div className="px-6 py-3 bg-muted/50 border-t border-border rounded-b-lg text-xs text-muted-foreground flex justify-between items-center">
         <div>
           {editor && (
             <span>
-              {editor.storage.characterCount.words()} words ·{" "}
-              {editor.storage.characterCount.characters()} characters
+              {editor.storage?.characterCount?.words?.() ?? 0} words ·{" "}
+              {editor.storage?.characterCount?.characters?.() ?? 0} characters
             </span>
           )}
         </div>

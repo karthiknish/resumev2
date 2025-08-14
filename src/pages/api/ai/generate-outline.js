@@ -123,12 +123,15 @@ export default async function handler(req, res) {
       // For now, just return empty headings
     }
 
+    const outlinePayload = {
+      title: title || topic, // Ensure title is never empty
+      headings: headings,
+    };
+
     return res.status(200).json({
       success: true,
-      outline: {
-        title: title || topic, // Ensure title is never empty
-        headings: headings,
-      },
+      outline: outlinePayload, // original key
+      data: outlinePayload, // alias for client code expecting data
     });
   } catch (error) {
     console.error("Outline generation error:", error);

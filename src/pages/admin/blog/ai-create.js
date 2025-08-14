@@ -305,8 +305,12 @@ export default function AICreateBlog() {
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.message || "Failed");
-      setGeneratedOutline(result.data);
-      setTopic(result.data.title);
+      const outlinePayload = result.data || result.outline; // support both keys
+      if (!outlinePayload || !outlinePayload.title) {
+        throw new Error("Malformed outline response");
+      }
+      setGeneratedOutline(outlinePayload);
+      setTopic(outlinePayload.title);
       toast.success("Outline generated!");
     } catch (err) {
       setError(`Outline Generation Failed: ${err.message}`);
@@ -390,11 +394,14 @@ export default function AICreateBlog() {
       const response = await fetch("/api/ai/generate-blog", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           topic,
           tone,
           length,
-          keywords: keywords.split(",").map(k => k.trim()).filter(k => k)
+          keywords: keywords
+            .split(",")
+            .map((k) => k.trim())
+            .filter((k) => k),
         }),
       });
       const result = await response.json();
@@ -456,8 +463,8 @@ export default function AICreateBlog() {
           transition={{ delay: 0.2 }}
           className="text-muted-foreground text-center mb-10 text-lg max-w-3xl mx-auto"
         >
-          Turn ideas into engaging blog posts with AI assistance. Start with a topic, 
-          generate an outline, and create human-like content.
+          Turn ideas into engaging blog posts with AI assistance. Start with a
+          topic, generate an outline, and create human-like content.
         </motion.p>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
@@ -523,7 +530,10 @@ export default function AICreateBlog() {
                         </p>
                         <ul className="space-y-1">
                           {generatedOutline.headings.map((h, i) => (
-                            <li key={i} className="text-sm text-muted-foreground flex items-start">
+                            <li
+                              key={i}
+                              className="text-sm text-muted-foreground flex items-start"
+                            >
                               <span className="mr-2">•</span>
                               <span>{h}</span>
                             </li>
@@ -699,10 +709,16 @@ export default function AICreateBlog() {
                           <h2 className="text-2xl font-bold mb-4 pb-2 border-b border-primary/10 flex-shrink-0">
                             {generatedContent.title}
                           </h2>
-                          <div className="prose prose-invert max-w-none prose-p:my-2 prose-h2:mt-4 prose-h2:mb-1 prose-h3:mt-3 prose-h3:mb-1 prose-ul:my-2 prose-li:my-0.5">
-                            <TipTapRenderer
-                              content={generatedContent.content}
-                            />
+                          <div className="prose prose-invert max-w-none prose-p:my-2 prose-h2:mt-4 prose-h2:mb-1 prose-h3:mt-3 prose-h3:mb-1 prose-ul:my-2 prose-li:my-0.5 bg-neutral-900/90 border border-neutral-800 rounded-lg p-5 shadow-inner">
+                            {generatedContent.content?.trim() ? (
+                              <TipTapRenderer
+                                content={generatedContent.content}
+                              />
+                            ) : (
+                              <div className="text-sm text-neutral-400 italic">
+                                (No content returned from AI. Try regenerating.)
+                              </div>
+                            )}
                           </div>
                         </ScrollArea>
                       </CardContent>
@@ -713,16 +729,28 @@ export default function AICreateBlog() {
               {!generatedContent && !loadingSection && !generatedOutline && (
                 <Card className="bg-card border border-primary/20 text-foreground shadow-lg flex-grow flex items-center justify-center">
                   <div className="text-center text-muted-foreground p-8 max-w-md">
-                    <AiOutlineRobot size={48} className="mx-auto mb-4 text-primary/50" />
-                    <h3 className="text-xl font-semibold mb-2 text-foreground">AI Blog Generator</h3>
+                    <AiOutlineRobot
+                      size={48}
+                      className="mx-auto mb-4 text-primary/50"
+                    />
+                    <h3 className="text-xl font-semibold mb-2 text-foreground">
+                      AI Blog Generator
+                    </h3>
                     <p className="mb-4">
-                      Start by entering a topic, generating an outline, or transforming existing content.
-                      Your AI-generated blog post will appear here.
+                      Start by entering a topic, generating an outline, or
+                      transforming existing content. Your AI-generated blog post
+                      will appear here.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-2 justify-center">
-                      <Badge variant="secondary" className="px-3 py-1">Step 1: Enter Topic</Badge>
-                      <Badge variant="secondary" className="px-3 py-1">Step 2: Generate Outline</Badge>
-                      <Badge variant="secondary" className="px-3 py-1">Step 3: Create Content</Badge>
+                      <Badge variant="secondary" className="px-3 py-1">
+                        Step 1: Enter Topic
+                      </Badge>
+                      <Badge variant="secondary" className="px-3 py-1">
+                        Step 2: Generate Outline
+                      </Badge>
+                      <Badge variant="secondary" className="px-3 py-1">
+                        Step 3: Create Content
+                      </Badge>
                     </div>
                   </div>
                 </Card>
@@ -730,8 +758,13 @@ export default function AICreateBlog() {
               {loadingSection === "generate" && (
                 <Card className="bg-card border border-primary/20 text-foreground shadow-lg flex-grow flex items-center justify-center">
                   <div className="text-center text-muted-foreground p-8">
-                    <Loader2 size={48} className="mx-auto mb-4 animate-spin text-primary" />
-                    <h3 className="text-xl font-semibold mb-2">Generating Blog Post</h3>
+                    <Loader2
+                      size={48}
+                      className="mx-auto mb-4 animate-spin text-primary"
+                    />
+                    <h3 className="text-xl font-semibold mb-2">
+                      Generating Blog Post
+                    </h3>
                     <p>Creating human-like content based on your topic...</p>
                   </div>
                 </Card>
@@ -739,8 +772,13 @@ export default function AICreateBlog() {
               {loadingSection === "link" && (
                 <Card className="bg-card border border-primary/20 text-foreground shadow-lg flex-grow flex items-center justify-center">
                   <div className="text-center text-muted-foreground p-8">
-                    <Loader2 size={48} className="mx-auto mb-4 animate-spin text-primary" />
-                    <h3 className="text-xl font-semibold mb-2">Processing Article</h3>
+                    <Loader2
+                      size={48}
+                      className="mx-auto mb-4 animate-spin text-primary"
+                    />
+                    <h3 className="text-xl font-semibold mb-2">
+                      Processing Article
+                    </h3>
                     <p>Transforming the content into a fresh blog post...</p>
                   </div>
                 </Card>
@@ -762,7 +800,8 @@ export default function AICreateBlog() {
                           Ready to Save
                         </CardTitle>
                         <CardDescription>
-                          Save your generated content as a draft to continue editing.
+                          Save your generated content as a draft to continue
+                          editing.
                         </CardDescription>
                       </CardHeader>
                       <CardContent>

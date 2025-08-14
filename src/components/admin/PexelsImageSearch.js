@@ -66,10 +66,8 @@ function PexelsImageSearch({ onImageSelect }) {
     [searchTerm]
   ); // Dependency: searchTerm
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault(); // Prevent default form submission
-    e.stopPropagation(); // Stop event from bubbling up
-    setPage(1); // Reset page on new search
+  const triggerSearch = () => {
+    setPage(1);
     searchPexels(1);
   };
 
@@ -91,73 +89,101 @@ function PexelsImageSearch({ onImageSelect }) {
   const hasMore = photos.length < totalResults;
 
   return (
-    <div className="space-y-4 p-4 bg-gray-800 border border-gray-700 rounded-lg">
-      <form
-        onSubmit={handleSearchSubmit}
-        className="flex gap-2 sticky top-0 bg-gray-800 py-2 z-10"
+    <div className="space-y-5 p-5 bg-card border border-primary/15 rounded-xl shadow-lg relative">
+      <div
+        role="search"
+        className="flex flex-col sm:flex-row gap-3 sticky top-0 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/70 py-3 px-3 -mx-3 -mt-3 z-10 rounded-t-xl border-b border-primary/10"
       >
-        <Input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search Pexels for images..."
-          className="flex-grow bg-gray-700 border-gray-600 text-white placeholder-gray-400"
-        />
-        <Button
-          type="submit"
-          disabled={isLoading || !searchTerm.trim()}
-          variant="secondary"
-        >
-          {isLoading && page === 1 ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <Search className="mr-2 h-4 w-4" />
+        <div className="flex-grow flex items-center gap-2">
+          <Search className="h-5 w-5 text-muted-foreground hidden sm:block" />
+          <Input
+            style={{ fontFamily: "Space Grotesk, sans-serif" }}
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                e.stopPropagation();
+                triggerSearch();
+              }
+            }}
+            placeholder="Search photos (e.g. 'sunset skyline')"
+            className="flex-grow bg-background border-input focus-visible:ring-primary text-sm"
+            aria-label="Search Pexels images"
+            autoComplete="off"
+          />
+        </div>
+        <div className="flex gap-2">
+          <Button
+            style={{ fontFamily: "Space Grotesk, sans-serif" }}
+            type="button"
+            disabled={isLoading || !searchTerm.trim()}
+            onClick={triggerSearch}
+            variant="default"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
+          >
+            {isLoading && page === 1 ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Search className="mr-2 h-4 w-4" />
+            )}
+            Search
+          </Button>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between text-[11px] tracking-wide uppercase font-medium text-muted-foreground">
+        <div>
+          {hasSearched && !isLoading && (
+            <span>
+              Showing {photos.length}{" "}
+              {photos.length === 1 ? "result" : "results"}
+              {totalResults > photos.length && ` of ~${totalResults}`}
+            </span>
           )}
-          Search
-        </Button>
-      </form>
+        </div>
+        {error && <span className="text-destructive font-medium">{error}</span>}
+      </div>
 
-      {error && <p className="text-sm text-red-500">{error}</p>}
-
-      <AnimatePresence>
+      <AnimatePresence mode="popLayout">
         {photos.length > 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
           >
             {photos.map((photo) => (
-              <motion.div
+              <motion.button
                 key={photo.id}
+                type="button"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.2 }}
-                className="aspect-video rounded overflow-hidden cursor-pointer relative group"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.18 }}
+                className="group relative rounded-lg overflow-hidden shadow-sm ring-1 ring-border/60 hover:ring-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 bg-muted/20"
                 onClick={() => handleImageClick(photo)}
+                aria-label={`Select image by ${photo.photographer}`}
               >
-                <img
-                  src={photo.src.landscape || photo.src.medium}
-                  alt={photo.alt}
-                  loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-opacity duration-300 flex items-center justify-center">
-                  <p className="text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-1 bg-black/50 rounded">
-                    Select
-                  </p>
+                <div className="aspect-[4/3] bg-muted/40">
+                  <img
+                    src={photo.src.landscape || photo.src.medium}
+                    alt={photo.alt}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
                 </div>
-                <a
-                  href={photo.photographer_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  className="absolute bottom-1 right-1 text-white text-[10px] bg-black/60 px-1 py-0.5 rounded opacity-80 hover:opacity-100 transition-opacity text-decoration-none"
-                  title={`Photo by ${photo.photographer} on Pexels`}
-                >
-                  {photo.photographer}
-                </a>
-              </motion.div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between gap-2 text-[10px] font-medium">
+                  <span className="px-1.5 py-0.5 rounded bg-black/60 text-white truncate max-w-[70%]">
+                    {photo.photographer}
+                  </span>
+                  <span className="px-1.5 py-0.5 rounded bg-primary text-primary-foreground opacity-0 group-hover:opacity-100 transition-opacity shadow-sm">
+                    Select
+                  </span>
+                </div>
+              </motion.button>
             ))}
           </motion.div>
         )}
@@ -165,26 +191,27 @@ function PexelsImageSearch({ onImageSelect }) {
 
       {isLoading && page > 1 && (
         <div className="text-center py-4">
-          <Loader2 className="h-6 w-6 animate-spin text-gray-400 mx-auto" />
+          <Loader2 className="h-6 w-6 animate-spin text-primary mx-auto" />
         </div>
       )}
 
       {!isLoading && photos.length === 0 && !error && hasSearched && (
-        <div className="text-center py-6 text-gray-500 flex flex-col items-center">
-          <ImageOff className="w-10 h-10 mb-2" />
-          <span>
-            No results found for "{searchTerm}". Try a different search.
+        <div className="text-center py-10 text-muted-foreground flex flex-col items-center">
+          <ImageOff className="w-12 h-12 mb-3 text-muted-foreground/60" />
+          <span className="text-sm">
+            No results for "{searchTerm}". Try different keywords.
           </span>
         </div>
       )}
 
       {hasMore && !isLoading && (
-        <div className="text-center mt-4">
+        <div className="text-center pt-2">
           <Button
             type="button"
             onClick={handleLoadMore}
             variant="outline"
             size="sm"
+            className="hover:bg-primary/10 border-primary/30"
           >
             Load More
           </Button>

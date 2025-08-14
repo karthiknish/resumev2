@@ -9,6 +9,7 @@ module.exports = {
     "<rootDir>/.next/",
     "<rootDir>/node_modules/",
     "<rootDir>/out/",
+    "<rootDir>/e2e/",
   ],
   transform: {
     "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",

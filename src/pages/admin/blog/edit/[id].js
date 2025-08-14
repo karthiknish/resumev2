@@ -6,6 +6,15 @@ import PageContainer from "@/components/PageContainer"; // Ensure single import
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 // Import necessary icons and toast
 import { Loader2, Wand2 } from "lucide-react";
 import { toast } from "sonner";
@@ -20,6 +29,7 @@ import ActionButtons from "@/components/admin/blog-editor/ActionButtons";
 import { AiOutlineClose } from "react-icons/ai";
 import TipTapEditor from "@/components/TipTapEditor";
 import TipTapRenderer from "@/components/TipTapRenderer";
+import useDebounce from "@/hooks/useDebounce";
 
 function Edit() {
   const router = useRouter();
@@ -31,114 +41,117 @@ function Edit() {
     imageUrl: "",
     content: "",
     description: "",
+    excerpt: "",
     category: "",
     tags: [],
-    isPublished: false, // State for publish status
+    isPublished: false,
   });
 
-  // State for UI and processes
   const [isLoading, setIsLoading] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState([]);
   const [error, setError] = useState("");
-
-  // State for specific features
-  const [isFormatting, setIsFormatting] = useState(false);
-  const [formatError, setFormatError] = useState(""); // Add format error state
-  // Audio summary feature removed
-
-  // State for modals/toggles
+  const [submitStatus, setSubmitStatus] = useState([]);
   const [showPreview, setShowPreview] = useState(false);
+  const [isFormatting, setIsFormatting] = useState(false);
+  const [formatError, setFormatError] = useState("");
+  const [lastSavedSnapshot, setLastSavedSnapshot] = useState({ ...formData });
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
+  const [autoSaveMessage, setAutoSaveMessage] = useState("");
 
-  // --- Define toggle functions ---
-  const togglePreview = () => {
-    setShowPreview((prevState) => !prevState);
+  const debouncedFormData = useDebounce(formData, 1500);
+
+  const getPlainText = (html) => {
+    if (!html) return "";
+    return html
+      .replace(/<[^>]*>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
   };
 
-  // --- Data Fetching ---
+  const readingTimeMinutes = (() => {
+    const words = getPlainText(formData.content)
+      .split(" ")
+      .filter(Boolean).length;
+    return Math.max(1, Math.round(words / 200));
+  })();
+
+  const seoScore = (() => {
+    let score = 0;
+    const titleLen = (formData.title || "").trim().length;
+    const descLen = (formData.excerpt || "").trim().length;
+    const text = getPlainText(formData.content);
+    const words = text.split(" ").filter(Boolean).length;
+    const hasSubheadings = /<h2|<h3/i.test(formData.content || "");
+    const tagsCount = (formData.tags || []).length;
+    if (titleLen >= 30 && titleLen <= 60) score += 20;
+    if (descLen >= 120 && descLen <= 160) score += 20;
+    if (words >= 600) score += 20;
+    if (hasSubheadings) score += 20;
+    if (tagsCount >= 3) score += 20;
+    return Math.max(0, Math.min(100, score));
+  })();
+
+  // Load blog by ID and populate form
   useEffect(() => {
-    const getData = async () => {
-      if (blogId) {
-        setIsLoading(true);
-        try {
-          const res = await fetch(`/api/blog?id=${blogId}`);
-          const d = await res.json();
-          if (d?.success && d.data) {
-            setFormData({
-              title: d.data.title || "",
-              imageUrl: d.data.imageUrl || "",
-              content: d.data.content || "",
-              description: d.data.description || "",
-              excerpt: d.data.description || "", // Map backend description to excerpt for the UI
-              category: d.data.category || "",
-              tags: Array.isArray(d.data.tags) ? d.data.tags : [],
-              isPublished: d.data.isPublished || false, // Fetch isPublished status
-            });
-          } else {
-            setError("Failed to load blog post data.");
-            setSubmitStatus([
-              false,
-              d?.message || "Failed to load blog post data.",
-            ]);
-          }
-        } catch (err) {
-          console.error("Error fetching blog post:", err);
-          setError("Error loading blog post.");
-          setSubmitStatus([false, "Error loading blog post."]);
-        } finally {
-          setIsLoading(false);
+    const load = async () => {
+      if (!blogId) return;
+      setIsLoading(true);
+      setError("");
+      try {
+        const res = await fetch(`/api/blog?id=${blogId}`);
+        const data = await res.json();
+        if (!res.ok || !data?.success) {
+          throw new Error(data?.message || "Failed to load blog post");
         }
+        const b = data.data || {};
+        const populated = {
+          title: b.title || "",
+          imageUrl: b.imageUrl || "",
+          content: b.content || "",
+          description: b.description || "",
+          excerpt: b.description || "",
+          category: b.category || "",
+          tags: Array.isArray(b.tags) ? b.tags : [],
+          isPublished: !!b.isPublished,
+        };
+        setFormData(populated);
+        setLastSavedSnapshot(populated);
+      } catch (e) {
+        setError(e.message || "Failed to load blog post");
+      } finally {
+        setIsLoading(false);
       }
     };
-    if (router.isReady) {
-      getData();
-    }
-  }, [router.isReady, blogId]);
-
-  // --- State Update Handlers ---
-  const handleFormChange = (updatedData) => {
-    setFormData((prev) => {
-      // If description or excerpt is updated, keep them in sync
-      let next = { ...prev, ...updatedData };
-      if ("excerpt" in updatedData) {
-        next.description = updatedData.excerpt;
-      }
-      if ("description" in updatedData) {
-        next.excerpt = updatedData.description;
-      }
-      return next;
-    });
-    setSubmitStatus([]);
-    setError("");
-  };
-
-  // Specific handler for the isPublished switch (passed to MetadataSection)
-  const handlePublishChange = (checked) => {
-    handleFormChange({ isPublished: checked });
-  };
+    load();
+  }, [blogId]);
 
   const handleImageUrlChange = (url) => {
-    handleFormChange({ imageUrl: url });
+    setFormData((prev) => ({ ...prev, imageUrl: url }));
   };
 
-  const handleContentChange = (newContent) => {
-    handleFormChange({ content: newContent });
+  const handleContentChange = (html) => {
+    setFormData((prev) => ({ ...prev, content: html }));
   };
 
-  // --- Format Content Handler ---
-  const handleFormatContent = useCallback(async () => {
-    if (!formData.content?.trim()) {
-      toast.error("Content is empty, nothing to format.");
-      return;
+  const handleFormChange = (fieldOrPatch, maybeValue) => {
+    if (typeof fieldOrPatch === "object" && fieldOrPatch !== null) {
+      setFormData((prev) => ({ ...prev, ...fieldOrPatch }));
+    } else if (typeof fieldOrPatch === "string") {
+      setFormData((prev) => ({ ...prev, [fieldOrPatch]: maybeValue }));
     }
+  };
+
+  const handlePublishChange = (checked) => {
+    setFormData((prev) => ({ ...prev, isPublished: !!checked }));
+  };
+
+  const togglePreview = () => setShowPreview((prev) => !prev);
+
+  const handleFormatContent = async () => {
+    if (!formData.content?.trim()) return;
     setIsFormatting(true);
     setFormatError("");
-    setError(""); // Clear general errors too
-    setSubmitStatus([]);
+    setError("");
     try {
-      console.log("[EditPage] Formatting content:", formData.content); // Log the content
-      console.log("[EditPage] Type of content:", typeof formData.content); // Log the type
-
-      console.log("[EditPage] Requesting content formatting...");
       const response = await fetch("/api/ai/format-content", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -152,18 +165,72 @@ function Edit() {
         throw new Error(data.message || "Failed to format content.");
       }
     } catch (err) {
-      console.error("[EditPage] Error formatting content:", err);
       const errorMsg =
-        err.response?.data?.message ||
-        err.message ||
+        err?.response?.data?.message ||
+        err?.message ||
         "Error formatting content.";
       setFormatError(errorMsg);
-      setError(`Formatting Error: ${errorMsg}`); // Also set general error for display
+      setError(`Formatting Error: ${errorMsg}`);
       toast.error(`Formatting failed: ${errorMsg}`);
     } finally {
       setIsFormatting(false);
     }
-  }, [formData.content, handleContentChange]); // Dependencies: content and handler
+  };
+
+  // Autosave debounced changes
+  useEffect(() => {
+    if (!blogId) return;
+    const keys = [
+      "title",
+      "imageUrl",
+      "content",
+      "description",
+      "excerpt",
+      "category",
+      "tags",
+      "isPublished",
+    ];
+    const patch = {};
+    let changed = false;
+    keys.forEach((k) => {
+      const prevVal = lastSavedSnapshot[k];
+      const currVal = debouncedFormData[k];
+      const isChanged = Array.isArray(currVal)
+        ? JSON.stringify(prevVal || []) !== JSON.stringify(currVal || [])
+        : prevVal !== currVal;
+      if (isChanged) {
+        if (
+          ["title", "content", "excerpt", "category", "description"].includes(k)
+        ) {
+          if (!currVal || String(currVal).trim() === "") return;
+        }
+        patch[k] = currVal;
+        changed = true;
+      }
+    });
+    if (!changed) return;
+    const save = async () => {
+      try {
+        setIsAutoSaving(true);
+        setAutoSaveMessage("Saving...");
+        const res = await fetch("/api/blog/edit", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: blogId, ...patch }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || data.success === false)
+          throw new Error(data.message || "Autosave failed");
+        setLastSavedSnapshot((prev) => ({ ...prev, ...patch }));
+        setAutoSaveMessage("Saved just now");
+      } catch (e) {
+        setAutoSaveMessage("Autosave failed");
+      } finally {
+        setIsAutoSaving(false);
+      }
+    };
+    save();
+  }, [debouncedFormData, blogId, lastSavedSnapshot]);
 
   // --- Main Form Submission ---
   const handleSubmit = async (e) => {
@@ -177,7 +244,8 @@ function Edit() {
     if (!formData.title) missingFields.push("Title");
     if (!formData.content) missingFields.push("Content");
     if (!formData.imageUrl) missingFields.push("Image URL");
-    if (!formData.description) missingFields.push("Description");
+    if (!(formData.excerpt || formData.description))
+      missingFields.push("Description");
 
     if (missingFields.length > 0) {
       const errorMsg = `Missing required field(s): ${missingFields.join(", ")}`;
@@ -192,7 +260,7 @@ function Edit() {
       title: formData.title,
       imageUrl: formData.imageUrl,
       content: formData.content || "", // Use content directly
-      description: formData.description,
+      description: formData.excerpt || formData.description || "",
       excerpt: formData.excerpt, // Also send excerpt for backend compatibility
       category: formData.category,
       tags: formData.tags.filter((tag) => tag),
@@ -228,7 +296,7 @@ function Edit() {
   // --- Preview Modal ---
   const BlogPreview = () => (
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-80 flex items-start justify-center p-4">
-      <div className="bg-gray-900 rounded-lg w-full max-w-4xl my-8 overflow-hidden shadow-2xl">
+      <div className="bg-gray-100 rounded-lg w-full max-w-4xl my-8 overflow-hidden shadow-2xl">
         <div className="flex justify-between items-center p-4 border-b border-gray-700">
           <h2 className="text-xl font-bold text-white">Blog Preview</h2>
           <button
@@ -265,10 +333,13 @@ function Edit() {
       <Head>
         <title>Edit Blog Post</title>
       </Head>
-      <div className="min-h-screen bg-black text-white">
-        <PageContainer className="mt-10">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-brandSecondary/10 text-foreground">
+        <PageContainer className="mt-20">
           {!isLoading && blogId && (
-            <h1 className="text-4xl font-bold text-white font-calendas text-center mb-8 pt-8">
+            <h1
+              style={{ fontFamily: "Space Grotesk, sans-serif" }}
+              className="text-6xl font-black text-foreground  text-center mb-8 pt-8"
+            >
               Edit Blog Post
             </h1>
           )}
@@ -286,7 +357,7 @@ function Edit() {
           {!isLoading && blogId && (
             <form
               onSubmit={handleSubmit}
-              className="bg-gray-800 rounded-lg p-6 shadow-lg space-y-6 max-w-4xl mx-auto"
+              className="bg-card border-2 border-blue-200 rounded-3xl p-6 shadow-xl space-y-6 max-w-4xl mx-auto"
             >
               <BannerImageSection
                 imageUrl={formData.imageUrl}
@@ -301,34 +372,51 @@ function Edit() {
               />
 
               {/* --- Blog Content Section with Format Button --- */}
-              <div className="mb-6 space-y-2">
-                <div className="flex justify-between items-center flex-wrap">
+              <div className="mb-6 space-y-3">
+                <div className="flex justify-between items-center flex-wrap gap-3">
                   <Label
                     htmlFor="blog-content-editor"
-                    className="block text-gray-300 text-lg font-semibold mb-2 sm:mb-0"
+                    className="block text-foreground text-lg font-semibold mb-2 sm:mb-0"
                   >
                     Blog Content
                   </Label>
-                  <Button
-                    type="button" // Prevent form submission
-                    onClick={handleFormatContent}
-                    disabled={isFormatting || !formData.content?.trim()}
-                    variant="secondary"
-                    size="sm"
-                    className="flex items-center"
-                    title="Format content using AI"
-                  >
-                    {isFormatting ? (
-                      <Loader2 className="mr-1 h-4 w-4 animate-spin" />
-                    ) : (
-                      <Wand2 className="mr-1 h-4 w-4" />
-                    )}
-                    Format
-                  </Button>
+                  <div className="flex items-center gap-2 ml-auto">
+                    <Badge variant="secondary" className="px-2 py-1 rounded-md">
+                      {readingTimeMinutes} min read
+                    </Badge>
+                    <Badge
+                      className="px-2 py-1 rounded-md"
+                      variant={
+                        seoScore >= 80
+                          ? "success"
+                          : seoScore >= 60
+                          ? "warning"
+                          : "destructive"
+                      }
+                    >
+                      SEO {seoScore}/100
+                    </Badge>
+                    <Button
+                      type="button"
+                      onClick={handleFormatContent}
+                      disabled={isFormatting || !formData.content?.trim()}
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center border-blue-300 text-blue-600 hover:bg-blue-50"
+                      title="Format content using AI"
+                    >
+                      {isFormatting ? (
+                        <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                      ) : (
+                        <Wand2 className="mr-1 h-4 w-4" />
+                      )}
+                      Format
+                    </Button>
+                  </div>
                 </div>
                 {/* Display Formatting Error */}
                 {formatError && (
-                  <p className="text-sm text-red-500">
+                  <p className="text-sm text-destructive">
                     Format Error: {formatError}
                   </p>
                 )}
@@ -340,22 +428,27 @@ function Edit() {
               </div>
               {/* --- End Blog Content Section --- */}
 
-              <ActionButtons
-                isLoading={isLoading}
-                isSaveDisabled={
-                  !formData.title ||
-                  !formData.content ||
-                  !formData.imageUrl ||
-                  !formData.description
-                }
-                onSubmit={handleSubmit}
-                onTogglePreview={togglePreview}
-                submitStatus={submitStatus}
-                error={error}
-                saveButtonText="Save Changes"
-                isPublished={formData.isPublished}
-                onPublishChange={handlePublishChange}
-              />
+              <div className="sticky bottom-0 -mx-6 px-6 py-4 bg-card/90 backdrop-blur-sm border-t border-blue-200 rounded-b-3xl z-10">
+                <ActionButtons
+                  isLoading={isLoading}
+                  isSaveDisabled={
+                    !formData.title ||
+                    !formData.content ||
+                    !formData.imageUrl ||
+                    !formData.description
+                  }
+                  onSubmit={handleSubmit}
+                  onTogglePreview={togglePreview}
+                  submitStatus={submitStatus}
+                  error={error}
+                  saveButtonText="Save Changes"
+                  isPublished={formData.isPublished}
+                  onPublishChange={handlePublishChange}
+                />
+                <div className="text-xs text-muted-foreground mt-2">
+                  {isAutoSaving ? "Saving..." : autoSaveMessage}
+                </div>
+              </div>
             </form>
           )}
         </PageContainer>
