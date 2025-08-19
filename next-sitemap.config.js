@@ -21,51 +21,44 @@ module.exports = {
   // Function to generate dynamic paths for blog posts and projects
   additionalPaths: async (config) => {
     const paths = [];
-    const baseUrl = process.env.SITE_URL || "https://karthiknish.com"; // Use the same base URL
-
     try {
-      // --- Fetch Blog Posts ---
-      console.log("Sitemap: Fetching blog posts...");
-      const blogResponse = await fetch(
-        `${baseUrl}/api/blog?publishedOnly=true&select=slug,updatedAt`
-      );
-      if (blogResponse.ok) {
-        const blogData = await blogResponse.json();
-        if (blogData.success && Array.isArray(blogData.data)) {
-          blogData.data.forEach((post) => {
-            paths.push({
-              loc: `/blog/${post.slug}`,
-              lastmod: post.updatedAt
-                ? new Date(post.updatedAt).toISOString()
-                : new Date().toISOString(),
-              changefreq: "weekly",
-              priority: 0.7,
-            });
+      // Load DB and Blog model directly to avoid calling /api/blog (which may be protected by middleware)
+      console.log("Sitemap: Querying database for blog slugs...");
+      const dbConnect = require("./src/lib/dbConnect");
+      const Blog = require("./src/models/Blog");
+
+      // Ensure DB connection
+      await dbConnect();
+
+      // Fetch all published blog slugs and updatedAt timestamps
+      const posts = await Blog.find({ isPublished: true })
+        .select("slug updatedAt")
+        .lean();
+      if (Array.isArray(posts) && posts.length > 0) {
+        posts.forEach((post) => {
+          paths.push({
+            loc: `/blog/${post.slug}`,
+            lastmod: post.updatedAt
+              ? new Date(post.updatedAt).toISOString()
+              : new Date().toISOString(),
+            changefreq: "weekly",
+            priority: 0.7,
           });
-          console.log(`Sitemap: Added ${blogData.data.length} blog paths.`);
-        } else {
-          console.warn(
-            "Sitemap: Failed to fetch or parse blog posts from API.",
-            blogData
-          );
-        }
+        });
+        console.log(`Sitemap: Added ${posts.length} blog paths.`);
       } else {
-        console.warn(
-          `Sitemap: Blog API request failed with status ${blogResponse.status}`
-        );
+        console.log("Sitemap: No published blog posts found.");
       }
 
-      // --- Add Project Paths ---
+      // Add Project Paths from projectsData
       console.log("Sitemap: Adding project paths...");
       if (projectsData && Array.isArray(projectsData)) {
         projectsData.forEach((project) => {
-          // Assuming projectsData has an 'id' and maybe an 'updatedAt' or similar field
-          // If no date field exists, use the current date
           const lastModified = project.updatedAt || new Date();
           paths.push({
-            loc: `/projects/${project.id}`, // Use project ID for the path
+            loc: `/projects/${project.id}`,
             lastmod: new Date(lastModified).toISOString(),
-            changefreq: "monthly", // Projects might change less often than blog posts
+            changefreq: "monthly",
             priority: 0.6,
           });
         });
