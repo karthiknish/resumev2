@@ -199,14 +199,6 @@ export default function Nav() {
                     className="mr-2 sm:mr-3 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14"
                     priority
                     unoptimized
-                    onError={(e) => {
-                      // fallback to built-in svg if logo fails to load
-                      try {
-                        e.currentTarget.src = "/next.svg";
-                      } catch (err) {
-                        /* ignore */
-                      }
-                    }}
                   />
                 </motion.div>
               </Link>
