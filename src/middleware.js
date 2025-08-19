@@ -37,36 +37,41 @@ export default withAuth(
       authorized: ({ token, req }) => {
         // Allow access to public routes without authentication
         const publicRoutes = [
-          '/',
-          '/about',
-          '/services',
-          '/blog',
-          '/projects',
-          '/contact',
-          '/resources',
-          '/signin',
-          '/signup',
-          '/forgot-password',
-          '/reset-password',
-          '/404',
-          '/unauthorized'
+          "/",
+          "/about",
+          "/services",
+          "/blog",
+          "/projects",
+          "/contact",
+          "/resources",
+          "/signin",
+          "/signup",
+          "/forgot-password",
+          "/reset-password",
+          "/404",
+          "/unauthorized",
         ];
-        
-        const isPublicRoute = publicRoutes.some(route => 
-          req.nextUrl.pathname === route || 
-          req.nextUrl.pathname.startsWith(`${route}/`)
+
+        // Allow file assets (images, fonts, etc.) to pass through the middleware
+        // e.g. /logo.png, /icons/favicon.ico, /uploads/... - these often contain a dot
+        if (req.nextUrl.pathname.includes(".")) return true;
+
+        const isPublicRoute = publicRoutes.some(
+          (route) =>
+            req.nextUrl.pathname === route ||
+            req.nextUrl.pathname.startsWith(`${route}/`)
         );
-        
+
         // Allow access to API auth routes
-        const isAuthApiRoute = req.nextUrl.pathname.startsWith('/api/auth');
-        
+        const isAuthApiRoute = req.nextUrl.pathname.startsWith("/api/auth");
+
         // Allow access to public API routes
-        const isPublicApiRoute = req.nextUrl.pathname.startsWith('/api/public');
-        
+        const isPublicApiRoute = req.nextUrl.pathname.startsWith("/api/public");
+
         if (isPublicRoute || isAuthApiRoute || isPublicApiRoute) {
           return true;
         }
-        
+
         // For all other routes, require authentication
         return !!token;
       },

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { FaBars, FaTimes, FaSearch, FaTimesCircle } from "react-icons/fa"; // Added FaSearch, FaTimesCircle
 import { useRouter } from "next/router";
 import Image from "next/image";
+// use public folder image via string path
 import { signOut } from "@/lib/authUtils";
 import useDebounce from "@/hooks/useDebounce"; // Make sure this hook exists at this path
 import dynamic from "next/dynamic"; // <-- Add this import
@@ -190,13 +191,22 @@ export default function Nav() {
               <Link href="/" className="flex items-center">
                 <motion.div className="relative">
                   <Image
-                    src="/Logo.png"
+                    src="/logo.png"
                     alt="Logo"
                     width={56}
                     height={56}
                     sizes="(max-width: 640px) 40px, (max-width: 768px) 48px, 56px"
                     className="mr-2 sm:mr-3 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14"
                     priority
+                    unoptimized
+                    onError={(e) => {
+                      // fallback to built-in svg if logo fails to load
+                      try {
+                        e.currentTarget.src = "/next.svg";
+                      } catch (err) {
+                        /* ignore */
+                      }
+                    }}
                   />
                 </motion.div>
               </Link>
@@ -208,20 +218,20 @@ export default function Nav() {
               {navLinks.map((link) => (
                 <SlideInRight key={link.href} delay={link.delay}>
                   <HoverCard scale={1.05}>
-                                          <Link
-                        href={link.href}
-                        className={`text-base lg:text-lg font-semibold relative group transition-colors duration-200 ${
-                          (link.href === "/" && router.pathname === "/") ||
-                          (link.href !== "/" &&
-                            (router.pathname === link.href ||
-                              (link.href === "/blog" &&
-                                router.pathname.startsWith("/blog")) ||
-                              (link.href === "/bytes" &&
-                                router.pathname.startsWith("/bytes"))))
-                            ? "text-gray-900"
-                            : "text-gray-700 hover:text-gray-900"
-                        }`}
-                      >
+                    <Link
+                      href={link.href}
+                      className={`text-base lg:text-lg font-semibold relative group transition-colors duration-200 ${
+                        (link.href === "/" && router.pathname === "/") ||
+                        (link.href !== "/" &&
+                          (router.pathname === link.href ||
+                            (link.href === "/blog" &&
+                              router.pathname.startsWith("/blog")) ||
+                            (link.href === "/bytes" &&
+                              router.pathname.startsWith("/bytes"))))
+                          ? "text-gray-900"
+                          : "text-gray-700 hover:text-gray-900"
+                      }`}
+                    >
                       {link.label}
                       <span
                         className={`absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 ${
