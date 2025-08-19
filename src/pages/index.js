@@ -274,12 +274,6 @@ const HomeScreen = () => {
                 />
                 Available for work
               </Badge>
-              <Badge
-                variant="outline"
-                className="bg-secondary text-brandSecondary border-brandSecondary"
-              >
-                Liverpool, UK
-              </Badge>
             </motion.div>
 
             {/* Main Headline with Typography */}
