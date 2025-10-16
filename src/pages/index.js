@@ -12,6 +12,12 @@ import {
   Puzzle,
   Cloud,
   Rocket,
+  MonitorSmartphone,
+  Layers,
+  AppWindow,
+  SmartphoneNfc,
+  Cpu,
+  ShieldCheck,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -130,6 +136,67 @@ const capabilities = [
       "Delivering high‑quality products quickly using modern practices.",
     icon: Rocket,
     color: "bg-green-50 border-green-200 hover:bg-green-100",
+  },
+];
+
+const heroStats = [
+  {
+    value: "8+",
+    label: "Years delivering cross-platform products",
+  },
+  {
+    value: "24",
+    label: "Apps launched across web, iOS & Android",
+  },
+  {
+    value: "5.0",
+    label: "Client rating",
+    icon: StarIcon,
+  },
+];
+
+const crossPlatformSkills = [
+  {
+    title: "Multi-device product strategy",
+    description:
+      "Translate product requirements into experiences that feel at home on web, iOS, and Android while sharing the same core architecture.",
+    icon: MonitorSmartphone,
+    accent: "from-sky-100/80 via-blue-50 to-indigo-100/60",
+  },
+  {
+    title: "Unified codebases",
+    description:
+      "Leverage React Native, Expo, and Next.js to reuse components and business logic while respecting platform-specific patterns.",
+    icon: Layers,
+    accent: "from-violet-100/80 via-purple-50 to-pink-100/60",
+  },
+  {
+    title: "Design systems & accessibility",
+    description:
+      "Establish responsive design systems, typography scales, and accessibility checks that adapt across screen sizes and platforms.",
+    icon: AppWindow,
+    accent: "from-teal-100/80 via-cyan-50 to-emerald-100/60",
+  },
+  {
+    title: "Native feature integration",
+    description:
+      "Ship biometric auth, in-app payments, push notifications, and device sensors through modular native bridges.",
+    icon: SmartphoneNfc,
+    accent: "from-amber-100/80 via-orange-50 to-yellow-100/60",
+  },
+  {
+    title: "Performance engineering",
+    description:
+      "Profile rendering, memory, and network usage to deliver 60fps experiences and smooth app store reviews.",
+    icon: Cpu,
+    accent: "from-emerald-100/70 via-green-50 to-lime-100/60",
+  },
+  {
+    title: "Automated & secure delivery",
+    description:
+      "Automate releases with CI/CD, OTA updates, and cloud security practices that keep deployments reliable.",
+    icon: ShieldCheck,
+    accent: "from-slate-100/80 via-slate-50 to-gray-100/60",
   },
 ];
 
@@ -265,14 +332,14 @@ const HomeScreen = () => {
               transition={{ duration: 0.6 }}
               className="inline-flex items-center gap-3 px-6 py-3 bg-card border border-border rounded-full text-foreground/80 text-sm font-semibold mb-8 shadow"
             >
-              <span>I'm Karthik</span>
-              <Badge className="bg-secondary text-brandSecondary border-brandSecondary">
+              <span>Hey, I'm Karthik</span>
+              <Badge className="bg-secondary text-brandSecondary border-brandSecondary text-xs sm:text-sm">
                 <motion.div
                   className="w-2 h-2 bg-green-500 rounded-full mr-2"
                   animate={{ scale: [1, 1.3, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 />
-                Available for work
+                Open to new cross-platform projects
               </Badge>
             </motion.div>
 
@@ -297,8 +364,8 @@ const HomeScreen = () => {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-foreground/70 mb-8 max-w-4xl mx-auto leading-relaxed font-medium"
             >
-              I design and build reliable web and mobile applications that scale
-              with your business.
+              I craft cross-platform products that feel native on every device,
+              blending React Native, Next.js, and cloud-first architecture.
             </motion.p>
 
             {/* Fun tagline */}
@@ -308,7 +375,7 @@ const HomeScreen = () => {
               transition={{ duration: 0.6, delay: 0.6 }}
               className="text-lg text-gray-600 mb-12 flex items-center justify-center gap-3"
             >
-              <span>Building robust software, from concept to production.</span>
+              <span>From UX to app store launch, I handle the full cross-platform lifecycle.</span>
             </motion.div>
 
             {/* Enhanced CTA Buttons */}
@@ -316,7 +383,7 @@ const HomeScreen = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.8 }}
-              className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
+              className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12"
             >
               <Link href="/contact">
                 <Button
@@ -336,6 +403,47 @@ const HomeScreen = () => {
                   View my work
                 </Button>
               </Link>
+            </motion.div>
+
+            {/* Hero highlight metrics */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.9 }}
+              className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-16"
+            >
+              {heroStats.map((stat, index) => {
+                const StatIcon = stat.icon;
+                return (
+                  <motion.div
+                    key={stat.label}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.1 * index }}
+                    className="group relative overflow-hidden rounded-3xl border border-border/60 bg-white/80 backdrop-blur shadow-lg p-6 sm:p-8"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-primary/10 opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="relative flex items-center justify-between gap-3">
+                      <div className="text-left">
+                        <p
+                          className="text-4xl sm:text-5xl font-black text-foreground mb-2"
+                          style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                        >
+                          {stat.value}
+                        </p>
+                        <p className="text-sm sm:text-base text-foreground/70 font-medium">
+                          {stat.label}
+                        </p>
+                      </div>
+                      {StatIcon && (
+                        <span className="flex shrink-0 items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary">
+                          <StatIcon className="h-6 w-6" />
+                        </span>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
             </motion.div>
 
             {/* Enhanced Technology Showcase (icons with tooltip) */}
@@ -384,6 +492,76 @@ const HomeScreen = () => {
           </div>
         </section>
 
+        {/* Cross-platform skill set */}
+        <section
+          id="skills"
+          className="relative py-20 md:py-32 bg-gradient-to-br from-background via-secondary/10 to-primary/5 overflow-hidden"
+        >
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute -top-24 right-[-6rem] h-72 w-72 rounded-full bg-gradient-to-br from-primary/20 via-brandSecondary/20 to-accent/20 blur-3xl opacity-70" />
+            <div className="absolute -bottom-20 left-[-4rem] h-64 w-64 rounded-full bg-gradient-to-tr from-blue-300/20 via-brandSecondary/10 to-primary/20 blur-3xl opacity-70" />
+          </div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 relative">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="max-w-3xl mx-auto text-center"
+            >
+              <Badge className="mx-auto mb-6 bg-blue-100 text-blue-800 border border-blue-200 shadow-sm">
+                Cross-platform skill set
+              </Badge>
+              <h2
+                className="text-5xl md:text-6xl font-black text-foreground mb-6"
+                style={{ fontFamily: "Space Grotesk, sans-serif" }}
+              >
+                Expertise built for every screen
+              </h2>
+              <p className="text-xl sm:text-2xl text-foreground/70 leading-relaxed">
+                A proven cross-platform toolkit that blends design systems,
+                native capability, and reliable delivery pipelines.
+              </p>
+            </motion.div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
+              {crossPlatformSkills.map((skill, index) => {
+                const Icon = skill.icon;
+                return (
+                  <motion.div
+                    key={skill.title}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.08 }}
+                    viewport={{ once: true }}
+                    className="h-full"
+                  >
+                    <Card className="group relative h-full overflow-hidden border border-border/60 bg-white/80 backdrop-blur rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300">
+                      <div
+                        className={`absolute inset-0 bg-gradient-to-br ${skill.accent} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+                      />
+                      <CardContent className="relative p-8 flex flex-col gap-4">
+                        <span className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 text-primary">
+                          <Icon className="h-6 w-6" />
+                        </span>
+                        <CardTitle
+                          className="text-2xl font-bold text-foreground"
+                          style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                        >
+                          {skill.title}
+                        </CardTitle>
+                        <CardDescription className="text-base text-foreground/70 leading-relaxed">
+                          {skill.description}
+                        </CardDescription>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
         {/* Capabilities Section */}
         <section className="py-20 md:py-32 bg-gradient-to-br from-primary/10 via-background to-brandSecondary/10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
@@ -401,8 +579,8 @@ const HomeScreen = () => {
                   What I deliver
                 </h2>
                 <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
-                  From planning to launch — I build scalable, user‑focused
-                  products.
+                  From discovery to launch — I build cross-platform products
+                  that stay fast and dependable.
                 </p>
               </motion.div>
             </div>
