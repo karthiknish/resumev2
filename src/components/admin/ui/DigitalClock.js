@@ -28,12 +28,12 @@ function DigitalClock() {
 
   return (
     <ScaleIn>
-      <Card className="bg-card/80 backdrop-blur-sm border-2 border-primary/20 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl">
-        <CardContent className="p-6">
+      <Card className="rounded-xl border border-slate-200 bg-white shadow-md">
+        <CardContent className="p-4">
           <div className="flex flex-col items-end">
-            <div className="flex items-center bg-brandSecondary px-6 py-3 rounded-xl text-brandSecondary-foreground shadow-lg">
-              <AiOutlineClockCircle className="mr-3 text-brandSecondary-foreground text-xl" />
-              <span className="font-mono text-2xl flex items-center font-bold">
+            <div className="flex items-center rounded-lg border border-blue-100 bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2.5 shadow">
+              <AiOutlineClockCircle className="mr-2.5 text-white text-lg" />
+              <span className="flex items-center font-mono text-xl font-bold text-white">
                 {hours}
                 <span
                   className={`mx-1 ${
@@ -53,7 +53,7 @@ function DigitalClock() {
                 {seconds}
               </span>
             </div>
-            <div className="text-muted-foreground mt-2 text-sm font-semibold">
+            <div className="mt-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
               {formattedDate}
             </div>
           </div>

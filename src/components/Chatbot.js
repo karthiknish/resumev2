@@ -301,7 +301,7 @@ function Chatbot() {
     <>
       {/* Chat button */}
       <motion.button
-        className={`fixed z-[1100] right-6 p-4 rounded-2xl bg-slate-900 text-slate-100 border border-slate-700 flex items-center shadow-xl hover:shadow-2xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-slate-300 ${
+        className={`fixed z-[1100] right-6 p-4 rounded-2xl bg-[#0b1f3b] text-white border border-white/20 flex items-center shadow-xl hover:shadow-2xl hover:bg-[#143061] transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-[#1d4ed8]/40 ${
           isOpen ? "bottom-[80px] md:bottom-6" : "bottom-6"
         }`}
         onClick={() => setIsOpen(!isOpen)}
@@ -310,9 +310,9 @@ function Chatbot() {
         whileTap={{ scale: 0.95 }}
         animate={{
           boxShadow: [
-            "0 10px 30px rgba(15, 23, 42, 0.25)",
-            "0 15px 40px rgba(30, 41, 59, 0.3)",
-            "0 10px 30px rgba(15, 23, 42, 0.25)",
+            "0 12px 32px rgba(12, 30, 63, 0.45)",
+            "0 18px 44px rgba(24, 57, 114, 0.5)",
+            "0 12px 32px rgba(12, 30, 63, 0.45)",
           ],
         }}
         transition={{
@@ -341,14 +341,14 @@ function Chatbot() {
         </AnimatePresence>
         {!isOpen && (
           <motion.div
-            className="absolute -top-12 right-0 bg-white text-slate-800 px-3 py-2 rounded-2xl shadow-lg text-sm font-medium border border-slate-200 whitespace-nowrap"
+            className="absolute -top-12 right-0 bg-[#132d55] text-white px-3 py-2 rounded-2xl shadow-lg text-sm font-medium border border-white/20 whitespace-nowrap"
             initial={{ opacity: 0, y: 10, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.8 }}
             transition={{ delay: 1, duration: 0.3 }}
           >
             <span className="flex items-center gap-2">Chat with me!</span>
-            <div className="absolute -bottom-2 right-4 w-4 h-4 bg-white border-r border-b border-slate-200 transform rotate-45"></div>
+            <div className="absolute -bottom-2 right-4 w-4 h-4 bg-[#132d55] border-r border-b border-white/20 transform rotate-45"></div>
           </motion.div>
         )}
       </motion.button>
@@ -363,19 +363,19 @@ function Chatbot() {
             animate="visible"
             exit="exit"
             transition={{ type: "spring", stiffness: 400, damping: 35 }}
-            className="fixed inset-0 z-[1000] flex flex-col bg-white/95 backdrop-blur-xl shadow-2xl border border-slate-200
+            className="fixed inset-0 z-[1000] flex flex-col bg-[#040b1a]/95 backdrop-blur-2xl shadow-[0_40px_120px_rgba(8,30,70,0.45)] border border-white/10 text-white
                        md:inset-auto md:bottom-24 md:right-6 md:w-[400px] md:max-h-[70vh] md:h-auto md:rounded-3xl md:overflow-hidden"
           >
             {/* Chat header - Modern vibrant design */}
             <motion.div
-              className="flex justify-between items-center p-6 border-b border-slate-200 bg-white/90 flex-shrink-0"
+              className="flex justify-between items-center p-6 border-b border-white/10 bg-white/5 flex-shrink-0"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
               <div className="flex items-center gap-3">
                 <motion.div
-                  className="w-10 h-10 bg-slate-100 border border-slate-200 rounded-2xl flex items-center justify-center"
+                  className="w-10 h-10 bg-white/10 border border-white/10 rounded-2xl flex items-center justify-center text-white"
                   animate={{ rotate: [0, 10, -10, 0] }}
                   transition={{
                     duration: 3,
@@ -383,20 +383,20 @@ function Chatbot() {
                     ease: "easeInOut",
                   }}
                 >
-                  <span className="font-semibold text-slate-700">C</span>
+                  <span className="font-semibold text-white">C</span>
                 </motion.div>
                 <div>
-                  <h3 className="text-slate-900 font-heading text-xl">
+                  <h3 className="text-white font-heading text-xl">
                     Cline AI
                   </h3>
-                  <p className="text-slate-500 text-sm font-medium">
+                  <p className="text-white/60 text-sm font-medium">
                     Karthik's Assistant
                   </p>
                 </div>
               </div>
               <motion.button
                 onClick={() => setIsOpen(false)}
-                className="text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 p-2 rounded-xl transition-all duration-300"
+                className="text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-xl transition-all duration-300"
                 aria-label="Close chat"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
@@ -406,7 +406,7 @@ function Chatbot() {
             </motion.div>
 
             {/* Chat messages area */}
-            <div className="flex-grow p-6 overflow-y-auto space-y-6 bg-slate-50 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-200">
+            <div className="flex-grow p-6 overflow-y-auto space-y-6 bg-gradient-to-b from-[#050f24] via-[#0a1f43] to-[#0b2a5b] scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-white/5">
               {messages.map((msg, index) => (
                 <div
                   key={index}
@@ -418,17 +418,17 @@ function Chatbot() {
                   {/* Bot Avatar */}
                   {msg.role === "assistant" && (
                     <motion.div
-                      className="flex-shrink-0 w-10 h-10 rounded-2xl bg-slate-200 border border-slate-300 flex items-center justify-center mb-1 shadow-sm"
+                      className="flex-shrink-0 w-10 h-10 rounded-2xl bg-white/10 border border-white/10 backdrop-blur flex items-center justify-center mb-1 shadow-sm"
                       whileHover={{ scale: 1.05 }}
                     >
-                      <span className="font-semibold text-slate-600">C</span>
+                      <span className="font-semibold text-white">C</span>
                     </motion.div>
                   )}
 
                   {/* User Avatar */}
                   {msg.role === "user" && (
                     <motion.div
-                      className="flex-shrink-0 w-10 h-10 rounded-2xl bg-slate-900 text-slate-100 flex items-center justify-center mb-1 shadow-sm"
+                      className="flex-shrink-0 w-10 h-10 rounded-2xl bg-[#1a3c74] text-white border border-[#254f96] flex items-center justify-center mb-1 shadow-sm"
                       whileHover={{ scale: 1.05 }}
                     >
                       <span className="text-xl">👤</span>
@@ -445,18 +445,18 @@ function Chatbot() {
                       stiffness: 500,
                       damping: 30,
                     }}
-                    className={`max-w-[85%] px-6 py-4 rounded-3xl shadow text-base border ${
+                    className={`max-w-[85%] px-6 py-4 rounded-3xl shadow text-base border backdrop-blur ${
                       msg.role === "assistant"
-                        ? "bg-white text-slate-800 rounded-bl-xl border-slate-200"
-                        : "bg-slate-900 text-slate-100 rounded-br-xl border-slate-900"
+                        ? "bg-white/10 text-white rounded-bl-xl border-white/10"
+                        : "bg-[#1a3c74] text-white rounded-br-xl border-[#254f96]"
                     }`}
                   >
                     {renderMessageContent(msg)}
                     <motion.span
                       className={`block text-xs mt-2 text-right font-medium ${
                         msg.role === "assistant"
-                          ? "text-slate-500"
-                          : "text-slate-300"
+                          ? "text-white/60"
+                          : "text-white/70"
                       }`}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 0.7 }}
@@ -475,7 +475,7 @@ function Chatbot() {
                 >
                   {/* Bot Avatar for loading */}
                   <motion.div
-                    className="flex-shrink-0 w-10 h-10 rounded-2xl bg-slate-200 border border-slate-300 flex items-center justify-center mb-1 shadow-sm"
+                    className="flex-shrink-0 w-10 h-10 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center mb-1 shadow-sm"
                     animate={{ rotate: [0, 360] }}
                     transition={{
                       duration: 2,
@@ -483,19 +483,19 @@ function Chatbot() {
                       ease: "linear",
                     }}
                   >
-                    <Loader2 className="w-5 h-5 text-slate-600" />
+                    <Loader2 className="w-5 h-5 text-white" />
                   </motion.div>
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-white text-slate-800 max-w-[85%] px-6 py-4 rounded-3xl rounded-bl-xl shadow border border-slate-200"
+                    className="bg-white/10 text-white max-w-[85%] px-6 py-4 rounded-3xl rounded-bl-xl shadow border border-white/10 backdrop-blur"
                   >
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-slate-600">Thinking...</span>
+                      <span className="font-medium text-white/80">Thinking...</span>
                     </div>
                     <div className="flex space-x-2 items-center mt-2">
                       <motion.div
-                        className="w-2 h-2 rounded-full bg-slate-400"
+                        className="w-2 h-2 rounded-full bg-white/40"
                         animate={{ scale: [1, 1.5, 1] }}
                         transition={{
                           duration: 1,
@@ -504,7 +504,7 @@ function Chatbot() {
                         }}
                       />
                       <motion.div
-                        className="w-2 h-2 rounded-full bg-slate-500"
+                        className="w-2 h-2 rounded-full bg-white/50"
                         animate={{ scale: [1, 1.5, 1] }}
                         transition={{
                           duration: 1,
@@ -513,7 +513,7 @@ function Chatbot() {
                         }}
                       />
                       <motion.div
-                        className="w-2 h-2 rounded-full bg-slate-400"
+                        className="w-2 h-2 rounded-full bg-white/40"
                         animate={{ scale: [1, 1.5, 1] }}
                         transition={{
                           duration: 1,
@@ -531,7 +531,7 @@ function Chatbot() {
             {/* Chat input area */}
             <motion.form
               onSubmit={handleSubmit}
-              className="border-t border-slate-200 p-6 bg-white flex-shrink-0"
+              className="border-t border-white/10 p-6 bg-[#06132d] flex-shrink-0"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
@@ -539,14 +539,14 @@ function Chatbot() {
               {/* Added descriptive text for email collection */}
               {isCollectingEmail && (
                 <motion.div
-                  className="mb-4 p-4 bg-slate-50 rounded-2xl border border-slate-200"
+                  className="mb-4 p-4 bg-white/5 rounded-2xl border border-white/10 backdrop-blur"
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                 >
-                  <p className="text-sm text-slate-700 font-medium flex items-center gap-2">
+                  <p className="text-sm text-white/80 font-medium flex items-center gap-2">
                     Please enter your email to continue:
                   </p>
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-xs text-white/60 mt-1">
                     This helps me save our conversation and follow up if needed
                   </p>
                 </motion.div>
@@ -555,13 +555,13 @@ function Chatbot() {
                 {isCollectingEmail ? (
                   <>
                     <motion.div
-                      className="flex-shrink-0 w-12 h-12 bg-slate-100 border border-slate-200 rounded-2xl flex items-center justify-center shadow-sm"
+                      className="flex-shrink-0 w-12 h-12 bg-white/10 border border-white/10 rounded-2xl flex items-center justify-center shadow-sm text-white"
                       whileHover={{ scale: 1.05 }}
                     >
-                      <FaEnvelope className="text-slate-600 text-lg" />
+                      <FaEnvelope className="text-white text-lg" />
                     </motion.div>
                     <Input
-                      className="flex-grow bg-white border border-slate-200 text-slate-800 placeholder-slate-400 font-medium rounded-2xl px-6 py-4 text-lg focus:ring-4 focus:ring-slate-200 focus:border-slate-400 transition-all duration-300"
+                      className="flex-grow bg-[#0c1d3a] border border-white/10 text-white placeholder-white/40 font-medium rounded-2xl px-6 py-4 text-lg focus:ring-4 focus:ring-[#1d4ed8]/30 focus:border-[#1d4ed8] transition-all duration-300"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       onKeyDown={handleKeyDown}
@@ -574,7 +574,7 @@ function Chatbot() {
                 ) : (
                   <>
                     <motion.div
-                      className="flex-shrink-0 w-12 h-12 bg-slate-100 border border-slate-200 rounded-2xl flex items-center justify-center shadow-sm"
+                      className="flex-shrink-0 w-12 h-12 bg-white/10 border border-white/10 rounded-2xl flex items-center justify-center shadow-sm text-white"
                       animate={{ scale: [1, 1.05, 1] }}
                       transition={{
                         duration: 2,
@@ -582,10 +582,10 @@ function Chatbot() {
                         ease: "easeInOut",
                       }}
                     >
-                      <span className="font-semibold text-slate-600">C</span>
+                      <span className="font-semibold text-white">C</span>
                     </motion.div>
                     <Input
-                      className="flex-grow bg-white border border-slate-200 text-slate-800 placeholder-slate-400 font-medium rounded-2xl px-6 py-4 text-lg focus:ring-4 focus:ring-slate-200 focus:border-slate-400 transition-all duration-300"
+                      className="flex-grow bg-[#0c1d3a] border border-white/10 text-white placeholder-white/40 font-medium rounded-2xl px-6 py-4 text-lg focus:ring-4 focus:ring-[#1d4ed8]/30 focus:border-[#1d4ed8] transition-all duration-300"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       onKeyDown={handleKeyDown}
@@ -596,7 +596,7 @@ function Chatbot() {
                 )}
                 <motion.button
                   type="submit"
-                  className="flex-shrink-0 w-14 h-14 bg-slate-900 text-slate-100 hover:bg-slate-700 rounded-2xl border border-slate-900 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl disabled:bg-slate-300 disabled:border-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
+                  className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-[#1d4ed8] to-[#0b1f3b] text-white hover:from-[#2563eb] hover:to-[#123264] rounded-2xl border border-[#1d4ed8] transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl disabled:bg-white/10 disabled:border-white/10 disabled:text-white/40 disabled:cursor-not-allowed"
                   disabled={!message.trim() || isLoading}
                   aria-label={
                     isCollectingEmail ? "Submit email" : "Send message"

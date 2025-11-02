@@ -11,7 +11,7 @@ import {
 } from "next/font/google"; // Import Link for Cookie Banner
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SessionProvider } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { Analytics } from "@vercel/analytics/react";

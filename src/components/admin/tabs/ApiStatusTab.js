@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
-import { toast } from "sonner";
+import { Loader2, CheckCircle, XCircle } from "lucide-react";
 
 // Helper component for individual API status
 const ApiStatusCard = ({ title, testEndpoint, usageEndpoint }) => {
@@ -70,41 +69,41 @@ const ApiStatusCard = ({ title, testEndpoint, usageEndpoint }) => {
   }, []);
 
   return (
-    <Card className="bg-card/80 backdrop-blur-sm border-2 border-primary/20 hover:border-primary/30 transition-all duration-300 shadow-xl hover:shadow-2xl rounded-2xl">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-xl font-bold flex items-center justify-between text-foreground">
-          <span className="flex items-center gap-3">{title}</span>
+    <Card className="bg-white border border-slate-200 transition-shadow duration-200 shadow-sm hover:shadow-md rounded-xl">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg font-heading font-semibold flex items-center justify-between text-slate-900">
+          <span className="flex items-center gap-2">{title}</span>
           <Badge
             variant={getBadgeVariant()}
-            className="ml-2 font-bold rounded-xl px-3 py-1"
+            className="ml-2 text-xs font-semibold rounded-lg px-2 py-1"
           >
             {getStatusIcon()}
-            <span className="ml-2">
+            <span className="ml-1">
               {status.charAt(0).toUpperCase() + status.slice(1)}
             </span>
           </Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <p className="text-lg font-medium mb-4 text-foreground/80">{message}</p>
+      <CardContent className="pt-0">
+        <p className="text-sm font-medium mb-3 text-slate-600">{message}</p>
         {usageEndpoint && (
-          <div className="mt-4 pt-4 border-t-2 border-primary/10 rounded-xl bg-card p-4">
+          <div className="mt-3 pt-3 border-t border-slate-200 rounded-lg bg-slate-50 p-3">
             {isLoadingUsage ? (
-              <div className="flex items-center gap-2 text-foreground font-medium">
+              <div className="flex items-center gap-2 text-slate-600 font-medium">
                 <Loader2 className="w-4 h-4 animate-spin" />
                 <span>Loading usage...</span>
               </div>
             ) : usage !== null && usage.limit !== null ? (
-              <div className="text-foreground font-semibold">
-                <div className="flex items-center justify-between mb-2">
-                  <span>Usage Today:</span>
-                  <span className="text-lg font-black">
+              <div className="text-slate-700 font-semibold">
+                <div className="flex items-center justify-between mb-2 text-xs uppercase tracking-wide text-slate-500">
+                  <span>Usage Today</span>
+                  <span className="text-sm font-bold text-slate-700">
                     {usage.count} / {usage.limit}
                   </span>
                 </div>
-                <div className="w-full bg-muted rounded-full h-3">
+                <div className="w-full bg-slate-200/80 rounded-full h-2">
                   <div
-                    className="bg-gradient-to-r from-primary to-brandSecondary h-3 rounded-full transition-all duration-300"
+                    className="bg-gradient-to-r from-primary to-brandSecondary h-2 rounded-full transition-all duration-300"
                     style={{
                       width: `${Math.min(
                         (usage.count / usage.limit) * 100,
@@ -115,15 +114,15 @@ const ApiStatusCard = ({ title, testEndpoint, usageEndpoint }) => {
                 </div>
               </div>
             ) : usage !== null && usage.count !== null ? (
-              <div className="text-foreground font-semibold">
+              <div className="text-slate-700 font-semibold text-sm">
                 <span className="flex items-center gap-2">
                   <span>Usage Today:</span>{" "}
-                  <span className="font-black text-lg">{usage.count}</span>{" "}
+                  <span className="font-bold text-base">{usage.count}</span>{" "}
                   requests
                 </span>
               </div>
             ) : (
-              <div className="text-muted-foreground font-medium flex items-center gap-2">
+              <div className="text-slate-500 font-medium flex items-center gap-2 text-sm">
                 <span>Usage data unavailable</span>
               </div>
             )}
@@ -134,16 +133,11 @@ const ApiStatusCard = ({ title, testEndpoint, usageEndpoint }) => {
   );
 };
 export default function ApiStatusTab() {
-  // Define API test endpoints here, separating Gemini models
+  // Define API test endpoints here
   const apiEndpoints = [
     {
       title: "Gemini Flash",
-      testEndpoint:
-        "/api/admin/test-gemini-models?model=gemini-1.5-flash-latest",
-    },
-    {
-      title: "Gemini Pro",
-      testEndpoint: "/api/admin/test-gemini-models?model=gemini-pro",
+      testEndpoint: "/api/admin/test-gemini-models?model=gemini-2.0-flash",
     },
     {
       title: "Pexels API",
@@ -161,27 +155,24 @@ export default function ApiStatusTab() {
   ];
 
   return (
-    <div className="space-y-8">
-      <div className="text-center">
-        <div className="flex items-center justify-center gap-4 mb-4">
-          <h2
-            className="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent"
-            style={{ fontFamily: "Space Grotesk, sans-serif" }}
-          >
+    <div className="space-y-6">
+      <div className="text-center space-y-2">
+        <div className="flex items-center justify-center">
+          <h2 className="text-3xl md:text-4xl font-heading font-semibold text-slate-900">
             API Status Dashboard
           </h2>
         </div>
-        <p className="text-xl text-gray-700 font-medium max-w-3xl mx-auto">
+        <p className="text-base text-slate-600 font-medium max-w-2xl mx-auto">
           Monitor the operational status and usage of all integrated third-party
           APIs in real-time.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
         {apiEndpoints.map((api, index) => (
           <div
             key={api.title}
-            className="transform transition-all duration-300 hover:scale-105"
+            className="transition-transform duration-200 hover:-translate-y-1"
             style={{
               animationDelay: `${index * 0.1}s`,
             }}

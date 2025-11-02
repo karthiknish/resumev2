@@ -90,21 +90,21 @@ const PostSuggestionGenerator = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <Card className="bg-white border-2 border-blue-200 shadow-xl rounded-3xl overflow-hidden">
-        <CardHeader className="bg-blue-50 border-b border-blue-200">
-          <CardTitle className="flex items-center gap-3 text-gray-800">
-            <div className="p-2 bg-white rounded-full shadow-md">
-              <Sparkles className="w-5 h-5 text-blue-600" />
+      <Card className="bg-white border border-slate-200 shadow-sm rounded-2xl">
+        <CardHeader className="pb-3 border-b border-slate-200">
+          <CardTitle className="flex items-center gap-2 text-lg font-heading font-semibold text-slate-900">
+            <div className="p-2 bg-slate-100 rounded-full">
+              <Sparkles className="w-4 h-4 text-primary" />
             </div>
-            <span className="font-bold">AI Post Idea Generator</span>
+            AI Post Idea Generator
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-6">
+        <CardContent className="pt-4">
           <form onSubmit={handleGenerateIdeas} className="space-y-4">
             <div>
               <label
                 htmlFor="topic"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-xs font-medium text-slate-500 mb-1"
               >
                 Topic / Goal
               </label>
@@ -114,13 +114,13 @@ const PostSuggestionGenerator = () => {
                 onChange={(e) => setTopic(e.target.value)}
                 placeholder="e.g., Benefits of Cloud Migration"
                 disabled={isLoading}
-                className="bg-white border-blue-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200"
+                className=""
               />
             </div>
             <div>
               <label
                 htmlFor="keywords"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-xs font-medium text-slate-500 mb-1"
               >
                 Keywords (comma-separated)
               </label>
@@ -130,14 +130,14 @@ const PostSuggestionGenerator = () => {
                 onChange={(e) => setKeywords(e.target.value)}
                 placeholder="e.g., aws, serverless"
                 disabled={isLoading}
-                className="bg-white border-blue-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200"
+                className=""
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label
                   htmlFor="tone"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-xs font-medium text-slate-500 mb-1"
                 >
                   Tone
                 </label>
@@ -146,10 +146,10 @@ const PostSuggestionGenerator = () => {
                   onValueChange={setTone}
                   disabled={isLoading}
                 >
-                  <SelectTrigger className="w-full bg-white border-blue-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select tone" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border-blue-200">
+                  <SelectContent className="bg-white border border-slate-200">
                     <SelectItem value="professional">Professional</SelectItem>
                     <SelectItem value="informative">Informative</SelectItem>
                     <SelectItem value="casual">Casual</SelectItem>
@@ -163,7 +163,7 @@ const PostSuggestionGenerator = () => {
               <div>
                 <label
                   htmlFor="numIdeas"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-xs font-medium text-slate-500 mb-1"
                 >
                   Number of Ideas
                 </label>
@@ -175,14 +175,14 @@ const PostSuggestionGenerator = () => {
                   value={numIdeas}
                   onChange={(e) => setNumIdeas(parseInt(e.target.value, 10))}
                   disabled={isLoading}
-                  className="bg-white border-blue-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200"
+                  className=""
                 />
               </div>
             </div>
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+              className="w-full"
             >
               {isLoading ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -194,11 +194,11 @@ const PostSuggestionGenerator = () => {
           </form>
           {error && (
             <motion.div
-              className="mt-4 bg-red-50 border border-red-200 rounded-2xl p-4"
-              initial={{ opacity: 0, scale: 0.9 }}
+              className="mt-4 bg-red-50 border border-red-200 rounded-lg p-3"
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
             >
-              <p className="text-red-700 text-sm font-medium">Error: {error}</p>
+              <p className="text-xs font-medium text-red-600">Error: {error}</p>
             </motion.div>
           )}
           {ideas.length > 0 && (
@@ -209,10 +209,10 @@ const PostSuggestionGenerator = () => {
               transition={{ duration: 0.5 }}
             >
               <div className="flex items-center gap-2">
-                <h4 className="text-md font-semibold text-gray-800">
+                <h4 className="text-sm font-heading font-semibold text-slate-800">
                   Generated Ideas:
                 </h4>
-                <Badge className="bg-purple-600 text-white">
+                <Badge variant="outline" className="text-xs text-slate-600 border-slate-200">
                   {ideas.length} {ideas.length === 1 ? "idea" : "ideas"}
                 </Badge>
               </div>
@@ -223,14 +223,14 @@ const PostSuggestionGenerator = () => {
                 return (
                   <motion.div
                     key={index}
-                    className="p-4 border-2 border-purple-200 rounded-2xl bg-white shadow-md hover:shadow-lg transition-all duration-300 relative group"
+                    className="p-4 border border-slate-200 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow relative group"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
                   >
                     <button
                       onClick={() => copyToClipboard(fullPostText, index)}
-                      className="absolute top-3 right-3 p-2 bg-gradient-to-r from-purple-100 to-blue-100 rounded-full hover:from-purple-200 hover:to-blue-200 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-md"
+                      className="absolute top-3 right-3 p-2 bg-slate-100 rounded-full hover:bg-slate-200 opacity-0 group-hover:opacity-100 transition-opacity"
                       title="Copy full post text"
                     >
                       {copiedIndex === index ? (
@@ -239,18 +239,18 @@ const PostSuggestionGenerator = () => {
                         <Copy className="w-4 h-4 text-purple-600" />
                       )}
                     </button>
-                    <p className="text-sm font-bold text-purple-700 mb-2 pr-10">
+                    <p className="text-sm font-semibold text-slate-800 mb-2 pr-10">
                       {idea.hook}
                     </p>
-                    <p className="text-sm text-gray-700 mb-3 leading-relaxed">
+                    <p className="text-sm text-slate-600 mb-3 leading-relaxed">
                       {idea.coreMessage}
                     </p>
                     {idea.callToAction && (
-                      <p className="text-sm text-gray-600 italic mb-3 bg-gray-50 p-2 rounded-lg">
+                      <p className="text-sm text-slate-500 italic mb-3 bg-slate-50 p-2 rounded-lg">
                         {idea.callToAction}
                       </p>
                     )}
-                    <p className="text-xs text-purple-600 font-medium">
+                    <p className="text-xs text-slate-500 font-medium">
                       {idea.hashtags?.join(" ")}
                     </p>
                   </motion.div>
@@ -271,21 +271,22 @@ const CarouselGenerator = () => (
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.4, delay: 0.2 }}
   >
-    <Card className="bg-white border-2 border-blue-200 shadow-xl rounded-3xl overflow-hidden">
-      <CardHeader className="bg-blue-50 border-b border-blue-200">
-        <CardTitle className="flex items-center gap-3 text-gray-800">
-          <div className="p-2 bg-white rounded-full shadow-md">
-            <ExternalLink className="w-5 h-5 text-purple-600" />
+    <Card className="bg-white border border-slate-200 shadow-sm rounded-2xl">
+      <CardHeader className="pb-3 border-b border-slate-200">
+        <CardTitle className="flex items-center gap-2 text-lg font-heading font-semibold text-slate-900">
+          <div className="p-2 bg-slate-100 rounded-full">
+            <ExternalLink className="w-4 h-4 text-primary" />
           </div>
-          <span className="font-bold">Canva Carousel Generator</span>
-          <Badge className="bg-yellow-500 text-white">Coming Soon</Badge>
+          Canva Carousel Generator
+          <Badge variant="secondary" className="text-xs bg-amber-100 text-amber-700 border-amber-200">
+            Coming Soon
+          </Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-6">
-        <div className="text-center py-8">
-          <div className="text-blue-400 text-5xl mb-4">🎨</div>
-          <p className="text-gray-700 font-medium mb-2">Feature coming soon!</p>
-          <p className="text-gray-600 text-sm">
+      <CardContent className="pt-6">
+        <div className="text-center space-y-2">
+          <p className="text-sm font-medium text-slate-700">Feature coming soon</p>
+          <p className="text-xs text-slate-500">
             Generate LinkedIn carousels using Canva API (Requires setup).
           </p>
         </div>
@@ -314,18 +315,18 @@ export default function LinkedInTab() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <Card className="bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 shadow-xl rounded-3xl overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-purple-100 to-blue-100 border-b border-purple-200">
-          <CardTitle className="flex items-center gap-3 text-gray-800">
-            <div className="p-2 bg-white rounded-full shadow-md">
-              <Linkedin className="w-5 h-5 text-purple-600" />
+      <Card className="bg-white border border-slate-200 shadow-sm rounded-2xl">
+        <CardHeader className="pb-3 border-b border-slate-200">
+          <CardTitle className="flex items-center gap-2 text-lg font-heading font-semibold text-slate-900">
+            <div className="p-2 bg-slate-100 rounded-full">
+              <Linkedin className="w-4 h-4 text-primary" />
             </div>
-            <span className="font-bold">LinkedIn Content Tools</span>
+            LinkedIn Content Tools
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-6">
+        <CardContent className="pt-4">
           <motion.p 
-            className="text-gray-700 mb-6"
+            className="text-sm text-slate-600 mb-5"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -333,11 +334,11 @@ export default function LinkedInTab() {
             Tools to help generate content and manage your LinkedIn presence.
           </motion.p>
           {/* Updated Grid Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className="lg:col-span-2">
               <PostSuggestionGenerator />
             </div>
-            <div className="space-y-6">
+            <div className="space-y-5">
               {/* Use shared component, pass handler (optional) */}
               <TrendingNewsFeed onNewsSelect={handleNewsSelectForIdeas} />
               <CarouselGenerator />

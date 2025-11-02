@@ -1,45 +1,93 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@plugin "tailwindcss-animate";
 
-/* Add custom base styles or components here if needed */
+@theme {
+  /* Colors - using CSS variables for compatibility with existing components */
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-brand-secondary: hsl(var(--brand-secondary));
+  --color-brand-secondary-foreground: hsl(var(--brand-secondary-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  /* Border Radius */
+  --radius: 0.75rem;
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  /* Font Families */
+  --font-family-calendas: Calendas, system-ui, -apple-system, sans-serif;
+  --font-family-sans: var(--font-inter), system-ui, sans-serif;
+  --font-family-heading: var(--font-instrument-serif), Georgia, "Times New Roman", serif;
+
+  /* Background Images */
+  --background-image-grid-pattern: linear-gradient(to right, #80808012 1px, transparent 1px), linear-gradient(to bottom, #80808012 1px, transparent 1px);
+  --background-image-grid-pattern-light: linear-gradient(to right, #80808012 1px, transparent 1px), linear-gradient(to bottom, #80808012 1px, transparent 1px);
+
+  /* Animations */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
 
 @layer base {
   :root {
-    /* Subtle, centralized theme (light) */
+    /* CSS Variables for compatibility */
     --background: 0 0% 100%;
     --foreground: 222.2 47.4% 11.2%;
-
     --card: 0 0% 100%;
     --card-foreground: 222.2 47.4% 11.2%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 47.4% 11.2%;
-
-    /* Subtle purple brand */
     --primary: 268 36% 46%;
     --primary-foreground: 0 0% 100%;
-
     --secondary: 268 40% 98%;
     --secondary-foreground: 262.2 47.4% 11.2%;
-
     --muted: 268 28% 96%;
     --muted-foreground: 265 12% 40%;
-
     --accent: 268 45% 96%;
     --accent-foreground: 262 35% 30%;
-
-    /* Brand secondary (vibrant blue) */
     --brand-secondary: 210 90% 55%;
     --brand-secondary-foreground: 0 0% 100%;
-
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-
     --border: 268 22% 90%;
     --input: 268 22% 90%;
     --ring: 268 36% 46%;
-
     --radius: 0.75rem;
   }
 

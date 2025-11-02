@@ -360,7 +360,7 @@ const HomeScreen = () => {
                   </Link>
 
                   <Link href="#work">
-                    <Button variant="outline" className="border-slate-600 text-slate-200 hover:bg-slate-900">
+                    <Button variant="outline" className="border-slate-500/70 bg-transparent text-slate-100 hover:bg-slate-800/70 hover:text-white">
                       See recent work
                     </Button>
                   </Link>
@@ -751,7 +751,7 @@ const HomeScreen = () => {
                 </Button>
               </Link>
               <Link href="/services">
-                <Button variant="outline" className="border-slate-300 text-slate-100 hover:bg-slate-900">
+                <Button variant="outline" className="border-white/50 bg-transparent text-slate-100 hover:bg-white/10 hover:text-white">
                   Explore services
                 </Button>
               </Link>

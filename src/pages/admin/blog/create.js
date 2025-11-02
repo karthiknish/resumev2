@@ -3,9 +3,6 @@ import Head from "next/head";
 import axios from "axios";
 import { useRouter } from "next/router";
 import PageContainer from "@/components/PageContainer";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 
 // Import the refactored components
@@ -116,31 +113,33 @@ function CreateBlogNotionStyle() {
 
   // --- Preview Modal --- (Copied from Edit page for consistency)
   const BlogPreview = () => (
-    <div className="fixed inset-0 z-50 overflow-auto bg-black/80 backdrop-blur-sm flex items-start justify-center p-4">
-      <div className="bg-card rounded-lg w-full max-w-4xl my-8 overflow-hidden shadow-2xl border border-primary/20">
-        <div className="flex justify-between items-center p-4 border-b border-primary/10">
-          <h2 className="text-xl font-bold text-foreground">Blog Preview</h2>
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-auto bg-slate-900/80 p-4">
+      <div className="w-full max-w-4xl my-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+          <h2 className="text-lg font-heading font-semibold text-slate-900">
+            Blog Preview
+          </h2>
           <button
             onClick={togglePreview}
-            className="text-muted-foreground hover:text-foreground"
+            className="text-slate-400 transition hover:text-slate-600"
           >
-            <AiOutlineClose size={24} />
+            <AiOutlineClose size={22} />
           </button>
         </div>
-        <div className="p-6 overflow-auto max-h-[80vh]">
+        <div className="max-h-[80vh] overflow-auto px-6 py-6">
           {formData.imageUrl && (
             <div className="mb-6">
               <img
                 src={formData.imageUrl}
                 alt={formData.title}
-                className="w-full h-auto rounded-lg object-cover max-h-[400px]"
+                className="h-auto w-full max-h-[400px] rounded-xl object-cover"
               />
             </div>
           )}
-          <h1 className="text-3xl font-bold text-foreground mb-6">
+          <h1 className="mb-6 text-3xl font-heading font-semibold text-slate-900">
             {formData.title}
           </h1>
-          <div className="prose prose-invert max-w-none prose-headings:text-foreground prose-p:text-foreground prose-a:text-primary hover:prose-a:underline">
+          <div className="prose max-w-none text-slate-700 prose-headings:font-heading prose-headings:text-slate-900 prose-a:text-slate-900">
             <TipTapRenderer content={formData.content} />
           </div>
         </div>
@@ -154,20 +153,20 @@ function CreateBlogNotionStyle() {
       <Head>
         <title>Create New Blog Post</title>
       </Head>
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-brandSecondary/10 text-foreground">
-        <PageContainer>
-          <div className="text-center mb-8 pt-8">
-            <h1 className="text-4xl font-bold text-foreground font-calendas mb-2">
+      <div className="min-h-screen bg-slate-100 text-slate-900">
+        <PageContainer className="pt-24 pb-12">
+          <div className="mb-10 text-center">
+            <h1 className="mb-3 text-4xl font-heading font-semibold text-slate-900 sm:text-5xl">
               Create New Blog Post
             </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Write and publish your blog post. Use the AI assistant to help generate content 
-              or format your existing text.
+            <p className="mx-auto max-w-2xl text-base text-slate-600 sm:text-lg">
+              Write and publish your next story. Lean on the AI tools to draft, polish, and
+              format content faster.
             </p>
           </div>
           <form
             onSubmit={handleSubmit}
-            className="bg-card rounded-lg p-6 shadow-lg space-y-6 max-w-4xl mx-auto border border-primary/20"
+            className="mx-auto max-w-5xl space-y-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8"
           >
             <BannerImageSection
               imageUrl={formData.imageUrl}

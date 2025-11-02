@@ -1,24 +1,11 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import Head from "next/head";
-import axios from "axios";
 import { useRouter } from "next/router";
 import PageContainer from "@/components/PageContainer"; // Ensure single import
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-// Import necessary icons and toast
 import { Loader2, Wand2 } from "lucide-react";
-import { toast } from "sonner";
-// Switch import is removed as it's handled in MetadataSection
 
 // Import the refactored components
 import BannerImageSection from "@/components/admin/blog-editor/BannerImageSection";
@@ -295,31 +282,33 @@ function Edit() {
 
   // --- Preview Modal ---
   const BlogPreview = () => (
-    <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-80 flex items-start justify-center p-4">
-      <div className="bg-gray-100 rounded-lg w-full max-w-4xl my-8 overflow-hidden shadow-2xl">
-        <div className="flex justify-between items-center p-4 border-b border-gray-700">
-          <h2 className="text-xl font-bold text-white">Blog Preview</h2>
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-auto bg-slate-900/80 p-4">
+      <div className="w-full max-w-4xl my-8 overflow-hidden rounded-2xl bg-white shadow-xl">
+        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+          <h2 className="text-lg font-heading font-semibold text-slate-900">
+            Blog Preview
+          </h2>
           <button
-            onClick={togglePreview} // Use the defined toggle function
-            className="text-gray-400 hover:text-white"
+            onClick={togglePreview}
+            className="text-slate-400 transition hover:text-slate-600"
           >
-            <AiOutlineClose size={24} />
+            <AiOutlineClose size={22} />
           </button>
         </div>
-        <div className="p-6 overflow-auto max-h-[80vh]">
+        <div className="max-h-[80vh] overflow-auto px-6 py-6">
           {formData.imageUrl && (
             <div className="mb-6">
               <img
                 src={formData.imageUrl}
                 alt={formData.title}
-                className="w-full h-auto rounded-lg object-cover max-h-[400px]"
+                className="h-auto w-full max-h-[400px] rounded-xl object-cover"
               />
             </div>
           )}
-          <h1 className="text-3xl font-bold text-white mb-6">
+          <h1 className="mb-6 text-3xl font-heading font-semibold text-slate-900">
             {formData.title}
           </h1>
-          <div className="prose prose-invert max-w-none prose-headings:text-white prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:text-gray-300 prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-ul:text-gray-300 prose-ol:text-gray-300 prose-li:my-1">
+          <div className="prose max-w-none text-slate-700 prose-headings:font-heading prose-headings:text-slate-900 prose-a:text-slate-900">
             <TipTapRenderer content={formData.content} />
           </div>
         </div>
@@ -333,12 +322,11 @@ function Edit() {
       <Head>
         <title>Edit Blog Post</title>
       </Head>
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-brandSecondary/10 text-foreground">
-        <PageContainer className="mt-20">
+      <div className="min-h-screen bg-slate-100 text-slate-900">
+        <PageContainer className="pt-24 pb-12">
           {!isLoading && blogId && (
             <h1
-              style={{ fontFamily: "Space Grotesk, sans-serif" }}
-              className="text-6xl font-black text-foreground  text-center mb-8 pt-8"
+              className="mb-10 text-center text-4xl font-heading font-semibold text-slate-900 sm:text-5xl"
             >
               Edit Blog Post
             </h1>
@@ -357,7 +345,7 @@ function Edit() {
           {!isLoading && blogId && (
             <form
               onSubmit={handleSubmit}
-              className="bg-card border-2 border-blue-200 rounded-3xl p-6 shadow-xl space-y-6 max-w-4xl mx-auto"
+              className="mx-auto max-w-5xl space-y-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8"
             >
               <BannerImageSection
                 imageUrl={formData.imageUrl}
@@ -373,19 +361,19 @@ function Edit() {
 
               {/* --- Blog Content Section with Format Button --- */}
               <div className="mb-6 space-y-3">
-                <div className="flex justify-between items-center flex-wrap gap-3">
+                <div className="flex flex-wrap items-center justify-between gap-3">
                   <Label
                     htmlFor="blog-content-editor"
-                    className="block text-foreground text-lg font-semibold mb-2 sm:mb-0"
+                    className="block text-lg font-semibold text-slate-800 sm:mb-0"
                   >
                     Blog Content
                   </Label>
-                  <div className="flex items-center gap-2 ml-auto">
-                    <Badge variant="secondary" className="px-2 py-1 rounded-md">
+                  <div className="ml-auto flex items-center gap-2">
+                    <Badge variant="secondary" className="rounded-md px-2 py-1 text-slate-600">
                       {readingTimeMinutes} min read
                     </Badge>
                     <Badge
-                      className="px-2 py-1 rounded-md"
+                      className="rounded-md px-2 py-1"
                       variant={
                         seoScore >= 80
                           ? "success"
@@ -402,7 +390,7 @@ function Edit() {
                       disabled={isFormatting || !formData.content?.trim()}
                       variant="outline"
                       size="sm"
-                      className="flex items-center border-blue-300 text-blue-600 hover:bg-blue-50"
+                      className="flex items-center border-slate-200 text-slate-700 hover:bg-slate-100"
                       title="Format content using AI"
                     >
                       {isFormatting ? (
@@ -416,7 +404,7 @@ function Edit() {
                 </div>
                 {/* Display Formatting Error */}
                 {formatError && (
-                  <p className="text-sm text-destructive">
+                  <p className="text-sm text-red-600">
                     Format Error: {formatError}
                   </p>
                 )}
@@ -428,7 +416,7 @@ function Edit() {
               </div>
               {/* --- End Blog Content Section --- */}
 
-              <div className="sticky bottom-0 -mx-6 px-6 py-4 bg-card/90 backdrop-blur-sm border-t border-blue-200 rounded-b-3xl z-10">
+              <div className="sticky bottom-0 z-10 -mx-6 rounded-b-2xl border-t border-slate-200 bg-white/95 px-6 py-4 backdrop-blur">
                 <ActionButtons
                   isLoading={isLoading}
                   isSaveDisabled={
@@ -445,7 +433,7 @@ function Edit() {
                   isPublished={formData.isPublished}
                   onPublishChange={handlePublishChange}
                 />
-                <div className="text-xs text-muted-foreground mt-2">
+                <div className="mt-2 text-xs text-slate-500">
                   {isAutoSaving ? "Saving..." : autoSaveMessage}
                 </div>
               </div>

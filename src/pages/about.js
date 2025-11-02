@@ -10,7 +10,9 @@ import {
   FaRocket,
   FaReact,
   FaNodeJs,
-  FaAws,FaGlobe
+  FaAws,
+  FaGlobe,
+  FaDocker,
 } from "react-icons/fa";
 import {
   SiNextdotjs,
@@ -24,6 +26,15 @@ import {
   SiJest,
   SiFramer,
   SiExpo,
+  SiGithubactions,
+  SiVercel,
+  SiSentry,
+  SiCloudflare,
+  SiNotion,
+  SiLinear,
+  SiSlack,
+  SiFigma,
+  SiJira,
 } from "react-icons/si";
 import { TbBrandReactNative } from "react-icons/tb";
 import { Button } from "@/components/ui/button";
@@ -117,6 +128,26 @@ const toolkit = [
       { name: "Google Ads", icon: SiGoogleanalytics },
       { name: "QA automation", icon: SiJest },
       { name: "Performance budgets", icon: FaRocket },
+    ],
+  },
+  {
+    title: "Delivery & operations",
+    skills: [
+      { name: "GitHub Actions", icon: SiGithubactions },
+      { name: "Docker & containers", icon: FaDocker },
+      { name: "Vercel edge deploys", icon: SiVercel },
+      { name: "Sentry monitoring", icon: SiSentry },
+      { name: "Cloudflare caching", icon: SiCloudflare },
+    ],
+  },
+  {
+    title: "Collaboration & workflow",
+    skills: [
+      { name: "Notion playbooks", icon: SiNotion },
+      { name: "Linear roadmaps", icon: SiLinear },
+      { name: "Slack async updates", icon: SiSlack },
+      { name: "Figma design reviews", icon: SiFigma },
+      { name: "Jira QA rituals", icon: SiJira },
     ],
   },
 ];
@@ -213,7 +244,7 @@ function About() {
                       </Button>
                     </Link>
                     <Link href="/services">
-                      <Button variant="outline" className="border-white/20 text-slate-200 hover:bg-white/10">
+                      <Button variant="outline" className="bg-transparent border-white/20 text-slate-200 hover:bg-white/15 hover:text-white">
                         Explore services
                       </Button>
                     </Link>
@@ -435,7 +466,7 @@ function About() {
                   </Button>
                 </Link>
                 <Link href="/services">
-                  <Button variant="outline" className="border-slate-400 text-slate-200 hover:bg-slate-900">
+                  <Button variant="outline" className="bg-transparent border-slate-400/70 text-slate-200 hover:bg-slate-800/70 hover:text-white">
                     See how I can help
                   </Button>
                 </Link>

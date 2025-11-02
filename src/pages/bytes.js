@@ -57,7 +57,7 @@ function ByteSlide({ byte, isActive }) {
         variants={cardContentVariants}
         className="w-full max-w-2xl"
       >
-        <Card className="w-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-2 border-purple-200 dark:border-purple-800 shadow-2xl overflow-hidden rounded-3xl hover:shadow-3xl transition-all duration-300">
+        <Card className="w-full bg-white/5 backdrop-blur-lg border border-white/10 text-white shadow-2xl overflow-hidden rounded-3xl hover:shadow-3xl transition-all duration-300">
           <CardContent className="p-6 md:p-8">
             {byte.imageUrl && (
               <div className="relative w-full aspect-video mb-6 rounded-2xl overflow-hidden shadow-lg">
@@ -71,24 +71,24 @@ function ByteSlide({ byte, isActive }) {
               </div>
             )}
             <motion.h2 
-              className="text-2xl md:text-3xl font-black mb-4 leading-tight bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent dark:from-purple-400 dark:to-blue-400"
+              className="text-2xl md:text-3xl font-black mb-4 leading-tight text-white"
               style={{ fontFamily: "Space Grotesk, sans-serif" }}
               animate={isActive ? { scale: [1, 1.01, 1] } : {}}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
             >
               {byte.headline}
             </motion.h2>
-            <div className="max-h-[35vh] overflow-y-auto scrollbar-thin scrollbar-thumb-purple-300 scrollbar-track-purple-100 mb-6 pr-2">
-              <p className="text-gray-700 dark:text-gray-300 text-base md:text-lg whitespace-pre-wrap break-words leading-relaxed font-medium">
+            <div className="max-h-[35vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent mb-6 pr-2">
+              <p className="text-white/80 text-base md:text-lg whitespace-pre-wrap break-words leading-relaxed font-medium">
                 {byte.body}
               </p>
             </div>
-            <div className="flex justify-between items-center text-sm border-t border-gray-200 dark:border-gray-700 pt-4">
+            <div className="flex justify-between items-center text-sm border-t border-white/10 pt-4">
               <motion.span 
-                className="text-gray-600 dark:text-gray-400 font-semibold flex items-center gap-2"
+                className="text-white/70 font-semibold flex items-center gap-2"
                 whileHover={{ scale: 1.05 }}
               >
-                <Zap className="w-4 h-4 text-yellow-500" />
+                <Zap className="w-4 h-4 text-yellow-400" />
                 {formatDate(byte.createdAt)}
               </motion.span>
               {byte.link && (
@@ -100,7 +100,7 @@ function ByteSlide({ byte, isActive }) {
                     href={byte.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl"
+                    className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl border border-white/15"
                   >
                     <span>Learn More</span>
                     <ExternalLink className="w-4 h-4" />
@@ -118,63 +118,37 @@ function ByteSlide({ byte, isActive }) {
 // New Intro Slide Component
 function IntroSlide({ onRetry }) {
   return (
-    <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+    <div className="flex flex-col items-center justify-center h-full p-8 text-center text-white">
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6, delay: 0.2, ease: "backOut" }}
         className="max-w-2xl"
       >
-        <motion.div
-          animate={{ 
-            rotate: [0, 10, -10, 0],
-            scale: [1, 1.1, 1]
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="text-6xl md:text-8xl mb-6"
-        >
-          ⚡
-        </motion.div>
         <motion.h1 
-          className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent"
-          style={{ fontFamily: "Space Grotesk, sans-serif" }}
+          className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 text-white"
           animate={{ scale: [1, 1.02, 1] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >
           Bytes
         </motion.h1>
         <motion.p 
-          className="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed font-medium max-w-3xl mx-auto mb-8"
+          className="text-lg md:text-xl text-white/80 leading-relaxed font-medium max-w-3xl mx-auto mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
           Quick updates, bite-sized thoughts, interesting links, and news snippets.
-          <motion.span
-            animate={{ rotate: [0, 5, -5, 0] }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className="inline-block ml-2 text-xl"
-          >
-            🔥
-          </motion.span>
+
         </motion.p>
         <motion.div
-          className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-2 border-purple-200 dark:border-purple-800 rounded-2xl px-6 py-3 inline-flex items-center gap-3 shadow-xl"
+          className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-6 py-3 inline-flex items-center gap-3 shadow-xl"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
           whileHover={{ scale: 1.05, y: -2 }}
         >
-          <span className="text-xl">👆</span>
-          <span className="text-gray-700 dark:text-gray-300 font-bold text-base md:text-lg">
+          <span className="text-white font-bold text-base md:text-lg">
             Scroll or use arrow keys to navigate
           </span>
         </motion.div>
@@ -186,7 +160,7 @@ function IntroSlide({ onRetry }) {
 // Error Slide Component
 function ErrorSlide({ error, onRetry }) {
   return (
-    <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+    <div className="flex flex-col items-center justify-center h-full p-8 text-center text-white">
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -194,15 +168,15 @@ function ErrorSlide({ error, onRetry }) {
         className="max-w-md"
       >
         <div className="text-6xl mb-6">⚠️</div>
-        <h3 className="text-2xl font-black text-gray-800 dark:text-white mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+        <h3 className="text-2xl font-black text-white mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
           Oops! Something went wrong
         </h3>
-        <p className="text-red-600 dark:text-red-400 font-medium mb-6">
+        <p className="text-red-400 font-medium mb-6">
           {error}
         </p>
         <motion.button
           onClick={onRetry}
-          className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl mx-auto"
+          className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl mx-auto border border-white/15"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -217,7 +191,7 @@ function ErrorSlide({ error, onRetry }) {
 // Empty State Slide Component
 function EmptySlide() {
   return (
-    <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+    <div className="flex flex-col items-center justify-center h-full p-8 text-center text-white">
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -235,10 +209,10 @@ function EmptySlide() {
         >
           📭
         </motion.div>
-        <h3 className="text-3xl font-black text-gray-800 dark:text-white mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+        <h3 className="text-3xl font-black text-white mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
           No Bytes Yet
         </h3>
-        <p className="text-gray-600 dark:text-gray-400 font-medium text-lg">
+        <p className="text-white/80 font-medium text-lg">
           No updates posted yet. Check back soon for bite-sized content!
         </p>
       </motion.div>
@@ -316,15 +290,15 @@ function BytesPage() {
     
     return (
       <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-10 hidden md:block">
-        <div className="w-48 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+        <div className="w-48 h-2 bg-white/10 rounded-full overflow-hidden">
           <motion.div 
-            className="h-full bg-gradient-to-r from-purple-500 to-blue-500"
+            className="h-full bg-white"
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.3 }}
           />
         </div>
-        <div className="text-center text-sm text-gray-600 dark:text-gray-400 mt-1">
+        <div className="text-center text-sm text-white/70 mt-1">
           {activeIndex} / {totalSlides - 1}
         </div>
       </div>
@@ -354,25 +328,19 @@ function BytesPage() {
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
         />
       </Head>
-      <div className="h-screen w-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 overflow-hidden relative">
+      <div className="h-screen w-screen bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 overflow-hidden relative">
         <ProgressIndicator />
         
         {isLoading ? (
           <div className="h-full w-full flex items-center justify-center">
             <motion.div 
-              className="flex items-center gap-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-2 border-purple-200 dark:border-purple-800 rounded-2xl px-8 py-6 shadow-xl"
+              className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl px-8 py-6 shadow-xl"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
             >
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                className="text-3xl"
-              >
-                ⚡
-              </motion.div>
-              <span className="text-gray-700 dark:text-gray-300 font-bold text-xl">Loading Bytes...</span>
+            
+              <span className="text-white font-bold text-xl">Loading Bytes...</span>
             </motion.div>
           </div>
         ) : error ? (
@@ -389,15 +357,18 @@ function BytesPage() {
               slidesPerView={1}
               spaceBetween={0}
               mousewheel={{
-                sensitivity: 1,
-                thresholdDelta: 50,
-                thresholdTime: 300,
+                forceToAxis: true,
+                releaseOnEdges: true,
+                sensitivity: 0.6,
+                thresholdDelta: 20,
               }}
               keyboard={{
                 enabled: true,
                 onlyInViewport: true,
               }}
-              speed={600}
+              speed={750}
+              touchRatio={0.85}
+              longSwipesMs={320}
               allowTouchMove={true}
               modules={[Mousewheel, Keyboard, Pagination]}
               className="h-full w-full"
@@ -425,7 +396,7 @@ function BytesPage() {
             <div className="absolute top-1/2 right-5 transform -translate-y-1/2 z-10 hidden md:flex flex-col space-y-4">
               <motion.button
                 onClick={goPrev}
-                className="p-3 rounded-xl bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-700 backdrop-blur-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-all duration-300 border border-purple-200 dark:border-purple-800 hover:border-purple-300 dark:hover:border-purple-600 shadow-lg hover:shadow-xl"
+                className="p-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white hover:text-white/80 transition-all duration-300 border border-white/15 hover:border-white/20 shadow-lg hover:shadow-xl disabled:opacity-40 disabled:hover:scale-100"
                 aria-label="Previous"
                 whileHover={{ scale: 1.1, y: -2 }}
                 whileTap={{ scale: 0.95 }}
@@ -435,7 +406,7 @@ function BytesPage() {
               </motion.button>
               <motion.button
                 onClick={goNext}
-                className="p-3 rounded-xl bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-700 backdrop-blur-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-all duration-300 border border-purple-200 dark:border-purple-800 hover:border-purple-300 dark:hover:border-purple-600 shadow-lg hover:shadow-xl"
+                className="p-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white hover:text-white/80 transition-all duration-300 border border-white/15 hover:border-white/20 shadow-lg hover:shadow-xl disabled:opacity-40 disabled:hover:scale-100"
                 aria-label="Next"
                 whileHover={{ scale: 1.1, y: -2 }}
                 whileTap={{ scale: 0.95 }}
@@ -453,8 +424,8 @@ function BytesPage() {
                     key={index}
                     className={`w-2 h-2 rounded-full transition-all duration-300 ${
                       index === activeIndex
-                        ? "bg-purple-600 dark:bg-purple-400 w-6"
-                        : "bg-gray-300 dark:bg-gray-600"
+                        ? "bg-white w-6"
+                        : "bg-white/30"
                     }`}
                   />
                 ))}

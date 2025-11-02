@@ -16,6 +16,22 @@ import {
   FaPaintBrush,
   FaStore,
 } from "react-icons/fa";
+import {
+  SiReact,
+  SiNextdotjs,
+  SiTypescript,
+  SiTailwindcss,
+  SiGraphql,
+  SiNodedotjs,
+  SiAmazonaws,
+  SiVercel,
+  SiJest,
+  SiGoogleanalytics,
+  SiMeta,
+  SiLinkedin,
+  SiGoogleads,
+} from "react-icons/si";
+import { TbBrandReactNative } from "react-icons/tb";
 import PageContainer from "@/components/PageContainer";
 import JsonLd, { createServiceSchema } from "@/components/JsonLd";
 import { Button } from "@/components/ui/button";
@@ -150,6 +166,23 @@ export default function Services() {
     },
   ];
 
+  const toolingStack = [
+    { name: "React", icon: SiReact },
+    { name: "Next.js", icon: SiNextdotjs },
+    { name: "React Native", icon: TbBrandReactNative },
+    { name: "TypeScript", icon: SiTypescript },
+    { name: "Tailwind CSS", icon: SiTailwindcss },
+    { name: "GraphQL", icon: SiGraphql },
+    { name: "Node.js", icon: SiNodedotjs },
+    { name: "AWS", icon: SiAmazonaws },
+    { name: "Vercel", icon: SiVercel },
+    { name: "Automated QA", icon: SiJest },
+    { name: "Analytics", icon: SiGoogleanalytics },
+    { name: "Meta Ads", icon: SiMeta },
+    { name: "LinkedIn Ads", icon: SiLinkedin },
+    { name: "Google Ads", icon: SiGoogleads },
+  ];
+
   const faqs = [
     {
       question: "What is your development process?",
@@ -260,7 +293,7 @@ export default function Services() {
                       </Button>
                     </Link>
                     <Link href="/projects">
-                      <Button variant="outline" className="border-white/20 text-slate-200 hover:bg-white/10">
+                      <Button variant="outline" className="bg-transparent border-white/20 text-slate-200 hover:bg-white/15 hover:text-white">
                         View case studies
                       </Button>
                     </Link>
@@ -303,9 +336,24 @@ export default function Services() {
                       <p className="text-xs uppercase text-slate-300 tracking-[0.3em] mb-3">
                         Tooling stack includes
                       </p>
-                      <p className="text-sm text-slate-200 leading-relaxed">
-                        React, Next.js, React Native, TypeScript, Tailwind, GraphQL, Node.js, AWS, Vercel, automated QA, analytics, and paid growth infrastructure across Meta Ads, LinkedIn Ads, and Google Ads.
+                      <p className="text-sm text-slate-200/80 leading-relaxed mb-4">
+                        A proven toolkit that covers design systems, delivery pipelines, observability, and paid growth instrumentation.
                       </p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {toolingStack.map(({ name, icon: Icon }) => (
+                          <div
+                            key={name}
+                            className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/10 px-3 py-2.5 backdrop-blur"
+                          >
+                            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-white">
+                              <Icon className="h-5 w-5" />
+                            </span>
+                            <span className="text-sm font-medium text-slate-100/90">
+                              {name}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -491,7 +539,7 @@ export default function Services() {
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: "auto", opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.3 }}
+                            transition={{ duration: 0.18, ease: "easeOut" }}
                             className="mt-4 border-t border-slate-100 pt-4 text-sm leading-relaxed text-slate-600"
                           >
                             {faq.answer}
@@ -539,7 +587,7 @@ export default function Services() {
                   </Button>
                 </Link>
                 <Link href="/about">
-                  <Button variant="outline" className="border-slate-400 text-slate-200 hover:bg-slate-900">
+                  <Button variant="outline" className="bg-transparent border-slate-400/70 text-slate-200 hover:bg-slate-800/70 hover:text-white">
                     Learn about my approach
                   </Button>
                 </Link>

@@ -42,17 +42,16 @@ export default function Nav() {
   const { data: session } = useSession();
 
   const navFontClass = "font-heading";
-  const navLinkBaseClass = `${"text-slate-600 hover:text-slate-900"} ${navFontClass}`;
-  const navLinkActiveClass = `${"text-slate-900"} ${navFontClass}`;
-  const underlineBgClass = "bg-slate-900";
-  const iconButtonClass = "text-slate-600 hover:text-slate-900 hover:bg-slate-100";
+  const navLinkBaseClass = `${"text-muted-foreground hover:text-foreground"} ${navFontClass}`;
+  const navLinkActiveClass = `${"text-foreground"} ${navFontClass}`;
+  const iconButtonClass = "text-muted-foreground hover:text-foreground hover:bg-secondary/60";
   const navShellClasses = hasScrolled
-    ? "bg-white/95 text-slate-900 shadow-sm border-slate-200"
-    : "bg-white/70 text-slate-900 border-transparent";
-  const mobileContainerClasses = "bg-white text-slate-800 border-slate-200";
-  const mobileLinkBaseClass = "text-slate-700 hover:bg-slate-100 hover:text-slate-900";
-  const mobileLinkActiveClass = "text-slate-900 bg-slate-100";
-  const mobileSignOutClass = "text-slate-700 hover:text-slate-900 hover:bg-slate-100";
+    ? "bg-background/95 text-foreground shadow-sm border-border"
+    : "bg-background/70 text-foreground border-transparent";
+  const mobileContainerClasses = "bg-background text-foreground border-border";
+  const mobileLinkBaseClass = "text-muted-foreground hover:bg-secondary/60 hover:text-foreground";
+  const mobileLinkActiveClass = "text-primary bg-secondary/60";
+  const mobileSignOutClass = "text-muted-foreground hover:text-foreground hover:bg-secondary/60";
 
   // Debounce search query
   const debouncedSearchQuery = useDebounce(searchQuery, 300); // 300ms debounce
@@ -228,9 +227,9 @@ export default function Nav() {
               {navLinks.map((link) => (
                 <SlideInRight key={link.href} delay={link.delay}>
                   <HoverCard scale={1.05}>
-                    <Link
+                    <Link style={{fontFamily: "Instrument Serif, serif"}}
                       href={link.href}
-                      className={`text-base lg:text-lg font-medium relative group transition-colors duration-200 ${
+                      className={`text-base lg:text-lg relative group text-black font-medium transition-colors duration-200 ${
                         (link.href === "/" && router.pathname === "/") ||
                         (link.href !== "/" &&
                           (router.pathname === link.href ||
@@ -243,19 +242,6 @@ export default function Nav() {
                       }`}
                     >
                       {link.label}
-                      <span
-                        className={`absolute -bottom-1 left-0 w-full h-0.5 ${underlineBgClass} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 ${
-                          (link.href === "/" && router.pathname === "/") ||
-                          (link.href !== "/" &&
-                            (router.pathname === link.href ||
-                              (link.href === "/blog" &&
-                                router.pathname.startsWith("/blog")) ||
-                              (link.href === "/bytes" &&
-                                router.pathname.startsWith("/bytes"))))
-                            ? "scale-x-100"
-                            : ""
-                        }`}
-                      ></span>
                     </Link>
                   </HoverCard>
                 </SlideInRight>
@@ -276,13 +262,6 @@ export default function Nav() {
                           }`}
                         >
                           Admin
-                          <span
-                            className={`absolute -bottom-1 left-0 w-full h-0.5 ${underlineBgClass} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 ${
-                              router.pathname.startsWith("/admin")
-                                ? "scale-x-100"
-                                : ""
-                            }`}
-                          ></span>
                         </Link>
                       </HoverCard>
                     </SlideInRight>
@@ -295,9 +274,6 @@ export default function Nav() {
                         className={`text-lg font-medium transition-colors duration-200 relative group ${navLinkBaseClass}`}
                       >
                         Sign Out
-                        <span
-                          className={`absolute -bottom-1 left-0 w-full h-0.5 ${underlineBgClass} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200`}
-                        ></span>
                       </button>
                     </HoverCard>
                   </SlideInRight>

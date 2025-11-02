@@ -103,42 +103,6 @@ export default function ChatHistoryTab() {
     setFilteredHistories(filtered);
   }, [searchTerm, chatHistories]);
 
-  // Filter chat histories based on search term
-  useEffect(() => {
-    if (!searchTerm) {
-      setFilteredChatHistories(chatHistories);
-      return;
-    }
-    
-    const filtered = chatHistories.filter(history => {
-      // Search in email
-      if (history.email && history.email.toLowerCase().includes(searchTerm.toLowerCase())) {
-        return true;
-      }
-      
-      // Search in messages
-      if (history.messages && Array.isArray(history.messages)) {
-        return history.messages.some(msg => {
-          // Check different message formats
-          let content = "";
-          if (Array.isArray(msg.parts) && msg.parts.length > 0) {
-            content = msg.parts.map(part => part?.text ?? "").join("");
-          } else if (typeof msg.text === "string") {
-            content = msg.text;
-          } else if (typeof msg.content === "string") {
-            content = msg.content;
-          }
-          
-          return content.toLowerCase().includes(searchTerm.toLowerCase());
-        });
-      }
-      
-      return false;
-    });
-    
-    setFilteredChatHistories(filtered);
-  }, [searchTerm, chatHistories]);
-
   // Helper function to render message content safely
   const renderMessageContent = (msg) => {
     // Handle different message formats
@@ -183,27 +147,27 @@ export default function ChatHistoryTab() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <Card className="bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 shadow-xl rounded-3xl overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-purple-100 to-blue-100 border-b border-purple-200">
-          <CardTitle className="flex items-center gap-3 text-gray-800">
-            <div className="p-2 bg-white rounded-full shadow-md">
-              <MessageSquare className="w-5 h-5 text-purple-600" />
+      <Card className="bg-white border border-slate-200 shadow-sm rounded-2xl">
+        <CardHeader className="pb-3 border-b border-slate-200">
+          <CardTitle className="flex items-center gap-2 text-lg font-heading font-semibold text-slate-900">
+            <div className="p-2 bg-slate-100 rounded-full">
+              <MessageSquare className="w-4 h-4 text-primary" />
             </div>
-            <span className="font-bold">Chat Conversations</span>
-            <Badge className="bg-purple-600 text-white hover:bg-purple-700">
-              {chatHistories.length} {chatHistories.length === 1 ? 'conversation' : 'conversations'}
+            Chat Conversations
+            <Badge variant="outline" className="text-xs font-medium text-slate-600 border-slate-200">
+              {chatHistories.length} {chatHistories.length === 1 ? "conversation" : "conversations"}
             </Badge>
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-6">
+        <CardContent className="pt-4">
         {/* Search Bar */}
-        <div className="mb-6">
+        <div className="mb-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
             <Input
               type="text"
-              placeholder="Search conversations by email or message content..."
-              className="pl-10 pr-4 py-6 bg-white border-2 border-purple-200 rounded-2xl focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-300"
+              placeholder="Search conversations by email or message"
+              className="pl-9 pr-4 py-5 text-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -212,42 +176,39 @@ export default function ChatHistoryTab() {
         
         {isLoading && (
           <motion.div 
-            className="flex flex-col justify-center items-center py-16"
+            className="flex flex-col justify-center items-center py-12"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
             <div className="relative">
-              <Loader2 className="h-12 w-12 animate-spin text-purple-600" />
-              <Sparkles className="h-6 w-6 text-purple-400 absolute -top-2 -right-2 animate-pulse" />
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <Sparkles className="h-4 w-4 text-primary/50 absolute -top-1.5 -right-1.5 animate-pulse" />
             </div>
-            <p className="text-gray-600 font-medium mt-4">Loading chat conversations...</p>
+            <p className="text-sm text-slate-500 mt-3">Loading chat conversations...</p>
           </motion.div>
         )}
         {error && !isLoading && (
           <motion.div 
-            className="text-center py-16"
+            className="text-center py-12"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <div className="bg-red-50 border border-red-200 rounded-2xl p-6">
-              <div className="text-red-600 text-5xl mb-4">⚠️</div>
-              <p className="text-red-700 font-semibold text-lg mb-2">Unable to Load Conversations</p>
-              <p className="text-red-600">{error}</p>
+            <div className="bg-red-50 border border-red-200 rounded-xl p-5">
+              <p className="text-sm font-medium text-red-600">Unable to load conversations. {error}</p>
             </div>
           </motion.div>
         )}
         {!isLoading && !error && filteredHistories.length === 0 && (
           <motion.div 
-            className="text-center py-16"
+            className="text-center py-12"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-8">
-              <div className="text-gray-400 text-6xl mb-4">🔍</div>
-              <p className="text-gray-600 font-semibold text-xl mb-2">
-                {searchTerm ? "No Matching Conversations" : "No Conversations Yet"}
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 space-y-2">
+              <p className="text-sm font-medium text-slate-600">
+                {searchTerm ? "No matching conversations" : "No conversations yet"}
               </p>
-              <p className="text-gray-500">
+              <p className="text-xs text-slate-500">
                 {searchTerm 
                   ? `No conversations found matching "${searchTerm}". Try a different search term.` 
                   : "Chat conversations will appear here once users start chatting with the AI."}
@@ -261,20 +222,20 @@ export default function ChatHistoryTab() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, staggerChildren: 0.1 }}
           >
-            <div className="mb-4 flex justify-between items-center">
-              <p className="text-gray-600">
+            <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-sm text-slate-500">
+              <p>
                 Showing {filteredHistories.length} of {chatHistories.length} conversations
               </p>
               {searchTerm && (
                 <button 
                   onClick={() => setSearchTerm("")}
-                  className="text-sm text-purple-600 hover:text-purple-800 font-medium"
+                  className="text-primary hover:text-primary/80 font-medium"
                 >
                   Clear search
                 </button>
               )}
             </div>
-            <Accordion type="single" collapsible className="w-full space-y-4">
+            <Accordion type="single" collapsible className="w-full space-y-3">
               {filteredHistories.map((history, index) => (
                 <motion.div
                   key={history._id || index}
@@ -284,31 +245,31 @@ export default function ChatHistoryTab() {
                 >
                   <AccordionItem
                     value={`item-${index}`}
-                    className="border-2 border-purple-200 rounded-2xl bg-white shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
+                    className="border border-slate-200 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow overflow-hidden"
                   >
-                    <AccordionTrigger className="hover:no-underline px-6 py-4 bg-gradient-to-r from-purple-50 to-blue-50 hover:from-purple-100 hover:to-blue-100 transition-all duration-300">
-                      <div className="flex justify-between items-center w-full">
+                    <AccordionTrigger className="hover:no-underline px-5 py-3 bg-slate-50 hover:bg-slate-100 transition-colors">
+                      <div className="flex justify-between items-center w-full gap-4">
                         <div className="flex items-center gap-3">
-                          <div className="p-2 bg-white rounded-full shadow-sm">
-                            <User className="w-4 h-4 text-purple-600" />
+                          <div className="p-2 bg-white border border-slate-200 rounded-full shadow-sm">
+                            <User className="w-4 h-4 text-primary" />
                           </div>
                           <div className="text-left">
-                            <p className="font-semibold text-gray-800">
+                            <p className="font-semibold text-slate-800 text-sm">
                               {history.email || "Anonymous User"}
                             </p>
-                            <p className="text-sm text-gray-600">
-                              {history.messages?.length || 0} {(history.messages?.length || 0) === 1 ? 'message' : 'messages'}
+                            <p className="text-xs text-slate-500">
+                              {history.messages?.length || 0} {(history.messages?.length || 0) === 1 ? "message" : "messages"}
                             </p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <div className="flex items-center gap-2 text-xs text-slate-500">
                           <Clock className="w-4 h-4" />
                           <span>{formatDate(history.timestamp || history.lastUpdated)}</span>
                         </div>
                       </div>
                     </AccordionTrigger>
-                    <AccordionContent className="px-6 pb-6">
-                      <div className="space-y-4 max-h-80 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-purple-300 scrollbar-track-purple-100">
+                    <AccordionContent className="px-5 pb-5">
+                      <div className="space-y-3 max-h-72 overflow-y-auto pr-2">
                         {history.messages?.map((msg, msgIndex) => {
                           if (!msg) {
                             console.warn(
@@ -328,26 +289,26 @@ export default function ChatHistoryTab() {
                               }`}
                             >
                               {!isUser && (
-                                <div className="p-2 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full shadow-sm flex-shrink-0">
-                                  <Bot className="w-4 h-4 text-purple-600" />
+                                <div className="p-2 bg-slate-100 rounded-full flex-shrink-0">
+                                  <Bot className="w-4 h-4 text-primary" />
                                 </div>
                               )}
                               <div
                                 className={`max-w-[85%] px-4 py-3 rounded-2xl shadow-sm ${
                                   isUser
-                                    ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-br-md"
-                                    : "bg-white border border-gray-200 text-gray-800 rounded-bl-md"
+                                    ? "bg-primary text-white rounded-br-md"
+                                    : "bg-slate-50 border border-slate-200 text-slate-700 rounded-bl-md"
                                 }`}
                               >
                                 {renderMessageContent(msg)}
                                 <div className={`text-xs mt-2 ${
-                                  isUser ? "text-purple-100" : "text-gray-500"
+                                  isUser ? "text-primary/20" : "text-slate-400"
                                 }`}>
                                   {formatDate(msg.timestamp)}
                                 </div>
                               </div>
                               {isUser && (
-                                <div className="p-2 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full shadow-sm flex-shrink-0">
+                                <div className="p-2 bg-primary rounded-full flex-shrink-0">
                                   <User className="w-4 h-4 text-white" />
                                 </div>
                               )}
@@ -357,20 +318,20 @@ export default function ChatHistoryTab() {
                       </div>
                       {/* Display metadata if available */}
                       {(history.device || history.browser || history.ip) && (
-                        <div className="mt-6 pt-4 border-t border-gray-200">
+                        <div className="mt-4 pt-3 border-t border-slate-200">
                           <div className="flex flex-wrap gap-2">
                             {history.device && (
-                              <Badge variant="outline" className="text-xs bg-gray-50 text-gray-600 border-gray-300">
+                              <Badge variant="outline" className="text-xs bg-slate-50 text-slate-500 border-slate-200">
                                 📱 {history.device}
                               </Badge>
                             )}
                             {history.browser && (
-                              <Badge variant="outline" className="text-xs bg-gray-50 text-gray-600 border-gray-300">
+                              <Badge variant="outline" className="text-xs bg-slate-50 text-slate-500 border-slate-200">
                                 🌐 {history.browser}
                               </Badge>
                             )}
                             {history.ip && (
-                              <Badge variant="outline" className="text-xs bg-gray-50 text-gray-600 border-gray-300">
+                              <Badge variant="outline" className="text-xs bg-slate-50 text-slate-500 border-slate-200">
                                 🌍 {history.ip}
                               </Badge>
                             )}

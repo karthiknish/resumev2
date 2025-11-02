@@ -85,31 +85,31 @@ const HackerNewsFeed = () => {
   }, [storyIds]); // Re-run when storyIds state changes
 
   return (
-    <Card className="border-gray-700 bg-gray-900 text-white h-[600px] flex flex-col">
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between text-xl font-semibold">
+    <Card className="bg-white border border-slate-200 shadow-sm rounded-2xl h-[520px] flex flex-col">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center justify-between text-lg font-heading font-semibold text-slate-900">
           <span>Hacker News Top Stories</span>
           {isLoading && (
-            <Loader2 className="h-5 w-5 animate-spin text-blue-400" />
+            <Loader2 className="h-4 w-4 animate-spin text-primary" />
           )}
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-grow overflow-hidden p-0">
         {error && !isLoading && (
-          <p className="text-red-400 text-center py-10 px-4">{error}</p>
+          <p className="text-sm text-red-500 text-center py-8 px-4">{error}</p>
         )}
         {!isLoading && !error && stories.length === 0 && (
-          <p className="text-gray-400 text-center py-10 px-4">
+          <p className="text-sm text-slate-500 text-center py-8 px-4">
             No stories loaded.
           </p>
         )}
         {!isLoading && stories.length > 0 && (
           <ScrollArea className="h-full p-4">
-            <ul className="space-y-4">
+            <ul className="space-y-3">
               {stories.map((story) => (
                 <li
                   key={story.id}
-                  className="p-4 bg-gray-800 rounded-lg border border-gray-700 hover:bg-gray-750 transition-colors duration-150"
+                  className="p-4 bg-slate-50 rounded-xl border border-slate-200 hover:bg-white transition-colors"
                 >
                   <a
                     href={
@@ -118,24 +118,23 @@ const HackerNewsFeed = () => {
                     }
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-400 hover:text-blue-300 hover:underline text-lg font-medium block mb-2"
+                    className="text-primary hover:text-primary/80 hover:underline text-base font-semibold block mb-2"
                   >
                     {story.title}
                   </a>
-                  <div className="flex items-center justify-between text-xs text-gray-400">
-                    <div className="flex items-center space-x-3">
+                  <div className="flex items-center justify-between text-xs text-slate-500">
+                    <div className="flex items-center gap-3 flex-wrap">
                       <Badge
                         variant="secondary"
-                        className="flex items-center px-2 py-0.5"
+                        className="flex items-center gap-1 px-2 py-0.5 text-xs bg-slate-200 text-slate-600"
                       >
-                        <Star className="h-3 w-3 mr-1" /> {story.score} Points
+                        <Star className="h-3 w-3" /> {story.score} points
                       </Badge>
                       <Badge
                         variant="outline"
-                        className="flex items-center px-2 py-0.5 border-gray-600"
+                        className="flex items-center gap-1 px-2 py-0.5 border-slate-300 text-slate-500"
                       >
-                        <MessageSquare className="h-3 w-3 mr-1" />{" "}
-                        {story.descendants ?? 0} Comments
+                        <MessageSquare className="h-3 w-3" /> {story.descendants ?? 0} comments
                       </Badge>
                       <span>by {story.by}</span>
                       <span>{formatTimeAgo(story.time)}</span>
@@ -144,7 +143,7 @@ const HackerNewsFeed = () => {
                       variant="ghost"
                       size="sm"
                       asChild
-                      className="p-1 h-auto text-gray-400 hover:text-blue-400 hover:bg-gray-700"
+                      className="p-1 h-auto text-slate-500 hover:text-primary hover:bg-slate-100"
                       title="View on Hacker News"
                     >
                       <a

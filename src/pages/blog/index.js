@@ -185,7 +185,7 @@ function Index({ initialPosts = [], categories = [] }) {
             <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.12),_transparent_62%)]" />
             <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom,_rgba(236,72,153,0.1),_transparent_58%)]" />
 
-            <div className="relative max-w-6xl mx-auto px-6 sm:px-10 md:px-12 py-24 md:py-32">
+            <div className="relative max-w-6xl mx-auto px-6 sm:px-10 md:px-12 pt-24 pb-10 md:pt-32 md:pb-12">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -213,25 +213,25 @@ function Index({ initialPosts = [], categories = [] }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.1 }}
-                className="bg-white p-5 sm:p-7 md:p-8 rounded-2xl shadow-sm border border-slate-200 mb-10"
+                className="bg-card/90 backdrop-blur-sm p-4 sm:p-5 rounded-xl shadow-sm border border-border mb-8"
               >
-              <div className="flex flex-col xl:flex-row gap-4 sm:gap-6 items-center">
+              <div className="flex flex-col xl:flex-row gap-3 sm:gap-4 items-start xl:items-center">
                 {/* Category Filter Dropdown */}
-                <div className="w-full xl:w-auto flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
-                  <span className="text-slate-600 font-semibold text-sm sm:text-base whitespace-nowrap">
+                <div className="w-full xl:w-auto flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                  <span className="text-muted-foreground font-medium text-xs sm:text-sm uppercase tracking-[0.18em] whitespace-nowrap">
                     Filter by:
                   </span>
                   <Select
                     value={selectedCategory}
                     onValueChange={handleCategoryChange}
                   >
-                    <SelectTrigger className="w-full sm:w-48 lg:w-56 bg-white border border-slate-200 text-slate-700 font-medium rounded-2xl px-4 sm:px-5 py-3 sm:py-3.5 text-base sm:text-lg hover:border-slate-400 transition-colors duration-200">
+                    <SelectTrigger className="w-full sm:w-48 lg:w-56 h-10 rounded-lg border border-border bg-background/80 px-3 text-sm font-medium text-foreground shadow-sm hover:bg-accent/40 hover:text-foreground focus:ring-primary/40">
                       <SelectValue placeholder="All Categories" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border border-slate-200 text-slate-700 rounded-2xl shadow-sm">
+                    <SelectContent className="bg-popover/95 border border-border text-foreground rounded-xl shadow-lg">
                       <SelectItem
                         value="All"
-                        className="text-base sm:text-lg font-medium hover:bg-slate-100"
+                        className="text-sm sm:text-base font-medium hover:bg-accent/40"
                       >
                         All Categories
                       </SelectItem>
@@ -239,7 +239,7 @@ function Index({ initialPosts = [], categories = [] }) {
                         <SelectItem
                           key={category}
                           value={category}
-                          className="text-base sm:text-lg font-medium hover:bg-slate-100"
+                          className="text-sm sm:text-base font-medium hover:bg-accent/40"
                         >
                           {category}
                         </SelectItem>
@@ -249,44 +249,44 @@ function Index({ initialPosts = [], categories = [] }) {
                 </div>
                 <div className="hidden xl:flex flex-grow" />
                 {/* Search and Sort */}
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center w-full xl:w-auto">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start sm:items-center w-full xl:w-auto">
                   <form
                     onSubmit={(e) => e.preventDefault()}
-                    className="flex w-full sm:w-auto"
+                    className="flex w-full sm:w-auto items-center rounded-lg border border-border bg-background/80 shadow-sm overflow-hidden"
                   >
                     <input
                       type="text"
                       value={searchTerm}
                       onChange={handleSearchChange}
                       placeholder="Search posts..."
-                      className="px-4 sm:px-5 py-3 sm:py-3.5 bg-white border border-slate-200 rounded-l-2xl text-slate-800 font-medium text-base sm:text-lg placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:border-slate-400 w-full sm:w-auto flex-grow transition-colors duration-200"
+                      className="w-full bg-transparent px-3 sm:px-3.5 py-2.5 text-sm sm:text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
                     />
                     <motion.button
                       type="button"
-                      className="bg-slate-900 text-slate-100 px-4 sm:px-5 py-3 sm:py-3.5 rounded-r-2xl flex items-center justify-center hover:bg-slate-800 transition-colors duration-200 cursor-pointer"
+                      className="bg-primary text-primary-foreground px-3 sm:px-4 py-2.5 flex items-center justify-center hover:bg-primary/90 transition-colors duration-200 cursor-pointer"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
-                      <FaSearch className="text-lg sm:text-xl" />
+                      <FaSearch className="text-sm sm:text-base" />
                     </motion.button>
                   </form>
                   <Select
                     onValueChange={handleSortChange}
                     defaultValue={sortOrder}
                   >
-                    <SelectTrigger className="w-full sm:w-[200px] lg:w-[220px] bg-white border border-slate-200 text-slate-700 font-medium rounded-2xl px-4 sm:px-5 py-3 sm:py-3.5 text-base sm:text-lg hover:border-slate-400 transition-colors duration-200">
+                    <SelectTrigger className="w-full sm:w-[200px] lg:w-[220px] h-10 rounded-lg border border-border bg-background/80 px-3 text-sm font-medium text-foreground shadow-sm hover:bg-accent/40 hover:text-foreground focus:ring-primary/40">
                       <SelectValue placeholder="Sort by..." />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border border-slate-200 text-slate-700 rounded-2xl shadow-sm">
+                    <SelectContent className="bg-popover/95 border border-border text-foreground rounded-xl shadow-lg">
                       <SelectItem
                         value="desc"
-                        className="text-base sm:text-lg font-medium hover:bg-slate-100"
+                        className="text-sm sm:text-base font-medium hover:bg-accent/40"
                       >
                         Newest First
                       </SelectItem>
                       <SelectItem
                         value="asc"
-                        className="text-base sm:text-lg font-medium hover:bg-slate-100"
+                        className="text-sm sm:text-base font-medium hover:bg-accent/40"
                       >
                         Oldest First
                       </SelectItem>

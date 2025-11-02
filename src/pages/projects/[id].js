@@ -6,7 +6,6 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { projectsData } from "../../lib/projectsDataForComponents";
 import PageContainer from "@/components/PageContainer";
-import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -41,41 +40,20 @@ function Id() {
           name="description"
           content={project?.shortdescription || "Project details"}
         />
-        
-        {/* Google Fonts */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="true"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
       </Head>
       <PageContainer>
-        <div
-          className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 py-24 md:py-32 relative overflow-hidden"
-          style={{ fontFamily: "Inter, sans-serif" }}
-        >
-          {/* Decorative Color Splashes */}
-          <div className="absolute top-0 left-0 w-80 h-80 bg-gradient-to-br from-rose-200/15 to-pink-200/15 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-          <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-bl from-indigo-200/15 to-purple-200/15 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
-          <div className="absolute bottom-0 left-0 w-88 h-88 bg-gradient-to-tr from-teal-200/15 to-green-200/15 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2"></div>
-          <div className="absolute bottom-0 right-0 w-76 h-76 bg-gradient-to-tl from-amber-200/15 to-orange-200/15 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
-
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 relative z-10">
+        <div className="min-h-screen bg-slate-100 py-20 md:py-24">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8">
             {/* Back Button */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
-              className="mb-12"
+              className="mb-10"
             >
               <Link href="/projects" passHref legacyBehavior>
                 <motion.a
-                  className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl bg-white/80 backdrop-blur-sm border-2 border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300 font-bold shadow-lg transition-all duration-300"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-slate-900 hover:border-slate-300 transition-colors"
                   whileHover={{ scale: 1.05, x: -5 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -98,7 +76,7 @@ function Id() {
                       d="M15 19l-7-7 7-7"
                     />
                   </motion.svg>
-                  <span className="text-base sm:text-lg">Back to projects</span>
+                  <span className="text-sm font-medium">Back to projects</span>
                 </motion.a>
               </Link>
             </motion.div>
@@ -108,7 +86,7 @@ function Id() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
-                className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 p-6 sm:p-8 md:p-12 rounded-3xl shadow-2xl"
+                className="bg-white border border-slate-200 p-6 sm:p-8 md:p-10 rounded-3xl shadow-sm"
               >
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
                   {/* Left Column - Image and Tech Stack */}
@@ -118,7 +96,7 @@ function Id() {
                     transition={{ duration: 0.6, delay: 0.2 }}
                     className="space-y-8"
                   >
-                    <div className="relative aspect-video rounded-3xl overflow-hidden shadow-xl group">
+                    <div className="relative aspect-video rounded-2xl overflow-hidden shadow-sm group">
                       <Image
                         src={project.image}
                         alt={project.title}
@@ -127,31 +105,15 @@ function Id() {
                         className="object-cover transition-transform duration-500 group-hover:scale-110 cursor-pointer"
                         onClick={() => project.extlink && window.open(project.extlink)}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/60 to-transparent" />
                     </div>
 
                     {/* Tech Stack Section */}
-                    <div className="bg-gradient-to-br from-purple-50 to-blue-50 p-6 sm:p-8 rounded-3xl border-2 border-purple-200">
-                      <h3
-                        className="text-2xl sm:text-3xl font-bold mb-6 flex items-center gap-3"
-                        style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                      >
-                        <motion.span
-                          animate={{ rotate: [0, 10, -10, 0] }}
-                          transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                          }}
-                          className="text-2xl"
-                        >
-                          
-                        </motion.span>
-                        <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                          Tech Stack
-                        </span>
+                    <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                      <h3 className="text-xl font-heading font-semibold text-slate-900 mb-4">
+                        Tech Stack
                       </h3>
-                      <div className="flex flex-wrap gap-4 justify-center">
+                      <div className="flex flex-wrap gap-3">
                         {project.techStack?.map((tech, index) => (
                           <motion.div
                             key={index}
@@ -162,12 +124,12 @@ function Id() {
                             whileHover={{ scale: 1.1, y: -5 }}
                             variants={techStackVariants}
                           >
-                            <div className="bg-white/80 backdrop-blur-sm p-4 rounded-2xl border-2 border-purple-200 shadow-lg group-hover:shadow-xl group-hover:border-purple-300 transition-all duration-300">
+                            <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                               <tech.icon
-                                className="text-3xl sm:text-4xl text-purple-600 group-hover:text-blue-600 transition-colors mb-2"
+                                className="text-2xl text-slate-700"
                                 title={tech.name}
                               />
-                              <p className="text-sm font-semibold text-gray-700 text-center">
+                              <p className="text-xs font-medium text-slate-600 text-center mt-2">
                                 {tech.name}
                               </p>
                             </div>
@@ -192,22 +154,12 @@ function Id() {
                         
                       </motion.div>
                       <div>
-                        <h1
-                          className="text-3xl sm:text-4xl md:text-6xl font-black mb-4 leading-tight"
-                          style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                        >
-                          <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-                            {project.title}
-                          </span>
+                        <h1 className="text-3xl sm:text-4xl font-heading font-semibold text-slate-900 mb-3">
+                          {project.title}
                         </h1>
                         {project.meta && (
-                          <div className="flex items-center gap-3">
-                            <Badge className="bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 border-green-300 px-4 py-2 text-lg font-bold">
-                              <motion.div
-                                className="w-2 h-2 bg-green-500 rounded-full mr-2"
-                                animate={{ scale: [1, 1.3, 1] }}
-                                transition={{ duration: 2, repeat: Infinity }}
-                              />
+                          <div className="flex items-center gap-2">
+                            <Badge className="bg-slate-100 text-slate-600 border border-slate-200 text-xs font-medium">
                               {project.meta}
                             </Badge>
                           </div>
@@ -215,7 +167,7 @@ function Id() {
                       </div>
                     </div>
 
-                    <Separator className="bg-gradient-to-r from-purple-200 via-blue-200 to-purple-200 h-0.5" />
+                    <Separator className="bg-slate-200" />
 
                     {/* Project Overview */}
                     <motion.div
@@ -224,26 +176,10 @@ function Id() {
                       transition={{ duration: 0.6 }}
                       viewport={{ once: true }}
                     >
-                      <h2
-                        className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 flex items-center gap-3"
-                        style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                      >
-                        <motion.span
-                          animate={{ rotate: [0, 10, -10, 0] }}
-                          transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                          }}
-                          className="text-2xl"
-                        >
-                          
-                        </motion.span>
-                        <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                          Project Overview
-                        </span>
+                      <h2 className="text-xl font-heading font-semibold text-slate-900 mb-3">
+                        Project Overview
                       </h2>
-                      <p className="text-gray-700 text-lg leading-relaxed bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-2xl border border-purple-200">
+                      <p className="text-sm text-slate-600 leading-relaxed bg-slate-50 p-5 rounded-xl border border-slate-200">
                         {project.description}
                       </p>
                     </motion.div>
@@ -255,26 +191,12 @@ function Id() {
                         whileInView={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.6 }}
                         viewport={{ once: true }}
-                        className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 p-6 sm:p-8 rounded-3xl shadow-lg"
+                        className="bg-emerald-50 border border-emerald-100 p-5 rounded-2xl"
                       >
-                        <h3
-                          className="text-xl sm:text-2xl font-bold text-green-700 mb-3 flex items-center gap-3"
-                          style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                        >
-                          <motion.span
-                            animate={{ scale: [1, 1.2, 1] }}
-                            transition={{
-                              duration: 2,
-                              repeat: Infinity,
-                              ease: "easeInOut",
-                            }}
-                            className="text-2xl"
-                          >
-                            
-                          </motion.span>
+                        <h3 className="text-sm font-heading font-semibold text-emerald-700 mb-2">
                           Key Achievement
                         </h3>
-                        <p className="text-2xl sm:text-3xl font-black text-green-800">
+                        <p className="text-lg font-semibold text-emerald-800">
                           {project.meta}
                         </p>
                       </motion.div>
@@ -287,21 +209,18 @@ function Id() {
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
                         viewport={{ once: true }}
-                        className="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-200 p-6 sm:p-8 rounded-3xl shadow-lg"
+                        className="bg-slate-50 border border-slate-200 p-5 rounded-2xl"
                       >
                         <div className="flex items-center gap-3 mb-4">
-                          <MessageSquareQuote className="w-8 h-8 text-blue-600" />
-                          <h3
-                            className="text-xl sm:text-2xl font-bold text-blue-700"
-                            style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                          >
+                          <MessageSquareQuote className="w-6 h-6 text-slate-600" />
+                          <h3 className="text-sm font-heading font-semibold text-slate-800">
                             Client Feedback
                           </h3>
                         </div>
-                        <blockquote className="text-lg text-gray-700 italic border-l-4 border-blue-500 pl-6 mb-4">
+                        <blockquote className="text-sm text-slate-600 italic border-l-4 border-slate-300 pl-4 mb-3">
                           "{project.testimonial.quote}"
                         </blockquote>
-                        <p className="text-right text-blue-600 font-semibold">
+                        <p className="text-right text-slate-500 text-xs font-medium">
                           - {project.testimonial.author}
                         </p>
                       </motion.div>
@@ -313,7 +232,7 @@ function Id() {
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6 }}
                       viewport={{ once: true }}
-                      className="flex flex-wrap gap-4 pt-8"
+                      className="flex flex-wrap gap-3 pt-6"
                     >
                       {project.extlink && project.extlink !== "#" && (
                         <motion.div
@@ -322,12 +241,10 @@ function Id() {
                         >
                           <Button
                             size="lg"
-                            className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold rounded-2xl shadow-lg transition-all duration-300 px-6 py-3"
+                            className="rounded-xl"
                             onClick={() => window.open(project.extlink)}
                           >
-                            <span className="mr-2"></span>
                             View Live Project
-                            <span className="ml-2">→</span>
                           </Button>
                         </motion.div>
                       )}
@@ -339,11 +256,9 @@ function Id() {
                           <Button
                             variant="outline"
                             size="lg"
-                            className="border-2 border-green-300 text-green-700 hover:bg-green-50 hover:border-green-400 font-bold rounded-2xl shadow-lg transition-all duration-300 px-6 py-3"
+                            className="rounded-xl"
                           >
-                            <span className="mr-2"></span>
                             Discuss Your Project
-                            <span className="ml-2">→</span>
                           </Button>
                         </Link>
                       </motion.div>
@@ -355,9 +270,8 @@ function Id() {
                           <Button
                             variant="outline"
                             size="lg"
-                            className="border-2 border-purple-300 text-purple-700 hover:bg-purple-50 hover:border-purple-400 font-bold rounded-2xl shadow-lg transition-all duration-300 px-6 py-3"
+                            className="rounded-xl"
                           >
-                            <span className="mr-2">←</span>
                             Back to Projects
                           </Button>
                         </Link>
@@ -370,20 +284,10 @@ function Id() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex items-center justify-center py-32"
+                className="flex items-center justify-center py-24"
               >
                 <div className="text-center">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    className="text-6xl mb-4"
-                  >
-                    
-                  </motion.div>
-                  <h2
-                    className="text-2xl sm:text-3xl font-bold text-gray-700"
-                    style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                  >
+                  <h2 className="text-sm font-medium text-slate-500">
                     Loading project details...
                   </h2>
                 </div>

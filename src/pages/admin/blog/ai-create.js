@@ -4,32 +4,22 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  AiOutlineLoading3Quarters,
   AiOutlineRobot,
-  AiOutlineEdit,
   AiOutlineSave,
-  AiOutlineSearch,
   AiOutlineCheck,
-  AiOutlinePicture,
-  AiOutlineFormatPainter,
-  AiOutlineBulb,
-  AiOutlineTags,
-  AiOutlineGlobal,
   AiOutlineClose,
 } from "react-icons/ai";
-import { FiRefreshCw, FiPlus } from "react-icons/fi";
+import { FiRefreshCw } from "react-icons/fi";
 import PageContainer from "@/components/PageContainer";
 import TipTapRenderer from "@/components/TipTapRenderer";
 import TipTapEditor from "@/components/TipTapEditor";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -41,9 +31,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Loader2, Wand2, Settings, Link, BookOpen, Sparkles } from "lucide-react";
+import { Loader2, Settings, Link, BookOpen, Sparkles } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { checkAdminStatus } from "@/lib/authUtils";
 
@@ -433,8 +422,8 @@ export default function AICreateBlog() {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-brandSecondary/10 flex items-center justify-center">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      <div className="flex min-h-screen items-center justify-center bg-slate-100">
+        <Loader2 className="h-10 w-10 animate-spin text-slate-600" />
       </div>
     );
   }
@@ -448,12 +437,13 @@ export default function AICreateBlog() {
       <Head>
         <title>AI Blog Post Generator</title>
       </Head>
-      <PageContainer className="mt-20 py-12">
+      <div className="min-h-screen bg-slate-100">
+        <PageContainer className="pt-24 pb-12">
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="text-4xl font-bold text-center mb-4 text-foreground font-calendas"
+          className="mb-4 text-center text-4xl font-heading font-semibold text-slate-900 sm:text-5xl"
         >
           AI Blog Post Generator
         </motion.h1>
@@ -461,31 +451,31 @@ export default function AICreateBlog() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="text-muted-foreground text-center mb-10 text-lg max-w-3xl mx-auto"
+          className="mx-auto mb-12 max-w-3xl text-center text-base text-slate-600 sm:text-lg"
         >
           Turn ideas into engaging blog posts with AI assistance. Start with a
           topic, generate an outline, and create human-like content.
         </motion.p>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 lg:grid-cols-3">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="lg:col-span-1 space-y-6"
+            className="space-y-6 lg:col-span-1"
           >
-            <Card className="bg-card border border-primary/20 text-foreground shadow-lg">
+            <Card className="border border-slate-200 bg-white text-slate-900 shadow-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-xl font-semibold text-primary">
-                  <Sparkles className="h-5 w-5" /> Start with a Topic
+                <CardTitle className="flex items-center gap-2 text-lg font-heading font-semibold text-slate-900">
+                  <Sparkles className="h-5 w-5 text-slate-500" /> Start with a Topic
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-slate-600">
                   Enter a topic or get inspiration from AI suggestions.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="topic" className="text-foreground">
+                  <Label htmlFor="topic" className="text-sm font-medium text-slate-700">
                     Topic / Idea
                   </Label>
                   <Input
@@ -493,7 +483,7 @@ export default function AICreateBlog() {
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
                     placeholder="e.g., How to optimize React performance"
-                    className="bg-background border-input text-foreground placeholder-muted-foreground"
+                    className="border-slate-200 text-slate-900 placeholder:text-slate-400"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -501,7 +491,7 @@ export default function AICreateBlog() {
                     onClick={handleGenerateOutline}
                     variant="outline"
                     size="sm"
-                    className="border-primary text-primary hover:bg-primary/10 flex-1"
+                    className="flex-1 border-slate-200 text-slate-700 hover:bg-slate-100"
                     disabled={!topic.trim() || loadingSection === "outline"}
                   >
                     {loadingSection === "outline" ? (
@@ -519,20 +509,20 @@ export default function AICreateBlog() {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="pt-4 space-y-3 border-t border-primary/10"
+                      className="space-y-3 border-t border-slate-200 pt-4"
                     >
-                      <h4 className="text-sm font-medium text-foreground">
+                      <h4 className="text-sm font-medium text-slate-700">
                         Generated Outline:
                       </h4>
                       <div className="space-y-2">
-                        <p className="text-sm font-medium text-primary">
+                        <p className="text-sm font-semibold text-slate-900">
                           {generatedOutline.title}
                         </p>
                         <ul className="space-y-1">
                           {generatedOutline.headings.map((h, i) => (
                             <li
                               key={i}
-                              className="text-sm text-muted-foreground flex items-start"
+                              className="flex items-start text-sm text-slate-600"
                             >
                               <span className="mr-2">•</span>
                               <span>{h}</span>
@@ -546,18 +536,18 @@ export default function AICreateBlog() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border border-primary/20 text-foreground shadow-lg">
+            <Card className="border border-slate-200 bg-white text-slate-900 shadow-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-xl font-semibold text-primary">
-                  <Link className="h-5 w-5" /> Transform Existing Content
+                <CardTitle className="flex items-center gap-2 text-lg font-heading font-semibold text-slate-900">
+                  <Link className="h-5 w-5 text-slate-500" /> Transform Existing Content
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-slate-600">
                   Paste an article URL to create a fresh blog post based on it.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <Label htmlFor="articleUrl" className="text-foreground">
+                  <Label htmlFor="articleUrl" className="text-sm font-medium text-slate-700">
                     Article URL
                   </Label>
                   <Input
@@ -566,11 +556,11 @@ export default function AICreateBlog() {
                     value={articleUrl}
                     onChange={(e) => setArticleUrl(e.target.value)}
                     placeholder="https://example.com/article"
-                    className="bg-background border-input text-foreground placeholder-muted-foreground"
+                    className="border-slate-200 text-slate-900 placeholder:text-slate-400"
                   />
                   <Button
                     onClick={handleConvertLink}
-                    className="w-full bg-gradient-to-r from-primary to-brandSecondary hover:from-primary/90 hover:to-brandSecondary/90 text-primary-foreground"
+                    className="w-full bg-slate-900 text-white hover:bg-slate-800"
                     disabled={!articleUrl.trim() || loadingSection === "link"}
                   >
                     {loadingSection === "link" ? (
@@ -584,28 +574,28 @@ export default function AICreateBlog() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border border-primary/20 text-foreground shadow-lg">
+            <Card className="border border-slate-200 bg-white text-slate-900 shadow-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-xl font-semibold text-primary">
-                  <Settings className="h-5 w-5" /> Writing Preferences
+                <CardTitle className="flex items-center gap-2 text-lg font-heading font-semibold text-slate-900">
+                  <Settings className="h-5 w-5 text-slate-500" /> Writing Preferences
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-slate-600">
                   Customize the tone and length of your content.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="tone" className="text-foreground">
+                  <Label htmlFor="tone" className="text-sm font-medium text-slate-700">
                     Tone
                   </Label>
                   <Select value={tone} onValueChange={setTone}>
                     <SelectTrigger
                       id="tone"
-                      className="bg-background border-input text-foreground"
+                      className="border-slate-200 text-slate-700"
                     >
                       <SelectValue placeholder="Select Tone" />
                     </SelectTrigger>
-                    <SelectContent className="bg-popover border-input text-popover-foreground">
+                    <SelectContent className="border border-slate-200 bg-white text-slate-700">
                       {toneOptions.map((opt) => (
                         <SelectItem key={opt.value} value={opt.value}>
                           {opt.label}
@@ -615,17 +605,17 @@ export default function AICreateBlog() {
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="length" className="text-foreground">
+                  <Label htmlFor="length" className="text-sm font-medium text-slate-700">
                     Length
                   </Label>
                   <Select value={length} onValueChange={setLength}>
                     <SelectTrigger
                       id="length"
-                      className="bg-background border-input text-foreground"
+                      className="border-slate-200 text-slate-700"
                     >
                       <SelectValue placeholder="Select Length" />
                     </SelectTrigger>
-                    <SelectContent className="bg-popover border-input text-popover-foreground">
+                    <SelectContent className="border border-slate-200 bg-white text-slate-700">
                       {lengthOptions.map((opt) => (
                         <SelectItem key={opt.value} value={opt.value}>
                           {opt.label}
@@ -635,7 +625,7 @@ export default function AICreateBlog() {
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="keywords" className="text-foreground">
+                  <Label htmlFor="keywords" className="text-sm font-medium text-slate-700">
                     Keywords (comma-separated)
                   </Label>
                   <Input
@@ -643,7 +633,7 @@ export default function AICreateBlog() {
                     value={keywords}
                     onChange={(e) => setKeywords(e.target.value)}
                     placeholder="e.g., react, performance, optimization"
-                    className="bg-background border-input text-foreground placeholder-muted-foreground"
+                    className="border-slate-200 text-slate-900 placeholder:text-slate-400"
                   />
                 </div>
               </CardContent>
@@ -658,11 +648,11 @@ export default function AICreateBlog() {
           >
             <div className="space-y-6 flex-shrink-0">
               {!generatedContent && (generatedOutline || topic) && (
-                <Card className="bg-card border border-primary/20 text-foreground shadow-lg">
+                <Card className="border border-slate-200 bg-white text-slate-900 shadow-sm">
                   <CardContent className="pt-6">
                     <Button
                       onClick={handleGenerateFullPost}
-                      className="w-full bg-gradient-to-r from-primary to-brandSecondary hover:from-primary/90 hover:to-brandSecondary/90 text-primary-foreground text-lg py-3"
+                      className="w-full rounded-xl bg-slate-900 py-3 text-lg font-medium text-white hover:bg-slate-800"
                       disabled={loadingSection === "generate"}
                     >
                       {loadingSection === "generate" ? (
@@ -687,35 +677,35 @@ export default function AICreateBlog() {
                     exit={{ opacity: 0, scale: 0.95 }}
                     className="flex flex-col flex-grow min-h-0"
                   >
-                    <Card className="bg-card border border-primary/20 text-foreground shadow-lg flex flex-col flex-grow min-h-0">
+                    <Card className="flex min-h-0 flex-grow flex-col border border-slate-200 bg-white text-slate-900 shadow-sm">
                       <CardHeader className="flex-shrink-0">
-                        <CardTitle className="flex items-center justify-between text-xl font-semibold text-primary">
+                        <CardTitle className="flex items-center justify-between text-lg font-heading font-semibold text-slate-900">
                           <span>Generated Content Preview</span>
                           <Button
                             variant="ghost"
                             size="icon"
                             onClick={clearGeneratedContent}
-                            className="text-muted-foreground hover:text-destructive"
+                            className="text-slate-400 transition hover:text-red-500"
                           >
                             <AiOutlineClose />
                           </Button>
                         </CardTitle>
-                        <CardDescription>
+                        <CardDescription className="text-slate-600">
                           Review and edit your generated content before saving.
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="flex-grow overflow-hidden p-0">
                         <ScrollArea className="h-full p-4">
-                          <h2 className="text-2xl font-bold mb-4 pb-2 border-b border-primary/10 flex-shrink-0">
+                          <h2 className="mb-4 flex-shrink-0 border-b border-slate-200 pb-2 text-2xl font-heading font-semibold text-slate-900">
                             {generatedContent.title}
                           </h2>
-                          <div className="prose prose-invert max-w-none prose-p:my-2 prose-h2:mt-4 prose-h2:mb-1 prose-h3:mt-3 prose-h3:mb-1 prose-ul:my-2 prose-li:my-0.5 bg-neutral-900/90 border border-neutral-800 rounded-lg p-5 shadow-inner">
+                          <div className="prose max-w-none rounded-xl border border-slate-200 bg-slate-50 p-5 text-slate-700 prose-headings:font-heading prose-headings:text-slate-900">
                             {generatedContent.content?.trim() ? (
                               <TipTapRenderer
                                 content={generatedContent.content}
                               />
                             ) : (
-                              <div className="text-sm text-neutral-400 italic">
+                              <div className="text-sm italic text-slate-500">
                                 (No content returned from AI. Try regenerating.)
                               </div>
                             )}
@@ -727,13 +717,13 @@ export default function AICreateBlog() {
                 )}
               </AnimatePresence>
               {!generatedContent && !loadingSection && !generatedOutline && (
-                <Card className="bg-card border border-primary/20 text-foreground shadow-lg flex-grow flex items-center justify-center">
-                  <div className="text-center text-muted-foreground p-8 max-w-md">
+                <Card className="flex flex-grow items-center justify-center border border-slate-200 bg-white text-slate-900 shadow-sm">
+                  <div className="max-w-md p-8 text-center text-slate-600">
                     <AiOutlineRobot
                       size={48}
-                      className="mx-auto mb-4 text-primary/50"
+                      className="mx-auto mb-4 text-slate-400"
                     />
-                    <h3 className="text-xl font-semibold mb-2 text-foreground">
+                    <h3 className="mb-2 text-xl font-heading font-semibold text-slate-900">
                       AI Blog Generator
                     </h3>
                     <p className="mb-4">
@@ -741,14 +731,14 @@ export default function AICreateBlog() {
                       transforming existing content. Your AI-generated blog post
                       will appear here.
                     </p>
-                    <div className="flex flex-col sm:flex-row gap-2 justify-center">
-                      <Badge variant="secondary" className="px-3 py-1">
+                    <div className="flex flex-col justify-center gap-2 sm:flex-row">
+                      <Badge variant="secondary" className="border border-slate-200 bg-slate-100 px-3 py-1 text-slate-600">
                         Step 1: Enter Topic
                       </Badge>
-                      <Badge variant="secondary" className="px-3 py-1">
+                      <Badge variant="secondary" className="border border-slate-200 bg-slate-100 px-3 py-1 text-slate-600">
                         Step 2: Generate Outline
                       </Badge>
-                      <Badge variant="secondary" className="px-3 py-1">
+                      <Badge variant="secondary" className="border border-slate-200 bg-slate-100 px-3 py-1 text-slate-600">
                         Step 3: Create Content
                       </Badge>
                     </div>
@@ -756,13 +746,13 @@ export default function AICreateBlog() {
                 </Card>
               )}
               {loadingSection === "generate" && (
-                <Card className="bg-card border border-primary/20 text-foreground shadow-lg flex-grow flex items-center justify-center">
-                  <div className="text-center text-muted-foreground p-8">
+                <Card className="flex flex-grow items-center justify-center border border-slate-200 bg-white text-slate-900 shadow-sm">
+                  <div className="p-8 text-center text-slate-600">
                     <Loader2
                       size={48}
-                      className="mx-auto mb-4 animate-spin text-primary"
+                      className="mx-auto mb-4 animate-spin text-slate-500"
                     />
-                    <h3 className="text-xl font-semibold mb-2">
+                    <h3 className="mb-2 text-xl font-heading font-semibold text-slate-900">
                       Generating Blog Post
                     </h3>
                     <p>Creating human-like content based on your topic...</p>
@@ -770,13 +760,13 @@ export default function AICreateBlog() {
                 </Card>
               )}
               {loadingSection === "link" && (
-                <Card className="bg-card border border-primary/20 text-foreground shadow-lg flex-grow flex items-center justify-center">
-                  <div className="text-center text-muted-foreground p-8">
+                <Card className="flex flex-grow items-center justify-center border border-slate-200 bg-white text-slate-900 shadow-sm">
+                  <div className="p-8 text-center text-slate-600">
                     <Loader2
                       size={48}
-                      className="mx-auto mb-4 animate-spin text-primary"
+                      className="mx-auto mb-4 animate-spin text-slate-500"
                     />
-                    <h3 className="text-xl font-semibold mb-2">
+                    <h3 className="mb-2 text-xl font-heading font-semibold text-slate-900">
                       Processing Article
                     </h3>
                     <p>Transforming the content into a fresh blog post...</p>
@@ -794,12 +784,12 @@ export default function AICreateBlog() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
                   >
-                    <Card className="bg-card border border-primary/20 text-foreground shadow-lg">
+                    <Card className="border border-slate-200 bg-white text-slate-900 shadow-sm">
                       <CardHeader>
-                        <CardTitle className="text-xl font-semibold text-primary">
+                        <CardTitle className="text-lg font-heading font-semibold text-slate-900">
                           Ready to Save
                         </CardTitle>
-                        <CardDescription>
+                        <CardDescription className="text-slate-600">
                           Save your generated content as a draft to continue
                           editing.
                         </CardDescription>
@@ -807,7 +797,7 @@ export default function AICreateBlog() {
                       <CardContent>
                         <Button
                           onClick={handleSaveDraft}
-                          className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-primary-foreground"
+                          className="w-full bg-emerald-600 text-white hover:bg-emerald-700"
                           disabled={
                             loadingSection === "save" ||
                             saveStatus.state === "success"
@@ -825,7 +815,7 @@ export default function AICreateBlog() {
                             : "Save as Draft"}
                         </Button>
                         {saveStatus.state === "error" && (
-                          <p className="mt-2 text-sm text-destructive">
+                          <p className="mt-2 text-sm text-red-600">
                             Error: {saveStatus.message}
                           </p>
                         )}
@@ -840,14 +830,15 @@ export default function AICreateBlog() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="p-3 bg-destructive/10 border border-destructive/20 rounded text-destructive text-center text-sm"
+                className="rounded border border-red-200 bg-red-50 p-3 text-center text-sm text-red-700"
               >
                 {error}
               </motion.div>
             )}
           </motion.div>
         </div>
-      </PageContainer>
+        </PageContainer>
+      </div>
     </>
   );
 }

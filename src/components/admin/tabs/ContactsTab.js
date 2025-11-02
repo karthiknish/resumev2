@@ -64,56 +64,54 @@ export default function ContactsTab() {
       return;
     }
     try {
-      // TODO: Implement API call to DELETE /api/contacts?id=... or /api/contacts/[id]
       toast.info(`Delete functionality for contact ${id} not yet implemented.`);
-      // Example:
-      // const response = await fetch(`/api/contacts?id=${id}`, { method: 'DELETE' });
-      // if (!response.ok) throw new Error('Failed to delete contact');
-      // setContacts(prev => prev.filter(c => c._id !== id));
-      // toast.success("Contact deleted.");
     } catch (err) {
       toast.error(err.message || "Failed to delete contact.");
     }
   };
 
   return (
-    <Card className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 shadow-2xl rounded-3xl">
+    <Card className="rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-md">
       <CardHeader>
-        <CardTitle className="flex items-center gap-3 text-2xl font-black text-gray-800" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
-          <div className="p-2 bg-blue-600 rounded-xl">
-            <Mail className="w-6 h-6 text-white" />
+        <CardTitle className="flex items-center gap-3 text-xl font-heading font-semibold text-slate-900">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-blue-100 bg-blue-50">
+            <Mail className="h-5 w-5 text-blue-600" />
           </div>
           Contact Form Submissions ({contacts.length})
         </CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading && (
-          <div className="flex items-center justify-center py-12">
-            <div className="bg-white/80 backdrop-blur-sm border-2 border-blue-200 rounded-2xl px-8 py-6 shadow-xl flex items-center gap-4">
-              <div className="animate-spin text-3xl">💬</div>
-              <span className="text-gray-700 font-bold text-xl">Loading contacts...</span>
+          <div className="flex items-center justify-center py-10">
+            <div className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white px-6 py-5 shadow-sm">
+              <div className="text-3xl animate-spin">💬</div>
+              <span className="text-base font-semibold text-slate-700">
+                Loading contacts...
+              </span>
             </div>
           </div>
         )}
         {error && !isLoading && (
-          <div className="flex items-center justify-center py-12">
-            <div className="bg-white/80 backdrop-blur-sm border-2 border-red-200 rounded-2xl px-8 py-6 shadow-xl text-center">
-              <div className="text-6xl mb-4">😕</div>
-              <h3 className="text-2xl font-black text-gray-800 mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+          <div className="flex items-center justify-center py-10">
+            <div className="rounded-xl border border-red-200 bg-red-50 px-6 py-5 text-center shadow-sm">
+              <div className="mb-4 text-6xl">😕</div>
+              <h3 className="mb-2 text-xl font-heading font-semibold text-red-700">
                 Oops! Something went wrong
               </h3>
-              <p className="text-red-600 font-medium">Error: {error}</p>
+              <p className="font-medium text-red-600">Error: {error}</p>
             </div>
           </div>
         )}
         {!isLoading && !error && contacts.length === 0 && (
-          <div className="flex items-center justify-center py-12">
-            <div className="bg-white/80 backdrop-blur-sm border-2 border-gray-200 rounded-2xl px-8 py-6 shadow-xl text-center">
-              <div className="text-6xl mb-4">📭</div>
-              <h3 className="text-2xl font-black text-gray-800 mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+          <div className="flex items-center justify-center py-10">
+            <div className="rounded-xl border border-slate-200 bg-slate-50 px-6 py-5 text-center shadow-sm">
+              <div className="mb-4 text-6xl">📭</div>
+              <h3 className="mb-2 text-xl font-heading font-semibold text-slate-800">
                 No Contact Submissions Yet
               </h3>
-              <p className="text-gray-600 font-medium">When users submit the contact form, they'll appear here!</p>
+              <p className="font-medium text-slate-600">
+                When users submit the contact form, they'll appear here!
+              </p>
             </div>
           </div>
         )}
@@ -121,11 +119,11 @@ export default function ContactsTab() {
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                 <TableRow className="border-blue-200 hover:bg-blue-50/50">
-                  <TableHead className="text-gray-700 font-bold text-lg">Name</TableHead>
-                  <TableHead className="text-gray-700 font-bold text-lg">Email</TableHead>
-                  <TableHead className="text-gray-700 font-bold text-lg">Message</TableHead>
-                  <TableHead className="text-gray-700 font-bold text-lg">Received On</TableHead>
+                <TableRow className="border-b border-slate-200 bg-slate-50">
+                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Name</TableHead>
+                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Email</TableHead>
+                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Message</TableHead>
+                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Received On</TableHead>
                   {/* <TableHead className="text-right text-gray-700 font-bold text-lg">Actions</TableHead> */}
                 </TableRow>
               </TableHeader>
@@ -133,12 +131,12 @@ export default function ContactsTab() {
                 {contacts.map((contact) => (
                   <TableRow
                     key={contact._id}
-                    className="border-blue-100 hover:bg-blue-50/30 transition-colors duration-200 align-top"
+                    className="align-top border-b border-slate-100 transition-colors duration-200 hover:bg-slate-50"
                   >
-                    <TableCell className="font-semibold text-gray-800">
+                    <TableCell className="text-base font-semibold text-slate-900">
                       <div className="flex items-center gap-3">
-                        <div className="p-1 bg-blue-600 rounded-lg">
-                          <User className="w-4 h-4 text-white" />
+                        <div className="rounded-lg border border-blue-100 bg-blue-50 p-1">
+                          <User className="h-4 w-4 text-blue-600" />
                         </div>
                         {contact.name}
                       </div>
@@ -146,25 +144,27 @@ export default function ContactsTab() {
                     <TableCell>
                       <a
                         href={`mailto:${contact.email}`}
-                         className="text-blue-600 hover:text-blue-800 font-medium hover:underline transition-colors duration-200"
+                        className="font-medium text-blue-600 transition-colors duration-200 hover:text-blue-800 hover:underline"
                       >
                         {contact.email}
                       </a>
                     </TableCell>
-                    <TableCell className="max-w-sm whitespace-pre-wrap break-words">
+                    <TableCell className="max-w-sm whitespace-pre-wrap break-words text-sm text-slate-700">
                       <div className="flex items-start gap-3">
-                        <div className="p-1 bg-blue-600 rounded-lg mt-1">
-                          <MessageCircle className="w-4 h-4 text-white flex-shrink-0" />
+                        <div className="mt-1 rounded-lg border border-blue-100 bg-blue-50 p-1">
+                          <MessageCircle className="h-4 w-4 flex-shrink-0 text-blue-600" />
                         </div>
-                        <span className="text-gray-700 font-medium">{contact.message}</span>
+                        <span className="font-medium text-slate-700">{contact.message}</span>
                       </div>
                     </TableCell>
                     <TableCell>
-                       <div className="flex items-center gap-2 text-gray-600">
-                         <div className="p-1 bg-blue-600 rounded-lg">
-                          <CalendarDays className="w-4 h-4 text-white" />
+                      <div className="flex items-center gap-2 text-slate-600">
+                        <div className="rounded-lg border border-blue-100 bg-blue-50 p-1">
+                          <CalendarDays className="h-4 w-4 text-blue-600" />
                         </div>
-                        <span className="font-medium">{formatDate(contact.createdAt)}</span>
+                        <span className="font-medium text-slate-600">
+                          {formatDate(contact.createdAt)}
+                        </span>
                       </div>
                     </TableCell>
                     {/* <TableCell className="text-right">

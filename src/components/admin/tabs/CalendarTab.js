@@ -115,26 +115,23 @@ function CalendarTab() {
 
   return (
     <SlideUp delay={0.2}>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <Card className="lg:col-span-2 bg-white/90 backdrop-blur-sm border-2 border-blue-200 shadow-xl rounded-3xl overflow-hidden">
-          <CardHeader className="bg-blue-600 p-6">
-            <CardTitle
-              className="text-2xl font-black text-white mb-2"
-              style={{ fontFamily: "Space Grotesk, sans-serif" }}
-            >
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <Card className="lg:col-span-2 overflow-hidden rounded-3xl border border-slate-200 bg-white text-slate-900 shadow-lg">
+          <CardHeader className="border-b border-slate-200 bg-slate-50 p-5">
+            <CardTitle className="mb-1 text-xl font-heading font-semibold text-slate-900">
               📅 Blog Post Calendar
             </CardTitle>
-            <p className="text-blue-100 font-medium">
-              Dates with blog posts are marked with a blue dot.
+            <p className="font-medium text-slate-600">
+              Dates with blog posts are marked with a blue accent dot.
             </p>
           </CardHeader>
-          <CardContent className="bg-blue-50 p-6 flex justify-center">
+          <CardContent className="flex justify-center p-5">
             {isLoading ? (
-              <div className="flex justify-center items-center py-10">
-                <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+              <div className="flex items-center justify-center py-10">
+                <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
               </div>
             ) : error ? (
-              <p className="text-red-400 text-center py-10">
+              <p className="py-10 text-center text-red-600">
                 Error loading calendar data: {error}
               </p>
             ) : (
@@ -157,7 +154,7 @@ function CalendarTab() {
                   nav_button_next: "absolute right-1",
                   table: "w-full border-collapse space-y-1",
                   head_row: "flex",
-                  head_cell: "text-blue-700 rounded-md w-9 font-medium text-sm",
+                  head_cell: "text-blue-700 w-9 rounded-md font-medium text-sm",
                   row: "flex w-full mt-2",
                   cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected])]:bg-blue-100 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
                   day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 rounded-md hover:bg-blue-50 transition-colors",
@@ -176,17 +173,14 @@ function CalendarTab() {
         </Card>
 
         <FadeIn delay={0.4}>
-          <Card className="bg-white/90 backdrop-blur-sm border-2 border-blue-200 shadow-xl rounded-3xl overflow-hidden">
-            <CardHeader className="bg-blue-600 p-6">
-              <CardTitle
-                className="text-2xl font-black text-white mb-2"
-                style={{ fontFamily: "Space Grotesk, sans-serif" }}
-              >
+          <Card className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-md">
+            <CardHeader className="border-b border-slate-200 bg-slate-50 p-5">
+              <CardTitle className="text-xl font-heading font-semibold text-slate-900">
                 Posts on{" "}
                 {selectedDate ? format(selectedDate, "MMMM d, yyyy") : "..."}
               </CardTitle>
             </CardHeader>
-            <CardContent className="bg-blue-50 min-h-[200px] p-6">
+            <CardContent className="min-h-[200px] p-5">
               {isLoading ? (
                 <div className="flex justify-center items-center pt-10">
                   <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
@@ -250,7 +244,7 @@ function CalendarTab() {
                   ))}
                 </StaggerContainer>
               ) : (
-                <div className="flex flex-col items-center justify-center py-8 text-center">
+                <div className="flex flex-col items-center justify-center py-6 text-center">
                   <div className="text-4xl mb-3">📝</div>
                   <p className="text-gray-600 font-medium">
                     No posts found for this date
@@ -261,12 +255,8 @@ function CalendarTab() {
                 </div>
               )}
             </CardContent>
-
-            <CardFooter className="pt-6 border-t border-blue-200 bg-white/50">
-              <Button
-                className="w-full bg-blue-600 text-white hover:bg-blue-700 shadow-md"
-                asChild
-              >
+            <CardFooter className="border-t border-slate-200 bg-white px-5 py-4">
+              <Button className="w-full rounded-lg bg-blue-600 text-white shadow-sm hover:bg-blue-700" asChild>
                 <Link href="/admin/blog/create">
                   <AiOutlineFileAdd className="mr-2 h-5 w-5" />
                   Create New Blog Post

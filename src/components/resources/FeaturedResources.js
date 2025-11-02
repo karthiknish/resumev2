@@ -19,17 +19,7 @@ const FeaturedResources = ({ resources }) => {
         viewport={{ once: true }}
       >
         <span>Featured resources</span>
-        <motion.span
-          animate={{ rotate: [0, 15, -15, 0] }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="text-4xl"
-        >
-          ⭐
-        </motion.span>
+      
       </motion.h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {featuredResources.map((resource, index) => (

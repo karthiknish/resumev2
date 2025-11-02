@@ -63,7 +63,7 @@ export function BackgroundBeamsLoader({ className }) {
       {/* Centered spinner */}
       <div className="absolute inset-0 flex items-center justify-center">
         <motion.div
-          className="w-12 h-12 rounded-full border-4 border-blue-500 border-t-transparent"
+          className="w-12 h-12 rounded-full border-4 border-primary border-t-transparent"
           animate={{ rotate: 360 }}
           transition={{
             duration: 1,
@@ -124,9 +124,9 @@ export function PulsingLoader({ size = "md" }) {
           ease: "linear",
         }}
       >
-        <div className={`absolute inset-0 rounded-full border-4 border-blue-500/20 dark:border-blue-400/20`}></div>
+        <div className="absolute inset-0 rounded-full border-4 border-primary/20"></div>
         <motion.div
-          className={`absolute inset-0 rounded-full border-4 border-blue-500 border-t-transparent dark:border-blue-400 dark:border-t-transparent`}
+          className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent"
           animate={{ rotate: 360 }}
           transition={{
             duration: 1,
@@ -145,7 +145,7 @@ export function WaveLoader() {
       {[0, 1, 2, 3, 4].map((i) => (
         <motion.div
           key={i}
-          className="w-2 bg-blue-500 rounded-t"
+          className="w-2 bg-primary rounded-t"
           style={{ height: `${20 + i * 10}%` }}
           animate={{
             height: ["40%", "100%", "40%"],

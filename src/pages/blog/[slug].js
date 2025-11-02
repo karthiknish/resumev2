@@ -217,9 +217,9 @@ function SlugPage({ data, relatedPosts }) {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed left-6 bottom-6 z-50 w-14 h-14 rounded-full  bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-300 flex items-center justify-center group shadow-xl hover:shadow-2xl"
+          className="fixed left-6 bottom-6 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-[#1d4ed8] via-[#123264] to-[#0b1f3b] hover:from-[#2563eb] hover:via-[#1a3f7f] hover:to-[#102a52] transition-all duration-300 flex items-center justify-center group shadow-[0_20px_45px_rgba(10,36,80,0.45)] hover:shadow-[0_26px_60px_rgba(10,36,80,0.6)] border border-white/10"
           aria-label="Scroll to top"
-          whileHover={{ scale: 1.1 }}
+          whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.95 }}
         >
           <div className="absolute">
@@ -230,7 +230,7 @@ function SlugPage({ data, relatedPosts }) {
               cx="50%"
               cy="50%"
               r="45%"
-              className="stroke-white/20"
+              className="stroke-white/15"
               fill="none"
               strokeWidth="2"
             />
@@ -238,7 +238,7 @@ function SlugPage({ data, relatedPosts }) {
               cx="50%"
               cy="50%"
               r="45%"
-              className="stroke-white"
+              className="stroke-white/70"
               fill="none"
               strokeWidth="2"
               strokeDasharray={`${scrollProgress}, 100`}
@@ -254,7 +254,7 @@ function SlugPage({ data, relatedPosts }) {
         >
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.16),_transparent_65%)]" />
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(226,232,240,0.25),_transparent_70%)]" />
-          <div className="max-w-5xl mx-auto px-4 pt-4 sm:px-6 md:px-8 relative z-10">
+          <div className="max-w-6xl mx-auto px-4 pt-4 sm:px-6 md:px-10 relative z-10">
             {/* Back Button */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -325,11 +325,11 @@ function SlugPage({ data, relatedPosts }) {
                       <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                     </div>
                     {data.tags && data.tags.length > 0 && (
-                      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 flex flex-wrap gap-2 sm:gap-3">
+                      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 flex flex-wrap gap-1.5 sm:gap-2.5">
                         {data.tags.map((tag) => (
                           <motion.span
                             key={tag}
-                            className="bg-white text-brandSecondary px-3 sm:px-4 py-1 sm:py-2 rounded-full font-medium shadow border border-brandSecondary/30 text-xs sm:text-sm"
+                            className="bg-white/95 text-brandSecondary px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full font-medium shadow border border-brandSecondary/30 text-[11px] sm:text-xs"
                             whileHover={{ scale: 1.02 }}
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -371,10 +371,10 @@ function SlugPage({ data, relatedPosts }) {
 
                     <motion.div
                       variants={fadeInUpVariants}
-                      className="flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-3 sm:gap-y-4 text-slate-600 mb-6 sm:mb-8 bg-slate-100 p-4 sm:p-6 rounded-2xl border border-slate-200"
+                      className="flex flex-wrap items-center gap-x-3 sm:gap-x-4 gap-y-2.5 sm:gap-y-3 text-slate-600 text-sm sm:text-base mb-6 sm:mb-8 bg-slate-100/90 p-3 sm:p-4 rounded-xl border border-slate-200"
                     >
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-base sm:text-lg">
+                        <span className="font-semibold text-sm sm:text-base">
                           {new Date(
                             data.createdAt || Date.now()
                           ).toLocaleDateString("en-US", {
@@ -386,26 +386,26 @@ function SlugPage({ data, relatedPosts }) {
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-base sm:text-lg">
+                        <span className="font-semibold text-sm sm:text-base">
                           {readingTime} min read
                         </span>
                       </div>
 
                       {/* Social Share Buttons */}
-                      <div className="flex items-center gap-2 sm:gap-4 ml-0 md:ml-auto">
-                        <span className="font-bold text-base sm:text-lg hidden md:inline-flex items-center gap-2">
+                      <div className="flex items-center gap-2.5 sm:gap-3 ml-0 md:ml-auto">
+                        <span className="font-semibold text-xs sm:text-sm hidden md:inline-flex items-center gap-1.5 text-slate-500">
                           <span className="text-2xl"></span>
                           Share:
                         </span>
                         <motion.button
                           onClick={() => shareArticle("twitter")}
-                          className="p-2 sm:p-3 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl transition-colors duration-200 shadow-sm"
+                          className="p-1.5 sm:p-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl transition-colors duration-200 shadow-sm"
                           aria-label="Share on Twitter"
                           whileHover={{ y: -1 }}
                           whileTap={{ scale: 0.98 }}
                         >
                           <svg
-                            className="w-6 h-6"
+                            className="w-5 h-5"
                             fill="currentColor"
                             viewBox="0 0 24 24"
                           >
@@ -414,13 +414,13 @@ function SlugPage({ data, relatedPosts }) {
                         </motion.button>
                         <motion.button
                           onClick={() => shareArticle("facebook")}
-                          className="p-2 sm:p-3 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl transition-colors duration-200 shadow-sm"
+                          className="p-1.5 sm:p-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl transition-colors duration-200 shadow-sm"
                           aria-label="Share on Facebook"
                           whileHover={{ y: -1 }}
                           whileTap={{ scale: 0.98 }}
                         >
                           <svg
-                            className="w-6 h-6"
+                            className="w-5 h-5"
                             fill="currentColor"
                             viewBox="0 0 24 24"
                           >
@@ -429,13 +429,13 @@ function SlugPage({ data, relatedPosts }) {
                         </motion.button>
                         <motion.button
                           onClick={() => shareArticle("linkedin")}
-                          className="p-2 sm:p-3 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl transition-colors duration-200 shadow-sm"
+                          className="p-1.5 sm:p-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl transition-colors duration-200 shadow-sm"
                           aria-label="Share on LinkedIn"
                           whileHover={{ y: -1 }}
                           whileTap={{ scale: 0.98 }}
                         >
                           <svg
-                            className="w-6 h-6"
+                            className="w-5 h-5"
                             fill="currentColor"
                             viewBox="0 0 24 24"
                           >
@@ -444,13 +444,13 @@ function SlugPage({ data, relatedPosts }) {
                         </motion.button>
                         <motion.button
                           onClick={() => shareArticle("copy")}
-                          className="p-2 sm:p-3 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl transition-colors duration-200 shadow-sm"
+                          className="p-1.5 sm:p-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl transition-colors duration-200 shadow-sm"
                           aria-label="Copy link"
                           whileHover={{ y: -1 }}
                           whileTap={{ scale: 0.98 }}
                         >
                           <svg
-                            className="w-6 h-6"
+                            className="w-5 h-5"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -517,14 +517,14 @@ function SlugPage({ data, relatedPosts }) {
 
                       {data.tags && data.tags.length > 0 && (
                         <div className="flex items-center flex-wrap gap-3">
-                          <span className="flex items-center gap-2 text-slate-600 font-semibold">
+                          <span className="flex items-center gap-1.5 text-slate-500 font-semibold text-sm">
                             <span className="text-2xl"></span>
                             Tags:
                           </span>
                           {data.tags.map((tag) => (
                             <motion.span
                               key={tag}
-                              className="bg-slate-100 text-slate-700 px-4 py-2 rounded-full font-medium border border-slate-200 hover:bg-slate-200 transition-colors duration-200"
+                              className="bg-slate-100 text-slate-700 px-3 py-1.5 rounded-full font-medium text-sm border border-slate-200/80 hover:bg-slate-200 transition-colors duration-200"
                               whileHover={{ scale: 1.02 }}
                               initial={{ opacity: 0, scale: 0.8 }}
                               animate={{ opacity: 1, scale: 1 }}
@@ -598,7 +598,7 @@ export async function getStaticPaths() {
 
 // --- Update getStaticProps function ---
 export async function getStaticProps(context) {
-  const { slug } = context.params; // Get slug from context.params
+  const { slug } = await context.params; // Get slug from context.params (Next.js 16: params is async)
 
   try {
     await dbConnect(); // Connect to DB

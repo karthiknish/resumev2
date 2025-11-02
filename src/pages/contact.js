@@ -69,7 +69,7 @@ export default function Contact() {
             <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.12),_transparent_62%)]" />
             <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom,_rgba(236,72,153,0.1),_transparent_58%)]" />
 
-            <div className="relative max-w-5xl mx-auto px-6 sm:px-10 md:px-12 py-24 md:py-32 text-center">
+            <div className="relative max-w-5xl mx-auto px-6 sm:px-10 md:px-12 pt-24 pb-20 md:pt-32 md:pb-24 text-center">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -100,7 +100,7 @@ export default function Contact() {
           </section>
 
           {/* Services */}
-          <section className="py-16 md:py-20 bg-background">
+          <section className="bg-background">
             <div className="max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
               <FadeIn>
                 <Services />
