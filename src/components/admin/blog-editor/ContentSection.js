@@ -3,21 +3,34 @@ import React, { useState, useCallback } from "react";
 import TipTapEditor from "@/components/TipTapEditor"; // Import TipTapEditor
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Loader2, Sparkles, Wand2 } from "lucide-react"; // Added Wand2 for Format
-import { AiOutlineFormatPainter, AiOutlineEye } from "react-icons/ai"; // Keep AiOutlineEye
+import { Loader2, Sparkles, Wand2, ListChecks } from "lucide-react"; // Added Wand2 for Format
+import { AiOutlineEye } from "react-icons/ai"; // Keep AiOutlineEye
 import axios from "axios";
 import { toast } from "sonner"; // For displaying success/error messages
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 function ContentSection({
   content,
   setContent, // Renaming 'onUpdate' from TipTapEditor prop for consistency here
   onTogglePreview,
   blogTitle, // Keep blogTitle for Generate Content
+  onOutlineTitle = () => {},
 }) {
   const [isGeneratingContent, setIsGeneratingContent] = useState(false);
   const [contentGenError, setContentGenError] = useState("");
   const [isFormatting, setIsFormatting] = useState(false); // State for formatting loader
   const [formatError, setFormatError] = useState(""); // State for formatting error
+  const [isGeneratingOutline, setIsGeneratingOutline] = useState(false);
+  const [outlineData, setOutlineData] = useState(null);
+  const [outlineError, setOutlineError] = useState("");
+  const [isOutlineOpen, setIsOutlineOpen] = useState(false);
 
   // Handler for generating content draft
   const handleGenerateContent = useCallback(async () => {
@@ -101,6 +114,102 @@ function ContentSection({
     }
   }, [content, setContent]); // Dependencies: content and setContent
 
+  const handleOutlineOpenChange = useCallback((open) => {
+    setIsOutlineOpen(open);
+    if (!open) {
+      setOutlineError("");
+    }
+  }, []);
+
+  const handleGenerateOutline = useCallback(async () => {
+    if (!blogTitle?.trim()) {
+      toast.error("Please enter a blog title first.");
+      return;
+    }
+
+    setIsOutlineOpen(true);
+    setIsGeneratingOutline(true);
+    setOutlineError("");
+    setOutlineData(null);
+
+    const toastId = "outline-toast";
+    toast.loading("Generating outline...", { id: toastId });
+
+    try {
+      const response = await axios.post("/api/ai/generate-outline", {
+        topic: blogTitle,
+      });
+
+      if (response.data.success && response.data.data) {
+        setOutlineData(response.data.data);
+        toast.success("Outline generated!", { id: toastId });
+      } else {
+        throw new Error(response.data.message || "Failed to generate outline.");
+      }
+    } catch (err) {
+      console.error("[ContentSection] Outline generation error:", err);
+      const message =
+        err.response?.data?.message ||
+        err.message ||
+        "Failed to generate outline.";
+      setOutlineError(message);
+      toast.error(`Outline generation failed: ${message}`, { id: toastId });
+    } finally {
+      setIsGeneratingOutline(false);
+    }
+  }, [blogTitle]);
+
+  const handleApplyOutline = useCallback(
+    (mode) => {
+      if (!outlineData) {
+        return;
+      }
+
+      const headings = Array.isArray(outlineData.headings)
+        ? outlineData.headings.filter(Boolean)
+        : [];
+
+      if (headings.length === 0) {
+        toast.error("Outline did not include any headings.");
+        return;
+      }
+
+      const draftSections = headings
+        .map((heading) => `<h2>${heading}</h2>\n<p></p>`)
+        .join("\n\n");
+
+      const existing =
+        typeof content === "string" ? content.trimEnd() : "";
+
+      const nextContent =
+        mode === "append" && existing
+          ? `${existing}\n\n${draftSections}`
+          : draftSections;
+
+      setContent(nextContent);
+
+      if (outlineData.title && (!blogTitle || !blogTitle.trim())) {
+        onOutlineTitle(outlineData.title);
+      }
+
+      toast.success(
+        mode === "append"
+          ? "Outline appended to editor."
+          : "Editor content replaced with outline skeleton."
+      );
+
+      setIsOutlineOpen(false);
+    },
+    [outlineData, content, setContent, blogTitle, onOutlineTitle]
+  );
+
+  const handleUseOutlineTitle = useCallback(() => {
+    if (outlineData?.title) {
+      onOutlineTitle(outlineData.title);
+      toast.success("Title updated from outline.");
+    }
+  }, [outlineData, onOutlineTitle]);
+
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center mb-2 flex-wrap">
@@ -130,6 +239,23 @@ function ContentSection({
               <Wand2 className="mr-1 h-4 w-4" /> // Using Wand2 icon
             )}
             Format
+          </Button>
+          {/* --- Outline Button --- */}
+          <Button
+            type="button"
+            onClick={handleGenerateOutline}
+            disabled={isGeneratingOutline || !blogTitle?.trim()}
+            variant="outline"
+            size="sm"
+            className="flex items-center border-primary/20 text-primary hover:bg-primary/5"
+            title="Generate a structured outline from the title (AI)"
+          >
+            {isGeneratingOutline ? (
+              <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+            ) : (
+              <ListChecks className="mr-1 h-4 w-4" />
+            )}
+            Outline
           </Button>
           {/* --- Preview Button --- */}
           <Button
@@ -176,6 +302,92 @@ function ContentSection({
         // Add an ID for the label's htmlFor
         id="blog-content-editor"
       />
+      <Dialog open={isOutlineOpen} onOpenChange={handleOutlineOpenChange}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>AI Generated Outline</DialogTitle>
+            <DialogDescription>
+              Use the suggested structure to map out your article before
+              writing.
+            </DialogDescription>
+          </DialogHeader>
+          {isGeneratingOutline && (
+            <div className="flex justify-center py-6">
+              <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            </div>
+          )}
+          {outlineError && (
+            <p className="text-sm text-destructive">{outlineError}</p>
+          )}
+          {outlineData && (
+            <div className="space-y-4">
+              {outlineData.title && (
+                <div>
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                    Suggested title
+                  </p>
+                  <p className="text-base font-semibold text-foreground">
+                    {outlineData.title}
+                  </p>
+                </div>
+              )}
+              <div className="space-y-2">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                  Headings
+                </p>
+                <div className="space-y-2">
+                  {outlineData.headings?.map((heading, index) => (
+                    <div
+                      key={`${heading}-${index}`}
+                      className="rounded-md border border-border bg-muted/40 px-3 py-2 text-sm text-foreground"
+                    >
+                      {index + 1}. {heading}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+          {!isGeneratingOutline && !outlineData && !outlineError && (
+            <p className="text-sm text-muted-foreground">
+              Outline suggestions will appear here when generated.
+            </p>
+          )}
+          <DialogFooter className="gap-2 sm:gap-3">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => handleOutlineOpenChange(false)}
+            >
+              Close
+            </Button>
+            {outlineData?.title && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleUseOutlineTitle}
+              >
+                Use Title
+              </Button>
+            )}
+            <Button
+              type="button"
+              variant="outline"
+              disabled={!outlineData}
+              onClick={() => handleApplyOutline("append")}
+            >
+              Append To Editor
+            </Button>
+            <Button
+              type="button"
+              disabled={!outlineData}
+              onClick={() => handleApplyOutline("replace")}
+            >
+              Replace Editor Content
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

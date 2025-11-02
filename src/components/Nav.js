@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { FaBars, FaTimes, FaSearch, FaTimesCircle } from "react-icons/fa"; // Added FaSearch, FaTimesCircle
+import { FaBars, FaTimes, FaSearch } from "react-icons/fa"; // Added FaSearch
 import { useRouter } from "next/router";
 import Image from "next/image";
 // use public folder image via string path
@@ -29,15 +29,41 @@ const SearchOverlay = dynamic(() => import("./SearchOverlay"), {
 });
 
 export default function Nav() {
+  const router = useRouter();
+  const isHome = router.pathname === "/";
+
   const [isOpen, setIsOpen] = useState(false); // Mobile menu state
   const [isSearchOpen, setIsSearchOpen] = useState(false); // Search overlay state
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [colorChange, setColorChange] = useState(false);
-  const { data: session, status } = useSession();
-  const router = useRouter();
-  const isHome = router.pathname === "/";
+  const [hasScrolled, setHasScrolled] = useState(() => !isHome);
+  const searchInputRef = useRef(null);
+  const { data: session } = useSession();
+
+  const navLinkBaseClass = isHome && !hasScrolled
+    ? "text-slate-300 hover:text-white"
+    : "text-gray-700 hover:text-gray-900";
+  const navLinkActiveClass = isHome && !hasScrolled ? "text-white" : "text-gray-900";
+  const underlineBgClass = isHome && !hasScrolled ? "bg-white/80" : "bg-gray-900";
+  const iconButtonClass = isHome && !hasScrolled
+    ? "text-slate-200 hover:text-white hover:bg-white/10"
+    : "text-gray-700 hover:text-gray-900 hover:bg-gray-100";
+  const navShellClasses = isHome && !hasScrolled
+    ? "bg-transparent text-white shadow-none border-transparent"
+    : "bg-white/90 text-gray-900 shadow-sm border-gray-200";
+  const mobileContainerClasses = isHome && !hasScrolled
+    ? "bg-slate-950/95 text-white border-white/10"
+    : "bg-white text-gray-800 border-gray-200";
+  const mobileLinkBaseClass = isHome && !hasScrolled
+    ? "text-slate-200 hover:bg-white/10 hover:text-white"
+    : "text-gray-800 hover:bg-gray-100 hover:text-gray-900";
+  const mobileLinkActiveClass = isHome && !hasScrolled
+    ? "text-white bg-white/10"
+    : "text-gray-900 bg-gray-100";
+  const mobileSignOutClass = isHome && !hasScrolled
+    ? "text-slate-200 hover:text-white hover:bg-white/10"
+    : "text-gray-800 hover:text-gray-900 hover:bg-gray-100";
 
   // Debounce search query
   const debouncedSearchQuery = useDebounce(searchQuery, 300); // 300ms debounce
@@ -53,6 +79,21 @@ export default function Nav() {
     // { href: "/notes", label: "Notes", delay: 0.8 }, // Removed Notes link
     { href: "/contact", label: "Contact", delay: 0.8 }, // Adjusted delay back
   ];
+
+  useEffect(() => {
+    if (!isHome) {
+      setHasScrolled(true);
+      return undefined;
+    }
+
+    const handleScroll = () => {
+      setHasScrolled(window.scrollY > 40);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isHome]);
 
   // Close mobile menu when clicking outside
   useEffect(() => {
@@ -72,20 +113,6 @@ export default function Nav() {
     };
   }, [isOpen]);
 
-  // Effect for navbar color change on scroll
-  useEffect(() => {
-    const changeNavbarColor = () => {
-      if (window.scrollY >= 80) {
-        setColorChange(true);
-      } else {
-        setColorChange(false);
-      }
-    };
-    window.addEventListener("scroll", changeNavbarColor);
-    return () => {
-      window.removeEventListener("scroll", changeNavbarColor);
-    };
-  }, []);
 
   // Effect to fetch search results when debounced query changes
   useEffect(() => {
@@ -146,30 +173,32 @@ export default function Nav() {
   };
 
   const toggleMenu = () => {
-    setIsOpen(!isOpen);
-    if (!isOpen) setIsSearchOpen(false); // Close search if opening mobile menu
+    setIsOpen((prev) => {
+      const next = !prev;
+      if (!prev) {
+        setIsSearchOpen(false);
+      }
+      return next;
+    });
   };
 
-  // Wrap toggleSearch in useCallback
   const toggleSearch = useCallback(() => {
     const nextState = !isSearchOpen;
     setIsSearchOpen(nextState);
     setSearchQuery("");
     setSearchResults([]);
     setIsSearching(false);
+
     if (nextState) {
-      setIsOpen(false); // Close mobile menu if opening search
-      // Focus input when opening search (delay slightly for transition)
-      setTimeout(() => searchInputRef.current?.focus(), 100);
+      setIsOpen(false);
+      setTimeout(() => searchInputRef.current?.focus(), 120);
     }
-  }, [isSearchOpen]); // Dependency: isSearchOpen
+  }, [isSearchOpen]);
 
-  // Wrap handleSearchChange in useCallback
-  const handleSearchChange = useCallback((e) => {
-    setSearchQuery(e.target.value);
-  }, []); // No dependencies needed
+  const handleSearchChange = useCallback((event) => {
+    setSearchQuery(event.target.value);
+  }, []);
 
-  // Wrap handleResultClick in useCallback
   const handleResultClick = useCallback(() => {
     setIsSearchOpen(false);
     setSearchQuery("");
@@ -180,7 +209,7 @@ export default function Nav() {
   return (
     <>
       <motion.nav
-        className={`fixed top-0 left-0 right-0 w-full z-[100] bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-200 transition-all duration-300`}
+        className={`fixed top-0 left-0 right-0 w-full z-[100] border-b backdrop-blur-md transition-all duration-300 ${navShellClasses}`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
@@ -212,7 +241,7 @@ export default function Nav() {
                   <HoverCard scale={1.05}>
                     <Link
                       href={link.href}
-                      className={`text-base lg:text-lg font-semibold relative group transition-colors duration-200 ${
+                      className={`text-base lg:text-lg font-medium relative group transition-colors duration-200 ${
                         (link.href === "/" && router.pathname === "/") ||
                         (link.href !== "/" &&
                           (router.pathname === link.href ||
@@ -220,13 +249,13 @@ export default function Nav() {
                               router.pathname.startsWith("/blog")) ||
                             (link.href === "/bytes" &&
                               router.pathname.startsWith("/bytes"))))
-                          ? "text-gray-900"
-                          : "text-gray-700 hover:text-gray-900"
+                          ? navLinkActiveClass
+                          : navLinkBaseClass
                       }`}
                     >
                       {link.label}
                       <span
-                        className={`absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 ${
+                        className={`absolute -bottom-1 left-0 w-full h-0.5 ${underlineBgClass} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 ${
                           (link.href === "/" && router.pathname === "/") ||
                           (link.href !== "/" &&
                             (router.pathname === link.href ||
@@ -251,15 +280,15 @@ export default function Nav() {
                       <HoverCard scale={1.05}>
                         <Link
                           href="/admin"
-                          className={`text-lg font-semibold relative group transition-colors duration-200 ${
+                          className={`text-lg font-medium relative group transition-colors duration-200 ${
                             router.pathname.startsWith("/admin")
-                              ? "text-gray-900"
-                              : "text-gray-700 hover:text-gray-900"
+                              ? navLinkActiveClass
+                              : navLinkBaseClass
                           }`}
                         >
                           Admin
                           <span
-                            className={`absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 ${
+                            className={`absolute -bottom-1 left-0 w-full h-0.5 ${underlineBgClass} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 ${
                               router.pathname.startsWith("/admin")
                                 ? "scale-x-100"
                                 : ""
@@ -274,10 +303,12 @@ export default function Nav() {
                     <HoverCard scale={1.05}>
                       <button
                         onClick={handleSignOut}
-                        className="text-lg font-semibold text-gray-700 hover:text-gray-900 transition-colors duration-200 relative group"
+                        className={`text-lg font-medium transition-colors duration-200 relative group ${navLinkBaseClass}`}
                       >
                         Sign Out
-                        <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
+                        <span
+                          className={`absolute -bottom-1 left-0 w-full h-0.5 ${underlineBgClass} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200`}
+                        ></span>
                       </button>
                     </HoverCard>
                   </SlideInRight>
@@ -287,7 +318,7 @@ export default function Nav() {
               {/* Search Icon */}
               <motion.button
                 onClick={toggleSearch}
-                className="text-gray-700 hover:text-gray-900 transition-colors duration-200 p-2 lg:p-3 rounded-xl hover:bg-gray-100"
+                className={`${iconButtonClass} transition-colors duration-200 p-2 lg:p-3 rounded-xl`}
                 aria-label="Open Search"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
@@ -301,7 +332,7 @@ export default function Nav() {
               {/* Search Icon (Mobile) */}
               <motion.button
                 onClick={toggleSearch}
-                className="text-gray-700 hover:text-gray-900 transition-colors duration-200 p-2 rounded-xl hover:bg-gray-100"
+                className={`${iconButtonClass} transition-colors duration-200 p-2 rounded-xl`}
                 aria-label="Open Search"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
@@ -311,7 +342,7 @@ export default function Nav() {
               {/* Hamburger Icon */}
               <motion.button
                 onClick={toggleMenu}
-                className="text-gray-700 p-2 rounded-xl hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
+                className={`${iconButtonClass} transition-colors duration-200 p-2 rounded-xl`}
                 aria-label={isOpen ? "Close menu" : "Open menu"}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
@@ -332,7 +363,7 @@ export default function Nav() {
         {isOpen && (
           <motion.div
             id="mobile-nav"
-            className="md:hidden bg-white text-gray-800 pt-6 sm:pt-8 pb-6 sm:pb-8 shadow-2xl z-[100] fixed top-[72px] sm:top-[80px] md:top-[88px] left-0 right-0 h-[calc(100vh-72px)] sm:h-[calc(100vh-80px)] md:h-[calc(100vh-88px)] w-full overflow-y-auto border-t border-gray-200"
+            className={`md:hidden pt-6 sm:pt-8 pb-6 sm:pb-8 shadow-2xl z-[100] fixed top-[72px] sm:top-[80px] md:top-[88px] left-0 right-0 h-[calc(100vh-72px)] sm:h-[calc(100vh-80px)] md:h-[calc(100vh-88px)] w-full overflow-y-auto border-t ${mobileContainerClasses}`}
             initial={{ opacity: 0, x: "100%" }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
@@ -340,38 +371,41 @@ export default function Nav() {
           >
             <div className="flex flex-col h-full pt-2 sm:pt-4 items-center px-4">
               {/* Centered items */}
-              {navLinks.map((link) => (
-                <motion.a
-                  key={link.href}
-                  href={link.href}
-                  className={`block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-bold rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-colors duration-200 w-full max-w-xs ${
-                    (link.href === "/" && router.pathname === "/") ||
-                    (link.href !== "/" &&
-                      (router.pathname === link.href ||
-                        (link.href === "/blog" &&
-                          router.pathname.startsWith("/blog")) ||
-                        (link.href === "/bytes" &&
-                          router.pathname.startsWith("/bytes"))))
-                      ? "text-gray-900 bg-gray-100"
-                      : "text-gray-800 hover:bg-gray-100 hover:text-gray-900"
-                  }`}
-                  onClick={handleLinkClick}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  {link.label}
-                </motion.a>
-              ))}
+              {navLinks.map((link) => {
+                const isActive =
+                  (link.href === "/" && router.pathname === "/") ||
+                  (link.href !== "/" &&
+                    (router.pathname === link.href ||
+                      (link.href === "/blog" &&
+                        router.pathname.startsWith("/blog")) ||
+                      (link.href === "/bytes" &&
+                        router.pathname.startsWith("/bytes"))));
+
+                return (
+                  <motion.a
+                    key={link.href}
+                    href={link.href}
+                    className={`block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-semibold rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-colors duration-200 w-full max-w-xs ${
+                      isActive ? mobileLinkActiveClass : mobileLinkBaseClass
+                    }`}
+                    onClick={handleLinkClick}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {link.label}
+                  </motion.a>
+                );
+              })}
               {/* Authentication Mobile Links */}
               {session && (
                 <>
                   {session?.user?.role === "admin" && (
                     <motion.a
                       href="/admin"
-                      className={`block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-bold rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-colors duration-200 w-full max-w-xs ${
+                      className={`block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-semibold rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-colors duration-200 w-full max-w-xs ${
                         router.pathname.startsWith("/admin")
-                          ? "text-gray-900 bg-gray-100"
-                          : "text-gray-800 hover:bg-gray-100 hover:text-gray-900"
+                          ? mobileLinkActiveClass
+                          : mobileLinkBaseClass
                       }`}
                       onClick={handleLinkClick}
                       whileHover={{ scale: 1.02 }}
@@ -383,7 +417,7 @@ export default function Nav() {
 
                   <motion.a
                     href="#"
-                    className="block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-bold rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-colors duration-200 w-full max-w-xs text-gray-800 hover:bg-gray-100 hover:text-gray-900"
+                    className={`block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-semibold rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-colors duration-200 w-full max-w-xs ${mobileSignOutClass}`}
                     onClick={() => {
                       handleSignOut();
                       handleLinkClick();

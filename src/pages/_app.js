@@ -4,7 +4,11 @@ import Script from "next/script";
 import { useRouter } from "next/router";
 import React, { useEffect, useState, lazy, Suspense } from "react"; // Import React
 import ReactDOM from "react-dom"; // Import ReactDOM for react-axe
-import { Inter, Space_Grotesk } from "next/font/google"; // Import Link for Cookie Banner
+import {
+  Inter,
+  Space_Grotesk,
+  Instrument_Serif,
+} from "next/font/google"; // Import Link for Cookie Banner
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -34,6 +38,13 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-space-grotesk",
   display: "swap",
+});
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  variable: "--font-instrument-serif",
+  style: ["normal", "italic"],
+  display: "swap",weight:"400"
 });
 
 // Create a client with default options for better performance
@@ -254,7 +265,7 @@ export default function App({
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
         <div
-          className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased`}
+          className={`${inter.variable} ${spaceGrotesk.variable} ${instrumentSerif.variable} font-sans antialiased`}
         >
           <Nav />
           {isMounted ? (

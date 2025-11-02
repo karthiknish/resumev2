@@ -35,6 +35,12 @@ import {
   MoreHorizontal,
   Type,
   AlignJustify,
+  Sparkles,
+  Pencil,
+  PlusCircle,
+  MinusCircle,
+  ListChecks,
+  Loader2,
 } from "lucide-react";
 import UnderlineExtension from "@tiptap/extension-underline";
 import Highlight from "@tiptap/extension-highlight";
@@ -64,8 +70,6 @@ import TableRow from "@tiptap/extension-table-row";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { createLowlight } from "lowlight";
 
-console.log("TipTapEditor: Imported createLowlight:", createLowlight); // Log
-
 // Register languages - Import the languages themselves
 import javascript from "highlight.js/lib/languages/javascript";
 import css from "highlight.js/lib/languages/css";
@@ -89,7 +93,51 @@ lowlightInstance.register({
   sh: bash,
 });
 
-const MenuBar = ({ editor }) => {
+const AI_TOOL_ACTIONS = [
+  {
+    key: "rewrite",
+    label: "Rewrite",
+    icon: Pencil,
+    loadingMessage: "Rewriting selection…",
+    successMessage: "Selection rewritten",
+  },
+  {
+    key: "simplify",
+    label: "Simplify",
+    icon: Sparkles,
+    loadingMessage: "Simplifying selection…",
+    successMessage: "Selection simplified",
+  },
+  {
+    key: "expand",
+    label: "Expand",
+    icon: PlusCircle,
+    loadingMessage: "Expanding selection…",
+    successMessage: "Selection expanded",
+  },
+  {
+    key: "shorten",
+    label: "Shorten",
+    icon: MinusCircle,
+    loadingMessage: "Shortening selection…",
+    successMessage: "Selection shortened",
+  },
+  {
+    key: "summarize",
+    label: "Summarize",
+    icon: ListChecks,
+    loadingMessage: "Summarizing selection…",
+    successMessage: "Summary ready",
+  },
+];
+
+const MenuBar = ({
+  editor,
+  aiActions = [],
+  onAiAction,
+  activeAiAction,
+  isAiBusy,
+}) => {
   if (!editor) {
     return null;
   }
@@ -484,7 +532,14 @@ const MenuBar = ({ editor }) => {
   );
 
   // Toolbar Button Component
-  const ToolbarButton = ({ action, active, icon: Icon, title, disabled }) => (
+  const ToolbarButton = ({
+    action,
+    active,
+    icon: Icon,
+    title,
+    disabled,
+    loading = false,
+  }) => (
     <Tooltip>
       <TooltipTrigger asChild>
         <button
@@ -497,7 +552,11 @@ const MenuBar = ({ editor }) => {
               : "bg-muted hover:bg-muted/80 text-foreground"
           } disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center`}
         >
-          <Icon className="w-4 h-4" />
+          {loading ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Icon className="w-4 h-4" />
+          )}
         </button>
       </TooltipTrigger>
       <TooltipContent>{title}</TooltipContent>
@@ -571,6 +630,27 @@ const MenuBar = ({ editor }) => {
           <ToolbarGroup title="Utilities">
             <ToolbarButton {...utilityButtons[2]} />
           </ToolbarGroup>
+
+          {/* AI Tools */}
+          {aiActions.length > 0 && (
+            <ToolbarGroup title="AI Tools">
+              {aiActions.map((action) => (
+                <ToolbarButton
+                  key={action.key}
+                  action={() => onAiAction?.(action)}
+                  active={activeAiAction === action.key}
+                  icon={action.icon}
+                  title={action.label}
+                  disabled={
+                    isAiBusy ||
+                    !editor ||
+                    editor.state.selection.empty
+                  }
+                  loading={activeAiAction === action.key}
+                />
+              ))}
+            </ToolbarGroup>
+          )}
         </div>
 
         {/* Secondary Tools - Collapsible */}
@@ -589,8 +669,10 @@ const MenuBar = ({ editor }) => {
   );
 };
 
-const TipTapEditor = ({ content, onUpdate }) => {
+const TipTapEditor = ({ content, onUpdate, id }) => {
   const [isCompleting, setIsCompleting] = useState(false);
+  const [activeAIActionKey, setActiveAIActionKey] = useState(null);
+  const [isAiBusy, setIsAiBusy] = useState(false);
 
   const editor = useEditor({
     extensions: [
@@ -673,6 +755,7 @@ const TipTapEditor = ({ content, onUpdate }) => {
     },
     editorProps: {
       attributes: {
+        ...(id ? { id } : {}),
         class:
           "prose max-w-none focus:outline-none min-h-[400px] p-6 border border-border rounded-b-lg bg-card text-foreground prose-headings:text-foreground prose-a:text-blue-600 prose-blockquote:text-foreground prose-code:before:content-none prose-code:after:content-none prose-code:bg-muted prose-code:px-1.5 prose-code:py-1 prose-code:rounded prose-pre:bg-muted prose-pre:p-0 prose-li:marker:text-muted-foreground prose-table:text-foreground",
       },
@@ -685,15 +768,110 @@ const TipTapEditor = ({ content, onUpdate }) => {
     }
   }, [content, editor]);
 
+  const runAiAction = useCallback(
+    async (action) => {
+      if (!editor) {
+        return;
+      }
+
+      const { from, to } = editor.state.selection;
+
+      if (from === to) {
+        toast.info("Select some text to use AI tools.");
+        return;
+      }
+
+      const selectedText = editor.state.doc
+        .textBetween(from, to, "\n")
+        .trim();
+
+      if (!selectedText) {
+        toast.info("Select some text to use AI tools.");
+        return;
+      }
+
+      setActiveAIActionKey(action.key);
+      setIsAiBusy(true);
+
+      const docSize = editor.state.doc.content.size;
+      const contextRadius = 800;
+      const contextStart = Math.max(0, from - contextRadius);
+      const contextEnd = Math.min(docSize, to + contextRadius);
+      const surrounding = editor.state.doc.textBetween(
+        contextStart,
+        contextEnd,
+        "\n"
+      );
+
+      const toastId = `ai-${action.key}`;
+      toast.loading(action.loadingMessage, { id: toastId });
+
+      try {
+        const response = await fetch("/api/ai/edit-selection", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            mode: action.key,
+            text: selectedText,
+            context: surrounding,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success && typeof data.replacement === "string") {
+          const replacement = data.replacement.trim();
+          if (!replacement) {
+            throw new Error("AI returned an empty response.");
+          }
+          const inserted =
+            editor
+              .chain()
+              .focus()
+              .insertContentAt({ from, to }, replacement)
+              .run() ||
+            editor
+              .chain()
+              .focus()
+              .deleteRange({ from, to })
+              .insertContent(replacement)
+              .run();
+
+          if (!inserted) {
+            throw new Error("Unable to insert AI generated content.");
+          }
+
+          toast.success(action.successMessage, { id: toastId });
+        } else {
+          throw new Error(data.message || "AI request failed.");
+        }
+      } catch (error) {
+        console.error("AI edit-selection error:", error);
+        toast.error(error?.message || "AI request failed.", { id: toastId });
+      } finally {
+        setActiveAIActionKey(null);
+        setIsAiBusy(false);
+      }
+    },
+    [editor]
+  );
+
   const handleSentenceCompletion = async () => {
     if (!editor || isCompleting) return;
 
     const { state } = editor;
     const { from } = state.selection;
 
+    const docSize = state.doc.content.size;
+    const contextWindow = 800;
     const textBeforeCursor = state.doc.textBetween(
-      Math.max(0, from - 500),
+      Math.max(0, from - contextWindow),
       from,
+      "\n"
+    );
+    const textAfterCursor = state.doc.textBetween(
+      from,
+      Math.min(docSize, from + 200),
       "\n"
     );
 
@@ -709,13 +887,23 @@ const TipTapEditor = ({ content, onUpdate }) => {
       const response = await fetch("/api/ai/complete-sentence", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ textBeforeCursor }),
+        body: JSON.stringify({ textBeforeCursor, textAfterCursor }),
       });
 
       const data = await response.json();
 
       if (response.ok && data.success && data.completion) {
-        editor.chain().focus().insertContent(data.completion).run();
+        const completionText = data.completion;
+        const needsLeadingSpace =
+          textBeforeCursor.length > 0 &&
+          !textBeforeCursor.endsWith(" ") &&
+          !completionText.startsWith(" ");
+
+        const contentToInsert = needsLeadingSpace
+          ? ` ${completionText}`
+          : completionText;
+
+        editor.chain().focus().insertContent(contentToInsert).run();
         toast.success("AI completion inserted!", { id: "completion-toast" });
       } else {
         throw new Error(data.message || "Failed to get AI completion.");
@@ -732,7 +920,13 @@ const TipTapEditor = ({ content, onUpdate }) => {
 
   return (
     <div className="bg-gray-100 border border-gray-700 rounded-lg shadow-lg">
-      <MenuBar editor={editor} />
+      <MenuBar
+        editor={editor}
+        aiActions={AI_TOOL_ACTIONS}
+        onAiAction={runAiAction}
+        activeAiAction={activeAIActionKey}
+        isAiBusy={isAiBusy}
+      />
       <div className="relative">
         {isCompleting && (
           <div className="absolute top-4 right-4 z-10 bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-2">

@@ -60,6 +60,17 @@
      font-family: var(--font-inter), sans-serif;
   }
 
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-instrument-serif), Georgia, "Times New Roman",
+      serif !important;
+    letter-spacing: -0.01em;
+  }
+
    /* Add custom font styles */
   .font-calendas {
     font-family: 'Calendas', serif; /* Ensure Calendas is defined or imported */

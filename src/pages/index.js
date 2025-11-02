@@ -1,27 +1,20 @@
 import Head from "next/head";
 import React from "react";
 import { motion } from "framer-motion";
-import { ArrowRightIcon, StarIcon } from "@heroicons/react/24/outline";
+import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import {
-  PiggyBank,
-  Zap,
-  Handshake,
   Paintbrush,
   Smartphone,
   GaugeCircle,
   Puzzle,
   Cloud,
   Rocket,
+  Compass,
+  CircuitBoard,
+  Sparkles,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import Image from "next/image";
 import JsonLd, {
@@ -190,6 +183,42 @@ const testimonials = [
   },
 ];
 
+const stats = [
+  {
+    value: "4+ years",
+    label: "Product engineering experience",
+  },
+  {
+    value: "40+ launches",
+    label: "Web & mobile products shipped",
+  },
+  {
+    value: "3 continents",
+    label: "Teams partnered with",
+  },
+];
+
+const process = [
+  {
+    title: "Discover",
+    description:
+      "Rapid workshops to map goals, users, and technical constraints before writing a single line of code.",
+    icon: Compass,
+  },
+  {
+    title: "Design & Build",
+    description:
+      "Ship user-facing value every week with modern tooling, clean architecture, and measurable quality gates.",
+    icon: CircuitBoard,
+  },
+  {
+    title: "Launch & Evolve",
+    description:
+      "Guide releases, automate operations, and iterate with data so your product keeps compounding value.",
+    icon: Sparkles,
+  },
+];
+
 const HomeScreen = () => {
   const websiteSchema = createWebsiteSchema();
   const personSchema = createPersonSchema();
@@ -243,7 +272,7 @@ const HomeScreen = () => {
           crossOrigin="true"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital,wght@0,400;0,600;1,400&display=swap"
           rel="stylesheet"
         />
 
@@ -251,441 +280,394 @@ const HomeScreen = () => {
         <JsonLd data={personSchema} />
       </Head>
 
-      <div
-        className="min-h-screen bg-background overflow-x-hidden"
-        style={{ fontFamily: "Inter, sans-serif" }}
-      >
-        {/* Hero Section with stronger theme splash background */}
-        <section className="relative py-28 min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary/25 via-brandSecondary/20 to-accent/25">
-          <div className="max-w-6xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 relative z-10 text-center">
-            {/* Animated Introduction */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-3 px-6 py-3 bg-card border border-border rounded-full text-foreground/80 text-sm font-semibold mb-8 shadow"
-            >
-              <span>I'm Karthik</span>
-              <Badge className="bg-secondary text-brandSecondary border-brandSecondary">
+      <div className="min-h-screen overflow-x-hidden">
+        <section className="relative overflow-hidden text-slate-100">
+          <div className="absolute inset-0 -z-30">
+            <Image
+              src="/hero-back.jpeg"
+              alt="Abstract neon glass background"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover darken-[rgba(0,0,0,0.5)] object-center"
+            />
+          </div>
+          <div className="absolute inset-0 -z-20 bg-gradient-to-br from-slate-950/45 via-slate-950/30 to-slate-900/20" />
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_62%)]" />
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom,_rgba(236,72,153,0.14),_transparent_58%)]" />
+
+          <div className="relative max-w-6xl mx-auto px-6 sm:px-10 md:px-12 py-28 md:py-32">
+            <div className="grid gap-16 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] items-start">
+              <div className="space-y-10">
+                <motion.span
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="inline-flex items-center rounded-full border border-slate-700/80 bg-slate-900/40 px-4 py-2 text-xs uppercase tracking-[0.3em] text-slate-300"
+                >
+                  Freelance engineering partner
+                </motion.span>
+
+                <motion.h1
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: 0.1 }}
+                  className="font-heading text-4xl sm:text-5xl md:text-6xl leading-tight"
+                >
+                  I help founders and teams ship confident, resilient software that feels impeccably crafted.
+                </motion.h1>
+
+                <motion.p
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  className="max-w-2xl text-base sm:text-lg text-slate-300 leading-relaxed"
+                >
+                  Based in Liverpool, I design, build, and scale web and mobile products with a focus on performance, thoughtful UX, and sustainable engineering practices.
+                </motion.p>
+
                 <motion.div
-                  className="w-2 h-2 bg-green-500 rounded-full mr-2"
-                  animate={{ scale: [1, 1.3, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                />
-                Available for work
-              </Badge>
-            </motion.div>
-
-            {/* Main Headline with Typography */}
-            <motion.h1
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight"
-              style={{ fontFamily: "Space Grotesk, sans-serif" }}
-            >
-              <span className="text-foreground">Cross Platform</span>
-              <br />
-              <span className="text-foreground">Developer</span>
-              {/* Accent emoji removed */}
-            </motion.h1>
-
-            {/* Dynamic Subtitle */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-foreground/70 mb-8 max-w-4xl mx-auto leading-relaxed font-medium"
-            >
-              I design and build reliable web and mobile applications that scale
-              with your business.
-            </motion.p>
-
-            {/* Fun tagline */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="text-lg text-gray-600 mb-12 flex items-center justify-center gap-3"
-            >
-              <span>Building robust software, from concept to production.</span>
-            </motion.div>
-
-            {/* Enhanced CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.8 }}
-              className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
-            >
-              <Link href="/contact">
-                <Button
-                  size="lg"
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-10 py-4 sm:py-5 text-lg sm:text-xl font-bold rounded-2xl shadow"
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  className="flex flex-col sm:flex-row gap-4"
                 >
-                  Start a project
-                  <ArrowRightIcon className="ml-3 h-6 w-6" />
-                </Button>
-              </Link>
+                  <Link href="/contact">
+                    <Button className="bg-slate-100 text-slate-900 hover:bg-slate-300">
+                      Start a project
+                      <ArrowRightIcon className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
 
-              <Link href="#work">
-                <Button
-                  size="lg"
-                  className="bg-transparent border border-blue-600 text-blue-600 hover:bg-blue-50 px-6 sm:px-10 py-4 sm:py-5 text-lg sm:text-xl font-bold rounded-2xl transition-all duration-300"
+                  <Link href="#work">
+                    <Button variant="outline" className="border-slate-600 text-slate-200 hover:bg-slate-900">
+                      See recent work
+                    </Button>
+                  </Link>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                  className="grid gap-6 sm:grid-cols-3 border-t border-slate-800 pt-8"
                 >
-                  View my work
-                </Button>
-              </Link>
-            </motion.div>
-
-            {/* Enhanced Technology Showcase (icons with tooltip) */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 1 }}
-              className="text-center"
-            >
-              <p className="text-gray-600 text-lg mb-6 font-medium">
-                Core technologies
-              </p>
-              <div className="flex flex-wrap justify-center gap-5 max-w-5xl mx-auto">
-                {technologies.map((tech, index) => {
-                  const Icon = tech.icon;
-                  return (
-                    <motion.div
-                      key={tech.name}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.5, delay: 1.1 + index * 0.1 }}
-                      whileHover={{ y: -6 }}
-                      className="relative group"
-                    >
-                      <div
-                        className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white border ${tech.classes} flex items-center justify-center shadow hover:shadow-md transition-all`}
-                        aria-label={tech.name}
-                      >
-                        <Icon
-                          className={`w-8 h-8 sm:w-10 sm:h-10 ${
-                            tech.classes.split(" ")[0]
-                          }`}
-                        />
-                      </div>
-                      {/* Tooltip */}
-                      <div className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-xl bg-gray-900 text-white text-xs px-3 py-1 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all">
-                        {tech.name} · {tech.category}
-                      </div>
-                    </motion.div>
-                  );
-                })}
+                  {stats.map((stat) => (
+                    <div key={stat.label} className="space-y-1">
+                      <p className="font-heading text-2xl text-slate-50">
+                        {stat.value}
+                      </p>
+                      <p className="text-sm text-slate-400 leading-snug">
+                        {stat.label}
+                      </p>
+                    </div>
+                  ))}
+                </motion.div>
               </div>
-            </motion.div>
 
-            {/* Scroll indicator removed for a professional layout */}
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.15 }}
+              >
+                <Card className="border-slate-800 bg-slate-900/60 backdrop-blur">
+                  <CardContent className="p-8 space-y-8">
+                    <div className="space-y-3">
+                      <p className="text-xs uppercase text-slate-400 tracking-[0.3em]">
+                        Core stack
+                      </p>
+                      <div className="flex flex-wrap gap-3">
+                        {technologies.map((tech) => {
+                          const Icon = tech.icon;
+                          return (
+                            <span
+                              key={tech.name}
+                              className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/50 px-3 py-2 text-sm text-slate-200"
+                            >
+                              <Icon className="h-4 w-4" />
+                              {tech.name}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <p className="text-xs uppercase text-slate-400 tracking-[0.3em]">
+                        What clients notice
+                      </p>
+                      <ul className="space-y-2 text-sm text-slate-300">
+                        <li>• Pragmatic delivery with enterprise-grade tooling.</li>
+                        <li>• UI polish that reflects your brand from day one.</li>
+                        <li>• Clear communication, async-friendly collaboration.</li>
+                      </ul>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </div>
           </div>
         </section>
 
-        {/* Capabilities Section */}
-        <section className="py-20 md:py-32 bg-gradient-to-br from-primary/10 via-background to-brandSecondary/10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-            <div className="text-center mb-20">
+        <section className="py-20 md:py-28 bg-background">
+          <div className="max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
+            <div className="grid gap-16 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] items-start">
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="space-y-6"
               >
-                <h2
-                  className="text-5xl md:text-6xl font-black bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent mb-6 text-center"
-                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                >
-                  What I deliver
+                <p className="text-xs uppercase text-slate-500 tracking-[0.3em]">
+                  Capability
+                </p>
+                <h2 className="font-heading text-3xl sm:text-4xl leading-snug text-slate-900">
+                  Scale ideas into production-grade products without sacrificing craft.
                 </h2>
-                <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
-                  From planning to launch — I build scalable, user‑focused
-                  products.
+                <p className="text-base text-slate-600 leading-relaxed">
+                  I work end-to-end across discovery, product design, and engineering. Whether you need a new build or help levelling up an existing platform, we create a roadmap, move fast, and keep quality measurable.
                 </p>
               </motion.div>
-            </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {capabilities.map((capability, index) => (
-                <motion.div
-                  key={capability.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  whileHover={{ y: -10, scale: 1.02 }}
-                >
-                  <Card
-                    className={`h-full p-10 border-0 shadow-xl hover:shadow-2xl hover:scale-[1.03] transition-all duration-300 group rounded-3xl bg-gradient-to-br from-white via-background to-primary/10`}
+              <div className="grid gap-6 sm:grid-cols-2">
+                {capabilities.map((capability) => (
+                  <motion.div
+                    key={capability.title}
+                    initial={{ opacity: 0, y: 24 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
+                    className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow"
                   >
-                    <div className="flex items-center mb-6">
-                      {capability.icon && (
-                        <span className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 mr-4">
-                          <capability.icon className="w-7 h-7 text-primary" />
-                        </span>
-                      )}
-                      <h3
-                        className="text-2xl font-bold text-gray-900"
-                        style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                      >
-                        {capability.title}
-                      </h3>
+                    <div className="mb-4 inline-flex items-center justify-center rounded-xl bg-slate-100 p-2">
+                      <capability.icon className="h-5 w-5 text-slate-700" />
                     </div>
-                    <p className="text-gray-700 leading-relaxed text-lg">
+                    <h3 className="font-heading text-xl text-slate-900 mb-2">
+                      {capability.title}
+                    </h3>
+                    <p className="text-sm text-slate-600 leading-relaxed">
                       {capability.description}
                     </p>
-                  </Card>
-                </motion.div>
-              ))}
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Featured Work Section */}
-        <section id="work" className="py-20 md:py-32 bg-secondary">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-            <div className="text-center mb-20">
-              <motion.div
+        <section className="py-20 md:py-28 bg-slate-50" id="work">
+          <div className="max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
+            <div className="max-w-2xl mb-12">
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                className="text-xs uppercase text-slate-500 tracking-[0.3em]"
+              >
+                Case studies
+              </motion.p>
+              <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="font-heading text-3xl sm:text-4xl leading-snug text-slate-900"
               >
-                <h2
-                  className="text-5xl md:text-6xl font-black bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent mb-6 text-center"
-                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                >
-                  Featured work
-                </h2>
-                <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
-                  Recent projects demonstrating modern development and
-                  performance.
-                </p>
-              </motion.div>
+                Recent work where design systems, code quality, and business outcomes align.
+              </motion.h2>
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-10">
+            <div className="grid gap-8 md:grid-cols-2">
               {projects.map((project, index) => (
                 <motion.div
                   key={project.title}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.2 }}
                   viewport={{ once: true }}
-                  whileHover={{ y: -15, scale: 1.03 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  className="group rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm hover:shadow-md transition"
                 >
                   <Link href={project.link}>
-                    <Card className="h-full overflow-hidden border-2 border-border bg-card shadow hover:shadow-md transition-all duration-300 group cursor-pointer rounded-3xl">
-                      <div className="aspect-video relative overflow-hidden">
-                        <Image
-                          src={project.image}
-                          alt={project.title}
-                          fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-500"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="relative aspect-[16/10] overflow-hidden">
+                      <Image
+                        src={project.image}
+                        alt={project.title}
+                        fill
+                        className="object-cover transition duration-500 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent" />
+                    </div>
+                    <div className="p-8 space-y-4">
+                      <h3 className="font-heading text-2xl text-slate-900">
+                        {project.title}
+                      </h3>
+                      <p className="text-sm text-slate-600 leading-relaxed">
+                        {project.description}
+                      </p>
+                      <div className="flex flex-wrap gap-3">
+                        {project.tech.map((tech) => (
+                          <span
+                            key={tech}
+                            className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600"
+                          >
+                            {tech}
+                          </span>
+                        ))}
                       </div>
-                      <CardContent className="p-8">
-                        <h3
-                          className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-brandSecondary transition-colors"
-                          style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                        >
-                          {project.title}
-                        </h3>
-                        <p className="text-gray-700 mb-6 leading-relaxed text-lg">
-                          {project.description}
-                        </p>
-                        <div className="flex flex-wrap gap-3">
-                          {project.tech.map((tech) => (
-                            <Badge
-                              key={tech}
-                              className="bg-white/80 text-gray-700 border border-gray-200 text-sm px-3 py-1 font-medium"
-                            >
-                              {tech}
-                            </Badge>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
+                    </div>
                   </Link>
                 </motion.div>
               ))}
             </div>
 
-            <div className="text-center mt-16">
+            <div className="mt-16 flex justify-end">
               <Link href="/projects">
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg font-bold rounded-2xl shadow border-0">
+                <Button variant="outline" className="border-slate-400 text-slate-700 hover:bg-slate-100">
                   View all projects
-                  <ArrowRightIcon className="ml-2 h-5 w-5" />
+                  <ArrowRightIcon className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
             </div>
           </div>
         </section>
 
-        {/* Client Feedback section removed for a cleaner home page */}
-
-        {/* Freelancer Advantage Section */}
-        <section className="py-20 md:py-32 bg-gradient-to-br from-primary/10 via-background to-brandSecondary/10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-            <div className="text-center mb-20">
+        <section className="py-20 md:py-28 bg-background">
+          <div className="max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
+            <div className="grid gap-12 md:grid-cols-[minmax(0,2.2fr)_minmax(0,2.8fr)] items-start">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="space-y-4"
               >
-                <h2
-                  className="text-5xl md:text-6xl font-black bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent mb-6 text-center"
-                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                >
-                  Why choose a freelancer?
+                <p className="text-xs uppercase text-slate-500 tracking-[0.3em]">
+                  Process
+                </p>
+                <h2 className="font-heading text-3xl sm:text-4xl text-slate-900 leading-snug">
+                  A calm, outcome-led way to build software.
                 </h2>
-                <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
-                  Discover the advantages of working directly with talent
+                <p className="text-base text-slate-600 leading-relaxed">
+                  Engagements are structured, transparent, and async-friendly. We align on success metrics early, then iterate with a shared roadmap and frequent demos so you can see progress without micromanaging.
                 </p>
               </motion.div>
-            </div>
 
-            <div className="grid md:grid-cols-3 gap-8 mb-16">
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -5, scale: 1.02 }}
-                className="bg-white border-2 border-green-200 p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 group"
-              >
-                <div className="text-center flex flex-col items-center">
-                  <div className="mb-6">
-                    <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-green-50 border-2 border-green-200 mb-2">
-                      <PiggyBank className="w-8 h-8 text-green-500" />
-                    </span>
-                  </div>
-                  <h3
-                    className="text-2xl font-bold text-gray-900 mb-4"
-                    style={{ fontFamily: "Space Grotesk, sans-serif" }}
+              <div className="space-y-6">
+                {process.map((step) => (
+                  <motion.div
+                    key={step.title}
+                    initial={{ opacity: 0, y: 24 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
+                    className="flex gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
                   >
-                    Save 40-60%
-                  </h3>
-                  <p className="text-gray-700 text-lg">
-                    No agency markup or overhead costs. Get premium quality at
-                    freelance prices.
-                  </p>
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -5, scale: 1.02 }}
-                className="bg-white border-2 border-blue-200 p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 group"
-              >
-                <div className="text-center flex flex-col items-center">
-                  <div className="mb-6">
-                    <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-blue-50 border-2 border-blue-200 mb-2">
-                      <Zap className="w-8 h-8 text-blue-500" />
+                    <span className="mt-1 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-700">
+                      <step.icon className="h-5 w-5" />
                     </span>
-                  </div>
-                  <h3
-                    className="text-2xl font-bold text-gray-900 mb-4"
-                    style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                  >
-                    2x Faster
-                  </h3>
-                  <p className="text-gray-700 text-lg">
-                    Direct communication and streamlined processes mean faster
-                    delivery.
-                  </p>
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -5, scale: 1.02 }}
-                className="bg-white border-2 border-purple-200 p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 group"
-              >
-                <div className="text-center flex flex-col items-center">
-                  <div className="mb-6">
-                    <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-50 border-2 border-purple-200 mb-2">
-                      <Handshake className="w-8 h-8 text-purple-500" />
-                    </span>
-                  </div>
-                  <h3
-                    className="text-2xl font-bold text-gray-900 mb-4"
-                    style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                  >
-                    Personal Touch
-                  </h3>
-                  <p className="text-gray-700 text-lg">
-                    Your project gets dedicated attention, not split focus
-                    across dozens of clients.
-                  </p>
-                </div>
-              </motion.div>
-            </div>
-
-            <div className="text-center">
-              <Link href="/freelancer-advantage">
-                <Button
-                  size="lg"
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 md:px-10 py-4 sm:py-5 text-lg sm:text-xl font-bold rounded-2xl shadow-2xl transition-all duration-300 border-0"
-                >
-                  Learn why freelancers win
-                  <ArrowRightIcon className="ml-3 h-6 w-6" />
-                </Button>
-              </Link>
+                    <div className="space-y-2">
+                      <h3 className="font-heading text-xl text-slate-900">
+                        {step.title}
+                      </h3>
+                      <p className="text-sm text-slate-600 leading-relaxed">
+                        {step.description}
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section className="py-20 md:py-32 bg-gradient-to-br from-blue-800 to-blue-900 relative overflow-hidden">
-          {/* Decorative floating elements removed */}
-
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 text-center relative z-10">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
+        <section className="py-20 md:py-28 bg-slate-950 text-slate-100">
+          <div className="max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
               viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="text-xs uppercase text-slate-400 tracking-[0.3em]"
             >
-              <h2
-                className="text-5xl md:text-6xl font-black text-white mb-8 text-center"
-                style={{ fontFamily: "Space Grotesk, sans-serif" }}
-              >
-                Ready to get started?
-              </h2>
-              <p className="text-2xl text-purple-100 mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
-                Let’s turn your ideas into a production‑ready product.
-              </p>
+              Testimonials
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="font-heading text-3xl sm:text-4xl leading-snug text-slate-50 mt-4 mb-12"
+            >
+              Product leaders partner with me when reliability, momentum, and polish matter.
+            </motion.h2>
 
-              <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                <Link href="/contact">
-                  <Button
-                    size="lg"
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-5 text-xl font-bold rounded-2xl shadow-2xl border-0"
-                  >
-                    Contact me
-                  </Button>
-                </Link>
+            <div className="grid gap-6 md:grid-cols-3">
+              {testimonials.map((testimonial, index) => (
+                <motion.div
+                  key={testimonial.name}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="h-full rounded-2xl border border-slate-800 bg-slate-900/60 p-6 backdrop-blur"
+                >
+                  <p className="text-sm text-slate-300 leading-relaxed mb-6">
+                    “{testimonial.content}”
+                  </p>
+                  <div>
+                    <p className="text-base text-slate-50 font-medium">
+                      {testimonial.name}
+                    </p>
+                    <p className="text-xs uppercase tracking-[0.25em] text-slate-500 mt-1">
+                      {testimonial.role}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-                <Link href="/services">
-                  <Button
-                    size="lg"
-                    className="bg-white border border-blue-600 text-blue-600 hover:bg-blue-50 px-10 py-5 text-xl font-bold rounded-2xl transition-all duration-300"
-                  >
-                    Explore services
-                  </Button>
-                </Link>
-              </div>
+        <section className="py-20 md:py-28 bg-background">
+          <div className="max-w-5xl mx-auto px-6 sm:px-10 md:px-12 text-center">
+            <motion.h2
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="font-heading text-3xl sm:text-4xl text-slate-900 leading-snug"
+            >
+              Let’s design the next chapter of your product.
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="mt-6 text-base text-slate-600 leading-relaxed max-w-2xl mx-auto"
+            >
+              Share the roadmap, the constraints, or even the chaos you’re working within. I’ll help uncover the best path forward and start shipping.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="mt-10 flex flex-col sm:flex-row justify-center gap-4"
+            >
+              <Link href="/contact">
+                <Button className="bg-slate-900 text-slate-100 hover:bg-slate-700">
+                  Book a call
+                </Button>
+              </Link>
+              <Link href="/services">
+                <Button variant="outline" className="border-slate-400 text-slate-700 hover:bg-slate-100">
+                  Explore services
+                </Button>
+              </Link>
             </motion.div>
           </div>
         </section>

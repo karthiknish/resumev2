@@ -22,7 +22,7 @@ export default async function handler(req, res) {
 
   // 3. Get Input Context
   try {
-    const { textBeforeCursor } = req.body;
+    const { textBeforeCursor, textAfterCursor } = req.body;
 
     if (
       !textBeforeCursor ||
@@ -35,7 +35,11 @@ export default async function handler(req, res) {
     }
 
     // Limit context length if necessary (e.g., last 500 chars)
-    const context = textBeforeCursor.slice(-500);
+    const context = textBeforeCursor.slice(-800);
+    const forwardContext =
+      typeof textAfterCursor === "string"
+        ? textAfterCursor.slice(0, 200)
+        : "";
 
     // 4. Construct Prompt for AI
     const completionPrompt = `
@@ -56,7 +60,8 @@ export default async function handler(req, res) {
       - Use contractions and natural language patterns
       - Avoid overly complex or generic completions
       - Don't start a new paragraph or add extra formatting
-      - Keep it concise and relevant
+      - Keep it concise and relevant (one or two sentences at most)
+      - Do not include leading quotation marks or bullet markers unless already present
       - Output ONLY the suggested completion text
 
       Context:
@@ -64,14 +69,18 @@ export default async function handler(req, res) {
       ${context}
       ---
 
+      Text immediately after the cursor (if any, avoid contradicting it):
+      ---
+      ${forwardContext}
+      ---
+
       Completion:
     `;
 
     // 5. Call AI (Gemini)
     const generationConfig = {
-      temperature: 0.6, // Slightly creative but still grounded
-      maxOutputTokens: 50, // Keep completions relatively short
-      stopSequences: ["\n", ".", "?", "!"], // Stop at sentence endings or newlines
+      temperature: 0.65, // Slightly creative but still grounded
+      maxOutputTokens: 120, // Allow a sentence or two
     };
 
     const completion = await callGemini(completionPrompt, generationConfig);

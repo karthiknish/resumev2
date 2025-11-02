@@ -92,7 +92,6 @@ export const config = {
     "/api/blog",
     "/api/contact",
     "/api/chat",
-    "/api/newsletter",
-    "/api/linkedin"
+    "/api/newsletter"
   ],
 };

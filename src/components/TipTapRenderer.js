@@ -23,8 +23,6 @@ import TableRow from "@tiptap/extension-table-row";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { createLowlight } from "lowlight"; // Import createLowlight instead of default
 
-console.log("TipTapRenderer: Imported createLowlight:", createLowlight); // Log
-
 // Register languages - Import the languages themselves
 import javascript from "highlight.js/lib/languages/javascript";
 import css from "highlight.js/lib/languages/css";

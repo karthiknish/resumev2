@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: ["class"],
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -82,7 +83,12 @@ module.exports = {
       fontFamily: {
         calendas: ["Calendas", "system-ui", "-apple-system", "sans-serif"],
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        heading: ["var(--font-space-grotesk)", "system-ui", "sans-serif"],
+        heading: [
+          "var(--font-instrument-serif)",
+          "Georgia",
+          "Times New Roman",
+          "serif",
+        ],
       },
     },
   },

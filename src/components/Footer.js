@@ -1,157 +1,138 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { FadeIn, HoverCard } from "./animations/MotionComponents";
-import { AiFillGithub, AiFillLinkedin } from "react-icons/ai";
+import { FadeIn } from "./animations/MotionComponents";
+import { AiFillGithub, AiOutlineMail } from "react-icons/ai";
 import Link from "next/link";
-import NewsletterSignup from "./NewsletterSignup"; // Import the new component
+import NewsletterSignup from "./NewsletterSignup";
+
+const quickLinks = [
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/services", label: "Services" },
+  { href: "/blog", label: "Blog" },
+  { href: "/contact", label: "Contact" },
+];
+
+const socialLinks = [
+  {
+    href: "https://github.com/karthiknish",
+    icon: AiFillGithub,
+    label: "GitHub",
+  },
+  {
+    href: "mailto:hello@karthiknish.com",
+    icon: AiOutlineMail,
+    label: "Email",
+  },
+];
 
 export default function Footer() {
   return (
     <FadeIn>
-      <footer className="bg-foreground text-background relative overflow-hidden">
-        {/* Decorative floating elements removed */}
+      <footer className="relative overflow-hidden bg-slate-950 text-slate-100">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(236,72,153,0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-slate-950/80" />
 
-        <div className="max-w-6xl mx-auto px-6 py-16 relative z-10">
-          {/* Changed grid to 3 columns on medium screens and up */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
-            {/* Brand and Connect section (Column 1) */}
+        <div className="relative max-w-6xl mx-auto px-6 sm:px-10 md:px-12 py-16 md:py-20">
+          <div className="grid gap-12 md:grid-cols-3">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.5 }}
               viewport={{ once: true }}
+              className="space-y-6"
             >
-              <h3
-                className="text-3xl font-black mb-6"
-                style={{ fontFamily: "Space Grotesk, sans-serif" }}
-              >
+              <h3 className="font-heading text-3xl text-white">
                 Karthik Nishanth
               </h3>
-              <p className="text-background/70 mb-6 text-lg leading-relaxed">
-                Building modern, scalable digital solutions with a focus on
-                usability and performance.
+              <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-md">
+                Product-minded software engineer crafting resilient experiences across web and mobile. I partner with founders and teams to move fast without compromising on craft.
               </p>
-              {/* Moved Connect section here */}
-              <h3 className="text-2xl font-bold text-background mb-4">
-                Let's Connect
-              </h3>
-              <div className="flex space-x-6">
-                <motion.a
-                  href="https://github.com/karthiknish"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="GitHub"
-                  className="bg-background/10 backdrop-blur-sm p-3 rounded-xl hover:bg-background/20 transition-all duration-300 group"
-                  whileHover={{ scale: 1.1, y: -3 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <AiFillGithub className="text-3xl text-background transition-colors" />
-                </motion.a>
-                <motion.a
-                  href="https://www.linkedin.com/in/karthik-nishanth/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="LinkedIn"
-                  className="bg-background/10 backdrop-blur-sm p-3 rounded-xl hover:bg-background/20 transition-all duration-300 group"
-                  whileHover={{ scale: 1.1, y: -3 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <AiFillLinkedin className="text-3xl text-background transition-colors" />
-                </motion.a>
+              <div className="flex gap-4">
+                {socialLinks.map(({ href, icon: Icon, label }) => (
+                  <motion.a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-200 transition hover:border-white/30 hover:text-white"
+                    whileHover={{ y: -2, scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Icon className="h-5 w-5" />
+                  </motion.a>
+                ))}
               </div>
             </motion.div>
 
-            {/* Quick Links (Column 2) */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
               viewport={{ once: true }}
+              className="space-y-5"
             >
-              <h3
-                className="text-2xl font-bold mb-6"
-                style={{ fontFamily: "Space Grotesk, sans-serif" }}
-              >
-                Quick Links
-              </h3>
+              <h3 className="font-heading text-2xl text-white">Browse</h3>
               <ul className="space-y-3">
-                {[
-                  { href: "/", label: "Home" },
-                  { href: "/about", label: "About" },
-                  { href: "/services", label: "Services" },
-                  { href: "/blog", label: "Blog" },
-                  { href: "/contact", label: "Contact" },
-                ].map((link, index) => (
+                {quickLinks.map((link, index) => (
                   <motion.li
                     key={link.href}
-                    initial={{ opacity: 0, x: -20 }}
+                    initial={{ opacity: 0, x: -10 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5, delay: 0.1 * index }}
+                    transition={{ duration: 0.4, delay: 0.05 * index }}
                     viewport={{ once: true }}
                   >
                     <Link
                       href={link.href}
-                      className="group flex items-center gap-3 text-background/70 hover:text-background transition-all duration-300 text-lg font-medium"
+                      className="group inline-flex items-center gap-2 text-sm sm:text-base text-slate-300 transition hover:text-white"
                     >
-                      <span className="group-hover:translate-x-1 transition-transform duration-300">
-                        {link.label}
-                      </span>
+                      <span className="h-px w-6 bg-slate-500 transition group-hover:bg-white" />
+                      {link.label}
                     </Link>
                   </motion.li>
                 ))}
               </ul>
             </motion.div>
 
-            {/* Newsletter Signup Column (Column 3) */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
               viewport={{ once: true }}
+              className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur"
             >
               <NewsletterSignup />
             </motion.div>
           </div>
 
-          {/* Bottom section with copyright and policy links */}
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
             viewport={{ once: true }}
-            className="text-center border-t border-background/20 pt-8 mt-12"
+            className="mt-16 border-t border-white/10 pt-6 text-sm text-slate-400"
           >
-            <motion.p
-              className="text-background/70 text-lg font-medium mb-4"
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
-            >
-              Crafted by Karthik Nishanth &copy; {new Date().getFullYear()}
-            </motion.p>
-            {/* Add policy links below copyright */}
-            <div className="mt-4 flex flex-wrap justify-center gap-6">
-              {[
-                { href: "/terms-and-conditions", label: "Terms & Conditions" },
-                { href: "/privacy-policy", label: "Privacy Policy" },
-                { href: "/cookie-policy", label: "Cookie Policy" },
-              ].map((link, index) => (
-                <motion.div
-                  key={link.href}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.1 * index }}
-                  viewport={{ once: true }}
-                >
+            <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
+              <p>
+                &copy; {new Date().getFullYear()} Karthik Nishanth. Crafted with care in Liverpool.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4 text-xs uppercase tracking-[0.25em] text-slate-500">
+                {[
+                  { href: "/terms-and-conditions", label: "Terms" },
+                  { href: "/privacy-policy", label: "Privacy" },
+                  { href: "/cookie-policy", label: "Cookies" },
+                ].map((link) => (
                   <Link
+                    key={link.href}
                     href={link.href}
-                    className="text-sm text-background/70 hover:text-background transition-all duration-300 font-medium hover:underline underline-offset-4"
+                    className="transition hover:text-white"
                   >
                     {link.label}
                   </Link>
-                </motion.div>
-              ))}
+                ))}
+              </div>
             </div>
           </motion.div>
         </div>

@@ -188,6 +188,9 @@ function CreateBlogNotionStyle() {
               setContent={handleContentChange}
               onTogglePreview={togglePreview}
               blogTitle={formData.title}
+              onOutlineTitle={(title) =>
+                title && handleFormChange({ title: title.trim() })
+              }
             />
 
             <ActionButtons
