@@ -12,40 +12,40 @@ import {
 
 const processSteps = [
   {
-    icon: <Search size={32} className="text-blue-400" />,
+    icon: <Search size={28} className="text-slate-700" />,
     title: "1. Discovery & Planning",
     description:
-      "We start by deeply understanding your goals, target audience, and project requirements. We define the scope, features, and create a clear roadmap.",
+      "We start by mapping the product goals, constraints, and edge cases so we’re clear on what success looks like before a single line of code.",
   },
   {
-    icon: <PencilRuler size={32} className="text-purple-400" />,
+    icon: <PencilRuler size={28} className="text-slate-700" />,
     title: "2. Design & Prototyping",
     description:
-      "Based on the plan, I design intuitive user interfaces (UI) and user experiences (UX). Prototypes are created for feedback before development begins.",
+      "We explore flows and interfaces collaboratively, validating the experience through fast prototypes before committing to build.",
   },
   {
-    icon: <Code size={32} className="text-emerald-400" />,
+    icon: <Code size={28} className="text-slate-700" />,
     title: "3. Development",
     description:
-      "Using modern technologies and best practices, I build your application with clean, efficient, and scalable code. Regular updates are provided.",
+      "Implementation happens in focused iterations with transparent progress, thoughtful architecture, and clean, maintainable code.",
   },
   {
-    icon: <TestTubeDiagonal size={32} className="text-yellow-400" />,
+    icon: <TestTubeDiagonal size={28} className="text-slate-700" />,
     title: "4. Testing & QA",
     description:
-      "Rigorous testing is performed across different devices and browsers to ensure functionality, performance, security, and a bug-free experience.",
+      "We pressure-test the product with automated and manual checks to ensure performance, accessibility, and reliability across environments.",
   },
   {
-    icon: <Rocket size={32} className="text-red-400" />,
+    icon: <Rocket size={28} className="text-slate-700" />,
     title: "5. Deployment",
     description:
-      "Once approved, I handle the deployment process, launching your application smoothly onto your chosen hosting environment or cloud platform.",
+      "Ship confidently with streamlined release playbooks, infrastructure setup, and clearly documented hand-offs for your team.",
   },
   {
-    icon: <Wrench size={32} className="text-orange-400" />,
+    icon: <Wrench size={28} className="text-slate-700" />,
     title: "6. Support & Maintenance",
     description:
-      "Post-launch, I offer ongoing support and maintenance packages to ensure your application remains up-to-date, secure, and performs optimally.",
+      "Post-launch, we iterate on feedback, monitor health, and keep the experience sharp so your roadmap keeps moving forward.",
   },
 ];
 
@@ -64,26 +64,26 @@ const MyProcessSection = () => {
   };
 
   return (
-    <section className="bg-gradient-to-br from-purple-50 via-white to-blue-50 py-16 md:py-24 relative overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute top-0 left-0 w-80 h-80 bg-gradient-to-br from-cyan-200/20 to-blue-200/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-      <div className="absolute bottom-0 right-0 w-72 h-72 bg-gradient-to-bl from-purple-200/20 to-pink-200/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
-      
-      <div className="container mx-auto px-4 space-y-12 relative z-10">
+    <section className="relative overflow-hidden py-20 md:py-24 bg-background">
+      <div className="absolute inset-0 -z-30">
+        <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-white/70 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-white/70 to-transparent" />
+      </div>
+      <div className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.18),_transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom,_rgba(226,232,240,0.35),_transparent_70%)]" />
+
+      <div className="relative max-w-6xl mx-auto px-6 sm:px-10 md:px-12 space-y-14">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-3xl text-center font-bold sm:text-4xl mb-12 md:mb-16 font-calendas"
-          style={{ fontFamily: "Space Grotesk, sans-serif" }}
+          className="font-heading text-3xl sm:text-4xl text-center text-slate-900"
         >
-          <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-            My Development Process
-          </span>
+          My development process
         </motion.h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {processSteps.map((step, index) => (
             <motion.div
               key={index}
@@ -92,15 +92,15 @@ const MyProcessSection = () => {
               whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}
               variants={cardVariants}
-              className="flex flex-col items-center text-center p-8 bg-white/80 backdrop-blur-sm rounded-3xl border-2 border-purple-200 shadow-xl hover:shadow-2xl hover:border-purple-300 transition-all duration-300 group"
+              className="flex flex-col items-center text-center p-7 bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-2 transition-all duration-300"
             >
-              <div className="mb-6 p-4 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full border-2 border-purple-200 group-hover:border-purple-300 transition-all duration-300">
+              <div className="mb-6 p-4 rounded-full border border-slate-200 bg-slate-100">
                 {step.icon}
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3 font-calendas" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+              <h3 className="font-heading text-lg text-slate-900 mb-2 leading-snug">
                 {step.title}
               </h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
+              <p className="text-sm text-slate-600 leading-relaxed">
                 {step.description}
               </p>
             </motion.div>
@@ -116,9 +116,9 @@ const MyProcessSection = () => {
         >
           <Link
             href="/contact"
-            className="inline-block px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-900 text-slate-100 px-7 py-3 text-base font-semibold shadow-sm hover:shadow-lg transition-transform hover:-translate-y-1"
           >
-            Ready to Start? Get in Touch →
+            Ready to start? Get in touch →
           </Link>
         </motion.div>
       </div>

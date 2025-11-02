@@ -168,90 +168,70 @@ function Index({ initialPosts = [], categories = [] }) {
           rel="stylesheet"
         />
       </Head>
-      <PageContainer bgClassName="bg-gradient-to-br from-background via-white to-brandSecondary/10">
-        <div
-          className="min-h-screen bg-background py-24 md:py-32 relative"
-          style={{ fontFamily: "Inter, sans-serif" }}
-        >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 relative z-10">
-            {/* Background Splash */}
-            <svg
-              className="absolute left-1/2 top-0 -translate-x-1/2 -z-10 blur-2xl opacity-40 w-[900px] h-[600px] pointer-events-none select-none"
-              viewBox="0 0 900 600"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <defs>
-                <radialGradient
-                  id="blogSplash"
-                  cx="50%"
-                  cy="50%"
-                  r="80%"
-                  fx="50%"
-                  fy="50%"
-                  gradientTransform="rotate(20)"
-                >
-                  <stop offset="0%" stopColor="#6366f1" stopOpacity="0.25" />
-                  <stop offset="60%" stopColor="#a21caf" stopOpacity="0.18" />
-                  <stop offset="100%" stopColor="#f472b6" stopOpacity="0.12" />
-                </radialGradient>
-              </defs>
-              <ellipse
-                cx="450"
-                cy="300"
-                rx="420"
-                ry="220"
-                fill="url(#blogSplash)"
+      <PageContainer>
+        <div className="min-h-screen overflow-hidden">
+          <section className="relative overflow-hidden">
+            <div className="absolute inset-0 -z-30">
+              <Image
+                src="/hero-back.jpeg"
+                alt="Abstract glass background"
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover darken-[rgba(0,0,0,0.5)] object-center"
               />
-            </svg>
-            {/* Hero Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="text-center mb-16"
-            >
-              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-primary/10 to-brandSecondary/10 border border-primary/20 rounded-full text-primary text-sm font-semibold mb-8 shadow-sm">
-                <span>Welcome to my blog</span>
-              </div>
+            </div>
+            <div className="absolute inset-0 -z-20 bg-white/85 backdrop-blur-sm" />
+            <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.12),_transparent_62%)]" />
+            <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom,_rgba(236,72,153,0.1),_transparent_58%)]" />
 
-              <h1
-                className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent"
-                style={{ fontFamily: "Space Grotesk, sans-serif" }}
+            <div className="relative max-w-6xl mx-auto px-6 sm:px-10 md:px-12 py-24 md:py-32">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="text-center mb-16"
               >
-                Blog & Insights
-              </h1>
+                <div className="inline-flex items-center gap-3 px-5 py-2.5 bg-white border border-slate-200 rounded-full text-slate-600 text-sm font-semibold mb-6 shadow-sm">
+                  <span>Welcome to the journal</span>
+                </div>
 
-              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-brandSecondary max-w-4xl mx-auto leading-relaxed font-medium px-2">
-                Insights on technology, development, and product innovation.
-              </p>
-            </motion.div>
+                <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl leading-tight text-slate-900">
+                  Exploring the craft of cross-platform products
+                </h1>
 
-            {/* Filters and Sorting Controls */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-              className="bg-white/90 p-4 sm:p-6 md:p-8 rounded-2xl shadow-sm border border-primary/20 mb-12"
-            >
-              <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 items-center">
+                <p className="mt-6 text-base sm:text-lg text-slate-600 leading-relaxed max-w-3xl mx-auto">
+                  Essays and notes on product strategy, engineering systems, and the lessons learned while shipping ambitious software with founders and teams.
+                </p>
+              </motion.div>
+            </div>
+          </section>
+
+          <section className="py-16 md:py-20 bg-background">
+            <div className="max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+                className="bg-white p-5 sm:p-7 md:p-8 rounded-2xl shadow-sm border border-slate-200 mb-10"
+              >
+              <div className="flex flex-col xl:flex-row gap-4 sm:gap-6 items-center">
                 {/* Category Filter Dropdown */}
-                <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
-                  <span className="text-gray-700 font-semibold text-base sm:text-lg whitespace-nowrap">
+                <div className="w-full xl:w-auto flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
+                  <span className="text-slate-600 font-semibold text-sm sm:text-base whitespace-nowrap">
                     Filter by:
                   </span>
                   <Select
                     value={selectedCategory}
                     onValueChange={handleCategoryChange}
                   >
-                    <SelectTrigger className="w-full sm:w-48 lg:w-56 bg-white border border-primary/20 text-primary font-medium rounded-2xl px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg hover:border-primary transition-colors duration-200">
+                    <SelectTrigger className="w-full sm:w-48 lg:w-56 bg-white border border-slate-200 text-slate-700 font-medium rounded-2xl px-4 sm:px-5 py-3 sm:py-3.5 text-base sm:text-lg hover:border-slate-400 transition-colors duration-200">
                       <SelectValue placeholder="All Categories" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border border-primary/20 text-primary rounded-2xl shadow-sm">
+                    <SelectContent className="bg-white border border-slate-200 text-slate-700 rounded-2xl shadow-sm">
                       <SelectItem
                         value="All"
-                        className="text-base sm:text-lg font-medium hover:bg-primary/10"
+                        className="text-base sm:text-lg font-medium hover:bg-slate-100"
                       >
                         All Categories
                       </SelectItem>
@@ -259,7 +239,7 @@ function Index({ initialPosts = [], categories = [] }) {
                         <SelectItem
                           key={category}
                           value={category}
-                          className="text-base sm:text-lg font-medium hover:bg-primary/10"
+                          className="text-base sm:text-lg font-medium hover:bg-slate-100"
                         >
                           {category}
                         </SelectItem>
@@ -267,9 +247,9 @@ function Index({ initialPosts = [], categories = [] }) {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="flex-grow"></div> {/* Spacer */}
+                <div className="hidden xl:flex flex-grow" />
                 {/* Search and Sort */}
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center w-full lg:w-auto">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center w-full xl:w-auto">
                   <form
                     onSubmit={(e) => e.preventDefault()}
                     className="flex w-full sm:w-auto"
@@ -279,11 +259,11 @@ function Index({ initialPosts = [], categories = [] }) {
                       value={searchTerm}
                       onChange={handleSearchChange}
                       placeholder="Search posts..."
-                      className="px-4 sm:px-6 py-3 sm:py-4 bg-white border border-gray-300 rounded-l-2xl text-gray-800 font-medium text-base sm:text-lg placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-400 w-full sm:w-auto flex-grow transition-colors duration-200"
+                      className="px-4 sm:px-5 py-3 sm:py-3.5 bg-white border border-slate-200 rounded-l-2xl text-slate-800 font-medium text-base sm:text-lg placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:border-slate-400 w-full sm:w-auto flex-grow transition-colors duration-200"
                     />
                     <motion.button
                       type="button"
-                      className="bg-gray-900 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-r-2xl flex items-center justify-center hover:bg-gray-800 transition-colors duration-200 cursor-pointer"
+                      className="bg-slate-900 text-slate-100 px-4 sm:px-5 py-3 sm:py-3.5 rounded-r-2xl flex items-center justify-center hover:bg-slate-800 transition-colors duration-200 cursor-pointer"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -294,22 +274,20 @@ function Index({ initialPosts = [], categories = [] }) {
                     onValueChange={handleSortChange}
                     defaultValue={sortOrder}
                   >
-                    <SelectTrigger className="w-full sm:w-[200px] lg:w-[220px] bg-white border border-primary/20 text-primary font-medium rounded-2xl px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg hover:border-primary transition-colors duration-200">
+                    <SelectTrigger className="w-full sm:w-[200px] lg:w-[220px] bg-white border border-slate-200 text-slate-700 font-medium rounded-2xl px-4 sm:px-5 py-3 sm:py-3.5 text-base sm:text-lg hover:border-slate-400 transition-colors duration-200">
                       <SelectValue placeholder="Sort by..." />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border border-primary/20 text-primary rounded-2xl shadow-sm">
+                    <SelectContent className="bg-white border border-slate-200 text-slate-700 rounded-2xl shadow-sm">
                       <SelectItem
                         value="desc"
-                        className="text-base sm:text-lg font-medium hover:bg-primary/10"
+                        className="text-base sm:text-lg font-medium hover:bg-slate-100"
                       >
-                        {" "}
                         Newest First
                       </SelectItem>
                       <SelectItem
                         value="asc"
-                        className="text-base sm:text-lg font-medium hover:bg-primary/10"
+                        className="text-base sm:text-lg font-medium hover:bg-slate-100"
                       >
-                        {" "}
                         Oldest First
                       </SelectItem>
                     </SelectContent>
@@ -326,8 +304,7 @@ function Index({ initialPosts = [], categories = [] }) {
                 transition={{ duration: 0.5 }}
                 className="mb-8 text-center"
               >
-                <p className="text-brandSecondary text-lg font-medium bg-white/90 inline-flex items-center gap-2 px-6 py-3 rounded-full border border-primary/20">
-                  <span className="text-2xl"></span>
+                <p className="text-slate-600 text-lg font-medium bg-white inline-flex items-center gap-2 px-6 py-3 rounded-full border border-slate-200">
                   Showing {filteredAndSortedContent.length} posts
                   {searchTerm.trim() !== "" && ` matching "${searchTerm}"`}
                   {selectedCategory !== "All" && ` in ${selectedCategory}`}
@@ -340,19 +317,17 @@ function Index({ initialPosts = [], categories = [] }) {
               <>
                 <div className="grid md:grid-cols-2 gap-8">
                   {paginatedPosts.map((post, index) => (
-                    <motion.div
-                      key={post._id}
-                      initial={{ opacity: 0, y: 30 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: index * 0.1 }}
-                      viewport={{ once: true }}
-                      whileHover={{ y: -10, scale: 1.02 }}
-                      className="cursor-pointer group block"
-                      onClick={() => handleCardClick(post.slug)}
-                    >
-                      <Link href={`/blog/${post.slug}`} passHref legacyBehavior>
-                        <a className="block h-full">
-                          <Card className="h-full bg-gradient-to-br from-white via-background to-brandSecondary/10 border border-primary/20 rounded-3xl shadow-md hover:shadow-lg hover:border-brandSecondary transition-all duration-200 overflow-hidden">
+                    <Link key={post._id} href={`/blog/${post.slug}`} className="block">
+                      <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: index * 0.1 }}
+                        viewport={{ once: true }}
+                        whileHover={{ y: -10, scale: 1.02 }}
+                        className="group block"
+                        onClick={() => handleCardClick(post.slug)}
+                      >
+                        <Card className="h-full bg-white border border-slate-200 rounded-3xl shadow-sm hover:shadow-lg hover:border-slate-300 transition-all duration-200 overflow-hidden">
                             <div className="h-64 overflow-hidden relative">
                               <Image
                                 src={post.imageUrl}
@@ -372,18 +347,15 @@ function Index({ initialPosts = [], categories = [] }) {
                             </div>
                             <div className="p-8">
                               <h2
-                                className="text-2xl font-bold bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent mb-4 leading-tight"
-                                style={{
-                                  fontFamily: "Space Grotesk, sans-serif",
-                                }}
+                                className="font-heading text-2xl text-slate-900 mb-4 leading-snug"
                               >
                                 {post.title}
                               </h2>
-                              <p className="text-brandSecondary mb-6 line-clamp-3 text-lg leading-relaxed">
+                              <p className="text-slate-600 mb-6 line-clamp-3 text-base leading-relaxed">
                                 {post.description}
                               </p>
                               <div className="flex flex-col gap-4">
-                                <div className="flex items-center gap-2 text-gray-500">
+                                <div className="flex items-center gap-2 text-slate-500">
                                   <span className="text-sm font-medium">
                                     {post.createdAtDate.toLocaleDateString(
                                       "en-US",
@@ -400,9 +372,9 @@ function Index({ initialPosts = [], categories = [] }) {
                                     post.tags.slice(0, 3).map((tag) => (
                                       <span
                                         key={tag}
-                                        className="bg-gradient-to-r from-primary/10 to-brandSecondary/10 text-primary text-xs px-3 py-1 rounded-full font-semibold border border-primary/20"
+                                        className="inline-flex items-center bg-slate-100 text-slate-600 font-medium px-3 py-1 rounded-full text-xs"
                                       >
-                                        {tag}
+                                        #{tag}
                                       </span>
                                     ))}
                                 </div>
@@ -411,10 +383,9 @@ function Index({ initialPosts = [], categories = [] }) {
                                 </div>
                               </div>
                             </div>
-                          </Card>
-                        </a>
-                      </Link>
-                    </motion.div>
+                        </Card>
+                      </motion.div>
+                    </Link>
                   ))}
                 </div>
                 {/* Pagination Controls */}
@@ -477,7 +448,7 @@ function Index({ initialPosts = [], categories = [] }) {
                 transition={{ duration: 0.5 }}
                 className="text-center py-20"
               >
-                <div className="bg-white rounded-3xl p-12 border border-gray-200 shadow-sm max-w-2xl mx-auto">
+                <div className="bg-white rounded-3xl p-12 border border-slate-200 shadow-sm max-w-2xl mx-auto">
                   <motion.div
                     animate={{ rotate: [0, 10, -10, 0] }}
                     transition={{
@@ -488,12 +459,11 @@ function Index({ initialPosts = [], categories = [] }) {
                     className="text-6xl mb-6"
                   ></motion.div>
                   <h3
-                    className="text-2xl font-bold text-gray-800 mb-4"
-                    style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                    className="font-heading text-2xl text-slate-900 mb-4"
                   >
                     No posts found
                   </h3>
-                  <p className="text-gray-600 text-lg">
+                  <p className="text-slate-600 text-base">
                     Try adjusting your search or filters to find what you're
                     looking for!
                   </p>
@@ -501,8 +471,9 @@ function Index({ initialPosts = [], categories = [] }) {
               </motion.div>
             )}
           </div>
-        </div>
-      </PageContainer>
+        </section>
+      </div>
+    </PageContainer>
     </>
   );
 }

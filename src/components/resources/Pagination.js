@@ -23,10 +23,10 @@ const Pagination = ({
           <motion.button
             onClick={() => paginate(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`mx-2 px-4 py-3 rounded-2xl font-bold text-lg border-2 transition-all duration-300 ${
+            className={`mx-2 px-4 py-2.5 rounded-2xl font-semibold text-sm sm:text-base border transition-all duration-200 ${
               currentPage === 1
-                ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
-                : "bg-white text-purple-600 border-purple-300 hover:bg-purple-50 hover:border-purple-400 shadow-lg hover:shadow-xl"
+                ? "bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed"
+                : "bg-white text-slate-700 border-slate-200 hover:border-slate-400 hover:text-slate-900 shadow-sm hover:shadow"
             }`}
             aria-label="Previous page"
             whileHover={currentPage !== 1 ? { scale: 1.05 } : {}}
@@ -41,7 +41,7 @@ const Pagination = ({
             {currentPage > 2 && (
               <motion.button
                 onClick={() => paginate(1)}
-                className="w-12 h-12 rounded-2xl font-bold text-lg border-2 bg-white text-gray-600 border-gray-300 hover:border-purple-400 hover:text-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl font-semibold text-sm sm:text-base border bg-white text-slate-600 border-slate-200 hover:border-slate-400 hover:text-slate-900 transition-all duration-200 shadow-sm hover:shadow"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -60,7 +60,7 @@ const Pagination = ({
             {currentPage > 1 && (
               <motion.button
                 onClick={() => paginate(currentPage - 1)}
-                className="w-12 h-12 rounded-2xl font-bold text-lg border-2 bg-white text-gray-600 border-gray-300 hover:border-purple-400 hover:text-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl font-semibold text-sm sm:text-base border bg-white text-slate-600 border-slate-200 hover:border-slate-400 hover:text-slate-900 transition-all duration-200 shadow-sm hover:shadow"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -71,13 +71,7 @@ const Pagination = ({
             {/* Current page */}
             <motion.button
               onClick={() => paginate(currentPage)}
-              className="w-12 h-12 rounded-2xl font-bold text-lg border-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white border-purple-600 shadow-xl"
-              animate={{ scale: [1, 1.05, 1] }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl font-semibold text-sm sm:text-base border bg-slate-900 text-slate-100 border-slate-900 shadow-sm"
             >
               {currentPage}
             </motion.button>
@@ -86,7 +80,7 @@ const Pagination = ({
             {currentPage < totalPages && (
               <motion.button
                 onClick={() => paginate(currentPage + 1)}
-                className="w-12 h-12 rounded-2xl font-bold text-lg border-2 bg-white text-gray-600 border-gray-300 hover:border-purple-400 hover:text-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl font-semibold text-sm sm:text-base border bg-white text-slate-600 border-slate-200 hover:border-slate-400 hover:text-slate-900 transition-all duration-200 shadow-sm hover:shadow"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -117,10 +111,10 @@ const Pagination = ({
           <motion.button
             onClick={() => paginate(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`mx-2 px-4 py-3 rounded-2xl font-bold text-lg border-2 transition-all duration-300 ${
+            className={`mx-2 px-4 py-2.5 rounded-2xl font-semibold text-sm sm:text-base border transition-all duration-200 ${
               currentPage === totalPages
-                ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
-                : "bg-white text-purple-600 border-purple-300 hover:bg-purple-50 hover:border-purple-400 shadow-lg hover:shadow-xl"
+                ? "bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed"
+                : "bg-white text-slate-700 border-slate-200 hover:border-slate-400 hover:text-slate-900 shadow-sm hover:shadow"
             }`}
             aria-label="Next page"
             whileHover={currentPage !== totalPages ? { scale: 1.05 } : {}}
@@ -139,8 +133,8 @@ const Pagination = ({
         transition={{ duration: 0.6, delay: 0.2 }}
         viewport={{ once: true }}
       >
-        <div className="bg-white/80 backdrop-blur-sm border-2 border-primary/20 rounded-2xl px-6 py-3 inline-flex items-center gap-2 shadow-lg">
-          <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary">
+        <div className="bg-white border border-slate-200 rounded-2xl px-5 py-2.5 inline-flex items-center gap-2 shadow-sm">
+          <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 text-slate-700">
             {/* Lucide icon: List */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -158,7 +152,7 @@ const Pagination = ({
               <circle cx="3" cy="18" r="1" />
             </svg>
           </span>
-          <span className="text-primary font-semibold text-lg">
+          <span className="text-slate-600 font-medium text-sm sm:text-base">
             Showing {indexOfFirstItem + 1}-
             {Math.min(indexOfLastItem, filteredResourcesLength)} of{" "}
             <span className="text-primary font-bold">

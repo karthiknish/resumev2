@@ -62,7 +62,7 @@ export default function ContactForm() {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
       viewport={{ once: true }}
-      className="mt-8 sm:mt-12 lg:mt-16 bg-white p-6 sm:p-8 md:p-10 lg:p-12 rounded-2xl sm:rounded-3xl shadow-2xl border-2 border-brandSecondary relative"
+      className="mt-10 sm:mt-14 lg:mt-16 bg-white p-6 sm:p-8 md:p-10 lg:p-12 rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200"
     >
       {/* Removed floating emoji for professional tone */}
 
@@ -71,12 +71,9 @@ export default function ContactForm() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         viewport={{ once: true }}
-        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-6 sm:mb-8 text-center flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6"
-        style={{ fontFamily: "Space Grotesk, sans-serif" }}
+        className="font-heading text-3xl sm:text-4xl md:text-5xl text-slate-900 text-center mb-6"
       >
-        <span className="bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent">
-          Get in Touch
-        </span>
+        Get in touch
       </motion.h2>
 
       <motion.p
@@ -84,7 +81,7 @@ export default function ContactForm() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
         viewport={{ once: true }}
-        className="text-base sm:text-lg md:text-xl text-gray-600 text-center mb-6 sm:mb-8 md:mb-10 max-w-2xl mx-auto leading-relaxed font-medium px-2 sm:px-0"
+        className="text-base sm:text-lg text-slate-600 text-center mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed"
       >
         Have a project in mind? Drop me a message and let's create something
         valuable and reliable together.
@@ -102,7 +99,7 @@ export default function ContactForm() {
 
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 sm:space-y-6 max-w-2xl mx-auto"
+        className="space-y-5 sm:space-y-6 max-w-2xl mx-auto"
       >
         <div className="space-y-4 sm:space-y-6">
           <motion.div
@@ -113,7 +110,7 @@ export default function ContactForm() {
           >
             <label
               htmlFor="name"
-              className="block text-gray-800 font-semibold mb-2 sm:mb-3 text-base sm:text-lg"
+              className="block text-slate-800 font-semibold mb-2 text-sm sm:text-base"
             >
               Your Name
             </label>
@@ -123,7 +120,7 @@ export default function ContactForm() {
               value={formData.name}
               onChange={handleChange}
               type="text"
-              className="w-full px-4 sm:px-6 py-3 sm:py-4 text-gray-900 bg-white border-2 border-gray-200 rounded-xl sm:rounded-2xl focus:border-brandSecondary focus:ring-4 focus:ring-brandSecondary/20 focus:outline-none transition-all duration-300 font-medium text-base sm:text-lg"
+              className="w-full px-4 sm:px-5 py-3 sm:py-4 text-slate-900 bg-white border border-slate-200 rounded-xl focus:border-slate-400 focus:ring-4 focus:ring-slate-200 focus:outline-none transition-all duration-300 text-base"
               placeholder="John Doe"
               required
             />
@@ -137,7 +134,7 @@ export default function ContactForm() {
           >
             <label
               htmlFor="email"
-              className="block text-gray-800 font-semibold mb-2 sm:mb-3 text-base sm:text-lg"
+              className="block text-slate-800 font-semibold mb-2 text-sm sm:text-base"
             >
               Your Email
             </label>
@@ -147,7 +144,7 @@ export default function ContactForm() {
               value={formData.email}
               onChange={handleChange}
               type="email"
-              className="w-full px-4 sm:px-6 py-3 sm:py-4 text-gray-900 bg-white border-2 border-gray-200 rounded-xl sm:rounded-2xl focus:border-brandSecondary focus:ring-4 focus:ring-brandSecondary/20 focus:outline-none transition-all duration-300 font-medium text-base sm:text-lg"
+              className="w-full px-4 sm:px-5 py-3 sm:py-4 text-slate-900 bg-white border border-slate-200 rounded-xl focus:border-slate-400 focus:ring-4 focus:ring-slate-200 focus:outline-none transition-all duration-300 text-base"
               placeholder="john@example.com"
               required
             />
@@ -161,7 +158,7 @@ export default function ContactForm() {
           >
             <label
               htmlFor="message"
-              className="block text-gray-800 font-semibold mb-2 sm:mb-3 text-base sm:text-lg"
+              className="block text-slate-800 font-semibold mb-2 text-sm sm:text-base"
             >
               Your Message
             </label>
@@ -170,7 +167,7 @@ export default function ContactForm() {
               name="message"
               value={formData.message}
               onChange={handleChange}
-              className="w-full px-4 sm:px-6 py-3 sm:py-4 text-gray-900 bg-white border-2 border-gray-200 rounded-xl sm:rounded-2xl focus:border-brandSecondary focus:ring-4 focus:ring-brandSecondary/20 focus:outline-none transition-all duration-300 font-medium text-base sm:text-lg resize-none"
+              className="w-full px-4 sm:px-5 py-3 sm:py-4 text-slate-900 bg-white border border-slate-200 rounded-xl focus:border-slate-400 focus:ring-4 focus:ring-slate-200 focus:outline-none transition-all duration-300 text-base resize-none"
               placeholder="Tell me about your amazing project idea..."
               rows={5}
               required
@@ -182,7 +179,7 @@ export default function ContactForm() {
             whileTap={{ scale: 0.95 }}
             type="submit"
             disabled={isLoading}
-            className="w-full bg-brandSecondary hover:bg-brandSecondary/90 py-3 sm:py-4 md:py-5 text-white rounded-xl sm:rounded-2xl font-bold text-lg sm:text-xl transition-all duration-300 shadow-xl hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed relative group"
+            className="w-full bg-slate-900 hover:bg-slate-700 py-3 sm:py-4 text-slate-100 rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 shadow-sm hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed relative group"
           >
             <span className="relative z-10 flex items-center justify-center gap-3">
               {isLoading ? (
@@ -208,7 +205,7 @@ export default function ContactForm() {
                   Sending your message...
                 </>
               ) : (
-                <>Send Message</>
+                <>Send message</>
               )}
             </span>
           </motion.button>

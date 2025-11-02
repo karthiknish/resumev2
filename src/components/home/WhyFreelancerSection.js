@@ -4,24 +4,24 @@ import { Coins, UserCheck, Zap } from "lucide-react"; // Using different icons
 
 const benefits = [
   {
-    icon: <Coins className="w-10 h-10 text-emerald-400" />,
-    title: "Cost-Effectiveness",
+    icon: <Coins className="w-9 h-9 text-slate-700" />,
+    title: "Cost effectiveness",
     description:
-      "Get high-quality results without agency overhead. Direct collaboration means your investment goes straight into the work, maximizing value.",
+      "You work with the person doing the work—no agency overheads. Every hour invested lands directly in design, engineering, and launch momentum.",
     delay: 0.2,
   },
   {
-    icon: <UserCheck className="w-10 h-10 text-blue-400" />,
-    title: "Direct Collaboration",
+    icon: <UserCheck className="w-9 h-9 text-slate-700" />,
+    title: "Direct collaboration",
     description:
-      "Work directly with me, the developer building your project. This ensures clear communication, personalized attention, and a deep understanding of your vision.",
+      "You have a single point of contact who understands context, leading to sharper decisions, faster feedback cycles, and fewer surprises.",
     delay: 0.4,
   },
   {
-    icon: <Zap className="w-10 h-10 text-purple-400" />,
-    title: "Flexibility & Speed",
+    icon: <Zap className="w-9 h-9 text-slate-700" />,
+    title: "Flexible delivery",
     description:
-      "Benefit from agile processes and faster turnaround times. I adapt quickly to your needs and changing requirements, keeping your project moving forward efficiently.",
+      "Engagements flex between strategy, design, and implementation so we can respond quickly to product shifts without losing momentum.",
     delay: 0.6,
   },
 ];
@@ -42,30 +42,26 @@ export default function WhyFreelancerSection() {
 
   return (
     <motion.section
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
       viewport={{ once: true }}
-      className="bg-gradient-to-br from-purple-50 via-white to-blue-50 py-16 md:py-24 relative overflow-hidden" // Modern light gradient background
+      className="relative overflow-hidden py-20 md:py-24 bg-white"
     >
-      {/* Decorative background elements */}
-      <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-purple-200/20 to-pink-200/20 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
-      <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-blue-200/20 to-cyan-200/20 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2"></div>
-      
-      <div className="container mx-auto px-4 space-y-12 relative z-10">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.12),_transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(226,232,240,0.25),_transparent_70%)]" />
+
+      <div className="relative max-w-6xl mx-auto px-6 sm:px-10 md:px-12 space-y-14">
         <motion.h2
           initial={{ y: 20, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.1 }}
           viewport={{ once: true }}
-          className="text-3xl text-center font-bold sm:text-4xl mb-12 md:mb-16 font-calendas"
-          style={{ fontFamily: "Space Grotesk, sans-serif" }}
+          className="font-heading text-3xl sm:text-4xl text-center text-slate-900"
         >
-          <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-            The Freelancer Advantage
-          </span>
+          The freelancer advantage
         </motion.h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {benefits.map((benefit, index) => (
             <motion.div
               key={benefit.title}
@@ -74,30 +70,15 @@ export default function WhyFreelancerSection() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.4 }}
               variants={cardVariants}
-              className="relative group flex flex-col items-center text-center p-8 bg-white/80 backdrop-blur-sm rounded-3xl border-2 border-purple-200 shadow-xl hover:shadow-2xl hover:border-purple-300 transition-all duration-300 overflow-hidden" // Enhanced styling
+              className="flex flex-col items-center text-center p-7 bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-2 transition-all duration-300"
             >
-              {/* Subtle Glow Effect */}
-              <div
-                className="absolute -inset-px rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{
-                  background: `radial-gradient(600px circle at ${
-                    benefit.title === "Direct Collaboration"
-                      ? "50% 300px"
-                      : index % 2 === 0
-                      ? "100px -50px"
-                      : "calc(100% - 100px) -50px"
-                  }, rgba(139, 92, 246, 0.1), transparent 80%)`, // Purple glow instead of blue
-                }}
-              ></div>
-
-              <div className="relative z-10 mb-5 p-4 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full border-2 border-purple-200 group-hover:border-purple-300 transition-colors duration-300">
-                {/* Icon container */}
+              <div className="mb-5 p-4 rounded-full border border-slate-200 bg-slate-100">
                 {benefit.icon}
               </div>
-              <h3 className="relative z-10 text-xl font-semibold text-gray-800 mb-3 font-calendas" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+              <h3 className="font-heading text-lg text-slate-900 mb-2 leading-snug">
                 {benefit.title}
               </h3>
-              <p className="relative z-10 text-gray-600 text-sm leading-relaxed">
+              <p className="text-sm text-slate-600 leading-relaxed">
                 {benefit.description}
               </p>
             </motion.div>
@@ -113,9 +94,9 @@ export default function WhyFreelancerSection() {
         >
           <Link
             href="/contact"
-            className="inline-block px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-900 text-slate-100 px-7 py-3 text-base font-semibold shadow-sm hover:shadow-lg transition-transform hover:-translate-y-1"
           >
-            Let's Build Together →
+            Let's build together →
           </Link>
         </motion.div>
       </div>

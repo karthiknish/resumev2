@@ -41,7 +41,7 @@ const ResourceFilters = ({
 
   return (
     <motion.div 
-      className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 p-8 rounded-3xl shadow-2xl"
+      className="bg-white border border-slate-200 p-6 sm:p-7 rounded-3xl shadow-sm"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
@@ -49,21 +49,21 @@ const ResourceFilters = ({
       {/* Enhanced Search Bar */}
       <div className="relative mb-8">
         <motion.div 
-          className="flex items-center bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl px-6 py-4 border-2 border-purple-200 hover:border-purple-300 transition-all duration-300 shadow-lg"
+          className="flex items-center bg-slate-100 rounded-2xl px-5 sm:px-6 py-3.5 border border-slate-200 hover:border-slate-300 transition-all duration-200"
           whileHover={{ scale: 1.01, y: -1 }}
         >
-          <FaSearch className="text-purple-500 mr-3 text-lg" />
+          <FaSearch className="text-slate-500 mr-3 text-base sm:text-lg" />
           <input
             type="text"
             placeholder="Search amazing resources..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="bg-transparent text-gray-800 placeholder-gray-500 focus:outline-none w-full text-lg font-medium"
+            className="bg-transparent text-slate-800 placeholder:text-slate-400 focus:outline-none w-full text-base sm:text-lg font-medium"
           />
           {searchTerm && (
             <motion.button
               onClick={() => setSearchTerm('')}
-              className="ml-3 text-gray-400 hover:text-purple-600 transition-colors duration-200"
+              className="ml-3 text-slate-400 hover:text-slate-700 transition-colors duration-200"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
@@ -82,16 +82,6 @@ const ResourceFilters = ({
           className="flex flex-wrap gap-3"
         >
           {categories.map((category, index) => {
-            const gradients = [
-              'from-purple-500 to-blue-500',
-              'from-pink-500 to-rose-500', 
-              'from-orange-500 to-red-500',
-              'from-green-500 to-teal-500',
-              'from-indigo-500 to-purple-500',
-              'from-cyan-500 to-blue-500'
-            ];
-            const gradientClass = gradients[index % gradients.length];
-            
             return (
               <motion.button
                 key={category.id}
@@ -99,10 +89,10 @@ const ResourceFilters = ({
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2, delay: index * 0.05 }}
-                className={`px-6 py-3 rounded-2xl flex items-center font-bold text-lg transition-all duration-300 border-2 ${
+                className={`px-5 py-2.5 rounded-2xl flex items-center font-semibold text-sm sm:text-base transition-all duration-200 border ${
                   activeCategory === category.id
-                    ? `bg-gradient-to-r ${gradientClass} text-white shadow-xl border-transparent transform hover:scale-105`
-                    : "bg-white/70 text-gray-700 border-gray-200 hover:bg-white hover:border-purple-300 hover:text-purple-600 shadow-lg hover:shadow-xl"
+                    ? "bg-slate-900 text-slate-100 border-slate-900 shadow-sm"
+                    : "bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:text-slate-900"
                 }`}
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.95 }}
@@ -126,21 +116,21 @@ const ResourceFilters = ({
       {/* Active Filters Display */}
       {(searchTerm || activeCategory !== 'all') && (
         <motion.div 
-          className="mb-6 p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl border border-purple-200"
+          className="mb-6 p-4 bg-slate-100 rounded-2xl border border-slate-200"
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           transition={{ duration: 0.3 }}
         >
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-gray-700">
-              <span className="font-bold">Active filters:</span>
+            <div className="flex items-center gap-2 text-slate-600">
+              <span className="font-semibold">Active filters:</span>
               {searchTerm && (
-                <span className="bg-purple-200 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
+                <span className="bg-white border border-slate-300 text-slate-700 px-3 py-1 rounded-full text-xs font-medium">
                   "{searchTerm}"
                 </span>
               )}
               {activeCategory !== 'all' && (
-                <span className="bg-blue-200 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                <span className="bg-white border border-slate-300 text-slate-700 px-3 py-1 rounded-full text-xs font-medium">
                   {categories.find(cat => cat.id === activeCategory)?.name}
                 </span>
               )}
@@ -162,17 +152,17 @@ const ResourceFilters = ({
       {/* Enhanced Items Per Page Selector */}
       <div className="flex justify-end">
         <motion.div 
-          className="flex items-center bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-3 rounded-2xl border-2 border-gray-200 shadow-lg"
+          className="flex items-center bg-white px-5 py-3 rounded-2xl border border-slate-200 shadow-sm"
           whileHover={{ scale: 1.02, y: -1 }}
         >
-          <span className="mr-4 text-gray-700 font-bold text-lg flex items-center gap-2">
-            <span className="text-xl">📄</span>
-            Items per page:
+          <span className="mr-4 text-slate-600 font-semibold text-sm sm:text-base flex items-center gap-2">
+            <span className="text-lg">📄</span>
+            Items per page
           </span>
           <motion.select
             value={itemsPerPage}
             onChange={(e) => setItemsPerPage(Number(e.target.value))}
-            className="bg-white border-2 border-purple-200 rounded-xl px-4 py-2 text-gray-800 font-bold focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-200 transition-all duration-200 shadow-sm"
+            className="bg-white border border-slate-200 rounded-xl px-4 py-2 text-slate-700 font-semibold focus:outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-200 transition-all duration-200"
             whileFocus={{ scale: 1.02 }}
           >
             <option value={4}>4</option>

@@ -23,45 +23,40 @@ import {
 
 // Define key technologies with icons
 const technologies = [
-  { name: "React", icon: <FaReact size={32} className="text-sky-400" /> },
-  { name: "Next.js", icon: <SiNextdotjs size={32} className="text-gray-800" /> },
-  { name: "Node.js", icon: <FaNodeJs size={32} className="text-green-500" /> },
+  { name: "React", icon: <FaReact size={28} className="text-slate-700" /> },
+  { name: "Next.js", icon: <SiNextdotjs size={28} className="text-slate-700" /> },
+  { name: "Node.js", icon: <FaNodeJs size={28} className="text-slate-700" /> },
   {
     name: "TypeScript",
-    icon: <SiTypescript size={32} className="text-blue-500" />,
+    icon: <SiTypescript size={28} className="text-slate-700" />,
   },
-  { name: "Python", icon: <FaPython size={32} className="text-yellow-400" /> },
+  { name: "Python", icon: <FaPython size={28} className="text-slate-700" /> },
   {
     name: "Tailwind CSS",
-    icon: <SiTailwindcss size={32} className="text-cyan-400" />,
+    icon: <SiTailwindcss size={28} className="text-slate-700" />,
   },
-  { name: "MongoDB", icon: <SiMongodb size={32} className="text-green-600" /> },
+  { name: "MongoDB", icon: <SiMongodb size={28} className="text-slate-700" /> },
   {
     name: "PostgreSQL",
-    icon: <SiPostgresql size={32} className="text-blue-600" />,
+    icon: <SiPostgresql size={28} className="text-slate-700" />,
   },
-  { name: "AWS", icon: <FaAws size={32} className="text-orange-500" /> },
-  { name: "Docker", icon: <FaDocker size={32} className="text-blue-600" /> },
+  { name: "AWS", icon: <FaAws size={28} className="text-slate-700" /> },
+  { name: "Docker", icon: <FaDocker size={28} className="text-slate-700" /> },
   {
     name: "Kubernetes",
-    icon: <SiKubernetes size={32} className="text-blue-700" />,
+    icon: <SiKubernetes size={28} className="text-slate-700" />,
   },
-  // { // Commenting out Firebase
-  //   name: "Firebase",
-  //   icon: <SiFirebase size={32} className="text-yellow-500" />,
-  // },
-  { name: "Shopify", icon: <SiShopify size={32} className="text-lime-500" /> }, // Added Shopify
-  // Add more as needed, e.g.:
+  { name: "Shopify", icon: <SiShopify size={28} className="text-slate-700" /> },
   {
     name: "Azure",
-    icon: <SiMicrosoftazure size={32} className="text-blue-500" />,
+    icon: <SiMicrosoftazure size={28} className="text-slate-700" />,
   },
-  { name: "GCP", icon: <SiGooglecloud size={32} className="text-red-500" /> },
+  { name: "GCP", icon: <SiGooglecloud size={28} className="text-slate-700" /> },
   {
     name: "Wordpress",
-    icon: <FaWordpress size={32} className="text-blue-700" />,
+    icon: <FaWordpress size={28} className="text-slate-700" />,
   },
-  { name: "GitHub", icon: <FaGithub size={32} className="text-gray-700" /> }, // Added GitHub
+  { name: "GitHub", icon: <FaGithub size={28} className="text-slate-700" /> },
 ];
 
 export default function TechStackSection() {
@@ -80,37 +75,33 @@ export default function TechStackSection() {
 
   return (
     <motion.section
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
       transition={{ duration: 0.8 }}
-      className="bg-gradient-to-br from-purple-50 via-white to-blue-50 py-16 md:py-24 relative overflow-hidden"
+      className="relative overflow-hidden py-20 md:py-24 bg-background"
     >
-      {/* Decorative background elements */}
-      <div className="absolute top-0 left-0 w-80 h-80 bg-gradient-to-br from-purple-200/20 to-pink-200/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-      <div className="absolute bottom-0 right-0 w-72 h-72 bg-gradient-to-bl from-blue-200/20 to-cyan-200/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
-      
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.16),_transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(226,232,240,0.3),_transparent_70%)]" />
+
+      <div className="relative max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
         <motion.h2
           initial={{ y: 20, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.1 }}
           viewport={{ once: true }}
-          className="text-3xl text-center font-bold sm:text-4xl mb-4 font-calendas"
-          style={{ fontFamily: "Space Grotesk, sans-serif" }}
+          className="font-heading text-3xl sm:text-4xl text-center text-slate-900"
         >
-          <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-            Technical Expertise
-          </span>
+          Technical expertise
         </motion.h2>
         <motion.p
           initial={{ y: 20, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
           viewport={{ once: true }}
-          className="text-center text-gray-600 mb-12 md:mb-16 max-w-2xl mx-auto text-lg leading-relaxed"
+          className="text-center text-slate-600 mt-4 mb-12 md:mb-16 max-w-2xl mx-auto text-base leading-relaxed"
         >
-          Leveraging a modern and versatile tech stack to build robust,
-          scalable, and high-performance applications tailored to your needs.
+          A toolbox shaped by shipping products across stacks—frontend composability, backend resilience, and modern cloud operations.
         </motion.p>
 
         <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-6 md:gap-8 justify-center">
@@ -124,11 +115,11 @@ export default function TechStackSection() {
               variants={iconVariants}
               className="group relative flex flex-col items-center"
             >
-              <div className="p-4 bg-white/80 backdrop-blur-sm rounded-full border-2 border-purple-200 group-hover:bg-purple-50 group-hover:border-purple-300 group-hover:scale-110 transition-all duration-300 shadow-lg group-hover:shadow-xl">
+              <div className="p-4 bg-white rounded-full border border-slate-200 group-hover:border-slate-400 group-hover:scale-110 transition-all duration-300 shadow-sm group-hover:shadow-lg">
                 {tech.icon}
               </div>
               {/* Tooltip */}
-              <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-10 shadow-lg font-medium">
+              <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-slate-900 text-slate-100 text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-10 shadow-lg font-medium">
                 {tech.name}
               </span>
             </motion.div>

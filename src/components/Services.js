@@ -5,58 +5,43 @@ import Link from "next/link";
 // Original service data
 const services = [
   {
-    icon: <FaPaintBrush className="w-8 h-8" />,
-    // emoji removed
+    icon: <FaPaintBrush className="w-7 h-7" />,
     title: "Website Reskin",
     description:
-      "Give your existing website a fresh, modern look while maintaining its core functionality. Perfect for businesses looking to update their online presence.",
+      "Give your existing website a calm, modern facelift while keeping the foundations that already work.",
     features: [
-      "Modern UI/UX redesign",
-      "Mobile responsiveness",
-      "Performance optimization",
-      "Brand alignment",
+      "UI refresh aligned to your brand",
+      "Accessibility & responsiveness",
+      "Performance tuning",
+      "Copy and content polish",
     ],
     link: "/services/website-reskin",
-    color: "bg-gradient-to-br from-pink-50 to-purple-50",
-    borderColor: "border-pink-200 hover:border-pink-300",
-    iconBg: "from-pink-100 to-purple-100",
-    textColor: "text-pink-600",
   },
   {
-    icon: <FaGlobe className="w-8 h-8" />,
-    // emoji removed
+    icon: <FaGlobe className="w-7 h-7" />,
     title: "Brochure Websites",
     description:
-      "Professional, custom-built websites that effectively showcase your business, products, or services to potential customers.",
+      "Launch a trusted presence that explains who you are, what you do, and why people should work with you.",
     features: [
-      "Custom design & development",
-      "SEO optimization",
-      "Content management system",
-      "Contact forms & integrations",
+      "Strategy & copy support",
+      "Custom visual design",
+      "Search-friendly build",
+      "CMS hand-off & training",
     ],
     link: "/services/brochure-websites",
-    color: "bg-gradient-to-br from-blue-50 to-cyan-50",
-    borderColor: "border-blue-200 hover:border-blue-300",
-    iconBg: "from-blue-100 to-cyan-100",
-    textColor: "text-blue-600",
   },
   {
-    icon: <FaStore className="w-8 h-8" />,
-    // emoji removed
+    icon: <FaStore className="w-7 h-7" />,
     title: "E-commerce Solutions",
     description:
-      "Full-featured online stores that help you sell products or services directly to your customers with a seamless shopping experience.",
+      "Build a resilient storefront with payments, fulfilment, and analytics baked in from day one.",
     features: [
-      "Secure payment integration",
-      "Inventory management",
-      "Order processing",
-      "Customer accounts",
+      "Checkout & payments",
+      "Catalogue + inventory",
+      "Email & CRM automation",
+      "Operations dashboards",
     ],
     link: "/services/ecommerce-solutions",
-    color: "bg-gradient-to-br from-green-50 to-emerald-50",
-    borderColor: "border-green-200 hover:border-green-300",
-    iconBg: "from-green-100 to-emerald-100",
-    textColor: "text-green-600",
   },
 ];
 
@@ -70,15 +55,14 @@ export default function Services() {
         viewport={{ once: true }}
         className="text-center mb-16"
       >
-        <h2
-          className="text-5xl md:text-6xl font-black bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent mb-6 flex items-center justify-center gap-6"
-          style={{ fontFamily: "Space Grotesk, sans-serif" }}
-        >
-          My Services
+        <span className="inline-flex items-center gap-3 px-5 py-2.5 bg-white border border-slate-200 rounded-full text-slate-600 text-sm font-semibold mb-6 shadow-sm">
+          Services
+        </span>
+        <h2 className="font-heading text-4xl md:text-5xl leading-tight text-slate-900">
+          Offerings shaped around calm, reliable delivery
         </h2>
-        <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
-          Transforming ideas into digital reality with modern, scalable
-          solutions
+        <p className="mt-4 text-base text-slate-600 max-w-3xl mx-auto">
+          Each engagement blends strategy, design, and engineering so you ship momentum—not just features.
         </p>
       </motion.div>
 
@@ -93,61 +77,47 @@ export default function Services() {
             whileHover={{ y: -10, scale: 1.02 }}
           >
             <Link href={service.link || "#"}>
-              <div
-                className={`h-full p-8 rounded-3xl border-2 shadow-lg hover:shadow-2xl transition-all duration-300 group cursor-pointer ${service.color} ${service.borderColor}`}
-              >
+              <div className="h-full rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-lg group cursor-pointer">
                 <div className="flex items-center mb-6">
                   <motion.div
-                    className={`p-4 bg-gradient-to-r ${service.iconBg} rounded-2xl`}
-                    whileHover={{ scale: 1.2, rotate: 10 }}
+                    className="p-4 rounded-2xl bg-slate-100 border border-slate-200 text-slate-700"
+                    whileHover={{ scale: 1.1, rotate: 6 }}
                     transition={{ duration: 0.3 }}
                   >
                     {React.cloneElement(service.icon, {
-                      className: `w-8 h-8 ${service.textColor}`,
+                      className: "w-7 h-7",
                     })}
                   </motion.div>
                 </div>
-                <h3
-                  className={`text-2xl font-bold mb-4 ${service.textColor} group-hover:text-purple-600 transition-colors`}
-                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                >
+                <h3 className="font-heading text-2xl text-slate-900 mb-3 leading-snug">
                   {service.title}
                 </h3>
-                <p className="text-gray-700 leading-relaxed text-lg mb-6">
+                <p className="text-sm text-slate-600 leading-relaxed mb-6">
                   {service.description}
                 </p>
                 <ul className="space-y-2">
                   {service.features.map((feature, idx) => (
                     <motion.li
                       key={idx}
-                      initial={{ opacity: 0, x: -20 }}
+                      initial={{ opacity: 0, x: -12 }}
                       whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.5, delay: 0.1 * idx }}
+                      transition={{ duration: 0.4, delay: 0.08 * idx }}
                       viewport={{ once: true }}
-                      className="flex items-center gap-3 text-gray-600"
+                      className="flex items-center gap-3 text-slate-500"
                     >
-                      <span className="text-brandSecondary text-xl">✓</span>
+                      <span className="inline-flex h-2 w-2 rounded-full bg-slate-400" />
                       <span className="text-sm font-medium">{feature}</span>
                     </motion.li>
                   ))}
                 </ul>
-                <div className="mt-6 flex items-center justify-between">
-                  <span
-                    className={`text-sm font-bold ${service.textColor} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
-                  >
-                    Learn More →
-                  </span>
-                  <motion.div
-                    className="text-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
+                <div className="mt-8 inline-flex items-center gap-2 text-slate-800 font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  Learn more
+                  <motion.span
+                    animate={{ x: [0, 4, 0] }}
+                    transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
                   >
                     →
-                  </motion.div>
+                  </motion.span>
                 </div>
               </div>
             </Link>
@@ -164,10 +134,10 @@ export default function Services() {
       >
         <Link
           href="/contact"
-          className="inline-block bg-gradient-to-r from-primary to-brandSecondary hover:from-primary/90 hover:to-brandSecondary/90 text-white px-10 py-5 text-xl font-bold rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105"
+          className="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-900 text-slate-100 px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-transform hover:-translate-y-1"
         >
-          Discuss Your Project Needs
-          <span className="ml-2">→</span>
+          Discuss your project needs
+          <span>→</span>
         </Link>
       </motion.div>
     </section>

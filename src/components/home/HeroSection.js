@@ -7,14 +7,14 @@ import { TextRotate } from "@/components/ui/text-rotate";
 
 // Technology icons with enhanced styling
 const techStack = [
-  { name: "React", icon: "⚛️", color: "from-blue-400 to-cyan-400" },
-  { name: "React Native", icon: "📱", color: "from-purple-400 to-pink-400" },
-  { name: "Next.js", icon: "▲", color: "from-gray-400 to-white" },
-  { name: "Node.js", icon: "🟢", color: "from-green-400 to-emerald-400" },
-  { name: "TypeScript", icon: "🔷", color: "from-blue-500 to-blue-700" },
-  { name: "MongoDB", icon: "🍃", color: "from-green-500 to-green-700" },
-  { name: "AWS", icon: "☁️", color: "from-orange-400 to-yellow-400" },
-  { name: "Docker", icon: "🐳", color: "from-blue-400 to-blue-600" },
+  { name: "React", icon: "⚛️" },
+  { name: "React Native", icon: "📱" },
+  { name: "Next.js", icon: "▲" },
+  { name: "Node.js", icon: "🟢" },
+  { name: "TypeScript", icon: "🔷" },
+  { name: "MongoDB", icon: "🍃" },
+  { name: "AWS", icon: "☁️" },
+  { name: "Docker", icon: "🐳" },
 ];
 
 export default function HeroSection() {
@@ -39,15 +39,15 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative min-h-screen overflow-hidden bg-gradient-to-br from-purple-50 via-white to-blue-50">
+    <div ref={containerRef} className="relative min-h-screen overflow-hidden bg-background">
       {/* Animated Background */}
       <BackgroundBeamsWithCollision className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-50/80 via-white/90 to-blue-50/80" />
-        
+        <div className="absolute inset-0 bg-white/85" />
+
         {/* Dynamic Spotlight Effect */}
         <Spotlight
           className="absolute -top-40 left-0 md:left-60 md:-top-20"
-          fill="rgba(139, 92, 246, 0.1)"
+          fill="rgba(15, 23, 42, 0.08)"
         />
         
         {/* Floating Tech Stack Icons */}
@@ -55,7 +55,7 @@ export default function HeroSection() {
           {techStack.map((tech, index) => (
             <motion.div
               key={tech.name}
-              className={`absolute w-16 h-16 rounded-full bg-gradient-to-r ${tech.color} flex items-center justify-center text-2xl shadow-2xl backdrop-blur-sm`}
+              className="absolute w-14 h-14 rounded-full bg-white/80 border border-slate-200 flex items-center justify-center text-xl text-slate-700 shadow-sm"
               style={{
                 left: `${10 + (index * 12) % 80}%`,
                 top: `${15 + (index * 7) % 70}%`,
@@ -92,7 +92,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-purple-200 text-gray-700 text-sm font-medium mb-8 shadow-sm"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-200 text-slate-700 text-sm font-semibold mb-8 shadow-sm"
           >
             <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
             Available for new projects
@@ -103,15 +103,9 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-4xl md:text-6xl lg:text-8xl font-bold mb-6 leading-tight"
+            className="font-heading text-4xl md:text-6xl lg:text-7xl text-slate-900 mb-6 leading-tight"
           >
-            <span className="bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 bg-clip-text text-transparent">
-              Cross Platform
-            </span>
-            <br />
-            <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-              Developer
-            </span>
+            Cross-platform developer
           </motion.h1>
           
           {/* Rotating Text */}
@@ -119,7 +113,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-xl md:text-2xl lg:text-3xl text-gray-600 mb-8 font-light"
+            className="text-lg md:text-xl lg:text-2xl text-slate-600 mb-8"
           >
             Building{" "}
             <TextRotate
@@ -133,7 +127,7 @@ export default function HeroSection() {
                 "Modern Interfaces",
                 "Custom Solutions"
               ]}
-              mainClassName="text-blue-400 font-semibold"
+              mainClassName="text-slate-900 font-semibold"
               staggerDuration={0.05}
               rotationInterval={2500}
             />
@@ -144,7 +138,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="text-lg md:text-xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed"
+            className="text-base md:text-lg text-slate-600 mb-12 max-w-3xl mx-auto leading-relaxed"
           >
             Freelance cross platform developer creating custom, scalable, and high-performance 
             web and mobile solutions that bridge the gap between innovative design and 
@@ -160,12 +154,12 @@ export default function HeroSection() {
           >
             <Link href="/contact">
               <motion.button
-                whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(59, 130, 246, 0.3)" }}
+                whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(15, 23, 42, 0.2)" }}
                 whileTap={{ scale: 0.95 }}
-                className="group relative px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-full text-lg shadow-2xl transition-all duration-300 overflow-hidden"
+                className="group relative px-8 py-4 bg-slate-900 text-slate-100 font-semibold rounded-2xl text-base shadow-lg transition-all duration-300 overflow-hidden"
               >
                 <span className="relative z-10 flex items-center gap-2">
-                  Let's Work Together
+                  Let's work together
                   <motion.span
                     animate={{ x: [0, 5, 0] }}
                     transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
@@ -173,7 +167,7 @@ export default function HeroSection() {
                     →
                   </motion.span>
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-slate-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </motion.button>
             </Link>
             
@@ -181,9 +175,9 @@ export default function HeroSection() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 border-2 border-gray-300 text-gray-700 font-semibold rounded-full text-lg backdrop-blur-sm hover:border-purple-400 hover:bg-purple-50 transition-all duration-300"
+                className="px-8 py-4 border border-slate-300 text-slate-700 font-semibold rounded-2xl text-base hover:border-slate-500 hover:bg-slate-100 transition-all duration-300"
               >
-                View My Work
+                View my work
               </motion.button>
             </Link>
           </motion.div>
@@ -198,12 +192,12 @@ export default function HeroSection() {
             <motion.div
               animate={{ y: [0, 10, 0] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="w-6 h-10 border-2 border-gray-400 rounded-full flex justify-center"
+              className="w-6 h-10 border border-slate-300 rounded-full flex justify-center"
             >
               <motion.div
                 animate={{ y: [0, 12, 0] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                className="w-1 h-3 bg-gray-500 rounded-full mt-2"
+                className="w-1 h-3 bg-slate-400 rounded-full mt-2"
               />
             </motion.div>
           </motion.div>

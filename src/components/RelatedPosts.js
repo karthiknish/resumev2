@@ -22,7 +22,7 @@ export default function RelatedPosts({ posts }) {
 
   return (
     <motion.div
-      className="mt-16 pt-12 border-t-2 border-purple-200 bg-gradient-to-r from-purple-50/50 to-blue-50/50 rounded-3xl p-8" // Modern gradient background with spacing
+      className="mt-16 pt-12 border-t border-slate-200 bg-white rounded-3xl p-6 sm:p-8 shadow-sm"
       variants={staggerContainerVariants} // Enhanced animation
       initial="initial"
       animate="animate"
@@ -34,17 +34,13 @@ export default function RelatedPosts({ posts }) {
         className="text-center mb-12"
       >
         <h2 
-          className="text-3xl sm:text-4xl font-black mb-4 leading-tight tracking-tight"
-          style={{ fontFamily: "Space Grotesk, sans-serif" }}
+          className="font-heading text-3xl sm:text-4xl text-slate-900 mb-4 leading-tight"
         >
-          <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-            Related Articles
-          </span>
+          Related articles
         </h2>
-        <div className="flex items-center justify-center gap-2">
-          <Badge className="bg-purple-600 text-white">
-            {posts.length} {posts.length === 1 ? 'article' : 'articles'}
-          </Badge>
+        <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-100 px-4 py-1 text-sm font-semibold text-slate-700">
+          <span>{posts.length}</span>
+          <span>{posts.length === 1 ? "article" : "articles"}</span>
         </div>
       </motion.div>
       
@@ -59,91 +55,91 @@ export default function RelatedPosts({ posts }) {
             whileHover={{ y: -10, scale: 1.02 }}
             transition={{ duration: 0.3 }}
           >
-            <Link href={`/blog/${post.slug}`} legacyBehavior>
-              <a className="block bg-white/80 backdrop-blur-sm border-2 border-purple-200 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:border-purple-300 transition-all duration-500 group h-full">
-                <div className="relative w-full h-56">
-                  {post.imageUrl ? (
-                    <Image
-                      src={post.imageUrl}
-                      alt={post.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center text-purple-600">
-                      <div className="text-center">
-                        <div className="text-6xl mb-2">📖</div>
-                        <p className="font-medium">No Image</p>
-                      </div>
+            <Link
+              href={`/blog/${post.slug}`}
+              className="block bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-2 transition-all duration-300 group h-full"
+            >
+              <div className="relative w-full h-56">
+                {post.imageUrl ? (
+                  <Image
+                    src={post.imageUrl}
+                    alt={post.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-500">
+                    <div className="text-center text-sm font-medium uppercase tracking-wide">
+                      No image
                     </div>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  
-                  {/* Category Badge */}
-                  {post.category && (
-                    <div className="absolute top-4 left-4">
-                      <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg">
-                        {post.category}
-                      </Badge>
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                
+                {/* Category Badge */}
+                {post.category && (
+                  <div className="absolute top-4 left-4">
+                    <Badge className="bg-slate-900 text-slate-100 shadow-sm">
+                      {post.category}
+                    </Badge>
+                  </div>
+                )}
+              </div>
+              
+              <div className="p-6">
+                <h3 className="font-heading text-xl text-slate-900 mb-3 group-hover:text-slate-700 transition-colors duration-300 line-clamp-2 leading-tight">
+                  {post.title}
+                </h3>
+                
+                {/* Post metadata */}
+                <div className="flex items-center gap-4 text-sm text-slate-500 mb-4">
+                  <div className="flex items-center gap-1">
+                    <CalendarIcon className="w-4 h-4 text-slate-400" />
+                    <span>{formatDate(post.createdAt)}</span>
+                  </div>
+                  {post.tags && post.tags.length > 0 && (
+                    <div className="flex items-center gap-1">
+                      <span className="text-slate-400">#</span>
+                      <span className="text-slate-600">{post.tags[0]}</span>
+                      {post.tags.length > 1 && (
+                        <span className="text-slate-400">+{post.tags.length - 1}</span>
+                      )}
                     </div>
                   )}
                 </div>
                 
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-800 mb-3 group-hover:text-purple-600 transition-colors duration-300 line-clamp-2 leading-tight" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
-                    {post.title}
-                  </h3>
-                  
-                  {/* Post metadata */}
-                  <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
-                    <div className="flex items-center gap-1">
-                      <CalendarIcon className="w-4 h-4 text-purple-500" />
-                      <span>{formatDate(post.createdAt)}</span>
-                    </div>
-                    {post.tags && post.tags.length > 0 && (
-                      <div className="flex items-center gap-1">
-                        <span className="text-purple-500">#</span>
-                        <span>{post.tags[0]}</span>
-                        {post.tags.length > 1 && (
-                          <span className="text-purple-400">+{post.tags.length - 1}</span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                  
-                  {/* Excerpt if available */}
-                  {post.excerpt && (
-                    <p className="text-gray-600 text-sm leading-relaxed line-clamp-2 mb-4">
-                      {post.excerpt}
-                    </p>
-                  )}
-                  
-                  {/* Read more indicator */}
-                  <div className="flex items-center gap-2 text-purple-600 font-semibold text-sm group-hover:gap-3 transition-all duration-300">
-                    <span>Read article</span>
-                    <motion.svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                      animate={{ x: [0, 5, 0] }}
-                      transition={{
-                        duration: 1.5,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M9 5l7 7-7 7"
-                      />
-                    </motion.svg>
-                  </div>
+                {/* Excerpt if available */}
+                {post.excerpt && (
+                  <p className="text-slate-600 text-sm leading-relaxed line-clamp-2 mb-4">
+                    {post.excerpt}
+                  </p>
+                )}
+                
+                {/* Read more indicator */}
+                <div className="flex items-center gap-2 text-slate-700 font-semibold text-sm group-hover:gap-3 transition-all duration-300">
+                  <span>Read article</span>
+                  <motion.svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </motion.svg>
                 </div>
-              </a>
+              </div>
             </Link>
           </motion.div>
         ))}

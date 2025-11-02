@@ -12,16 +12,13 @@ const FeaturedResources = ({ resources }) => {
   return (
     <div className="mb-16">
       <motion.h2
-        className="text-5xl md:text-6xl font-black mb-12 flex items-center gap-4"
-        style={{ fontFamily: "Space Grotesk, sans-serif" }}
+        className="font-heading text-3xl sm:text-4xl md:text-5xl text-slate-900 mb-10 flex items-center gap-3"
         initial={{ opacity: 0, x: -20 }}
         whileInView={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
         viewport={{ once: true }}
       >
-        <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-          Featured Resources
-        </span>
+        <span>Featured resources</span>
         <motion.span
           animate={{ rotate: [0, 15, -15, 0] }}
           transition={{

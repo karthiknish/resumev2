@@ -9,7 +9,7 @@ export default function TermsAndConditions() {
         <title>Terms and Conditions - Karthik Nishanth</title>
         <meta name="description" content="Website Terms and Conditions" />
       </Head>
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
+      <div className="min-h-screen bg-background">
         <PageContainer className="mt-20 md:mt-24">
           <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
             {/* Hero Section */}
@@ -20,50 +20,26 @@ export default function TermsAndConditions() {
               transition={{ duration: 0.6 }}
             >
               <div className="flex items-center justify-center gap-4 mb-6">
-                <motion.div
-                  animate={{ rotate: [0, 10, -10, 0] }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="text-6xl"
-                >
-                  
-                </motion.div>
                 <h1
-                  className="text-4xl md:text-6xl lg:text-7xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent"
-                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                  className="font-heading text-3xl md:text-5xl lg:text-6xl text-slate-900"
                 >
                   Terms & Conditions
                 </h1>
               </div>
-              <p className="text-xl text-gray-600 font-medium max-w-3xl mx-auto">
+              <p className="text-base md:text-lg text-slate-600 max-w-3xl mx-auto">
                 Please read these terms carefully before using our services.
-                <motion.span
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="inline-block ml-2 text-2xl"
-                >
-                  
-                </motion.span>
               </p>
             </motion.div>
 
             {/* Content Container */}
             <motion.div
-              className="bg-gradient-to-br from-purple-50/90 via-white/85 to-blue-50/90 backdrop-blur-sm border-2 border-purple-200 rounded-3xl p-8 md:p-12 shadow-2xl"
+              className="rounded-3xl border border-slate-200 bg-white p-8 md:p-12 shadow-sm"
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
               <div
-                className="prose prose-lg max-w-none prose-p:text-gray-700 prose-headings:text-gray-800 prose-a:text-purple-600 hover:prose-a:text-purple-800 prose-headings:font-black prose-h2:text-3xl prose-h3:text-2xl prose-strong:text-gray-800 prose-li:text-gray-700"
-                style={{ fontFamily: "Inter, sans-serif" }}
+                className="prose prose-lg max-w-none prose-headings:font-heading prose-p:text-slate-600 prose-headings:text-slate-900 prose-a:text-slate-900 hover:prose-a:text-slate-600 prose-strong:text-slate-900 prose-li:text-slate-600"
               >
                 <p>
                   <strong>Last updated: January 15, 2024</strong>

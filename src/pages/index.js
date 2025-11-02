@@ -1,7 +1,7 @@
 import Head from "next/head";
 import React from "react";
 import { motion } from "framer-motion";
-import { ArrowRightIcon } from "@heroicons/react/24/outline";
+import { ArrowRightIcon, ChartBarSquareIcon } from "@heroicons/react/24/outline";
 import {
   Paintbrush,
   Smartphone,
@@ -195,6 +195,26 @@ const stats = [
   {
     value: "3 continents",
     label: "Teams partnered with",
+  },
+];
+
+const services = [
+  {
+    title: "Product Strategy & Discovery",
+    description:
+      "Align product direction with market insights, shape research-backed roadmaps, and validate essential hypotheses before writing a single line of code.",
+    icon: Compass,
+  },
+  {
+    title: "Growth & Lifecycle",
+    description:
+      "Instrument analytics, craft activation funnels, and use experimentation to grow adoption. Implement performance budgets and meaningful KPIs baked into the product.",
+    icon: ChartBarSquareIcon,
+    highlights: [
+      "Mixpanel, GA4, Amplitude integrations",
+      "Lifecycle automations with messaging flows",
+      "Experimentation pipelines, Meta Ads, LinkedIn Ads, Google Ads",
+    ],
   },
 ];
 
@@ -533,6 +553,60 @@ const HomeScreen = () => {
           </div>
         </section>
 
+        <section className="py-20 md:py-28 bg-slate-950 text-slate-100">
+          <div className="max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
+            <div className="grid gap-16 lg:grid-cols-[minmax(0,2.2fr)_minmax(0,2.8fr)] items-start">
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="space-y-6"
+              >
+                <p className="text-xs uppercase text-slate-300 tracking-[0.3em]">
+                  Services
+                </p>
+                <h2 className="font-heading text-3xl sm:text-4xl leading-snug text-white">
+                  Engagement formats designed to meet teams where they are.
+                </h2>
+                <p className="text-base text-slate-300 leading-relaxed">
+                  From product discovery to growth infrastructure, each engagement pairs senior hands-on execution with clear operating rhythms and measurable outcomes.
+                </p>
+              </motion.div>
+
+              <div className="space-y-6">
+                {services.map((service) => (
+                  <motion.div
+                    key={service.title}
+                    initial={{ opacity: 0, y: 24 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
+                    className="rounded-3xl border border-white/10 bg-white/5 p-6 sm:p-8 shadow-sm hover:-translate-y-1 hover:shadow-lg transition"
+                  >
+                    <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-slate-100">
+                      <service.icon className="h-6 w-6" />
+                    </div>
+                    <h3 className="mt-6 font-heading text-2xl text-white">
+                      {service.title}
+                    </h3>
+                    <p className="mt-3 text-sm text-slate-300 leading-relaxed">
+                      {service.description}
+                    </p>
+                    {service.highlights?.length ? (
+                      <ul className="mt-5 space-y-2 text-sm text-slate-300">
+                        {service.highlights.map((highlight) => (
+                          <li key={highlight}>• {highlight}</li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section className="py-20 md:py-28 bg-background">
           <div className="max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
             <div className="grid gap-12 md:grid-cols-[minmax(0,2.2fr)_minmax(0,2.8fr)] items-start">
@@ -630,14 +704,27 @@ const HomeScreen = () => {
           </div>
         </section>
 
-        <section className="py-20 md:py-28 bg-background">
-          <div className="max-w-5xl mx-auto px-6 sm:px-10 md:px-12 text-center">
+        <section className="relative overflow-hidden py-20 md:py-28">
+          <div className="absolute inset-0 -z-30">
+            <Image
+              src="/hero-back.jpeg"
+              alt="Abstract neon glass background"
+              fill
+              sizes="100vw"
+              className="object-cover darken-[rgba(0,0,0,0.55)] object-center"
+            />
+          </div>
+          <div className="absolute inset-0 -z-20 bg-gradient-to-br from-slate-950/70 via-slate-950/60 to-slate-900/40" />
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_62%)]" />
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom,_rgba(236,72,153,0.14),_transparent_58%)]" />
+
+          <div className="relative max-w-5xl mx-auto px-6 sm:px-10 md:px-12 text-center text-slate-100">
             <motion.h2
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="font-heading text-3xl sm:text-4xl text-slate-900 leading-snug"
+              className="font-heading text-3xl sm:text-4xl leading-snug"
             >
               Let’s design the next chapter of your product.
             </motion.h2>
@@ -646,7 +733,7 @@ const HomeScreen = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="mt-6 text-base text-slate-600 leading-relaxed max-w-2xl mx-auto"
+              className="mt-6 text-base text-slate-300 leading-relaxed max-w-2xl mx-auto"
             >
               Share the roadmap, the constraints, or even the chaos you’re working within. I’ll help uncover the best path forward and start shipping.
             </motion.p>
@@ -659,12 +746,12 @@ const HomeScreen = () => {
               className="mt-10 flex flex-col sm:flex-row justify-center gap-4"
             >
               <Link href="/contact">
-                <Button className="bg-slate-900 text-slate-100 hover:bg-slate-700">
+                <Button className="bg-slate-100 text-slate-900 hover:bg-slate-300">
                   Book a call
                 </Button>
               </Link>
               <Link href="/services">
-                <Button variant="outline" className="border-slate-400 text-slate-700 hover:bg-slate-100">
+                <Button variant="outline" className="border-slate-300 text-slate-100 hover:bg-slate-900">
                   Explore services
                 </Button>
               </Link>

@@ -8,46 +8,46 @@ import Link from "next/link"; // Ensure Link is imported if not already
 const itemsSample = [
   {
     id: "ecommerce-platform",
-    title: "E-commerce Platform",
-    meta: "35% Growth",
+    title: "E-commerce platform revamp",
+    meta: "+35% conversion",
     description:
-      "Advanced UX design and performance optimization for increased conversions",
-    icon: <TrendingUp className="w-4 h-4 text-blue-500" />,
+      "Simplified flows, tuned performance, and a resilient checkout stack to keep momentum during launches.",
+    icon: <TrendingUp className="w-4 h-4 text-slate-700" />,
     status: "Live",
     tags: ["UX", "Performance", "Analytics"],
     colSpan: 2,
     hasPersistentHover: true,
-    link: "/projects/ecommerce-platform", // Added link
+    link: "/projects/ecommerce-platform",
   },
   {
     id: "startup-infrastructure",
-    title: "Startup Infrastructure",
-    meta: "10x Scale",
-    description: "Scalable architecture supporting exponential user growth",
-    icon: <CheckCircle className="w-4 h-4 text-emerald-500" />, // Changed color for variety
+    title: "Startup infrastructure",
+    meta: "10× scale",
+    description: "Provisioned environments, observability, and CI/CD so the team ships safely every week.",
+    icon: <CheckCircle className="w-4 h-4 text-slate-700" />,
     status: "Updated",
     tags: ["Architecture", "Scaling"],
-    link: "/projects/startup-infrastructure", // Added link
+    link: "/projects/startup-infrastructure",
   },
   {
     id: "ai-integration",
-    title: "AI Integration",
-    meta: "40% Cost Reduction",
-    description: "AI-powered chatbot implementation for customer service",
-    icon: <Video className="w-4 h-4 text-purple-500" />, // Changed color for variety
+    title: "Support automation",
+    meta: "−40% cost",
+    description: "Integrated an AI-guided triage workflow that resolves common support tickets without human escalation.",
+    icon: <Video className="w-4 h-4 text-slate-700" />,
     tags: ["AI", "Automation"],
     colSpan: 2,
-    link: "/projects/ai-integration", // Added link
+    link: "/projects/ai-integration",
   },
   {
     id: "analytics-system",
-    title: "Analytics System",
-    meta: "25% Revenue Growth",
-    description: "Data analytics overhaul providing actionable insights",
-    icon: <Globe className="w-4 h-4 text-sky-500" />, // Changed color for variety
+    title: "Analytics foundation",
+    meta: "+25% revenue",
+    description: "Unified data pipelines with executive dashboards so leadership can steer with live insights.",
+    icon: <Globe className="w-4 h-4 text-slate-700" />,
     status: "Live",
     tags: ["Analytics", "Business Intelligence"],
-    link: "/projects/analytics-system", // Added link
+    link: "/projects/analytics-system",
   },
   // Added a fifth item for layout consistency if needed, or adjust colSpans
   // {
@@ -68,35 +68,45 @@ export default function FeaturedProjectsSection() {
       whileInView={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8 }}
       viewport={{ once: true }}
-      className="bg-black py-16 md:py-24" // Increased padding
+      className="relative overflow-hidden py-20 md:py-24 bg-background"
     >
-      <div className="container mx-auto px-4 space-y-12">
-        {" "}
-        {/* Added space-y */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.16),_transparent_65%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(226,232,240,0.25),_transparent_70%)]" />
+
+      <div className="relative max-w-6xl mx-auto px-6 sm:px-10 md:px-12 space-y-12">
         <motion.h2
           initial={{ y: 20, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
           viewport={{ once: true }}
-          className="text-3xl text-center font-bold sm:text-4xl mb-8 text-white font-calendas"
+          className="font-heading text-3xl sm:text-4xl text-center text-slate-900"
         >
-          Featured Projects
+          Featured projects
         </motion.h2>
-        {/* Render BentoGrid with itemsSample */}
+        <motion.p
+          initial={{ y: 20, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          viewport={{ once: true }}
+          className="text-center text-slate-600 max-w-3xl mx-auto text-base leading-relaxed"
+        >
+          A sampling of recent collaborations—pairing product strategy, interaction design, and calm engineering to ship meaningful outcomes.
+        </motion.p>
+
         <BentoGrid items={itemsSample} />
-        {/* CTA Button below the grid */}
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }} // Adjust delay based on grid animation
+          transition={{ duration: 0.5, delay: 0.4 }}
           className="text-center"
         >
           <Link
-            href="/projects" // Link to a potential dedicated projects page
-            className="inline-block px-8 py-3 border border-gray-500 hover:border-blue-500 hover:bg-blue-500/10 text-gray-300 hover:text-blue-300 font-semibold rounded-md transition-colors shadow-lg"
+            href="/projects"
+            className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 px-7 py-3 text-base font-semibold text-slate-800 hover:border-slate-500 hover:bg-slate-100 transition-all duration-300"
           >
-            See More Projects →
+            See more projects →
           </Link>
         </motion.div>
       </div>

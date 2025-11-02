@@ -249,46 +249,47 @@ function SlugPage({ data, relatedPosts }) {
       )}
       <PageContainer>
         <div
-          className="min-h-screen bg-primary/10 py-24 relative"
+          className="relative min-h-screen bg-background py-24"
           style={{ fontFamily: "Inter, sans-serif" }}
         >
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.16),_transparent_65%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(226,232,240,0.25),_transparent_70%)]" />
           <div className="max-w-5xl mx-auto px-4 pt-4 sm:px-6 md:px-8 relative z-10">
             {/* Back Button */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
-              className="mb-12"
+              whileHover={{ x: -3 }}
+              whileTap={{ scale: 0.98 }}
+              className="mb-12 inline-block"
             >
-              <Link href="/blog" passHref legacyBehavior>
-                <motion.a
-                  className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 font-semibold shadow-sm transition-colors duration-200"
-                  whileHover={{ x: -3 }}
-                  whileTap={{ scale: 0.98 }}
+              <Link
+                href="/blog"
+                className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 hover:border-slate-300 font-semibold shadow-sm transition-colors duration-200"
+              >
+                <motion.svg
+                  className="w-5 h-5 sm:w-6 sm:h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  animate={{ x: [0, -2, 0] }}
+                  transition={{
+                    duration: 1.2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
                 >
-                  <motion.svg
-                    className="w-5 h-5 sm:w-6 sm:h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                    animate={{ x: [0, -2, 0] }}
-                    transition={{
-                      duration: 1.2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15 19l-7-7 7-7"
-                    />
-                  </motion.svg>
-                  <span className="text-base sm:text-lg">
-                    Back to all articles
-                  </span>
-                </motion.a>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15 19l-7-7 7-7"
+                  />
+                </motion.svg>
+                <span className="text-base sm:text-lg">
+                  Back to all articles
+                </span>
               </Link>
             </motion.div>
             {/* Assign the ref to the Card component */}
@@ -298,7 +299,7 @@ function SlugPage({ data, relatedPosts }) {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="bg-white border-2 border-primary/20 p-6 sm:p-8 md:p-12 rounded-3xl shadow-xl"
+              className="bg-white border border-slate-200 p-6 sm:p-8 md:p-12 rounded-3xl shadow-sm"
             >
               <motion.div
                 variants={staggerContainerVariants}
@@ -344,8 +345,7 @@ function SlugPage({ data, relatedPosts }) {
                   <div className="flex flex-col">
                     <motion.h1
                       variants={fadeInUpVariants}
-                      className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black mb-6 sm:mb-8 leading-tight tracking-tight text-brandSecondary"
-                      style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                      className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-slate-900 mb-6 sm:mb-8 leading-tight"
                     >
                       {data.title}
                     </motion.h1>
@@ -355,28 +355,23 @@ function SlugPage({ data, relatedPosts }) {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
-                        className="mb-8"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="mb-8 inline-block"
                       >
                         <Link
                           href={`/admin/blog/edit/${data._id}`}
-                          passHref
-                          legacyBehavior
+                          className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-2xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-bold shadow-lg text-sm sm:text-base"
                         >
-                          <motion.a
-                            className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-2xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-bold shadow-lg text-sm sm:text-base"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                          >
-                            <span className="text-xl"></span>
-                            Edit Article
-                          </motion.a>
+                          <span className="text-xl"></span>
+                          Edit Article
                         </Link>
                       </motion.div>
                     )}
 
                     <motion.div
                       variants={fadeInUpVariants}
-                      className="flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-3 sm:gap-y-4 text-gray-700 mb-6 sm:mb-8 bg-primary/5 p-4 sm:p-6 rounded-2xl border-2 border-primary/20"
+                      className="flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-3 sm:gap-y-4 text-slate-600 mb-6 sm:mb-8 bg-slate-100 p-4 sm:p-6 rounded-2xl border border-slate-200"
                     >
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-base sm:text-lg">
@@ -404,7 +399,7 @@ function SlugPage({ data, relatedPosts }) {
                         </span>
                         <motion.button
                           onClick={() => shareArticle("twitter")}
-                          className="p-2 sm:p-3 bg-gray-900 hover:bg-gray-800 text-white rounded-2xl transition-colors duration-200 shadow-sm"
+                          className="p-2 sm:p-3 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl transition-colors duration-200 shadow-sm"
                           aria-label="Share on Twitter"
                           whileHover={{ y: -1 }}
                           whileTap={{ scale: 0.98 }}
@@ -419,7 +414,7 @@ function SlugPage({ data, relatedPosts }) {
                         </motion.button>
                         <motion.button
                           onClick={() => shareArticle("facebook")}
-                          className="p-2 sm:p-3 bg-gray-900 hover:bg-gray-800 text-white rounded-2xl transition-colors duration-200 shadow-sm"
+                          className="p-2 sm:p-3 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl transition-colors duration-200 shadow-sm"
                           aria-label="Share on Facebook"
                           whileHover={{ y: -1 }}
                           whileTap={{ scale: 0.98 }}
@@ -434,7 +429,7 @@ function SlugPage({ data, relatedPosts }) {
                         </motion.button>
                         <motion.button
                           onClick={() => shareArticle("linkedin")}
-                          className="p-2 sm:p-3 bg-gray-900 hover:bg-gray-800 text-white rounded-2xl transition-colors duration-200 shadow-sm"
+                          className="p-2 sm:p-3 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl transition-colors duration-200 shadow-sm"
                           aria-label="Share on LinkedIn"
                           whileHover={{ y: -1 }}
                           whileTap={{ scale: 0.98 }}
@@ -449,7 +444,7 @@ function SlugPage({ data, relatedPosts }) {
                         </motion.button>
                         <motion.button
                           onClick={() => shareArticle("copy")}
-                          className="p-2 sm:p-3 bg-gray-900 hover:bg-gray-800 text-white rounded-2xl transition-colors duration-200 shadow-sm"
+                          className="p-2 sm:p-3 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl transition-colors duration-200 shadow-sm"
                           aria-label="Copy link"
                           whileHover={{ y: -1 }}
                           whileTap={{ scale: 0.98 }}
@@ -472,30 +467,30 @@ function SlugPage({ data, relatedPosts }) {
                       </div>
                     </motion.div>
 
-                    <Separator className="my-8 bg-primary/20 h-0.5" />
+                    <Separator className="my-8 bg-slate-200 h-px" />
 
                     {/* Removed Audio Player Section */}
 
                     {data.content && (
                       <motion.div
                         variants={fadeInUpVariants}
-                        className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-headings:font-bold prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-purple-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700 prose-li:my-2 prose-blockquote:border-l-4 prose-blockquote:border-purple-400 prose-blockquote:bg-purple-50 prose-blockquote:p-6 prose-blockquote:rounded-r-2xl prose-blockquote:my-6 prose-code:bg-gray-100 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-900 prose-pre:rounded-2xl prose-pre:p-6"
+                        className="prose prose-lg max-w-none prose-headings:font-heading prose-headings:text-slate-900 prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-p:text-slate-600 prose-p:leading-relaxed prose-a:text-slate-900 prose-a:no-underline hover:prose-a:underline prose-strong:text-slate-900 prose-ul:text-slate-600 prose-ol:text-slate-600 prose-li:my-2 prose-blockquote:border-l-4 prose-blockquote:border-slate-300 prose-blockquote:bg-slate-100 prose-blockquote:p-6 prose-blockquote:rounded-r-2xl prose-blockquote:my-6 prose-code:bg-slate-100 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-slate-900 prose-pre:text-slate-100 prose-pre:rounded-2xl prose-pre:p-6"
                         style={{ fontFamily: "Inter, sans-serif" }}
                       >
                         <TipTapRenderer content={data.content} />
                       </motion.div>
                     )}
 
-                    <Separator className="my-12 bg-primary/20 h-0.5" />
+                    <Separator className="my-12 bg-slate-200 h-px" />
 
                     <motion.div
                       variants={fadeInUpVariants}
                       className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
                     >
-                      <Link href="/blog">
-                        <motion.span
+                      <motion.div whileHover={{ x: -3 }}>
+                        <Link
+                          href="/blog"
                           className="inline-flex items-center gap-2 text-gray-900 hover:text-gray-700 font-semibold text-lg transition-colors duration-200"
-                          whileHover={{ x: -3 }}
                         >
                           <motion.svg
                             className="w-6 h-6"
@@ -517,19 +512,19 @@ function SlugPage({ data, relatedPosts }) {
                             />
                           </motion.svg>
                           More articles
-                        </motion.span>
-                      </Link>
+                        </Link>
+                      </motion.div>
 
                       {data.tags && data.tags.length > 0 && (
                         <div className="flex items-center flex-wrap gap-3">
-                          <span className="flex items-center gap-2 text-primary font-semibold">
+                          <span className="flex items-center gap-2 text-slate-600 font-semibold">
                             <span className="text-2xl"></span>
                             Tags:
                           </span>
                           {data.tags.map((tag) => (
                             <motion.span
                               key={tag}
-                              className="bg-primary/10 text-primary px-4 py-2 rounded-full font-medium border border-primary/30 hover:bg-primary/20 transition-colors duration-200"
+                              className="bg-slate-100 text-slate-700 px-4 py-2 rounded-full font-medium border border-slate-200 hover:bg-slate-200 transition-colors duration-200"
                               whileHover={{ scale: 1.02 }}
                               initial={{ opacity: 0, scale: 0.8 }}
                               animate={{ opacity: 1, scale: 1 }}

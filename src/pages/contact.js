@@ -1,5 +1,6 @@
 import React, { useEffect } from "react"; // Removed useState
 import Head from "next/head";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import Cal, { getCalApi } from "@calcom/embed-react"; // Import Cal.com component
 import Services from "@/components/Services";
@@ -51,198 +52,188 @@ export default function Contact() {
         />
       </Head>
       <PageContainer>
-        <div
-          className="min-h-screen mt-24 pt-4 bg-gradient-to-br from-primary/10 via-background to-brandSecondary/10 w-full relative"
-          style={{ fontFamily: "Inter, sans-serif" }}
-        >
-          <FadeIn>
-            <div className="text-center mb-12 sm:mb-16 px-4 sm:px-8 md:px-16 lg:px-32 mt-8 sm:mt-12 md:mt-16">
-              {/* Animated Introduction */}
+        <div className="min-h-screen overflow-hidden">
+          {/* Hero */}
+          <section className="relative overflow-hidden">
+            <div className="absolute inset-0 -z-30">
+              <Image
+                src="/hero-back.jpeg"
+                alt="Abstract glass background"
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover darken-[rgba(0,0,0,0.5)] object-center"
+              />
+            </div>
+            <div className="absolute inset-0 -z-20 bg-white/85 backdrop-blur-sm" />
+            <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.12),_transparent_62%)]" />
+            <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom,_rgba(236,72,153,0.1),_transparent_58%)]" />
+
+            <div className="relative max-w-5xl mx-auto px-6 sm:px-10 md:px-12 py-24 md:py-32 text-center">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 bg-white border border-brandSecondary rounded-full text-brandSecondary text-xs sm:text-sm font-semibold mb-6 sm:mb-8 shadow-lg"
+                className="inline-flex items-center gap-3 px-5 py-2.5 bg-white border border-slate-200 rounded-full text-slate-600 text-sm font-semibold mb-6 shadow-sm"
               >
-                <span>Ready to get started?</span>
+                <span>Let’s collaborate</span>
               </motion.div>
 
               <motion.h1
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-6 sm:mb-8 leading-tight tracking-tight"
-                style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                transition={{ duration: 0.7, delay: 0.1 }}
+                className="font-heading text-4xl sm:text-5xl md:text-6xl leading-tight text-slate-900 mb-6"
               >
-                <span className="bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent">
-                  Get In Touch
-                </span>
-                {/* Emoji removed for a more professional look */}
+                Tell me about the product you’re building
               </motion.h1>
 
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-700 mb-8 sm:mb-12 max-w-4xl mx-auto leading-relaxed font-medium px-2"
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-3xl mx-auto"
               >
-                Have a{" "}
-                <span className="inline-block bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent font-bold">
-                  project in mind
-                </span>{" "}
-                or want to discuss a potential collaboration? Let's turn your
-                vision into reality.
+                Share the context, constraints, or ambition behind your idea. I’ll help map the next steps and assemble the right delivery plan.
               </motion.p>
             </div>
-          </FadeIn>
+          </section>
 
-          <FadeIn delay={0.2}>
-            {/* Services Section */}
-            <div className="px-4 sm:px-8 md:px-16 lg:px-32 mt-8 sm:mt-12 md:mt-16">
-              <Services />
+          {/* Services */}
+          <section className="py-16 md:py-20 bg-background">
+            <div className="max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
+              <FadeIn>
+                <Services />
+              </FadeIn>
             </div>
-          </FadeIn>
+          </section>
 
-          {/* --- Booking Section Start --- */}
-          <FadeIn delay={0.3}>
-            <section className="mt-12 sm:mt-16 bg-white p-4 sm:p-6 md:p-8 rounded-3xl shadow-2xl border-2 border-brandSecondary px-4 sm:px-8 md:px-16 lg:px-32">
+          {/* Booking */}
+          <section className="py-16 md:py-20 bg-white">
+            <div className="max-w-5xl mx-auto px-6 sm:px-10 md:px-12">
+              <FadeIn delay={0.1}>
+                <div className="bg-white border border-slate-200 rounded-3xl shadow-sm p-6 sm:p-8">
+                  <motion.h2
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    viewport={{ once: true }}
+                    className="font-heading text-3xl sm:text-4xl leading-snug text-slate-900 text-center"
+                  >
+                    Book a 15-minute consultation
+                  </motion.h2>
+                  <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.1 }}
+                    viewport={{ once: true }}
+                    className="mt-4 text-base text-slate-600 text-center max-w-2xl mx-auto"
+                  >
+                    Pick a time that works for you. We’ll talk through your goals, timelines, and the best way to move forward.
+                  </motion.p>
+                  <div className="mt-8 min-h-[400px] bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-center">
+                    <Cal
+                      namespace="15min"
+                      calLink="karthik-nish/15min"
+                      style={{ width: "100%", height: "100%", minHeight: "450px", overflow: "scroll" }}
+                      config={{ layout: "month_view" }}
+                    />
+                  </div>
+                </div>
+              </FadeIn>
+            </div>
+          </section>
+
+          {/* Final CTA */}
+          <section className="relative overflow-hidden py-20 md:py-24 bg-gradient-to-br from-[#36C5F0] via-[#1DA1F2] to-[#2563EB]">
+            <div className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.28),_transparent_55%)]" />
+            <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom,_rgba(59,130,246,0.35),_transparent_70%)]" />
+
+            <div className="relative max-w-5xl mx-auto px-6 sm:px-10 md:px-12 text-center text-white">
               <motion.h2
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
-                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 sm:mb-6 flex flex-wrap items-center justify-center gap-3 sm:gap-6"
-                style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                transition={{ duration: 0.6 }}
+                className="font-heading text-3xl sm:text-4xl leading-snug"
               >
-                {/* Emoji removed for a more professional look */}
-                <span className="bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent text-center sm:text-left">
-                  Schedule a Consultation
-                </span>
+                Let’s outline your next release
               </motion.h2>
               <motion.p
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
                 viewport={{ once: true }}
-                className="text-gray-600 mb-6 sm:mb-8 text-base sm:text-lg md:text-xl max-w-3xl mx-auto text-center leading-relaxed font-medium px-2"
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="mt-6 text-base text-white/90 leading-relaxed max-w-2xl mx-auto"
               >
-                Ready to discuss your project? Pick a time that works best for
-                you using the scheduler below. Let's grab a virtual coffee and
-                chat about your vision!
+                Tell me about the audience, tech stack, and constraints. I’ll put together a clear plan covering scope, timelines, and collaboration cadence.
               </motion.p>
-              <div className="min-h-[350px] sm:min-h-[400px] bg-white rounded-3xl flex items-center justify-center border-2 border-brandSecondary/30 shadow-inner">
-                {/* Cal.com Embed */}
-                <Cal
-                  namespace="15min"
-                  calLink="karthik-nish/15min"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    overflow: "scroll",
-                    minHeight: "450px",
-                  }} // Added minHeight
-                  config={{ layout: "month_view" }}
-                />
-              </div>
-            </section>
-          </FadeIn>
-          {/* --- Booking Section End --- */}
 
-          <FadeIn delay={0.4}>
-            {/* Render the ContactForm component instead of the inline form */}
-            <div className="px-4 sm:px-8 md:px-16 lg:px-32 mt-8 sm:mt-12 md:mt-16">
-              <ContactForm />
-            </div>
-          </FadeIn>
-
-          <FadeIn delay={0.6}>
-            <section className="mt-12 sm:mt-16 bg-gradient-to-br from-primary to-brandSecondary p-6 sm:p-8 md:p-12 rounded-3xl shadow-2xl text-white relative overflow-hidden px-4 sm:px-8 md:px-16 lg:px-32">
-              {/* Floating Elements */}
               <motion.div
-                className="absolute top-6 left-6 sm:top-10 sm:left-10 text-3xl sm:text-4xl opacity-30"
-                animate={{
-                  y: [0, -30, 0],
-                  rotate: [0, 360],
-                }}
-                transition={{
-                  duration: 6,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              ></motion.div>
-              <motion.div
-                className="absolute bottom-6 right-6 sm:bottom-10 sm:right-20 text-2xl sm:text-3xl opacity-25"
-                animate={{
-                  x: [0, 20, 0],
-                  y: [0, -15, 0],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 2,
-                }}
-              ></motion.div>
-
-              <motion.h2
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
-                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-6 sm:mb-8 flex flex-wrap items-center justify-center gap-3 sm:gap-6 relative z-10 text-center"
-                style={{ fontFamily: "Space Grotesk, sans-serif" }}
-              >
-                Let's Build Something Amazing
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                viewport={{ once: true }}
-                className="text-lg sm:text-xl md:text-2xl text-purple-100 mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed font-medium text-center relative z-10 px-2"
+                className="mt-10 flex flex-col sm:flex-row justify-center gap-4"
               >
-                Whether you need a stunning website, a complex web application,
-                or technical consultation, I'm here to help turn your wildest
-                vision into reality. Let's make magic happen!
-              </motion.p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12 relative z-10">
+                <a
+                  href="mailto:hello@karthiknish.com"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white text-slate-900 px-6 py-3 font-semibold shadow-sm transition hover:bg-slate-100"
+                >
+                  Email me
+                </a>
+                <a
+                  href="/services"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/50 bg-white/10 px-6 py-3 font-semibold text-white transition hover:bg-white/20"
+                >
+                  Explore services
+                </a>
+              </motion.div>
+
+              <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6">
                 {[
                   {
-                    title: "Quick Response",
-                    desc: "I typically respond to all inquiries within 24 hours.",
+                    title: "Response time",
+                    desc: "I reply to most enquiries within 24 hours.",
                   },
                   {
-                    title: "Flexible Collaboration",
-                    desc: "Available for both short-term projects and long-term partnerships.",
+                    title: "Collaboration",
+                    desc: "Available for project-based or retained engagements.",
                   },
                   {
-                    title: "UK-Based",
-                    desc: "Located in Liverpool, available for both remote and local work.",
+                    title: "Based in Liverpool",
+                    desc: "Happy to work remotely across time zones.",
                   },
-                ].map((item, index) => (
+                ].map((item) => (
                   <motion.div
                     key={item.title}
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 16 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
                     viewport={{ once: true }}
-                    whileHover={{ y: -10, scale: 1.05 }}
-                    className="bg-white/20 backdrop-blur-sm p-4 sm:p-6 rounded-3xl border border-white/30 text-center hover:bg-white/30 transition-all duration-300"
+                    transition={{ duration: 0.5 }}
+                    className="rounded-2xl border border-white/40 bg-white/15 p-5 text-left"
                   >
-                    <h4
-                      className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3"
-                      style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                    >
+                    <h3 className="font-heading text-lg text-white mb-2">
                       {item.title}
-                    </h4>
-                    <p className="text-purple-100 leading-relaxed text-sm sm:text-base">
+                    </h3>
+                    <p className="text-sm text-white/85 leading-relaxed">
                       {item.desc}
                     </p>
                   </motion.div>
                 ))}
               </div>
-            </section>
-          </FadeIn>
+            </div>
+          </section>
+
+          {/* Contact form */}
+          <section className="py-16 md:py-20 bg-background">
+            <div className="max-w-5xl mx-auto px-6 sm:px-10 md:px-12">
+              <FadeIn delay={0.1}>
+                <ContactForm />
+              </FadeIn>
+            </div>
+          </section>
+
         </div>
       </PageContainer>
     </>

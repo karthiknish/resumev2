@@ -86,27 +86,17 @@ export default function Resources() {
           name="description"
           content="A curated collection of web development resources for UK developers, featuring tools, tutorials, and community resources optimised for the British tech ecosystem."
         />
-
-        {/* Google Fonts */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="true"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
       </Head>
       <PageContainer>
         <JsonLd data={websiteSchema} />
 
         <div
-          className="min-h-screen bg-primary/10 py-24 md:py-32"
+          className="relative min-h-screen bg-background py-24 md:py-32"
           style={{ fontFamily: "Inter, sans-serif" }}
         >
-          <div className="max-w-7xl mx-auto px-6">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.16),_transparent_65%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(226,232,240,0.25),_transparent_70%)]" />
+          <div className="relative max-w-7xl mx-auto px-6">
             {/* Hero Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -118,24 +108,19 @@ export default function Resources() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="inline-flex items-center gap-3 px-6 py-3 bg-white border border-brandSecondary rounded-full text-brandSecondary text-sm font-semibold mb-8 shadow-lg"
+                className="inline-flex items-center gap-3 px-5 py-2.5 bg-white border border-slate-200 rounded-full text-slate-600 text-sm font-semibold mb-8 shadow-sm"
               >
-                <span>Curated Developer Resources</span>
+                <span>Curated developer resources</span>
               </motion.div>
 
               <h1
-                className="text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight text-brandSecondary"
-                style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                className="font-heading text-4xl md:text-6xl lg:text-7xl mb-6 leading-tight text-slate-900"
               >
-                Dev Resources
+                Dev resources
               </h1>
 
-              <p className="text-2xl md:text-3xl text-brandSecondary/70 max-w-5xl mx-auto leading-relaxed font-medium mb-12">
-                A curated collection of{" "}
-                <span className="font-bold text-brandSecondary">
-                  tools, tutorials, and resources
-                </span>{" "}
-                that I find valuable in my development work across the UK.
+              <p className="text-base sm:text-lg md:text-xl text-slate-600 max-w-4xl mx-auto leading-relaxed font-medium mb-12">
+                A hand-picked library of tools, tutorials, and reference materials that keep projects shipping smoothly—from discovery to launch.
               </p>
             </motion.div>
 
@@ -159,7 +144,7 @@ export default function Resources() {
               transition={{ duration: 0.8, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              <div className="bg-white border-2 border-brandSecondary p-8 rounded-3xl shadow-xl mb-12">
+              <div className="bg-white border border-slate-200 p-6 sm:p-7 rounded-3xl shadow-sm mb-12">
                 <ResourceFilters
                   searchTerm={searchTerm}
                   setSearchTerm={setSearchTerm}
@@ -206,59 +191,20 @@ export default function Resources() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
               viewport={{ once: true }}
-              className="bg-gradient-to-br from-blue-800 to-blue-900 p-12 md:p-16 rounded-3xl shadow-2xl text-center relative overflow-hidden"
+              className="bg-slate-950 text-slate-100 p-10 sm:p-12 md:p-16 rounded-3xl shadow-xl text-center relative overflow-hidden"
             >
-              {/* Floating Elements */}
-              <motion.div
-                className="absolute top-10 left-10 text-6xl opacity-20"
-                animate={{
-                  y: [0, -30, 0],
-                  rotate: [0, 360],
-                }}
-                transition={{
-                  duration: 8,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              ></motion.div>
-              <motion.div
-                className="absolute bottom-10 right-20 text-5xl opacity-20"
-                animate={{
-                  scale: [1, 1.4, 1],
-                  rotate: [0, -45, 0],
-                }}
-                transition={{
-                  duration: 6,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 2,
-                }}
-              ></motion.div>
-
               <motion.h2
-                className="text-4xl md:text-6xl font-black text-white mb-8 relative z-10"
-                style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                className="font-heading text-3xl sm:text-4xl md:text-5xl text-white mb-6 relative z-10"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
               >
-                Need Personalized Help?
-                <motion.span
-                  animate={{ rotate: [0, 20, -20, 0] }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="inline-block ml-4 text-yellow-300"
-                ></motion.span>
+                Need personalised help?
               </motion.h2>
 
-              <p className="text-xl md:text-2xl text-white/80 mb-12 max-w-4xl mx-auto leading-relaxed font-medium relative z-10">
-                Looking for personalized development help or have questions
-                about any of these resources?
-                <span className="font-bold text-white"> Let's connect! </span>
+              <p className="text-base sm:text-lg text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed font-medium relative z-10">
+                Want a second pair of eyes on your stack or roadmap? Let’s talk through your goals and map the next steps together.
               </p>
 
               <motion.div
@@ -268,7 +214,7 @@ export default function Resources() {
               >
                 <Link
                   href="/contact"
-                  className="inline-flex items-center gap-3 px-12 py-6 bg-white text-primary hover:text-brandSecondary font-black text-xl rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-white text-slate-900 hover:text-slate-700 font-semibold text-base rounded-2xl transition-all duration-300 shadow-sm hover:shadow-lg"
                 >
                   <motion.span
                     animate={{ y: [0, -3, 0] }}
@@ -277,9 +223,11 @@ export default function Resources() {
                       repeat: Infinity,
                       ease: "easeInOut",
                     }}
-                    className="text-2xl"
-                  ></motion.span>
-                  Get in Touch
+                    className="text-lg"
+                  >
+                    →
+                  </motion.span>
+                  Discuss your project
                   <motion.span
                     animate={{ x: [0, 5, 0] }}
                     transition={{
@@ -288,7 +236,7 @@ export default function Resources() {
                       ease: "easeInOut",
                     }}
                   >
-                    →
+                    Start
                   </motion.span>
                 </Link>
               </motion.div>

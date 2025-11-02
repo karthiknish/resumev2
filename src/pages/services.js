@@ -1,7 +1,8 @@
 import React from "react";
 import Head from "next/head";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   FaCode,
   FaMobileAlt,
@@ -15,9 +16,9 @@ import {
   FaPaintBrush,
   FaStore,
 } from "react-icons/fa";
-import { FadeIn, HoverCard } from "../components/animations/MotionComponents";
 import PageContainer from "@/components/PageContainer";
-import JsonLd, { createServiceSchema } from "@/components/JsonLd"; // Import JsonLd and schema helper
+import JsonLd, { createServiceSchema } from "@/components/JsonLd";
+import { Button } from "@/components/ui/button";
 
 // Helper function to generate slugs
 const generateSlug = (title) => {
@@ -185,324 +186,366 @@ export default function Services() {
   return (
     <>
       <Head>
-        <title>Services - Karthik Nishanth | Full Stack Developer</title>
+        <title>Services - Karthik Nishanth | Cross Platform Partner</title>
         <meta
           name="description"
-          content="Professional web and mobile development services offered by Karthik Nishanth. Specializing in web applications, mobile apps, and technical consultation."
-        />
-        <meta
-          name="keywords"
-          content="web development, mobile development, frontend, backend, full stack, React, Node.js, Next.js, technical consultation"
+          content="Explore the product, engineering, and growth engagements I lead for teams shipping modern web and mobile software."
         />
         <meta
           property="og:title"
-          content="Services - Karthik Nishanth | Full Stack Developer"
+          content="Services - Karthik Nishanth | Cross Platform Partner"
         />
         <meta
           property="og:description"
-          content="Professional web and mobile development services offered by Karthik Nishanth. Specializing in web applications, mobile apps, and technical consultation."
+          content="From discovery to launch, partner with Karthik Nishanth for React, Next.js, React Native, and cloud expertise."
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://karthiknish.com/services" />
         <meta
           property="og:image"
-          content="https://karthiknish.com/images/og-image.jpg" // Consider updating this OG image
+          content="https://karthiknish.com/images/og-image.jpg"
         />
-        <meta property="og:site_name" content="Karthik Nishanth" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta
-          name="twitter:title"
-          content="Services - Karthik Nishanth | Full Stack Developer"
-        />
-        <meta
-          name="twitter:description"
-          content="Professional web and mobile development services offered by Karthik Nishanth. Specializing in web applications, mobile apps, and technical consultation."
-        />
-        <meta
-          name="twitter:image"
-          content="https://karthiknish.com/images/og-image.jpg" // Consider updating this OG image
-        />
-        <meta name="robots" content="index, follow" />
-        <meta name="googlebot" content="index, follow" />
         <link rel="canonical" href="https://karthiknish.com/services" />
 
-        {/* Add Service JSON-LD Schemas */}
         {serviceSchemas.map((schema, index) => (
           <JsonLd key={`service-schema-${index}`} data={schema} />
         ))}
 
-        {/* Google Fonts */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="true"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
       </Head>
       <PageContainer>
-        <div
-          className="min-h-screen bg-primary/10 py-24 md:py-32"
-          style={{ fontFamily: "Inter, sans-serif" }}
-        >
-          <div className="max-w-7xl mx-auto px-6">
-            {/* Hero Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-20"
-            >
-              <div className="inline-flex items-center gap-3 px-6 py-3 bg-white border-2 border-brandSecondary text-sm font-semibold mb-8 shadow-sm rounded-full text-brandSecondary">
-                <span>Professional Development Services</span>
+        <div className="min-h-screen overflow-x-hidden">
+          <section className="relative overflow-hidden bg-slate-950 text-slate-100">
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.25),_transparent_65%)]" />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(15,118,110,0.22),_transparent_70%)]" />
+
+            <div className="relative max-w-6xl mx-auto px-6 sm:px-10 md:px-12 py-28 md:py-32">
+              <div className="grid gap-16 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] items-start">
+                <div className="space-y-10">
+                  <motion.span
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    className="inline-flex items-center rounded-full border border-white/10 bg-white/10 px-4 py-2 text-xs uppercase tracking-[0.3em] text-slate-200"
+                  >
+                    Services
+                  </motion.span>
+
+                  <motion.h1
+                    initial={{ opacity: 0, y: 24 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, delay: 0.1 }}
+                    className="font-heading text-4xl sm:text-5xl md:text-6xl leading-tight text-white"
+                  >
+                    Product, design, and engineering partnerships tailored to how modern teams ship.
+                  </motion.h1>
+
+                  <motion.p
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.2 }}
+                    className="max-w-2xl text-base sm:text-lg text-slate-300 leading-relaxed"
+                  >
+                    Whether you need an end-to-end build, a native-quality mobile app, or a strategic engineering partner, we’ll assemble the right blend of discovery, design systems, and delivery to compounding outcomes.
+                  </motion.p>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.3 }}
+                    className="flex flex-col sm:flex-row gap-4"
+                  >
+                    <Link href="/contact">
+                      <Button className="bg-white text-slate-900 hover:bg-slate-200">
+                        Plan a project call
+                      </Button>
+                    </Link>
+                    <Link href="/projects">
+                      <Button variant="outline" className="border-white/20 text-slate-200 hover:bg-white/10">
+                        View case studies
+                      </Button>
+                    </Link>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.4 }}
+                    className="grid gap-6 sm:grid-cols-3 border-t border-white/10 pt-8"
+                  >
+                    {[
+                      { label: "Launches supported", value: "40+" },
+                      { label: "Team types", value: "Seed → Enterprise" },
+                      { label: "Delivery model", value: "Async-first" },
+                    ].map((stat) => (
+                      <div key={stat.label} className="space-y-1">
+                        <p className="font-heading text-2xl text-white">{stat.value}</p>
+                        <p className="text-sm text-slate-300 leading-snug">{stat.label}</p>
+                      </div>
+                    ))}
+                  </motion.div>
+                </div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: 0.15 }}
+                >
+                  <div className="space-y-5 rounded-3xl border border-white/10 bg-white/5 p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                    <p className="text-xs uppercase text-slate-300 tracking-[0.3em]">
+                      Engagement formats
+                    </p>
+                    <ul className="space-y-3 text-sm text-slate-200">
+                      <li>• Fixed-scope product delivery with weekly demos</li>
+                      <li>• Retained engineering partner for velocity and polish</li>
+                      <li>• Advisory sprints for architecture, performance, and DX</li>
+                    </ul>
+                    <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+                      <p className="text-xs uppercase text-slate-300 tracking-[0.3em] mb-3">
+                        Tooling stack includes
+                      </p>
+                      <p className="text-sm text-slate-200 leading-relaxed">
+                        React, Next.js, React Native, TypeScript, Tailwind, GraphQL, Node.js, AWS, Vercel, automated QA, analytics, and paid growth infrastructure across Meta Ads, LinkedIn Ads, and Google Ads.
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </section>
+
+          <section className="py-20 md:py-28 bg-background">
+            <div className="max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
+              <div className="max-w-3xl mb-12">
+                <motion.p
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5 }}
+                  className="text-xs uppercase text-slate-500 tracking-[0.3em]"
+                >
+                  Core capabilities
+                </motion.p>
+                <motion.h2
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                  className="font-heading text-3xl sm:text-4xl leading-snug text-slate-900"
+                >
+                  Services crafted to keep discovery, design, and engineering aligned from day one.
+                </motion.h2>
               </div>
 
-              <h1
-                className="text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight text-brandSecondary"
-                style={{ fontFamily: "Space Grotesk, sans-serif" }}
-              >
-                My Services
-              </h1>
-
-              <p className="text-2xl md:text-3xl text-brandSecondary/70 max-w-5xl mx-auto leading-relaxed font-medium mb-12">
-                Comprehensive development solutions to bring your digital vision
-                to life — from modern websites to scalable applications.
-              </p>
-            </motion.div>
-
-            {/* Services Grid */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20"
-            >
-              {services.map((service, index) => {
-                const slug = generateSlug(service.title);
-                const href = `/services/${slug}`;
-
-                // Use solid theme color for icon backgrounds
-                const iconBgColors = [
-                  "bg-brandSecondary",
-                  "bg-primary",
-                  "bg-brandSecondary",
-                  "bg-primary",
-                  "bg-brandSecondary",
-                  "bg-primary",
-                ];
-
-                return (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                    whileHover={{ y: -10, scale: 1.02 }}
-                    className="group"
-                  >
-                    <Link href={href} className="block h-full">
-                      <div className="bg-white border-2 border-brandSecondary p-8 rounded-3xl shadow-sm hover:shadow transition-all duration-300 h-full flex flex-col">
-                        {/* Service Icon with solid theme color */}
-                        <motion.div
-                          className={`w-20 h-20 ${iconBgColors[index]} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}
-                          whileHover={{ rotate: [0, -10, 10, 0] }}
-                          transition={{ duration: 0.5 }}
-                        >
-                          <div className="text-white text-3xl">
+              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {services.map((service, index) => {
+                  const slug = generateSlug(service.title);
+                  const href = `/services/${slug}`;
+                  return (
+                    <motion.div
+                      key={service.title}
+                      initial={{ opacity: 0, y: 24 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: index * 0.05 }}
+                      className="group h-full"
+                    >
+                      <Link href={href} className="block h-full">
+                        <div className="h-full rounded-3xl border border-slate-200 bg-white/95 p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                          <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-800 text-3xl">
                             {React.cloneElement(service.icon, {
                               className: "text-3xl",
-                              style: { color: "white" },
                             })}
                           </div>
-                        </motion.div>
-
-                        <h2
-                          className="text-3xl font-black mb-4 text-brandSecondary"
-                          style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                        >
-                          {service.title}
-                        </h2>
-
-                        <p className="text-gray-700 mb-6 flex-grow text-lg leading-relaxed">
-                          {service.description}
-                        </p>
-
-                        {/* Feature List */}
-                        <ul className="space-y-3 mb-6">
-                          {service.features.slice(0, 3).map((feature, idx) => (
-                            <li key={idx} className="flex items-center gap-3">
-                              <motion.div
-                                className={`w-6 h-6 ${iconBgColors[index]} rounded-full flex items-center justify-center flex-shrink-0`}
-                                whileHover={{ scale: 1.2 }}
-                              >
-                                <svg
-                                  className="w-3 h-3 text-white"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="3"
-                                    d="M5 13l4 4L19 7"
-                                  />
-                                </svg>
-                              </motion.div>
-                              <span className="text-gray-700 font-medium">
-                                {feature}
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-
-                        {/* CTA */}
-                        <motion.div
-                          className="mt-auto pt-6 border-t border-border"
-                          whileHover={{ x: 5 }}
-                        >
-                          <span className="inline-flex items-center gap-2 text-brandSecondary font-bold text-lg">
-                            Learn More
+                          <h3 className="font-heading text-2xl text-slate-900 mb-3">
+                            {service.title}
+                          </h3>
+                          <p className="text-sm text-slate-600 leading-relaxed mb-6">
+                            {service.description}
+                          </p>
+                          <ul className="space-y-3 text-sm text-slate-600">
+                            {service.features.slice(0, 3).map((feature) => (
+                              <li key={feature} className="flex items-center gap-3">
+                                <span className="inline-flex h-2 w-2 rounded-full bg-slate-400" />
+                                <span>{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+                          <div className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-slate-800">
+                            Learn more
                             <motion.span
-                              animate={{ x: [0, 5, 0] }}
-                              transition={{
-                                duration: 1.5,
-                                repeat: Infinity,
-                                ease: "easeInOut",
-                              }}
+                              animate={{ x: [0, 4, 0] }}
+                              transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
                             >
                               →
                             </motion.span>
-                          </span>
-                        </motion.div>
-                      </div>
-                    </Link>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
+                          </div>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
 
-            {/* FAQ Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="bg-card border-2 border-border p-8 md:p-12 rounded-3xl shadow mb-16"
-            >
-              <motion.h2
-                className="text-5xl md:text-6xl font-black mb-8 flex items-center gap-4"
-                style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
+          <section className="py-20 md:py-28 bg-slate-50">
+            <div className="max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                className="max-w-3xl mb-12"
               >
-                <span className="text-foreground">FAQ</span>
-              </motion.h2>
+                <p className="text-xs uppercase text-slate-500 tracking-[0.3em]">
+                  How engagements run
+                </p>
+                <h2 className="font-heading text-3xl sm:text-4xl leading-snug text-slate-900">
+                  A calm delivery cadence designed for async collaboration and measurable progress.
+                </h2>
+              </motion.div>
 
-              <div className="space-y-6">
-                {faqs.map((faq, index) => (
+              <div className="grid gap-6 md:grid-cols-3">
+                {[
+                  {
+                    title: "Discovery & roadmap",
+                    description:
+                      "Kick-off workshops, success metrics, and architectural decisions packaged into a transparent plan before code ships.",
+                  },
+                  {
+                    title: "Design & build sprints",
+                    description:
+                      "Weekly increments with design system parity, typed APIs, automated QA, and recorded walkthroughs for easy stakeholder review.",
+                  },
+                  {
+                    title: "Launch & optimisation",
+                    description:
+                      "Observability, performance budgets, and growth instrumentation keep releases stable and insights actionable post-launch.",
+                  },
+                ].map((item) => (
                   <motion.div
-                    key={index}
-                    className="border-b border-border pb-6 last:border-b-0"
-                    initial={{ opacity: 0, y: 20 }}
+                    key={item.title}
+                    initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
                     viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition"
                   >
-                    <motion.button
-                      onClick={() => toggleFaq(index)}
-                      className="flex justify-between items-center w-full text-left font-bold text-foreground hover:text-primary transition-colors group"
-                      whileHover={{ x: 5 }}
-                    >
-                      <span
-                        className="text-xl md:text-2xl pr-4"
-                        style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                      >
-                        {faq.question}
-                      </span>
-                      <motion.div
-                        animate={{ rotate: expandedFaq === index ? 180 : 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="flex-shrink-0"
-                      >
-                        {expandedFaq === index ? (
-                          <FaChevronUp className="text-primary text-xl" />
-                        ) : (
-                          <FaChevronDown className="text-foreground/50 group-hover:text-primary text-xl transition-colors" />
-                        )}
-                      </motion.div>
-                    </motion.button>
-                    {expandedFaq === index && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="mt-6 bg-secondary p-6 rounded-2xl border border-border"
-                      >
-                        <p className="text-lg leading-relaxed text-foreground/70 font-medium">
-                          {faq.answer}
-                        </p>
-                      </motion.div>
-                    )}
+                    <h3 className="font-heading text-xl text-slate-900 mb-3">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm text-slate-600 leading-relaxed">
+                      {item.description}
+                    </p>
                   </motion.div>
                 ))}
               </div>
-            </motion.div>
+            </div>
+          </section>
 
-            {/* CTA Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              viewport={{ once: true }}
-              className="bg-gradient-to-br from-blue-800 to-blue-900 p-12 md:p-16 rounded-3xl shadow text-center relative overflow-hidden text-white"
-            >
-              {/* Decorative floating elements removed for a cleaner CTA */}
-
-              <motion.h2
-                className="text-4xl md:text-6xl font-black text-white mb-8 relative z-10"
-                style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                initial={{ opacity: 0, y: 20 }}
+          <section className="py-20 md:py-28 bg-background">
+            <div className="max-w-5xl mx-auto px-6 sm:px-10 md:px-12">
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                className="text-center mb-12"
               >
-                Ready to start?
-              </motion.h2>
+                <p className="text-xs uppercase text-slate-500 tracking-[0.3em]">
+                  FAQs
+                </p>
+                <h2 className="font-heading text-3xl sm:text-4xl leading-snug text-slate-900">
+                  Answers to common partnership questions.
+                </h2>
+              </motion.div>
 
-              <p className="text-xl md:text-2xl text-purple-100 mb-12 max-w-4xl mx-auto leading-relaxed font-medium relative z-10">
-                Let's discuss how I can help bring your ideas to life. Contact
-                me for a
-                <span className="font-bold text-white">
-                  {" "}
-                  free consultation{" "}
-                </span>
-                and project estimate.
-              </p>
+              <div className="space-y-4">
+                {faqs.map((faq, index) => {
+                  const isOpen = expandedFaq === index;
+                  return (
+                    <motion.div
+                      key={faq.question}
+                      initial={{ opacity: 0, y: 12 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: index * 0.05 }}
+                      className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+                    >
+                      <button
+                        onClick={() => toggleFaq(index)}
+                        className="flex w-full items-center justify-between text-left"
+                      >
+                        <span className="text-lg font-semibold text-slate-900">
+                          {faq.question}
+                        </span>
+                        {isOpen ? (
+                          <FaChevronUp className="text-slate-500" />
+                        ) : (
+                          <FaChevronDown className="text-slate-500" />
+                        )}
+                      </button>
+                      <AnimatePresence initial={false}>
+                        {isOpen && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="mt-4 border-t border-slate-100 pt-4 text-sm leading-relaxed text-slate-600"
+                          >
+                            {faq.answer}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+
+          <section className="py-20 md:py-28 bg-slate-950 text-slate-100">
+            <div className="max-w-5xl mx-auto px-6 sm:px-10 md:px-12 text-center">
+              <motion.h2
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="font-heading text-3xl sm:text-4xl leading-snug"
+              >
+                Let’s translate your roadmap into shipped outcomes.
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="mt-6 text-base text-slate-300 leading-relaxed max-w-2xl mx-auto"
+              >
+                Share your goals, constraints, and milestones. I&apos;ll propose a plan, assemble the right stack, and keep momentum visible at every step.
+              </motion.p>
 
               <motion.div
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className="relative z-10"
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="mt-10 flex flex-col sm:flex-row justify-center gap-4"
               >
-                <Link
-                  href="/contact"
-                  className="inline-flex items-center gap-3 px-12 py-6 bg-white text-brandSecondary border-2 border-brandSecondary font-black text-xl rounded-2xl transition-all duration-300 shadow hover:shadow-md"
-                >
-                  Contact me
-                  <span>→</span>
+                <Link href="/contact">
+                  <Button className="bg-slate-100 text-slate-900 hover:bg-slate-300">
+                    Start a project conversation
+                  </Button>
+                </Link>
+                <Link href="/about">
+                  <Button variant="outline" className="border-slate-400 text-slate-200 hover:bg-slate-900">
+                    Learn about my approach
+                  </Button>
                 </Link>
               </motion.div>
-            </motion.div>
-          </div>
+            </div>
+          </section>
         </div>
       </PageContainer>
     </>

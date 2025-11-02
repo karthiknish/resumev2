@@ -41,29 +41,18 @@ export default function Nav() {
   const searchInputRef = useRef(null);
   const { data: session } = useSession();
 
-  const navLinkBaseClass = isHome && !hasScrolled
-    ? "text-slate-300 hover:text-white"
-    : "text-gray-700 hover:text-gray-900";
-  const navLinkActiveClass = isHome && !hasScrolled ? "text-white" : "text-gray-900";
-  const underlineBgClass = isHome && !hasScrolled ? "bg-white/80" : "bg-gray-900";
-  const iconButtonClass = isHome && !hasScrolled
-    ? "text-slate-200 hover:text-white hover:bg-white/10"
-    : "text-gray-700 hover:text-gray-900 hover:bg-gray-100";
-  const navShellClasses = isHome && !hasScrolled
-    ? "bg-transparent text-white shadow-none border-transparent"
-    : "bg-white/90 text-gray-900 shadow-sm border-gray-200";
-  const mobileContainerClasses = isHome && !hasScrolled
-    ? "bg-slate-950/95 text-white border-white/10"
-    : "bg-white text-gray-800 border-gray-200";
-  const mobileLinkBaseClass = isHome && !hasScrolled
-    ? "text-slate-200 hover:bg-white/10 hover:text-white"
-    : "text-gray-800 hover:bg-gray-100 hover:text-gray-900";
-  const mobileLinkActiveClass = isHome && !hasScrolled
-    ? "text-white bg-white/10"
-    : "text-gray-900 bg-gray-100";
-  const mobileSignOutClass = isHome && !hasScrolled
-    ? "text-slate-200 hover:text-white hover:bg-white/10"
-    : "text-gray-800 hover:text-gray-900 hover:bg-gray-100";
+  const navFontClass = "font-heading";
+  const navLinkBaseClass = `${"text-slate-600 hover:text-slate-900"} ${navFontClass}`;
+  const navLinkActiveClass = `${"text-slate-900"} ${navFontClass}`;
+  const underlineBgClass = "bg-slate-900";
+  const iconButtonClass = "text-slate-600 hover:text-slate-900 hover:bg-slate-100";
+  const navShellClasses = hasScrolled
+    ? "bg-white/95 text-slate-900 shadow-sm border-slate-200"
+    : "bg-white/70 text-slate-900 border-transparent";
+  const mobileContainerClasses = "bg-white text-slate-800 border-slate-200";
+  const mobileLinkBaseClass = "text-slate-700 hover:bg-slate-100 hover:text-slate-900";
+  const mobileLinkActiveClass = "text-slate-900 bg-slate-100";
+  const mobileSignOutClass = "text-slate-700 hover:text-slate-900 hover:bg-slate-100";
 
   // Debounce search query
   const debouncedSearchQuery = useDebounce(searchQuery, 300); // 300ms debounce
@@ -249,8 +238,8 @@ export default function Nav() {
                               router.pathname.startsWith("/blog")) ||
                             (link.href === "/bytes" &&
                               router.pathname.startsWith("/bytes"))))
-                          ? navLinkActiveClass
-                          : navLinkBaseClass
+                          ? `${navLinkActiveClass}`
+                          : `${navLinkBaseClass}`
                       }`}
                     >
                       {link.label}
@@ -282,8 +271,8 @@ export default function Nav() {
                           href="/admin"
                           className={`text-lg font-medium relative group transition-colors duration-200 ${
                             router.pathname.startsWith("/admin")
-                              ? navLinkActiveClass
-                              : navLinkBaseClass
+                              ? `${navLinkActiveClass}`
+                              : `${navLinkBaseClass}`
                           }`}
                         >
                           Admin
@@ -385,7 +374,7 @@ export default function Nav() {
                   <motion.a
                     key={link.href}
                     href={link.href}
-                    className={`block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-semibold rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-colors duration-200 w-full max-w-xs ${
+                    className={`block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-semibold ${navFontClass} rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-colors duration-200 w-full max-w-xs ${
                       isActive ? mobileLinkActiveClass : mobileLinkBaseClass
                     }`}
                     onClick={handleLinkClick}
@@ -402,7 +391,7 @@ export default function Nav() {
                   {session?.user?.role === "admin" && (
                     <motion.a
                       href="/admin"
-                      className={`block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-semibold rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-colors duration-200 w-full max-w-xs ${
+                      className={`block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-semibold ${navFontClass} rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-colors duration-200 w-full max-w-xs ${
                         router.pathname.startsWith("/admin")
                           ? mobileLinkActiveClass
                           : mobileLinkBaseClass
@@ -417,7 +406,7 @@ export default function Nav() {
 
                   <motion.a
                     href="#"
-                    className={`block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-semibold rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-colors duration-200 w-full max-w-xs ${mobileSignOutClass}`}
+                    className={`block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-semibold ${navFontClass} rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mt-auto transition-colors duration-200 w-full max-w-xs ${mobileSignOutClass}`}
                     onClick={() => {
                       handleSignOut();
                       handleLinkClick();

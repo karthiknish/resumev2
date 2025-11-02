@@ -55,15 +55,12 @@ export default function NewsletterSignup() {
   };
 
   return (
-    <div className="bg-white/10 backdrop-blur-sm p-8 rounded-3xl border border-white/20">
-      <h3
-        className="text-2xl font-bold mb-4"
-        style={{ fontFamily: "Space Grotesk, sans-serif" }}
-      >
-        Stay in the Loop
+    <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+      <h3 className="font-heading text-2xl text-slate-900 mb-3">
+        Stay in the loop
       </h3>
-      <p className="text-lg text-purple-100 mb-6 leading-relaxed">
-        Get magical updates and exclusive content delivered to your inbox!
+      <p className="text-base text-slate-600 mb-6 leading-relaxed">
+        Notes on product delivery, engineering systems, and the lessons learned while shipping with founders and teams.
       </p>
       <form onSubmit={handleSubmit} className="space-y-4">
         <motion.div whileHover={{ scale: 1.02 }} transition={{ duration: 0.2 }}>
@@ -72,7 +69,7 @@ export default function NewsletterSignup() {
             placeholder="your@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white placeholder:text-purple-200 px-6 py-4 rounded-2xl text-lg font-medium focus:border-white/50 focus:ring-2 focus:ring-white/30 transition-all duration-300"
+            className="w-full bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 px-5 py-4 rounded-2xl text-base focus:border-slate-400 focus:ring-4 focus:ring-slate-200 transition-all duration-300"
             disabled={isLoading}
             required
             aria-label="Email for newsletter"
@@ -81,7 +78,7 @@ export default function NewsletterSignup() {
         <motion.button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-white text-purple-600 hover:bg-purple-100 font-bold py-4 px-6 rounded-2xl text-lg transition-all duration-300 shadow-xl hover:shadow-2xl disabled:bg-white/50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+          className="w-full bg-slate-900 text-slate-100 hover:bg-slate-800 font-semibold py-4 px-6 rounded-2xl text-base transition-all duration-300 shadow-sm hover:shadow-lg disabled:bg-slate-200 disabled:text-slate-500 disabled:cursor-not-allowed flex items-center justify-center gap-3"
           whileHover={{ scale: 1.05, y: -2 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -99,11 +96,11 @@ export default function NewsletterSignup() {
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                className="text-xl"
+                className="text-sm text-slate-400"
               >
                 {/* Removed emoji for professional tone */}
               </motion.span>
-              Subscribe Now
+              Subscribe now
             </>
           )}
         </motion.button>
@@ -114,8 +111,8 @@ export default function NewsletterSignup() {
           animate={{ opacity: 1, y: 0 }}
           className={`mt-4 text-sm text-center font-medium ${
             message.includes("failed") || message.includes("error")
-              ? "text-red-300"
-              : "text-green-300"
+              ? "text-red-500"
+              : "text-emerald-600"
           }`}
         >
           {message}

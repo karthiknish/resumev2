@@ -7,7 +7,7 @@ const ResourceList = ({ resources, clearFilters }) => {
   if (resources.length === 0) {
     return (
       <motion.div
-        className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 p-12 rounded-3xl shadow-xl text-center"
+        className="bg-white border border-slate-200 p-10 sm:p-12 rounded-3xl shadow-sm text-center"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
@@ -23,15 +23,15 @@ const ResourceList = ({ resources, clearFilters }) => {
         >
           🔍
         </motion.div>
-        <h3 className="text-3xl font-black text-gray-800 mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
-          No Resources Found
+        <h3 className="font-heading text-2xl sm:text-3xl text-slate-900 mb-4">
+          No resources found
         </h3>
-        <p className="text-gray-600 mb-8 text-xl font-medium">
-          No resources found matching your search criteria.
+        <p className="text-slate-600 mb-8 text-base sm:text-lg font-medium">
+          Try adjusting your filters or search to uncover more helpful tools.
         </p>
         <motion.button
           onClick={clearFilters}
-          className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold text-lg rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl"
+          className="inline-flex items-center gap-3 px-6 py-3 bg-slate-900 text-slate-100 hover:bg-slate-800 font-semibold text-sm sm:text-base rounded-2xl transition-all duration-200 shadow-sm hover:shadow-lg"
           whileHover={{ scale: 1.05, y: -2 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -42,11 +42,11 @@ const ResourceList = ({ resources, clearFilters }) => {
               repeat: Infinity,
               ease: "linear",
             }}
-            className="text-xl"
+            className="text-base"
           >
             🔄
           </motion.span>
-          Clear Filters
+          Clear filters
         </motion.button>
       </motion.div>
     );

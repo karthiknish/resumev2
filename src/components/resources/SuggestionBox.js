@@ -6,23 +6,20 @@ import { FadeIn } from "../animations/MotionComponents";
 const SuggestionBox = () => {
   return (
     <motion.div
-      className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 p-12 md:p-16 rounded-3xl shadow-2xl text-center"
+      className="bg-white border border-slate-200 p-10 sm:p-12 md:p-14 rounded-3xl shadow-sm text-center"
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
       viewport={{ once: true }}
     >
       <motion.h2
-        className="text-4xl md:text-5xl font-black mb-8 flex items-center justify-center gap-4"
-        style={{ fontFamily: "Space Grotesk, sans-serif" }}
+        className="font-heading text-3xl md:text-4xl text-slate-900 mb-6 flex items-center justify-center gap-3"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.1 }}
         viewport={{ once: true }}
       >
-        <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-          Suggest a Resource
-        </span>
+        <span>Suggest a resource</span>
         <motion.span
           animate={{ rotate: [0, 15, -15, 0] }}
           transition={{
@@ -36,9 +33,8 @@ const SuggestionBox = () => {
         </motion.span>
       </motion.h2>
       
-      <p className="text-xl md:text-2xl text-gray-700 mb-12 max-w-4xl mx-auto leading-relaxed font-medium">
-        Know a great resource that should be included here? I'm always looking to expand this collection with
-        <span className="font-bold text-purple-600"> high-quality content</span>.
+      <p className="text-base sm:text-lg text-slate-600 mb-10 max-w-3xl mx-auto leading-relaxed font-medium">
+        Know a great resource that others would find helpful? Share it and I’ll take a look at adding it to the library of tools and guides.
         <motion.span
           animate={{ rotate: [0, 5, -5, 0] }}
           transition={{
@@ -58,7 +54,7 @@ const SuggestionBox = () => {
       >
         <Link
           href="/contact"
-          className="inline-flex items-center gap-3 px-12 py-6 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-black text-xl rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl"
+          className="inline-flex items-center gap-3 px-7 py-3.5 bg-slate-900 text-slate-100 hover:bg-slate-800 font-semibold text-base rounded-2xl transition-all duration-200 shadow-sm hover:shadow-lg"
         >
           <motion.span
             animate={{ y: [0, -3, 0] }}
@@ -67,11 +63,11 @@ const SuggestionBox = () => {
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="text-2xl"
+            className="text-lg"
           >
             📩
           </motion.span>
-          Suggest Resource
+          Suggest a resource
           <motion.span
             animate={{ x: [0, 5, 0] }}
             transition={{

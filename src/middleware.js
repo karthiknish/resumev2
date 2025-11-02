@@ -44,6 +44,9 @@ export default withAuth(
           "/projects",
           "/contact",
           "/resources",
+          "/terms-and-conditions",
+          "/privacy-policy",
+          "/cookie-policy",
           "/signin",
           "/signup",
           "/forgot-password",
@@ -66,14 +69,25 @@ export default withAuth(
         const isAuthApiRoute = req.nextUrl.pathname.startsWith("/api/auth");
 
         // Allow access to public API routes
-        const isPublicApiRoute = req.nextUrl.pathname.startsWith("/api/public");
+        const isPublicApiRoute =
+          req.nextUrl.pathname.startsWith("/api/public") ||
+          req.nextUrl.pathname.startsWith("/api/comments");
 
         if (isPublicRoute || isAuthApiRoute || isPublicApiRoute) {
           return true;
         }
 
-        // For all other routes, require authentication
-        return !!token;
+        const protectedRoutes = ["/admin", "/api/admin"];
+        const isProtectedRoute = protectedRoutes.some((route) =>
+          req.nextUrl.pathname.startsWith(route)
+        );
+
+        if (isProtectedRoute) {
+          return !!token;
+        }
+
+        // Allow all other routes (including unknown ones) to fall through so Next.js can handle 404s
+        return true;
       },
     },
     pages: {

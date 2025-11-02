@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { FadeIn } from "./animations/MotionComponents";
-import { AiFillGithub, AiOutlineMail } from "react-icons/ai";
+import { AiFillGithub, AiOutlineMail, AiFillLinkedin } from "react-icons/ai";
 import Link from "next/link";
 import NewsletterSignup from "./NewsletterSignup";
 
@@ -20,6 +20,11 @@ const socialLinks = [
     label: "GitHub",
   },
   {
+    href: "https://www.linkedin.com/in/karthik-nishanth/",
+    icon: AiFillLinkedin,
+    label: "LinkedIn",
+  },
+  {
     href: "mailto:hello@karthiknish.com",
     icon: AiOutlineMail,
     label: "Email",
@@ -30,9 +35,8 @@ export default function Footer() {
   return (
     <FadeIn>
       <footer className="relative overflow-hidden bg-slate-950 text-slate-100">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_60%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(236,72,153,0.15),_transparent_55%)]" />
-        <div className="absolute inset-0 bg-slate-950/80" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.22),_transparent_65%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(15,118,110,0.22),_transparent_70%)]" />
 
         <div className="relative max-w-6xl mx-auto px-6 sm:px-10 md:px-12 py-16 md:py-20">
           <div className="grid gap-12 md:grid-cols-3">
@@ -57,7 +61,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-200 transition hover:border-white/30 hover:text-white"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/10 text-slate-200 transition hover:border-white/30 hover:text-white"
                     whileHover={{ y: -2, scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >

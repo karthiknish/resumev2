@@ -113,6 +113,7 @@ const TipTapRenderer = ({ content }) => {
           "prose max-w-none focus:outline-none bg-transparent text-foreground prose-headings:text-foreground prose-a:text-blue-600 prose-blockquote:text-foreground prose-code:before:content-none prose-code:after:content-none prose-code:bg-muted prose-code:px-1.5 prose-code:py-1 prose-code:rounded prose-pre:bg-muted prose-pre:p-0 prose-li:marker:text-muted-foreground prose-table:text-foreground",
       },
     },
+    immediatelyRender: false,
   });
 
   const containerRef = useRef(null);
