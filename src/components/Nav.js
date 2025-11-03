@@ -48,10 +48,11 @@ export default function Nav() {
   const navShellClasses = hasScrolled
     ? "bg-background/95 text-foreground shadow-sm border-border"
     : "bg-background/70 text-foreground border-transparent";
-  const mobileContainerClasses = "bg-background text-foreground border-border";
+  const mobileContainerClasses = "bg-background/70 backdrop-blur-lg text-foreground border-border";
   const mobileLinkBaseClass = "text-muted-foreground hover:bg-secondary/60 hover:text-foreground";
   const mobileLinkActiveClass = "text-primary bg-secondary/60";
   const mobileSignOutClass = "text-muted-foreground hover:text-foreground hover:bg-secondary/60";
+  const instrumentSerifStyle = { fontFamily: "Instrument Serif, serif" };
 
   // Debounce search query
   const debouncedSearchQuery = useDebounce(searchQuery, 300); // 300ms debounce
@@ -208,7 +209,7 @@ export default function Nav() {
               <Link href="/" className="flex items-center">
                 <motion.div className="relative">
                   <Image
-                    src="/Logo.png"
+                    src="/Logo.svg"
                     alt="Logo"
                     width={56}
                     height={56}
@@ -356,6 +357,7 @@ export default function Nav() {
                     onClick={handleLinkClick}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
+                    style={instrumentSerifStyle}
                   >
                     {link.label}
                   </motion.a>
@@ -375,6 +377,7 @@ export default function Nav() {
                       onClick={handleLinkClick}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
+                      style={instrumentSerifStyle}
                     >
                       Admin
                     </motion.a>
@@ -389,6 +392,7 @@ export default function Nav() {
                     }}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
+                    style={instrumentSerifStyle}
                   >
                     Sign Out
                   </motion.a>

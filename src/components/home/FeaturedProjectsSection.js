@@ -1,64 +1,40 @@
 import { motion } from "framer-motion";
-import { BentoGrid } from "@/components/ui/bento-grid"; // Assuming this path is correct
-import { TrendingUp, CheckCircle, Video, Globe } from "lucide-react"; // Import icons
+import Link from "next/link";
 
-import Link from "next/link"; // Ensure Link is imported if not already
-
-// Sample items for BentoGrid (Original hardcoded data with links)
-const itemsSample = [
+// Sample projects data for featured projects section (text-only)
+const featuredProjects = [
+  {
+    id: "healthcare-platform",
+    title: "Healthcare Platform Development",
+    description:
+      "Built Medblocks, a comprehensive healthcare platform enabling developers to create modern healthcare applications using vendor-neutral APIs. Developed both the core platform and Medblocks UI component library, reducing integration time from months to weeks for healthcare organizations.",
+    impact: "Reduced integration time from months to weeks",
+    technologies: ["React", "Next.js", "TypeScript", "Web Components"],
+  },
   {
     id: "ecommerce-platform",
-    title: "E-commerce platform revamp",
-    meta: "+35% conversion",
+    title: "E-commerce Platform Solutions",
     description:
-      "Simplified flows, tuned performance, and a resilient checkout stack to keep momentum during launches.",
-    icon: <TrendingUp className="w-4 h-4 text-slate-700" />,
-    status: "Live",
-    tags: ["UX", "Performance", "Analytics"],
-    colSpan: 2,
-    hasPersistentHover: true,
-    link: "/projects/ecommerce-platform",
-  },
-  {
-    id: "startup-infrastructure",
-    title: "Startup infrastructure",
-    meta: "10× scale",
-    description: "Provisioned environments, observability, and CI/CD so the team ships safely every week.",
-    icon: <CheckCircle className="w-4 h-4 text-slate-700" />,
-    status: "Updated",
-    tags: ["Architecture", "Scaling"],
-    link: "/projects/startup-infrastructure",
-  },
-  {
-    id: "ai-integration",
-    title: "Support automation",
-    meta: "−40% cost",
-    description: "Integrated an AI-guided triage workflow that resolves common support tickets without human escalation.",
-    icon: <Video className="w-4 h-4 text-slate-700" />,
-    tags: ["AI", "Automation"],
-    colSpan: 2,
-    link: "/projects/ai-integration",
+      "Developed complete e-commerce platforms with modern architecture featuring real-time inventory management, secure payment processing, and comprehensive admin dashboards. Built scalable solutions handling high traffic volumes during peak sales periods.",
+    impact: "35% increase in conversion rates",
+    technologies: ["React", "Node.js", "MongoDB", "Stripe API"],
   },
   {
     id: "analytics-system",
-    title: "Analytics foundation",
-    meta: "+25% revenue",
-    description: "Unified data pipelines with executive dashboards so leadership can steer with live insights.",
-    icon: <Globe className="w-4 h-4 text-slate-700" />,
-    status: "Live",
-    tags: ["Analytics", "Business Intelligence"],
-    link: "/projects/analytics-system",
+    title: "Data Analytics & Business Intelligence",
+    description:
+      "Created real-time data visualization platforms with interactive dashboards and custom reporting systems. Built unified data pipelines providing executive teams with live business insights for data-driven decision making.",
+    impact: "25% revenue increase through actionable insights",
+    technologies: ["Next.js", "D3.js", "PostgreSQL", "Python"],
   },
-  // Added a fifth item for layout consistency if needed, or adjust colSpans
-  // {
-  //   id: "new-feature-x",
-  //   title: "New Feature X",
-  //   meta: "Beta",
-  //   description: "Developing the next generation feature set.",
-  //   icon: <Settings className="w-4 h-4 text-gray-500" />,
-  //   status: "In Progress",
-  //   tags: ["Development", "Beta"],
-  // },
+  {
+    id: "ai-integration", 
+    title: "AI-Powered Support Automation",
+    description:
+      "Integrated AI-guided triage workflows that resolve common support tickets without human escalation. Built intelligent chatbot systems using fine-tuned models on company knowledge bases, significantly reducing operational costs.",
+    impact: "40% reduction in support costs",
+    technologies: ["OpenAI", "Python", "Node.js", "React"],
+  },
 ];
 
 export default function FeaturedProjectsSection() {
@@ -90,10 +66,51 @@ export default function FeaturedProjectsSection() {
           viewport={{ once: true }}
           className="text-center text-slate-600 max-w-3xl mx-auto text-base leading-relaxed"
         >
-          A sampling of recent collaborations—pairing product strategy, interaction design, and calm engineering to ship meaningful outcomes.
+          A selection of recent work combining technical expertise with business impact—from healthcare platforms to AI automation.
         </motion.p>
 
-        <BentoGrid items={itemsSample} />
+        <div className="grid gap-8 md:grid-cols-2">
+          {featuredProjects.map((project, index) => (
+            <motion.div
+              key={project.id}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm"
+            >
+              <div className="space-y-6">
+                <div>
+                  <h3 className="font-heading text-xl font-semibold text-slate-900 mb-3">
+                    {project.title}
+                  </h3>
+                  <p className="text-slate-600 leading-relaxed">
+                    {project.description}
+                  </p>
+                </div>
+                
+                <div className="border-l-4 border-slate-200 pl-6">
+                  <p className="text-sm font-medium text-slate-500 mb-2">KEY IMPACT</p>
+                  <p className="text-slate-700 font-medium">{project.impact}</p>
+                </div>
+                
+                <div>
+                  <p className="text-sm font-medium text-slate-500 mb-3">TECHNOLOGIES</p>
+                  <div className="flex flex-wrap gap-2">
+                    {project.technologies.map((tech, techIndex) => (
+                      <span
+                        key={techIndex}
+                        className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600 font-medium"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -106,7 +123,7 @@ export default function FeaturedProjectsSection() {
             href="/projects"
             className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 px-7 py-3 text-base font-semibold text-slate-800 hover:border-slate-500 hover:bg-slate-100 transition-all duration-300"
           >
-            See more projects →
+            View all projects →
           </Link>
         </motion.div>
       </div>

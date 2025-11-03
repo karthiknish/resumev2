@@ -128,31 +128,32 @@ const capabilities = [
 
 const projects = [
   {
-    title: "E-commerce Platform",
+    title: "Healthcare Platform Development",
     description:
-      "A complete e-commerce solution built with React and Node.js, featuring real-time inventory, payment processing, and admin dashboard.",
-    image: "/netflix.png",
-    tech: ["React", "Node.js", "MongoDB", "Stripe"],
-    link: "/projects/ecommerce-solutions",
-    color: "bg-gradient-to-br from-purple-50 to-pink-50",
+      "Built Medblocks, a comprehensive healthcare platform that enables developers to create modern healthcare applications using vendor-neutral APIs. The platform serves as an operating system for healthcare apps, supporting openEHR standards and providing seamless data migration tools. Created both the core platform and Medblocks UI, a web components library that converts openEHR templates into reusable form components.",
+    tech: ["React", "Next.js", "TypeScript", "Web Components"],
+    impact: "Reduced integration time from months to weeks for healthcare organizations",
   },
   {
-    title: "Banking Mobile App",
+    title: "E-commerce Solutions",
     description:
-      "Cross-platform mobile banking application with biometric authentication, real-time transactions, and comprehensive financial management.",
-    image: "/credcard.png",
+      "Developed complete e-commerce platforms with modern architecture featuring real-time inventory management, secure payment processing, and comprehensive admin dashboards. Built scalable solutions that handle high traffic volumes during peak sales periods while maintaining optimal performance and user experience.",
+    tech: ["React", "Node.js", "MongoDB", "Stripe API"],
+    impact: "Increased conversion rates by 35% through optimized user flows",
+  },
+  {
+    title: "Data Analytics & Business Intelligence",
+    description:
+      "Created real-time data visualization platforms with interactive dashboards, custom reporting systems, and advanced filtering capabilities. Built unified data pipelines that provide executive teams with live business insights, enabling data-driven decision making across organizations.",
+    tech: ["Next.js", "D3.js", "PostgreSQL", "Python"],
+    impact: "Enabled 25% revenue increase through actionable business insights",
+  },
+  {
+    title: "Mobile Application Development",
+    description:
+      "Developed cross-platform mobile applications with focus on user experience and performance. Built banking applications with biometric authentication, real-time transaction processing, and comprehensive financial management features that meet stringent security requirements.",
     tech: ["React Native", "TypeScript", "AWS", "Firebase"],
-    link: "/projects/mobile-app-development",
-    color: "bg-gradient-to-br from-blue-50 to-cyan-50",
-  },
-  {
-    title: "Analytics Dashboard",
-    description:
-      "Real-time data visualization platform with interactive charts, custom reporting, and advanced filtering capabilities.",
-    image: "/medblocks.png",
-    tech: ["Next.js", "D3.js", "PostgreSQL", "Redis"],
-    link: "/projects/analytics-system",
-    color: "bg-gradient-to-br from-green-50 to-emerald-50",
+    impact: "Delivered secure, scalable mobile solutions for financial services",
   },
 ];
 
@@ -486,7 +487,7 @@ const HomeScreen = () => {
                 transition={{ duration: 0.5 }}
                 className="text-xs uppercase text-slate-500 tracking-[0.3em]"
               >
-                Case studies
+                Project Experience
               </motion.p>
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
@@ -495,11 +496,11 @@ const HomeScreen = () => {
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className="font-heading text-3xl sm:text-4xl leading-snug text-slate-900"
               >
-                Recent work where design systems, code quality, and business outcomes align.
+                Recent projects where technical expertise meets business impact.
               </motion.h2>
             </div>
 
-            <div className="grid gap-8 md:grid-cols-2">
+            <div className="grid gap-8">
               {projects.map((project, index) => (
                 <motion.div
                   key={project.title}
@@ -507,48 +508,39 @@ const HomeScreen = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="group rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm hover:shadow-md transition"
+                  className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm"
                 >
-                  <Link href={project.link}>
-                    <div className="relative aspect-[16/10] overflow-hidden">
-                      <Image
-                        src={project.image}
-                        alt={project.title}
-                        fill
-                        className="object-cover transition duration-500 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent" />
-                    </div>
-                    <div className="p-8 space-y-4">
-                      <h3 className="font-heading text-2xl text-slate-900">
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="font-heading text-2xl text-slate-900 mb-3">
                         {project.title}
                       </h3>
-                      <p className="text-sm text-slate-600 leading-relaxed">
+                      <p className="text-slate-600 leading-relaxed text-base">
                         {project.description}
                       </p>
+                    </div>
+                    
+                    <div className="border-l-4 border-slate-200 pl-6">
+                      <p className="text-sm font-medium text-slate-500 mb-2">KEY IMPACT</p>
+                      <p className="text-slate-700 font-medium">{project.impact}</p>
+                    </div>
+                    
+                    <div>
+                      <p className="text-sm font-medium text-slate-500 mb-3">TECHNOLOGIES USED</p>
                       <div className="flex flex-wrap gap-3">
                         {project.tech.map((tech) => (
                           <span
                             key={tech}
-                            className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600"
+                            className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600 font-medium"
                           >
                             {tech}
                           </span>
                         ))}
                       </div>
                     </div>
-                  </Link>
+                  </div>
                 </motion.div>
               ))}
-            </div>
-
-            <div className="mt-16 flex justify-end">
-              <Link href="/projects">
-                <Button variant="outline" className="border-slate-400 text-slate-700 hover:bg-slate-100">
-                  View all projects
-                  <ArrowRightIcon className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
             </div>
           </div>
         </section>

@@ -3,9 +3,6 @@ import { useState } from "react";
 import Head from "next/head";
 import { motion } from "framer-motion";
 import { projectsData } from "../../lib/projectsDataForComponents";
-import Image from "next/image";
-import Link from "next/link";
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 const Index = () => {
@@ -44,7 +41,7 @@ const Index = () => {
             </h1>
             
             <p className="text-base sm:text-lg text-slate-600 max-w-3xl mx-auto">
-              A curated set of case studies that highlight the products, data platforms, and services I build for startups and scale-ups.
+              A detailed overview of the projects I've worked on, showcasing technical expertise and business impact across various industries.
             </p>
           </motion.div>
 
@@ -91,7 +88,7 @@ const Index = () => {
             </div>
           </motion.div>
           {/* Projects Grid */}
-          <div className="grid lg:grid-cols-2 gap-6">
+          <div className="space-y-8">
             {filteredProjects.map((project, index) => (
               <motion.div
                 key={index}
@@ -99,63 +96,72 @@ const Index = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                whileHover={{ y: -10, scale: 1.02 }}
-                className="group"
+                className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8"
               >
-                <Link href={project.link}>
-                  <Card className="h-full bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden cursor-pointer">
-                    <div className="aspect-video relative overflow-hidden">
-                      <Image
-                        src={project.image}
-                        alt={project.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        priority={index === 0}
-                        loading={index === 0 ? "eager" : "lazy"}
-                      />
-                      <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/60 to-transparent" />
-                    </div>
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-2xl font-heading font-semibold text-slate-900 mb-3">
+                      {project.title}
+                    </h3>
                     
-                    <div className="p-6">
-                      <h3
-                        className="text-xl font-heading font-semibold text-slate-900 mb-3"
-                      >
-                        {project.title}
-                      </h3>
-                      
-                      {project.meta && (
-                        <p className="text-sm font-medium text-slate-500 mb-3">
-                          {project.meta}
-                        </p>
-                      )}
-
-                      <p className="text-sm text-slate-600 mb-5 line-clamp-3">
-                        {project.shortdescription}
+                    {project.meta && (
+                      <p className="text-sm font-medium text-slate-500 mb-4 uppercase tracking-wide">
+                        {project.meta}
                       </p>
-                      
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {project.techStack?.slice(0, 4).map((tech, i) => (
-                          <Badge
-                            key={i}
-                            className="bg-slate-100 text-slate-600 border border-slate-200"
-                          >
-                            {tech.name}
-                          </Badge>
+                    )}
+
+                    <p className="text-base text-slate-600 leading-relaxed">
+                      {project.description}
+                    </p>
+                  </div>
+
+                  {project.challenges && (
+                    <div className="border-l-4 border-red-200 pl-6">
+                      <h4 className="text-sm font-medium text-slate-500 mb-3 uppercase tracking-wide">Challenges</h4>
+                      <ul className="space-y-2">
+                        {project.challenges.slice(0, 3).map((challenge, i) => (
+                          <li key={i} className="text-slate-600 text-sm">• {challenge}</li>
                         ))}
-                        {project.techStack?.length > 4 && (
-                          <Badge variant="outline" className="text-slate-500 border-slate-200">
-                            +{project.techStack.length - 4} more
-                          </Badge>
-                        )}
-                      </div>
-                      
-                      <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-slate-700 group-hover:text-slate-900">
-                        View case study
-                        <span aria-hidden="true">→</span>
-                      </div>
+                      </ul>
                     </div>
-                  </Card>
-                </Link>
+                  )}
+
+                  {project.solutions && (
+                    <div className="border-l-4 border-blue-200 pl-6">
+                      <h4 className="text-sm font-medium text-slate-500 mb-3 uppercase tracking-wide">Solutions</h4>
+                      <ul className="space-y-2">
+                        {project.solutions.slice(0, 3).map((solution, i) => (
+                          <li key={i} className="text-slate-600 text-sm">• {solution}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {project.results && (
+                    <div className="border-l-4 border-green-200 pl-6">
+                      <h4 className="text-sm font-medium text-slate-500 mb-3 uppercase tracking-wide">Results</h4>
+                      <ul className="space-y-2">
+                        {project.results.slice(0, 3).map((result, i) => (
+                          <li key={i} className="text-slate-600 text-sm">• {result}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  
+                  <div>
+                    <h4 className="text-sm font-medium text-slate-500 mb-3 uppercase tracking-wide">Technologies Used</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {project.techStack?.map((tech, i) => (
+                        <Badge
+                          key={i}
+                          className="bg-slate-100 text-slate-600 border border-slate-200"
+                        >
+                          {tech.name}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
