@@ -375,7 +375,7 @@ const HomeScreen = () => {
                 >
                   {stats.map((stat) => (
                     <div key={stat.label} className="space-y-1">
-                      <p className="font-heading text-2xl text-slate-50">
+                      <p style={{fontFamily: "Instrument Serif, serif"}} className="font-heading text-2xl text-slate-50">
                         {stat.value}
                       </p>
                       <p className="text-sm text-slate-400 leading-snug">
