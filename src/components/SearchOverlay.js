@@ -17,7 +17,7 @@ const SearchOverlay = ({
 }) => {
   return (
     <motion.div
-      className="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-[110] flex flex-col items-center justify-start pt-20 sm:pt-28 p-4 relative overflow-hidden"
+      className="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-[110] flex flex-col items-center justify-start pt-20 sm:pt-28 p-4 relative overflow-hidden min-h-0"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -59,7 +59,7 @@ const SearchOverlay = ({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="w-full max-w-2xl flex-grow overflow-y-auto pb-10 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent"
+        className="w-full max-w-2xl flex-1 min-h-0 overflow-y-auto pb-10 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent"
       >
         {(searchResults.length > 0 || isSearching) &&
           debouncedSearchQuery.trim().length >= 2 && (
@@ -104,17 +104,6 @@ const SearchOverlay = ({
                 searchResults.length === 0 &&
                 debouncedSearchQuery.trim().length >= 2 && (
                   <div className="p-8 text-center bg-white rounded-2xl border border-slate-200 shadow-sm">
-                    <motion.div
-                      animate={{ rotate: [0, 10, -10, 0] }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
-                      className="text-4xl mb-4"
-                    >
-                      🔍
-                    </motion.div>
                     <h3 className="font-heading text-xl text-slate-900 mb-2">
                       No results found
                     </h3>
@@ -139,20 +128,7 @@ const SearchOverlay = ({
         {/* Initial state prompt */}
         {!isSearching && debouncedSearchQuery.trim().length === 0 && (
           <div className="p-8 text-center bg-white rounded-2xl border border-slate-200 shadow-sm">
-            <motion.div
-              animate={{ 
-                scale: [1, 1.1, 1],
-                rotate: [0, 5, -5, 0] 
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="text-4xl mb-4"
-            >
-              🔍
-            </motion.div>
+            
             <h3 className="font-heading text-xl text-slate-900 mb-2">
               Start your search
             </h3>
