@@ -209,7 +209,7 @@ export default function Nav() {
               <Link href="/" className="flex items-center">
                 <motion.div className="relative">
                   <Image
-                    src="/Logo.svg"
+                    src="/logo.svg"
                     alt="Logo"
                     width={56}
                     height={56}
