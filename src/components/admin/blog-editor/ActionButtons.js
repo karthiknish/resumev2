@@ -22,8 +22,8 @@ function ActionButtons({
         <div
           className={`p-4 rounded-lg text-sm mb-4 ${
             submitStatus[0]
-              ? "bg-green-900/50 border border-green-700 text-green-300"
-              : "bg-red-900/50 border border-red-700 text-red-300"
+              ? "bg-success/20 border border-success/30 text-success"
+              : "bg-destructive/20 border border-destructive/30 text-destructive"
           }`}
         >
           {submitStatus[1]}
@@ -38,11 +38,11 @@ function ActionButtons({
         )}
 
       {/* Action Buttons & Publish Toggle */}
-      <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-blue-100 justify-between items-center">
+      <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-border justify-between items-center">
         {/* Save Button */}
         <Button
           type="submit"
-          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50 order-1 sm:order-none"
+          className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 order-1 sm:order-none"
           disabled={isLoading || isSaveDisabled}
           onClick={onSubmit}
         >
