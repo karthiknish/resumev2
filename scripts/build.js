@@ -80,7 +80,7 @@ async function main() {
   
   // Install additional dependencies needed for build
   runCommand(
-    "npm install tailwindcss@3.4.1 postcss@8.4.35 autoprefixer@10.4.17 @tailwindcss/typography@0.5.10 tailwindcss-animate@1.0.7 @heroicons/react @google-cloud/text-to-speech css-minimizer-webpack-plugin webpack-bundle-analyzer --save"
+    "npm install tailwindcss@^4.1.16 postcss@^8.4.35 autoprefixer@^10.4.17 @tailwindcss/typography@^0.5.19 tailwindcss-animate@^1.0.7 @heroicons/react @google-cloud/text-to-speech css-minimizer-webpack-plugin webpack-bundle-analyzer --save"
   );
   
   // Install dev dependencies
