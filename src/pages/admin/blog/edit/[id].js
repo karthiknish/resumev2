@@ -322,7 +322,7 @@ function Edit() {
       <Head>
         <title>Edit Blog Post</title>
       </Head>
-      <div className="min-h-screen bg-slate-100 text-slate-900">
+      <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-slate-200 text-slate-900">
         <PageContainer className="pt-24 pb-12">
           {!isLoading && blogId && (
             <h1

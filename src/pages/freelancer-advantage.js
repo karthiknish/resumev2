@@ -203,56 +203,17 @@ export default function FreelancerAdvantage() {
           crossOrigin="true"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital,wght@0,400;0,600;1,400&display=swap"
           rel="stylesheet"
         />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 overflow-hidden" style={{ fontFamily: "Inter, sans-serif" }}>
+      <div className="min-h-screen bg-slate-50 overflow-hidden">
         {/* Hero Section with animated background */}
-        <section className="relative py-28 min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100">
-          {/* Animated Background Blobs - matching homepage */}
-          <motion.div
-            className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-r from-purple-300 to-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-30"
-            animate={{
-              scale: [1, 1.2, 1],
-              x: [0, 50, 0],
-              y: [0, -30, 0],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-          <motion.div
-            className="absolute top-40 right-20 w-80 h-80 bg-gradient-to-r from-blue-300 to-cyan-300 rounded-full mix-blend-multiply filter blur-xl opacity-30"
-            animate={{
-              scale: [1, 1.1, 1],
-              x: [0, -40, 0],
-              y: [0, 40, 0],
-            }}
-            transition={{
-              duration: 10,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 2,
-            }}
-          />
-          <motion.div
-            className="absolute bottom-20 left-1/2 w-96 h-96 bg-gradient-to-r from-green-300 to-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-20"
-            animate={{
-              scale: [1, 1.3, 1],
-              x: [0, 30, 0],
-              rotate: [0, 180, 360],
-            }}
-            transition={{
-              duration: 12,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 4,
-            }}
-          />
+        <section className="relative py-28 min-h-screen flex items-center justify-center overflow-hidden bg-slate-950 text-slate-50">
+          <div className="absolute inset-0 -z-20 bg-gradient-to-br from-slate-950/45 via-slate-950/30 to-slate-900/20" />
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_62%)]" />
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom,_rgba(236,72,153,0.14),_transparent_58%)]" />
 
           {/* Floating Tech Icons */}
           <motion.div
@@ -320,7 +281,7 @@ export default function FreelancerAdvantage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="inline-flex items-center gap-3 px-6 py-3 bg-white/80 backdrop-blur-sm border border-purple-200 rounded-full text-purple-700 text-sm font-semibold mb-8 shadow-lg"
+                className="inline-flex items-center rounded-full border border-slate-700/80 bg-slate-900/40 px-4 py-2 text-xs uppercase tracking-[0.3em] text-slate-300 mb-8"
               >
                 <span>Freelancer Advantage</span>
               </motion.div>
@@ -329,14 +290,13 @@ export default function FreelancerAdvantage() {
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-6xl md:text-8xl lg:text-9xl font-black mb-8 leading-tight tracking-tight"
-                style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                className="font-heading text-6xl md:text-8xl lg:text-9xl mb-8 leading-tight tracking-tight text-slate-50"
               >
-                <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                <span className="text-slate-100">
                   Direct. Fast.
                 </span>
                 <br />
-                <span className="bg-gradient-to-r from-pink-500 via-red-500 to-orange-500 bg-clip-text text-transparent">
+                <span className="text-slate-400">
                   Cost-Effective.
                 </span>
               </motion.h1>
@@ -345,47 +305,25 @@ export default function FreelancerAdvantage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="text-2xl md:text-3xl text-gray-700 mb-8 max-w-4xl mx-auto leading-relaxed font-medium"
+                className="text-2xl md:text-3xl text-slate-300 mb-8 max-w-4xl mx-auto leading-relaxed"
               >
                 Skip the agency markup and connect{" "}
                 <motion.span
-                  className="inline-block bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent font-bold"
+                  className="inline-block text-slate-100 font-bold"
                   whileHover={{ scale: 1.05 }}
                 >
                   directly with the talent
                 </motion.span>{" "}
                 building your website.
-                <motion.span
-                  animate={{ rotate: [0, 5, -5, 0] }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="inline-block ml-2"
-                >
-                  
-                </motion.span>
               </motion.p>
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
-                className="text-lg text-gray-600 mb-12 flex items-center justify-center gap-3"
+                className="text-lg text-slate-400 mb-12 flex items-center justify-center gap-3"
               >
                 <span>Get faster turnarounds, personalized attention, and exceptional results</span>
-                <motion.span
-                  animate={{ y: [0, -5, 0] }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="text-2xl"
-                >
-                  
-                </motion.span>
               </motion.div>
 
               <motion.div
@@ -395,42 +333,20 @@ export default function FreelancerAdvantage() {
                 className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
               >
                 <motion.button
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-10 py-5 text-xl font-bold rounded-2xl shadow-2xl hover:shadow-purple-300/50 transition-all duration-300 border-0 flex items-center gap-3"
+                  className="bg-slate-100 hover:bg-slate-200 text-slate-900 px-10 py-5 text-xl font-bold rounded-2xl shadow-xl transition-all duration-300 border-0 flex items-center gap-3"
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleContactClick}
                 >
-                  <motion.span
-                    animate={{ rotate: [0, 10, 0] }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="text-2xl"
-                  >
-                    
-                  </motion.span>
                   Let's build something amazing
                 </motion.button>
 
                 <motion.a
                   href="#benefits"
-                  className="bg-white/90 backdrop-blur-sm border-2 border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300 px-10 py-5 text-xl font-bold rounded-2xl shadow-xl transition-all duration-300 flex items-center gap-3"
+                  className="bg-transparent border-2 border-slate-700 text-slate-100 hover:bg-slate-800 px-10 py-5 text-xl font-bold rounded-2xl transition-all duration-300 flex items-center gap-3"
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <motion.span
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="text-2xl"
-                  >
-                    
-                  </motion.span>
                   See the advantages
                 </motion.a>
               </motion.div>
@@ -459,7 +375,7 @@ export default function FreelancerAdvantage() {
         </section>
 
         {/* Main Benefits Section */}
-        <section id="benefits" className="py-20 md:py-32 bg-gradient-to-br from-white to-purple-50">
+        <section id="benefits" className="py-20 md:py-32 bg-background">
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-center mb-20">
               <motion.div
@@ -470,22 +386,11 @@ export default function FreelancerAdvantage() {
                 whileHover={{ y: -5 }}
               >
                 <h2
-                  className="text-5xl md:text-6xl font-black text-gray-900 mb-6 flex items-center justify-center gap-6"
-                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                  className="font-heading text-5xl md:text-6xl text-slate-900 mb-6 flex items-center justify-center gap-6"
                 >
-                  <span
-                    className="text-4xl"
-                  >
-                    
-                  </span>
                   Why Choose a Freelancer?
-                  <span
-                    className="text-4xl"
-                  >
-                    
-                  </span>
                 </h2>
-                <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
+                <p className="text-2xl text-slate-600 max-w-3xl mx-auto">
                   Make the smart choice for your business website by going direct to the source
                 </p>
               </motion.div>
@@ -499,7 +404,7 @@ export default function FreelancerAdvantage() {
                 transition={{ duration: 0.6, delay: 0 }}
                 viewport={{ once: true }}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className="h-full p-8 border-2 shadow-lg hover:shadow-2xl transition-all duration-300 group rounded-3xl bg-green-50 border-green-200 hover:bg-green-100"
+                className="h-full p-8 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 group rounded-2xl bg-white"
               >
                 <div className="flex items-center justify-between mb-6">
                   <motion.div
@@ -507,16 +412,15 @@ export default function FreelancerAdvantage() {
                     whileHover={{ scale: 1.2, rotate: 10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <FaDollarSign className="text-green-500" />
+                    <FaDollarSign className="text-slate-700" />
                   </motion.div>
                 </div>
                 <h3
-                  className="text-2xl font-bold text-gray-900 mb-4"
-                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                  className="font-heading text-2xl text-slate-900 mb-4"
                 >
                   Lower Costs
                 </h3>
-                <p className="text-gray-700 leading-relaxed text-lg">
+                <p className="text-slate-600 leading-relaxed text-lg">
                   Freelancers have minimal overhead and no agency markup fees.
                   You're paying for the talent, not the fancy office or project
                   managers.
@@ -530,7 +434,7 @@ export default function FreelancerAdvantage() {
                 transition={{ duration: 0.6, delay: 0.1 }}
                 viewport={{ once: true }}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className="h-full p-8 border-2 shadow-lg hover:shadow-2xl transition-all duration-300 group rounded-3xl bg-blue-50 border-blue-200 hover:bg-blue-100"
+                className="h-full p-8 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 group rounded-2xl bg-white"
               >
                 <div className="flex items-center justify-between mb-6">
                   <motion.div
@@ -538,16 +442,15 @@ export default function FreelancerAdvantage() {
                     whileHover={{ scale: 1.2, rotate: 10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <FaComments className="text-blue-500" />
+                    <FaComments className="text-slate-700" />
                   </motion.div>
                 </div>
                 <h3
-                  className="text-2xl font-bold text-gray-900 mb-4"
-                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                  className="font-heading text-2xl text-slate-900 mb-4"
                 >
                   Direct Communication
                 </h3>
-                <p className="text-gray-700 leading-relaxed text-lg">
+                <p className="text-slate-600 leading-relaxed text-lg">
                   No more message relay through account managers. Speak directly
                   with the person building your website for clearer
                   communication.
@@ -561,7 +464,7 @@ export default function FreelancerAdvantage() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 viewport={{ once: true }}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className="h-full p-8 border-2 shadow-lg hover:shadow-2xl transition-all duration-300 group rounded-3xl bg-purple-50 border-purple-200 hover:bg-purple-100"
+                className="h-full p-8 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 group rounded-2xl bg-white"
               >
                 <div className="flex items-center justify-between mb-6">
                   <motion.div
@@ -569,16 +472,15 @@ export default function FreelancerAdvantage() {
                     whileHover={{ scale: 1.2, rotate: 10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <FaRocket className="text-purple-500" />
+                    <FaRocket className="text-slate-700" />
                   </motion.div>
                 </div>
                 <h3
-                  className="text-2xl font-bold text-gray-900 mb-4"
-                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                  className="font-heading text-2xl text-slate-900 mb-4"
                 >
                   Faster Delivery
                 </h3>
-                <p className="text-gray-700 leading-relaxed text-lg">
+                <p className="text-slate-600 leading-relaxed text-lg">
                   Freelancers don't have agency bureaucracy. Decisions and
                   changes happen quickly, cutting project time by weeks or even
                   months.
@@ -592,7 +494,7 @@ export default function FreelancerAdvantage() {
                 transition={{ duration: 0.6, delay: 0.3 }}
                 viewport={{ once: true }}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className="h-full p-8 border-2 shadow-lg hover:shadow-2xl transition-all duration-300 group rounded-3xl bg-orange-50 border-orange-200 hover:bg-orange-100"
+                className="h-full p-8 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 group rounded-2xl bg-white"
               >
                 <div className="flex items-center justify-between mb-6">
                   <motion.div
@@ -600,16 +502,15 @@ export default function FreelancerAdvantage() {
                     whileHover={{ scale: 1.2, rotate: 10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <FaHandshake className="text-orange-500" />
+                    <FaHandshake className="text-slate-700" />
                   </motion.div>
                 </div>
                 <h3
-                  className="text-2xl font-bold text-gray-900 mb-4"
-                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                  className="font-heading text-2xl text-slate-900 mb-4"
                 >
                   Personal Attention
                 </h3>
-                <p className="text-gray-700 leading-relaxed text-lg">
+                <p className="text-slate-600 leading-relaxed text-lg">
                   Freelancers take on fewer clients than agencies, ensuring your
                   project gets the focused attention it deserves.
                 </p>
@@ -622,7 +523,7 @@ export default function FreelancerAdvantage() {
                 transition={{ duration: 0.6, delay: 0.4 }}
                 viewport={{ once: true }}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className="h-full p-8 border-2 shadow-lg hover:shadow-2xl transition-all duration-300 group rounded-3xl bg-yellow-50 border-yellow-200 hover:bg-yellow-100"
+                className="h-full p-8 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 group rounded-2xl bg-white"
               >
                 <div className="flex items-center justify-between mb-6">
                   <motion.div
@@ -630,16 +531,15 @@ export default function FreelancerAdvantage() {
                     whileHover={{ scale: 1.2, rotate: 10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <FaLightbulb className="text-yellow-500" />
+                    <FaLightbulb className="text-slate-700" />
                   </motion.div>
                 </div>
                 <h3
-                  className="text-2xl font-bold text-gray-900 mb-4"
-                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                  className="font-heading text-2xl text-slate-900 mb-4"
                 >
                   Creative Freedom
                 </h3>
-                <p className="text-gray-700 leading-relaxed text-lg">
+                <p className="text-slate-600 leading-relaxed text-lg">
                   Freelancers aren't bound by rigid agency processes, allowing
                   for more creative approaches and innovative solutions to your
                   challenges.
@@ -653,7 +553,7 @@ export default function FreelancerAdvantage() {
                 transition={{ duration: 0.6, delay: 0.5 }}
                 viewport={{ once: true }}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className="h-full p-8 border-2 shadow-lg hover:shadow-2xl transition-all duration-300 group rounded-3xl bg-cyan-50 border-cyan-200 hover:bg-cyan-100"
+                className="h-full p-8 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 group rounded-2xl bg-white"
               >
                 <div className="flex items-center justify-between mb-6">
                   <motion.div
@@ -661,16 +561,15 @@ export default function FreelancerAdvantage() {
                     whileHover={{ scale: 1.2, rotate: 10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <FaBullseye className="text-cyan-500" />
+                    <FaBullseye className="text-slate-700" />
                   </motion.div>
                 </div>
                 <h3
-                  className="text-2xl font-bold text-gray-900 mb-4"
-                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                  className="font-heading text-2xl text-slate-900 mb-4"
                 >
                   Specialized Expertise
                 </h3>
-                <p className="text-gray-700 leading-relaxed text-lg">
+                <p className="text-slate-600 leading-relaxed text-lg">
                   Choose a freelancer with the exact skill set your project
                   needs, rather than getting assigned whoever is available at an
                   agency.
@@ -682,7 +581,7 @@ export default function FreelancerAdvantage() {
         </section>
 
         {/* Pricing Comparison Section */}
-        <section className="py-20 md:py-32 bg-gradient-to-br from-blue-50 to-purple-50">
+        <section className="py-20 md:py-32 bg-slate-950 text-slate-50">
           <div className="container mx-auto px-4">
             <div className="text-center mb-20">
               <motion.div
@@ -693,22 +592,11 @@ export default function FreelancerAdvantage() {
                 whileHover={{ y: -5 }}
               >
                 <h2
-                  className="text-5xl md:text-6xl font-black text-gray-900 mb-6 flex items-center justify-center gap-6"
-                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                  className="font-heading text-5xl md:text-6xl text-white mb-6 flex items-center justify-center gap-6"
                 >
-                  <span
-                    className="text-4xl"
-                  >
-                    
-                  </span>
                   The Cost Advantage
-                  <span
-                    className="text-4xl"
-                  >
-                    
-                  </span>
                 </h2>
-                <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
+                <p className="text-2xl text-slate-300 max-w-3xl mx-auto">
                   See how working with a freelancer can save you money while
                   delivering superior results
                 </p>
@@ -719,10 +607,10 @@ export default function FreelancerAdvantage() {
               {pricingData.map((plan, index) => (
                 <motion.div
                   key={plan.type}
-                  className={`relative rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 ${
+                  className={`relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 ${
                     plan.recommended
-                      ? "border-2 border-blue-400"
-                      : "border-2 border-gray-300"
+                      ? "border-2 border-slate-700"
+                      : "border border-slate-800"
                   }`}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -730,13 +618,13 @@ export default function FreelancerAdvantage() {
                   viewport={{ once: true }}
                 >
                   {plan.recommended && (
-                    <div className="absolute top-0 right-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
+                    <div className="absolute top-0 right-0 bg-slate-700 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
                       RECOMMENDED
                     </div>
                   )}
 
-                  <div className={`bg-gradient-to-br ${plan.color} p-8`}>
-                    <h3 className="text-2xl font-bold text-white mb-2">
+                  <div className={`bg-slate-900 p-8 border-b border-slate-800`}>
+                    <h3 className="font-heading text-2xl text-white mb-2">
                       {plan.type}
                     </h3>
                     <p className="text-4xl font-bold text-white">
@@ -744,20 +632,20 @@ export default function FreelancerAdvantage() {
                     </p>
                   </div>
 
-                  <div className="bg-white p-8">
+                  <div className="bg-slate-900/50 p-8 backdrop-blur-sm">
                     <ul className="space-y-4">
                       {plan.features.map((feature, i) => (
                         <li key={i} className="flex items-start">
                           <span
                             className={`mr-2 mt-1 ${
                               plan.recommended
-                                ? "text-blue-500"
-                                : "text-gray-400"
+                                ? "text-slate-400"
+                                : "text-slate-500"
                             }`}
                           >
                             {plan.recommended ? "✓" : "•"}
                           </span>
-                          <span className="text-gray-700">{feature}</span>
+                          <span className="text-slate-300">{feature}</span>
                         </li>
                       ))}
                     </ul>
@@ -769,7 +657,7 @@ export default function FreelancerAdvantage() {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-20 md:py-32 bg-gradient-to-br from-pink-50 to-orange-50">
+        <section className="py-20 md:py-32 bg-background">
           <div className="container mx-auto px-4">
             <div className="text-center mb-20">
               <motion.div
@@ -780,22 +668,11 @@ export default function FreelancerAdvantage() {
                 whileHover={{ y: -5 }}
               >
                 <h2
-                  className="text-5xl md:text-6xl font-black text-gray-900 mb-6 flex items-center justify-center gap-6"
-                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                  className="font-heading text-5xl md:text-6xl text-slate-900 mb-6 flex items-center justify-center gap-6"
                 >
-                  <span
-                    className="text-4xl"
-                  >
-                    
-                  </span>
                   Common Questions
-                  <span
-                    className="text-4xl"
-                  >
-                    
-                  </span>
                 </h2>
-                <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
+                <p className="text-2xl text-slate-600 max-w-3xl mx-auto">
                   Everything you need to know about working with a freelance web developer
                 </p>
               </motion.div>
@@ -803,18 +680,18 @@ export default function FreelancerAdvantage() {
 
             <div className="max-w-4xl mx-auto space-y-8">
               <motion.div
-                className="bg-white border-2 border-orange-200 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm hover:shadow-md transition-all duration-300"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
                 viewport={{ once: true }}
                 whileHover={{ y: -5 }}
               >
-                <h3 className="text-xl font-bold text-gray-900 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                <h3 className="font-heading text-xl text-slate-900 mb-3">
                   Is a single freelancer reliable enough for my business
                   website?
                 </h3>
-                <p className="text-gray-700 leading-relaxed">
+                <p className="text-slate-600 leading-relaxed">
                   Professional freelancers build their entire career on
                   reliability and reputation. They're often more dependable than
                   agencies, where your project may be just one of dozens. Top
@@ -824,17 +701,17 @@ export default function FreelancerAdvantage() {
               </motion.div>
 
               <motion.div
-                className="bg-white border-2 border-orange-200 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm hover:shadow-md transition-all duration-300"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
                 viewport={{ once: true }}
                 whileHover={{ y: -5 }}
               >
-                <h3 className="text-xl font-bold text-gray-900 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                <h3 className="font-heading text-xl text-slate-900 mb-3">
                   What if my project needs multiple skills or specialties?
                 </h3>
-                <p className="text-gray-700 leading-relaxed">
+                <p className="text-slate-600 leading-relaxed">
                   Many successful freelancers are full-stack developers with a
                   broad range of skills. For specialized needs, experienced
                   freelancers maintain networks of trusted colleagues they can
@@ -845,17 +722,17 @@ export default function FreelancerAdvantage() {
               </motion.div>
 
               <motion.div
-                className="bg-white border-2 border-orange-200 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm hover:shadow-md transition-all duration-300"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
                 viewport={{ once: true }}
                 whileHover={{ y: -5 }}
               >
-                <h3 className="text-xl font-bold text-gray-900 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                <h3 className="font-heading text-xl text-slate-900 mb-3">
                   How do I know I'm hiring a quality freelancer?
                 </h3>
-                <p className="text-gray-700 leading-relaxed">
+                <p className="text-slate-600 leading-relaxed">
                   Look for a strong portfolio, client testimonials, and examples
                   of work similar to your project. Quality freelancers will be
                   transparent about their process, provide clear timelines and
@@ -866,17 +743,17 @@ export default function FreelancerAdvantage() {
               </motion.div>
 
               <motion.div
-                className="bg-white border-2 border-orange-200 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm hover:shadow-md transition-all duration-300"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
                 viewport={{ once: true }}
                 whileHover={{ y: -5 }}
               >
-                <h3 className="text-xl font-bold text-gray-900 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                <h3 className="font-heading text-xl text-slate-900 mb-3">
                   What about ongoing maintenance and updates?
                 </h3>
-                <p className="text-gray-700 leading-relaxed">
+                <p className="text-slate-600 leading-relaxed">
                   Professional freelancers typically offer maintenance packages
                   or retainer arrangements for ongoing support. Many clients
                   find that the same freelancer who built their site can
@@ -892,7 +769,7 @@ export default function FreelancerAdvantage() {
         {/* Contact Section */}
         <section
           id="contact-section"
-          className="py-20 md:py-32 bg-gradient-to-br from-cyan-50 to-blue-50"
+          className="py-20 md:py-32 bg-slate-950 text-slate-50"
         >
           <div className="container mx-auto px-4">
             <div className="text-center mb-20">
@@ -904,22 +781,11 @@ export default function FreelancerAdvantage() {
                 whileHover={{ y: -5 }}
               >
                 <h2
-                  className="text-5xl md:text-6xl font-black text-gray-900 mb-6 flex items-center justify-center gap-6"
-                  style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                  className="font-heading text-5xl md:text-6xl text-white mb-6 flex items-center justify-center gap-6"
                 >
-                  <span
-                    className="text-4xl"
-                  >
-                    
-                  </span>
                   Work With Me
-                  <span
-                    className="text-4xl"
-                  >
-                    
-                  </span>
                 </h2>
-                <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
+                <p className="text-2xl text-slate-300 max-w-3xl mx-auto">
                   Let's create something amazing together. Reach out to discuss
                   your project and how I can help.
                 </p>
@@ -929,7 +795,7 @@ export default function FreelancerAdvantage() {
             <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
               {/* About Me Section */}
               <motion.div
-                className="bg-white/90 backdrop-blur-sm border-2 border-blue-200 p-8 md:p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
+                className="bg-slate-900/60 backdrop-blur-sm border border-slate-800 p-8 md:p-10 rounded-2xl shadow-lg"
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
@@ -937,7 +803,7 @@ export default function FreelancerAdvantage() {
                 whileHover={{ y: -5 }}
               >
                 <div className="flex items-center mb-8">
-                  <div className="relative w-24 h-24 overflow-hidden rounded-full border-4 border-blue-500 mr-6">
+                  <div className="relative w-24 h-24 overflow-hidden rounded-full border-4 border-slate-700 mr-6">
                     <img
                       src="/profile-photo.jpg"
                       alt="Karthik Nishanth"
@@ -945,15 +811,15 @@ export default function FreelancerAdvantage() {
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.src =
-                          "https://ui-avatars.com/api/?name=Karthik+Nishanth&background=0062cc&color=fff&size=150";
+                          "https://ui-avatars.com/api/?name=Karthik+Nishanth&background=0f172a&color=fff&size=150";
                       }}
                     />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold text-gray-900" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                    <h3 className="font-heading text-2xl text-white">
                       Karthik Nishanth
                     </h3>
-                    <p className="text-blue-600 text-lg font-semibold">
+                    <p className="text-slate-400 text-lg font-semibold">
                       Full Stack Developer
                     </p>
                   </div>
@@ -961,10 +827,10 @@ export default function FreelancerAdvantage() {
 
                 <div className="space-y-6">
                   <div>
-                    <h4 className="text-xl font-semibold text-gray-900 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                    <h4 className="font-heading text-xl text-white mb-3">
                       My Approach
                     </h4>
-                    <p className="text-gray-700 leading-relaxed">
+                    <p className="text-slate-300 leading-relaxed">
                       I believe in creating clean, efficient, and user-focused
                       websites that deliver real business results. My hands-on
                       approach ensures your project gets my undivided attention
@@ -973,7 +839,7 @@ export default function FreelancerAdvantage() {
                   </div>
 
                   <div>
-                    <h4 className="text-xl font-semibold text-gray-900 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                    <h4 className="font-heading text-xl text-white mb-3">
                       Expertise
                     </h4>
                     <div className="flex flex-wrap gap-2">
@@ -989,7 +855,7 @@ export default function FreelancerAdvantage() {
                       ].map((skill) => (
                         <span
                           key={skill}
-                          className="px-3 py-1 bg-blue-100 text-blue-700 border border-blue-300 rounded-full text-sm font-medium"
+                          className="px-3 py-1 bg-slate-800 text-slate-200 border border-slate-700 rounded-full text-sm font-medium"
                         >
                           {skill}
                         </span>
@@ -998,10 +864,10 @@ export default function FreelancerAdvantage() {
                   </div>
 
                   <div>
-                    <h4 className="text-xl font-semibold text-gray-900 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                    <h4 className="font-heading text-xl text-white mb-3">
                       Experience
                     </h4>
-                    <p className="text-gray-700 leading-relaxed">
+                    <p className="text-slate-300 leading-relaxed">
                       With over 5 years of experience building websites and web
                       applications for clients across industries, I understand
                       what it takes to deliver high-quality results on time and
@@ -1010,50 +876,50 @@ export default function FreelancerAdvantage() {
                   </div>
 
                   <div className="pt-4">
-                    <h4 className="text-xl font-semibold text-gray-900 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                    <h4 className="font-heading text-xl text-white mb-3">
                       My Process
                     </h4>
                     <ol className="space-y-2">
                       <li className="flex items-start">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center mr-3 mt-0.5 font-semibold text-xs">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-slate-700 text-white flex items-center justify-center mr-3 mt-0.5 font-semibold text-xs">
                           1
                         </span>
-                        <span className="text-gray-700">
+                        <span className="text-slate-300">
                           Discovery: Understanding your business and goals
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center mr-3 mt-0.5 font-semibold text-xs">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-slate-700 text-white flex items-center justify-center mr-3 mt-0.5 font-semibold text-xs">
                           2
                         </span>
-                        <span className="text-gray-700">
+                        <span className="text-slate-300">
                           Planning: Mapping the project and setting clear
                           milestones
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center mr-3 mt-0.5 font-semibold text-xs">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-slate-700 text-white flex items-center justify-center mr-3 mt-0.5 font-semibold text-xs">
                           3
                         </span>
-                        <span className="text-gray-700">
+                        <span className="text-slate-300">
                           Development: Building with best practices and regular
                           updates
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center mr-3 mt-0.5 font-semibold text-xs">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-slate-700 text-white flex items-center justify-center mr-3 mt-0.5 font-semibold text-xs">
                           4
                         </span>
-                        <span className="text-gray-700">
+                        <span className="text-slate-300">
                           Deployment: Launching your project with thorough
                           testing
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center mr-3 mt-0.5 font-semibold text-xs">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-slate-700 text-white flex items-center justify-center mr-3 mt-0.5 font-semibold text-xs">
                           5
                         </span>
-                        <span className="text-gray-700">
+                        <span className="text-slate-300">
                           Support: Ongoing maintenance and updates as needed
                         </span>
                       </li>
@@ -1066,7 +932,7 @@ export default function FreelancerAdvantage() {
                     href="https://github.com/karthiknish"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 bg-blue-100 hover:bg-blue-200 border border-blue-300 rounded-full text-blue-700 hover:text-blue-800 transition-colors"
+                    className="p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-full text-slate-300 hover:text-white transition-colors"
                     aria-label="GitHub Profile"
                   >
                     <svg
@@ -1083,7 +949,7 @@ export default function FreelancerAdvantage() {
                     href="https://linkedin.com/in/karthiknishanth"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 bg-blue-100 hover:bg-blue-200 border border-blue-300 rounded-full text-blue-700 hover:text-blue-800 transition-colors"
+                    className="p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-full text-slate-300 hover:text-white transition-colors"
                     aria-label="LinkedIn Profile"
                   >
                     <svg
@@ -1100,7 +966,7 @@ export default function FreelancerAdvantage() {
                     href="https://twitter.com/karthiknish"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 bg-blue-100 hover:bg-blue-200 border border-blue-300 rounded-full text-blue-700 hover:text-blue-800 transition-colors"
+                    className="p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-full text-slate-300 hover:text-white transition-colors"
                     aria-label="Twitter Profile"
                   >
                     <svg
@@ -1117,7 +983,7 @@ export default function FreelancerAdvantage() {
 
               {/* Contact Form */}
               <motion.div
-                className="bg-white/90 backdrop-blur-sm border-2 border-cyan-200 p-8 md:p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
+                className="bg-slate-900/60 backdrop-blur-sm border border-slate-800 p-8 md:p-10 rounded-2xl shadow-lg"
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
@@ -1125,10 +991,10 @@ export default function FreelancerAdvantage() {
                 whileHover={{ y: -5 }}
               >
                 <div className="mb-8">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                  <h3 className="font-heading text-2xl text-white mb-3">
                     Get In Touch
                   </h3>
-                  <p className="text-gray-700 leading-relaxed">
+                  <p className="text-slate-300 leading-relaxed">
                     Fill out the form below and I'll get back to you within 24
                     hours to discuss how I can help with your project.
                   </p>
@@ -1138,22 +1004,22 @@ export default function FreelancerAdvantage() {
                   <motion.div
                     className={`rounded-lg p-6 text-center ${
                       formStatus.success
-                        ? "bg-green-100 border-2 border-green-400"
-                        : "bg-red-100 border-2 border-red-400"
+                        ? "bg-green-900/20 border border-green-800"
+                        : "bg-red-900/20 border border-red-800"
                     }`}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                   >
-                    <h4 className="text-xl font-semibold mb-2 text-gray-900" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                    <h4 className="font-heading text-xl mb-2 text-white">
                       {formStatus.success
                         ? "Message Sent!"
                         : "Something went wrong"}
                     </h4>
-                    <p className="text-gray-700">{formStatus.message}</p>
+                    <p className="text-slate-300">{formStatus.message}</p>
 
                     {formStatus.success && (
                       <motion.button
-                        className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white transition-colors"
+                        className="mt-4 px-6 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-900 transition-colors"
                         onClick={() =>
                           setFormStatus({
                             submitted: false,
@@ -1174,7 +1040,7 @@ export default function FreelancerAdvantage() {
                       <div>
                         <label
                           htmlFor="name"
-                          className="block text-gray-700 mb-2 font-medium"
+                          className="block text-slate-300 mb-2 font-medium"
                         >
                           Name
                         </label>
@@ -1184,7 +1050,7 @@ export default function FreelancerAdvantage() {
                           name="name"
                           value={formData.name}
                           onChange={handleInputChange}
-                          className="w-full bg-white border-2 border-gray-300 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-400"
+                          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-200 hover:border-slate-600"
                           placeholder="Your name"
                           required
                         />
@@ -1192,7 +1058,7 @@ export default function FreelancerAdvantage() {
                       <div>
                         <label
                           htmlFor="email"
-                          className="block text-gray-700 mb-2 font-medium"
+                          className="block text-slate-300 mb-2 font-medium"
                         >
                           Email
                         </label>
@@ -1202,7 +1068,7 @@ export default function FreelancerAdvantage() {
                           name="email"
                           value={formData.email}
                           onChange={handleInputChange}
-                          className="w-full bg-white border-2 border-gray-300 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-400"
+                          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-200 hover:border-slate-600"
                           placeholder="your@email.com"
                           required
                         />
@@ -1212,7 +1078,7 @@ export default function FreelancerAdvantage() {
                     <div>
                       <label
                         htmlFor="budget"
-                        className="block text-gray-700 mb-2 font-medium"
+                        className="block text-slate-300 mb-2 font-medium"
                       >
                         Budget Range
                       </label>
@@ -1221,7 +1087,7 @@ export default function FreelancerAdvantage() {
                         name="budget"
                         value={formData.budget}
                         onChange={handleInputChange}
-                        className="w-full bg-white border-2 border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent"
                       >
                         <option value="">Select budget range</option>
                         <option value="$1,000 - $5,000">$1,000 - $5,000</option>
@@ -1238,7 +1104,7 @@ export default function FreelancerAdvantage() {
                     <div>
                       <label
                         htmlFor="timeline"
-                        className="block text-gray-700 mb-2 font-medium"
+                        className="block text-slate-300 mb-2 font-medium"
                       >
                         Timeline
                       </label>
@@ -1247,7 +1113,7 @@ export default function FreelancerAdvantage() {
                         name="timeline"
                         value={formData.timeline}
                         onChange={handleInputChange}
-                        className="w-full bg-white border-2 border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent"
                       >
                         <option value="">Select timeline</option>
                         <option value="Less than 1 month">
@@ -1262,7 +1128,7 @@ export default function FreelancerAdvantage() {
                     <div>
                       <label
                         htmlFor="project"
-                        className="block text-gray-700 mb-2 font-medium"
+                        className="block text-slate-300 mb-2 font-medium"
                       >
                         Project Details
                       </label>
@@ -1272,7 +1138,7 @@ export default function FreelancerAdvantage() {
                         value={formData.project}
                         onChange={handleInputChange}
                         rows={5}
-                        className="w-full bg-white border-2 border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent"
                         placeholder="Tell me about your project goals, target audience, and any specific features you need..."
                         required
                       ></textarea>
@@ -1281,7 +1147,7 @@ export default function FreelancerAdvantage() {
                     <div>
                       <motion.button
                         type="submit"
-                        className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 rounded-2xl py-4 text-white font-bold text-lg shadow-2xl hover:shadow-blue-500/30 transition-all duration-300 flex justify-center items-center"
+                        className="w-full bg-slate-100 hover:bg-slate-200 rounded-2xl py-4 text-slate-900 font-bold text-lg shadow-lg transition-all duration-300 flex justify-center items-center"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         disabled={isSubmitting}
@@ -1289,7 +1155,7 @@ export default function FreelancerAdvantage() {
                         {isSubmitting ? (
                           <>
                             <svg
-                              className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                              className="animate-spin -ml-1 mr-3 h-5 w-5 text-slate-900"
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
                               viewBox="0 0 24 24"
@@ -1338,7 +1204,7 @@ export default function FreelancerAdvantage() {
             transition={{ duration: 0.3 }}
           >
             <motion.button
-              className="bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full p-4 shadow-xl hover:shadow-blue-500/30 transition duration-300"
+              className="bg-slate-900 rounded-full p-4 shadow-lg hover:shadow-xl transition duration-300"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={handleContactClick}

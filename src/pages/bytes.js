@@ -57,10 +57,10 @@ function ByteSlide({ byte, isActive }) {
         variants={cardContentVariants}
         className="w-full max-w-2xl"
       >
-        <Card className="w-full bg-white/5 backdrop-blur-lg border border-white/10 text-white shadow-2xl overflow-hidden rounded-3xl hover:shadow-3xl transition-all duration-300">
+        <Card className="w-full bg-slate-900/60 backdrop-blur-md border border-slate-800 text-slate-100 shadow-2xl overflow-hidden rounded-3xl hover:shadow-3xl transition-all duration-300">
           <CardContent className="p-6 md:p-8">
             {byte.imageUrl && (
-              <div className="relative w-full aspect-video mb-6 rounded-2xl overflow-hidden shadow-lg">
+              <div className="relative w-full aspect-video mb-6 rounded-2xl overflow-hidden shadow-lg border border-slate-800">
                 <Image
                   src={byte.imageUrl}
                   alt={byte.headline}
@@ -71,24 +71,23 @@ function ByteSlide({ byte, isActive }) {
               </div>
             )}
             <motion.h2 
-              className="text-2xl md:text-3xl font-black mb-4 leading-tight text-white"
-              style={{ fontFamily: "Space Grotesk, sans-serif" }}
+              className="font-heading text-3xl md:text-4xl mb-4 leading-tight text-slate-50"
               animate={isActive ? { scale: [1, 1.01, 1] } : {}}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
             >
               {byte.headline}
             </motion.h2>
-            <div className="max-h-[35vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent mb-6 pr-2">
-              <p className="text-white/80 text-base md:text-lg whitespace-pre-wrap break-words leading-relaxed font-medium">
+            <div className="max-h-[35vh] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent mb-6 pr-2">
+              <p className="text-slate-300 text-base md:text-lg whitespace-pre-wrap break-words leading-relaxed font-medium">
                 {byte.body}
               </p>
             </div>
-            <div className="flex justify-between items-center text-sm border-t border-white/10 pt-4">
+            <div className="flex justify-between items-center text-sm border-t border-slate-800 pt-4">
               <motion.span 
-                className="text-white/70 font-semibold flex items-center gap-2"
+                className="text-slate-400 font-semibold flex items-center gap-2"
                 whileHover={{ scale: 1.05 }}
               >
-                <Zap className="w-4 h-4 text-yellow-400" />
+                <Zap className="w-4 h-4 text-yellow-500" />
                 {formatDate(byte.createdAt)}
               </motion.span>
               {byte.link && (
@@ -100,7 +99,7 @@ function ByteSlide({ byte, isActive }) {
                     href={byte.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl border border-white/15"
+                    className="flex items-center gap-2 bg-slate-100 hover:bg-white text-slate-900 px-4 py-2 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl border border-slate-200"
                   >
                     <span>Learn More</span>
                     <ExternalLink className="w-4 h-4" />
@@ -118,7 +117,7 @@ function ByteSlide({ byte, isActive }) {
 // New Intro Slide Component
 function IntroSlide({ onRetry }) {
   return (
-    <div className="flex flex-col items-center justify-center h-full p-8 text-center text-white">
+    <div className="flex flex-col items-center justify-center h-full p-8 text-center text-slate-100">
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -126,14 +125,14 @@ function IntroSlide({ onRetry }) {
         className="max-w-2xl"
       >
         <motion.h1 
-          className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 text-white"
+          className="font-heading text-6xl md:text-8xl lg:text-9xl mb-6 text-slate-50"
           animate={{ scale: [1, 1.02, 1] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >
           Bytes
         </motion.h1>
         <motion.p 
-          className="text-lg md:text-xl text-white/80 leading-relaxed font-medium max-w-3xl mx-auto mb-8"
+          className="text-lg md:text-xl text-slate-400 leading-relaxed font-medium max-w-3xl mx-auto mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
@@ -142,13 +141,13 @@ function IntroSlide({ onRetry }) {
 
         </motion.p>
         <motion.div
-          className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-6 py-3 inline-flex items-center gap-3 shadow-xl"
+          className="bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-full px-6 py-3 inline-flex items-center gap-3 shadow-xl"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
           whileHover={{ scale: 1.05, y: -2 }}
         >
-          <span className="text-white font-bold text-base md:text-lg">
+          <span className="text-slate-300 font-medium text-base md:text-lg">
             Scroll or use arrow keys to navigate
           </span>
         </motion.div>
@@ -160,7 +159,7 @@ function IntroSlide({ onRetry }) {
 // Error Slide Component
 function ErrorSlide({ error, onRetry }) {
   return (
-    <div className="flex flex-col items-center justify-center h-full p-8 text-center text-white">
+    <div className="flex flex-col items-center justify-center h-full p-8 text-center text-slate-100">
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -168,7 +167,7 @@ function ErrorSlide({ error, onRetry }) {
         className="max-w-md"
       >
         <div className="text-6xl mb-6">⚠️</div>
-        <h3 className="text-2xl font-black text-white mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+        <h3 className="font-heading text-3xl text-slate-50 mb-4">
           Oops! Something went wrong
         </h3>
         <p className="text-red-400 font-medium mb-6">
@@ -176,7 +175,7 @@ function ErrorSlide({ error, onRetry }) {
         </p>
         <motion.button
           onClick={onRetry}
-          className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl mx-auto border border-white/15"
+          className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-100 px-6 py-3 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl mx-auto border border-slate-700"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -191,7 +190,7 @@ function ErrorSlide({ error, onRetry }) {
 // Empty State Slide Component
 function EmptySlide() {
   return (
-    <div className="flex flex-col items-center justify-center h-full p-8 text-center text-white">
+    <div className="flex flex-col items-center justify-center h-full p-8 text-center text-slate-100">
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -209,10 +208,10 @@ function EmptySlide() {
         >
           📭
         </motion.div>
-        <h3 className="text-3xl font-black text-white mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+        <h3 className="font-heading text-4xl text-slate-50 mb-4">
           No Bytes Yet
         </h3>
-        <p className="text-white/80 font-medium text-lg">
+        <p className="text-slate-400 font-medium text-lg">
           No updates posted yet. Check back soon for bite-sized content!
         </p>
       </motion.div>
@@ -290,15 +289,15 @@ function BytesPage() {
     
     return (
       <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-10 hidden md:block">
-        <div className="w-48 h-2 bg-white/10 rounded-full overflow-hidden">
+        <div className="w-48 h-2 bg-slate-800 rounded-full overflow-hidden">
           <motion.div 
-            className="h-full bg-white"
+            className="h-full bg-slate-200"
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.3 }}
           />
         </div>
-        <div className="text-center text-sm text-white/70 mt-1">
+        <div className="text-center text-sm text-slate-500 mt-1">
           {activeIndex} / {totalSlides - 1}
         </div>
       </div>
@@ -327,24 +326,38 @@ function BytesPage() {
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
         />
+        {/* Google Fonts */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="true"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital,wght@0,400;0,600;1,400&display=swap"
+          rel="stylesheet"
+        />
       </Head>
-      <div className="h-screen w-screen bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 overflow-hidden relative">
+      <div className="h-screen w-screen bg-slate-950 overflow-hidden relative">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-slate-950 opacity-50"></div>
         <ProgressIndicator />
         
         {isLoading ? (
-          <div className="h-full w-full flex items-center justify-center">
+          <div className="h-full w-full flex items-center justify-center relative z-10">
             <motion.div 
-              className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl px-8 py-6 shadow-xl"
+              className="flex items-center gap-4 bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-2xl px-8 py-6 shadow-xl"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
             >
-            
-              <span className="text-white font-bold text-xl">Loading Bytes...</span>
+              <Loader2 className="w-6 h-6 text-slate-200 animate-spin" />
+              <span className="text-slate-200 font-bold text-xl">Loading Bytes...</span>
             </motion.div>
           </div>
         ) : error ? (
-          <ErrorSlide error={error} onRetry={handleRetry} />
+          <div className="relative z-10 h-full">
+            <ErrorSlide error={error} onRetry={handleRetry} />
+          </div>
         ) : bytes.length > 0 ? (
           <>
             <Swiper
@@ -371,7 +384,7 @@ function BytesPage() {
               longSwipesMs={320}
               allowTouchMove={true}
               modules={[Mousewheel, Keyboard, Pagination]}
-              className="h-full w-full"
+              className="h-full w-full relative z-10"
             >
               {/* Intro Slide */}
               <SwiperSlide
@@ -393,10 +406,10 @@ function BytesPage() {
             </Swiper>
 
             {/* Desktop Navigation Arrows */}
-            <div className="absolute top-1/2 right-5 transform -translate-y-1/2 z-10 hidden md:flex flex-col space-y-4">
+            <div className="absolute top-1/2 right-5 transform -translate-y-1/2 z-20 hidden md:flex flex-col space-y-4">
               <motion.button
                 onClick={goPrev}
-                className="p-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white hover:text-white/80 transition-all duration-300 border border-white/15 hover:border-white/20 shadow-lg hover:shadow-xl disabled:opacity-40 disabled:hover:scale-100"
+                className="p-3 rounded-xl bg-slate-800/50 hover:bg-slate-700/50 backdrop-blur-sm text-slate-300 hover:text-slate-100 transition-all duration-300 border border-slate-700 hover:border-slate-600 shadow-lg hover:shadow-xl disabled:opacity-40 disabled:hover:scale-100"
                 aria-label="Previous"
                 whileHover={{ scale: 1.1, y: -2 }}
                 whileTap={{ scale: 0.95 }}
@@ -406,7 +419,7 @@ function BytesPage() {
               </motion.button>
               <motion.button
                 onClick={goNext}
-                className="p-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white hover:text-white/80 transition-all duration-300 border border-white/15 hover:border-white/20 shadow-lg hover:shadow-xl disabled:opacity-40 disabled:hover:scale-100"
+                className="p-3 rounded-xl bg-slate-800/50 hover:bg-slate-700/50 backdrop-blur-sm text-slate-300 hover:text-slate-100 transition-all duration-300 border border-slate-700 hover:border-slate-600 shadow-lg hover:shadow-xl disabled:opacity-40 disabled:hover:scale-100"
                 aria-label="Next"
                 whileHover={{ scale: 1.1, y: -2 }}
                 whileTap={{ scale: 0.95 }}
@@ -417,15 +430,15 @@ function BytesPage() {
             </div>
 
             {/* Mobile Pagination Dots */}
-            <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-10 md:hidden">
+            <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 md:hidden">
               <div className="flex space-x-2">
                 {[...Array(bytes.length + 1)].map((_, index) => (
                   <div
                     key={index}
                     className={`w-2 h-2 rounded-full transition-all duration-300 ${
                       index === activeIndex
-                        ? "bg-white w-6"
-                        : "bg-white/30"
+                        ? "bg-slate-200 w-6"
+                        : "bg-slate-600"
                     }`}
                   />
                 ))}
@@ -433,7 +446,9 @@ function BytesPage() {
             </div>
           </>
         ) : (
-          <EmptySlide />
+          <div className="relative z-10 h-full">
+            <EmptySlide />
+          </div>
         )}
       </div>
     </>

@@ -9,41 +9,47 @@ export default function PrivacyPolicy() {
         <title>Privacy Policy - Karthik Nishanth</title>
         <meta name="description" content="Website Privacy Policy" />
       </Head>
-      <div className="min-h-screen bg-background">
-        <PageContainer className="mt-20 md:mt-24">
-          <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
-            {/* Hero Section */}
-            <motion.div
-              className="text-center mb-12"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <div className="flex items-center justify-center gap-4 mb-6">
-                <h1
-                  className="font-heading text-3xl md:text-5xl lg:text-6xl text-slate-900"
-                >
-                  Privacy Policy
-                </h1>
-              </div>
-              <p className="text-base md:text-lg text-slate-600 max-w-3xl mx-auto">
-                Your privacy matters to us. Learn how we protect and handle your
-                personal information.
-              </p>
-            </motion.div>
-
-            {/* Content Container */}
-            <motion.div
-              className="rounded-3xl border border-slate-200 bg-white p-8 md:p-12 shadow-sm"
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              <div
-                className="prose prose-lg max-w-none prose-headings:font-heading prose-p:text-slate-600 prose-headings:text-slate-900 prose-a:text-slate-900 hover:prose-a:text-slate-600 prose-strong:text-slate-900 prose-li:text-slate-600"
+      <PageContainer
+        bgClassName="bg-gradient-to-br from-slate-100 via-white to-slate-200"
+        className="mt-20 md:mt-24"
+      >
+        <div className="max-w-4xl mx-auto px-4 py-12 space-y-8 text-slate-900">
+          {/* Hero Section */}
+          <motion.div
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <h1
+                className="font-heading text-3xl md:text-5xl lg:text-6xl text-slate-900"
               >
+                Privacy Policy
+              </h1>
+            </div>
+            <p className="text-base md:text-lg text-slate-600 max-w-3xl mx-auto">
+              Your privacy matters to us. Learn how we protect and handle your
+              personal information.
+            </p>
+          </motion.div>
+
+          {/* Content Container */}
+          <motion.div
+            className="rounded-3xl border border-slate-200 bg-white/80 backdrop-blur-sm p-8 md:p-12 shadow-sm"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <div
+              className="prose prose-slate prose-lg max-w-none prose-headings:font-heading prose-p:text-slate-600 prose-headings:text-black prose-a:text-slate-900 hover:prose-a:text-slate-600 prose-strong:text-black prose-li:text-slate-600"
+              style={{
+                "--tw-prose-headings": "#000000 !important",
+                "--tw-prose-bold": "#000000 !important",
+              }}
+            >
                 <p>
-                  <strong>Last updated: January 15, 2024</strong>
+                  <strong>Last updated: November 2025</strong>
                 </p>
 
                 <p>
@@ -229,10 +235,9 @@ export default function PrivacyPolicy() {
                   </li>
                 </ul>
               </div>
-            </motion.div>
-          </div>
-        </PageContainer>
-      </div>
+          </motion.div>
+        </div>
+      </PageContainer>
     </>
   );
 }

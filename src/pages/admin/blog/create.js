@@ -153,7 +153,7 @@ function CreateBlogNotionStyle() {
       <Head>
         <title>Create New Blog Post</title>
       </Head>
-      <div className="min-h-screen bg-slate-100 text-slate-900">
+      <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-slate-200 text-slate-900">
         <PageContainer className="pt-24 pb-12">
           <div className="mb-10 text-center">
             <h1 className="mb-3 text-4xl font-heading font-semibold text-slate-900 sm:text-5xl">

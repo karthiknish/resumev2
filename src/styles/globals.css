@@ -185,4 +185,28 @@
   .ProseMirror .column-resize-handle {
     @apply absolute right-[-2px] top-0 w-[4px] bottom-0 bg-blue-500 cursor-col-resize pointer-events-auto;
   }
+
+  /* Override Tailwind Typography Defaults */
+  .prose :where(strong):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    color: #000000 !important;
+    font-weight: 700 !important;
+  }
+
+  .prose :where(h1, h2, h3, h4, h5, h6):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    color: #000000 !important;
+  }
+
+  .prose :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    color: #000000 !important;
+    text-decoration: underline;
+    font-weight: 500;
+  }
+
+  .prose :where(ul > li):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    color: #475569 !important; /* slate-600 */
+  }
+
+  .prose :where(ul > li):not(:where([class~="not-prose"], [class~="not-prose"] *))::marker {
+    color: #000000 !important;
+  }
 }

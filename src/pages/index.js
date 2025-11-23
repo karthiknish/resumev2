@@ -12,6 +12,9 @@ import {
   Compass,
   CircuitBoard,
   Sparkles,
+  Code,
+  TrendingUp,
+  ArrowUpRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -29,6 +32,11 @@ import {
   SiPython,
   SiAmazonaws,
   SiDocker,
+  SiMongodb,
+  SiStripe,
+  SiD3Dotjs,
+  SiPostgresql,
+  SiFirebase,
 } from "react-icons/si";
 import { TbBrandReactNative } from "react-icons/tb";
 
@@ -205,6 +213,22 @@ const services = [
     description:
       "Align product direction with market insights, shape research-backed roadmaps, and validate essential hypotheses before writing a single line of code.",
     icon: Compass,
+    highlights: [
+      "User Research & Personas",
+      "Technical Feasibility Audit",
+      "MVP Definition & Roadmap",
+    ],
+  },
+  {
+    title: "Engineering & Architecture",
+    description:
+      "Build resilient, scalable applications with modern stacks. I focus on clean code, automated testing, and cloud-native infrastructure to ensure long-term velocity.",
+    icon: Code,
+    highlights: [
+      "React, Next.js, React Native",
+      "Node.js & Cloud Infrastructure",
+      "API Design & Database Modeling",
+    ],
   },
   {
     title: "Growth & Lifecycle",
@@ -239,6 +263,23 @@ const process = [
     icon: Sparkles,
   },
 ];
+
+const techIcons = {
+  "React": SiReact,
+  "React Native": TbBrandReactNative,
+  "Next.js": SiNextdotjs,
+  "TypeScript": SiTypescript,
+  "Node.js": SiNodedotjs,
+  "Python": SiPython,
+  "AWS": SiAmazonaws,
+  "Docker": SiDocker,
+  "MongoDB": SiMongodb,
+  "Stripe API": SiStripe,
+  "D3.js": SiD3Dotjs,
+  "PostgreSQL": SiPostgresql,
+  "Firebase": SiFirebase,
+  "Web Components": Code,
+};
 
 const HomeScreen = () => {
   const websiteSchema = createWebsiteSchema();
@@ -291,10 +332,6 @@ const HomeScreen = () => {
           rel="preconnect"
           href="https://fonts.gstatic.com"
           crossOrigin="true"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital,wght@0,400;0,600;1,400&display=swap"
-          rel="stylesheet"
         />
 
         <JsonLd data={websiteSchema} />
@@ -432,39 +469,41 @@ const HomeScreen = () => {
 
         <section className="py-20 md:py-28 bg-background">
           <div className="max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
-            <div className="grid gap-16 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] items-start">
+            <div className="grid gap-16 lg:grid-cols-[minmax(0,1.8fr)_minmax(0,3.2fr)] items-start">
               <motion.div
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="space-y-6"
+                className="space-y-8 lg:sticky lg:top-32"
               >
-                <p className="text-xs uppercase text-slate-500 tracking-[0.3em]">
-                  Capability
-                </p>
-                <h2 className="font-heading text-3xl sm:text-4xl leading-snug text-slate-900">
-                  Scale ideas into production-grade products without sacrificing craft.
-                </h2>
-                <p className="text-base text-slate-600 leading-relaxed">
-                  I work end-to-end across discovery, product design, and engineering. Whether you need a new build or help levelling up an existing platform, we create a roadmap, move fast, and keep quality measurable.
-                </p>
+                <div className="space-y-4">
+                  <p className="text-xs uppercase text-slate-500 tracking-[0.3em]">
+                    Capability
+                  </p>
+                  <h2 className="font-heading text-3xl sm:text-4xl leading-snug text-slate-900">
+                    Scale ideas into production-grade products without sacrificing craft.
+                  </h2>
+                  <p className="text-base text-slate-600 leading-relaxed">
+                    I work end-to-end across discovery, product design, and engineering. Whether you need a new build or help levelling up an existing platform, we create a roadmap, move fast, and keep quality measurable.
+                  </p>
+                </div>
               </motion.div>
 
               <div className="grid gap-6 sm:grid-cols-2">
-                {capabilities.map((capability) => (
+                {capabilities.map((capability, index) => (
                   <motion.div
                     key={capability.title}
                     initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.5 }}
-                    className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow"
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-8 transition-all hover:shadow-lg hover:-translate-y-1"
                   >
-                    <div className="mb-4 inline-flex items-center justify-center rounded-xl bg-slate-100 p-2">
-                      <capability.icon className="h-5 w-5 text-slate-700" />
+                    <div className={`mb-6 inline-flex items-center justify-center rounded-xl p-3 border transition-colors ${capability.color}`}>
+                      <capability.icon className="h-6 w-6 text-slate-700" />
                     </div>
-                    <h3 className="font-heading text-xl text-slate-900 mb-2">
+                    <h3 className="font-heading text-xl text-slate-900 mb-3">
                       {capability.title}
                     </h3>
                     <p className="text-sm text-slate-600 leading-relaxed">
@@ -479,7 +518,7 @@ const HomeScreen = () => {
 
         <section className="py-20 md:py-28 bg-slate-50" id="work">
           <div className="max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
-            <div className="max-w-2xl mb-12">
+            <div className="max-w-2xl mb-20 md:mb-28">
               <motion.p
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -487,56 +526,75 @@ const HomeScreen = () => {
                 transition={{ duration: 0.5 }}
                 className="text-xs uppercase text-slate-500 tracking-[0.3em]"
               >
-                Project Experience
+                Selected Work
               </motion.p>
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className="font-heading text-3xl sm:text-4xl leading-snug text-slate-900"
+                className="font-heading text-3xl sm:text-4xl leading-snug text-slate-900 mt-4"
               >
                 Recent projects where technical expertise meets business impact.
               </motion.h2>
             </div>
 
-            <div className="grid gap-8">
+            <div className="space-y-32">
               {projects.map((project, index) => (
                 <motion.div
                   key={project.title}
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm"
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                  className="group relative grid gap-8 md:grid-cols-[1fr_1.5fr] lg:gap-20"
                 >
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="font-heading text-2xl text-slate-900 mb-3">
-                        {project.title}
-                      </h3>
-                      <p className="text-slate-600 leading-relaxed text-base">
-                        {project.description}
-                      </p>
-                    </div>
+                  {/* Decorative Number */}
+                  <div className="absolute -left-4 -top-20 -z-10 select-none text-[8rem] sm:text-[10rem] font-bold leading-none text-slate-100/80 md:-left-12 md:-top-24">
+                    0{index + 1}
+                  </div>
+
+                  <div className="space-y-8 pt-4">
+                    <h3 className="font-heading text-3xl sm:text-4xl text-slate-900 leading-tight">
+                      {project.title}
+                    </h3>
                     
-                    <div className="border-l-4 border-slate-200 pl-6">
-                      <p className="text-sm font-medium text-slate-500 mb-2">KEY IMPACT</p>
-                      <p className="text-slate-700 font-medium">{project.impact}</p>
-                    </div>
+                   
+                  </div>
+
+                  <div className="space-y-8">
+                    <p className="text-lg text-slate-600 leading-relaxed">
+                      {project.description}
+                    </p>
                     
-                    <div>
-                      <p className="text-sm font-medium text-slate-500 mb-3">TECHNOLOGIES USED</p>
-                      <div className="flex flex-wrap gap-3">
-                        {project.tech.map((tech) => (
-                          <span
-                            key={tech}
-                            className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600 font-medium"
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
+                    <div className="grid gap-6 sm:grid-cols-2">
+                        <div className="rounded-xl bg-slate-100/50 p-5 border border-slate-200">
+                            <div className="flex items-center gap-2 mb-3 text-slate-900">
+                                <TrendingUp className="h-5 w-5" />
+                                <span className="font-bold text-sm uppercase tracking-wider">Impact</span>
+                            </div>
+                            <p className="text-slate-700 font-medium leading-relaxed">
+                                {project.impact}
+                            </p>
+                        </div>
+
+                        <div className="space-y-3">
+                            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Stack</p>
+                            <div className="flex flex-wrap gap-2">
+                                {project.tech.map((tech) => {
+                                  const Icon = techIcons[tech] || Code;
+                                  return (
+                                    <span
+                                        key={tech}
+                                        className="inline-flex items-center gap-2 rounded-md bg-white px-3 py-1.5 text-sm text-slate-600 border border-slate-200 shadow-sm"
+                                    >
+                                        <Icon className={`h-4 w-4 ${tech === "Next.js" ? "text-slate-800" : "text-slate-500"}`} />
+                                        {tech}
+                                    </span>
+                                  );
+                                })}
+                            </div>
+                        </div>
                     </div>
                   </div>
                 </motion.div>
@@ -547,7 +605,7 @@ const HomeScreen = () => {
 
         <section className="py-20 md:py-28 bg-slate-950 text-slate-100">
           <div className="max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
-            <div className="grid gap-16 lg:grid-cols-[minmax(0,2.2fr)_minmax(0,2.8fr)] items-start">
+            <div className="mb-16 md:text-center max-w-3xl mx-auto">
               <motion.div
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -565,43 +623,43 @@ const HomeScreen = () => {
                   From product discovery to growth infrastructure, each engagement pairs senior hands-on execution with clear operating rhythms and measurable outcomes.
                 </p>
               </motion.div>
+            </div>
 
-              <div className="space-y-6">
-                {services.map((service) => (
-                  <motion.div
-                    key={service.title}
-                    initial={{ opacity: 0, y: 24 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5 }}
-                    className="rounded-3xl border border-white/10 bg-white/5 p-6 sm:p-8 shadow-sm hover:-translate-y-1 hover:shadow-lg transition"
-                  >
-                    <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-slate-100">
-                      <service.icon className="h-6 w-6" />
-                    </div>
-                    <h3 className="mt-6 font-heading text-2xl text-white">
-                      {service.title}
-                    </h3>
-                    <p className="mt-3 text-sm text-slate-300 leading-relaxed">
-                      {service.description}
-                    </p>
-                    {service.highlights?.length ? (
-                      <ul className="mt-5 space-y-2 text-sm text-slate-300">
-                        {service.highlights.map((highlight) => (
-                          <li key={highlight}>• {highlight}</li>
-                        ))}
-                      </ul>
-                    ) : null}
-                  </motion.div>
-                ))}
-              </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {services.map((service, index) => (
+                <motion.div
+                  key={service.title}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="group flex flex-col h-full rounded-3xl border border-white/10 bg-white/5 p-6 sm:p-8 shadow-sm hover:-translate-y-1 hover:shadow-lg hover:bg-white/10 hover:border-white/20 transition-all duration-300"
+                >
+                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-slate-100 group-hover:bg-white/20 group-hover:scale-110 transition-all duration-300">
+                    <service.icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="mt-6 font-heading text-2xl text-white">
+                    {service.title}
+                  </h3>
+                  <p className="mt-3 text-sm text-slate-300 leading-relaxed flex-grow">
+                    {service.description}
+                  </p>
+                  {service.highlights?.length ? (
+                    <ul className="mt-5 space-y-2 text-sm text-slate-300 pt-4 border-t border-white/10">
+                      {service.highlights.map((highlight) => (
+                        <li key={highlight}>• {highlight}</li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </motion.div>
+              ))}
             </div>
           </div>
         </section>
 
-        <section className="py-20 md:py-28 bg-background">
+        <section className="py-20 md:py-28 bg-background relative">
           <div className="max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
-            <div className="grid gap-12 md:grid-cols-[minmax(0,2.2fr)_minmax(0,2.8fr)] items-start">
+            <div className="mb-20 md:text-center max-w-3xl mx-auto">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -619,31 +677,38 @@ const HomeScreen = () => {
                   Engagements are structured, transparent, and async-friendly. We align on success metrics early, then iterate with a shared roadmap and frequent demos so you can see progress without micromanaging.
                 </p>
               </motion.div>
+            </div>
 
-              <div className="space-y-6">
-                {process.map((step) => (
-                  <motion.div
-                    key={step.title}
-                    initial={{ opacity: 0, y: 24 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5 }}
-                    className="flex gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
-                  >
-                    <span className="mt-1 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-700">
-                      <step.icon className="h-5 w-5" />
-                    </span>
-                    <div className="space-y-2">
-                      <h3 className="font-heading text-xl text-slate-900">
-                        {step.title}
-                      </h3>
-                      <p className="text-sm text-slate-600 leading-relaxed">
-                        {step.description}
-                      </p>
+            <div className="relative grid gap-12 md:gap-8 md:grid-cols-3">
+              {/* Connecting line for desktop */}
+              <div className="hidden md:block absolute top-8 left-[16%] right-[16%] h-px bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 -z-10" />
+              
+              {process.map((step, index) => (
+                <motion.div
+                  key={step.title}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.2 }}
+                  className="relative flex flex-col items-center text-center"
+                >
+                  <div className="mb-6 relative">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white border border-slate-200 shadow-sm z-10 relative group-hover:scale-110 transition-transform duration-300">
+                      <step.icon className="h-7 w-7 text-slate-700" />
                     </div>
-                  </motion.div>
-                ))}
-              </div>
+                    <div className="absolute -bottom-3 -right-3 bg-slate-900 text-white text-xs font-bold px-2 py-1 rounded-lg shadow-sm">
+                      0{index + 1}
+                    </div>
+                  </div>
+                  
+                  <h3 className="font-heading text-2xl text-slate-900 mb-3">
+                    {step.title}
+                  </h3>
+                  <p className="text-sm text-slate-600 leading-relaxed max-w-xs mx-auto">
+                    {step.description}
+                  </p>
+                </motion.div>
+              ))}
             </div>
           </div>
         </section>
