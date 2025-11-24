@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useMemo } from "react";
 import Head from "next/head";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image"; // Import next/image
 import { motion } from "framer-motion";
@@ -25,8 +25,6 @@ function Index({ initialPosts = [], categories = [] }) {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortOrder, setSortOrder] = useState("desc");
   const [allPosts, setAllPosts] = useState([]);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [selectedSlug, setSelectedSlug] = useState(null);
 
   // Pagination state
   const router = useRouter();
@@ -130,17 +128,6 @@ function Index({ initialPosts = [], categories = [] }) {
   const handleSearchChange = (e) => setSearchTerm(e.target.value);
   const handleCategoryChange = (category) => setSelectedCategory(category);
   const handleSortChange = (value) => setSortOrder(value);
-
-  // Handle card click with loader
-  const handleCardClick = (slug) => {
-    setSelectedSlug(slug);
-    setIsTransitioning(true);
-    Router.push(`/blog/${slug}`).then(() => {
-      if (typeof window !== "undefined") {
-        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-      }
-    });
-  };
 
   return (
     <>
@@ -325,7 +312,6 @@ function Index({ initialPosts = [], categories = [] }) {
                         viewport={{ once: true }}
                         whileHover={{ y: -10, scale: 1.02 }}
                         className="group block"
-                        onClick={() => handleCardClick(post.slug)}
                       >
                         <Card className="h-full bg-white border border-slate-200 rounded-3xl shadow-sm hover:shadow-lg hover:border-slate-300 transition-all duration-200 overflow-hidden">
                             <div className="h-64 overflow-hidden relative">

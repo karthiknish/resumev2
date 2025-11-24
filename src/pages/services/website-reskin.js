@@ -27,7 +27,7 @@ export default function WebsiteReskinService() {
   return (
     <>
       <Head>
-        <title>{service.title} - Karthik Nishanth</title>
+        <title>{`${service.title} - Karthik Nishanth`}</title>
         <meta
           name="description"
           content={`Professional ${service.title} services by Karthik Nishanth. ${service.description}`}

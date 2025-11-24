@@ -317,14 +317,14 @@ export default function BytesTab() {
             transition={{ duration: 0.3 }}
             className="mb-6"
           >
-            <Card className="bg-gradient-to-br from-purple-100/90 to-blue-100/90 backdrop-blur-sm border-2 border-purple-300 text-purple-800 relative shadow-xl">
+            <Card className="bg-muted/50 border border-primary/20 relative shadow-sm">
               <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-lg font-bold" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
-                  <Info className="h-5 w-5" />
+                <CardTitle className="flex items-center gap-2 text-lg font-bold text-foreground" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                  <Info className="h-5 w-5 text-primary" />
                   Welcome to Bytes!
                 </CardTitle>
               </CardHeader>
-              <CardContent className="text-sm space-y-1">
+              <CardContent className="text-sm space-y-1 text-muted-foreground">
                 <p>
                   Use this section to create short, timely updates or quick
                   thoughts ('Bytes').
@@ -346,7 +346,7 @@ export default function BytesTab() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute top-2 right-2 text-purple-600 hover:text-purple-800 hover:bg-purple-200/50 h-7 w-7 rounded-full"
+                className="absolute top-2 right-2 text-muted-foreground hover:text-foreground hover:bg-muted h-7 w-7 rounded-full"
                 onClick={() => setShowInstructions(false)}
                 aria-label="Dismiss instructions"
               >
@@ -362,10 +362,10 @@ export default function BytesTab() {
         {/* Byte Creation/Edit Form Card */}
         <Card
           id="byte-form-card"
-          className="lg:col-span-2 bg-white/90 backdrop-blur-sm border-2 border-purple-200 text-gray-800 shadow-xl rounded-3xl"
+          className="lg:col-span-2 bg-card border-border shadow-sm rounded-xl"
         >
           <CardHeader>
-            <CardTitle className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+            <CardTitle className="text-xl font-bold text-foreground" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
               {isEditing ? "✏️ Edit Byte" : "✨ Create New Byte"}
             </CardTitle>
           </CardHeader>
@@ -380,7 +380,7 @@ export default function BytesTab() {
                     value={newHeadline}
                     onChange={(e) => setNewHeadline(e.target.value)}
                     placeholder="Catchy headline..."
-                    className="flex-grow bg-gray-700 border-gray-600 text-white placeholder-gray-500"
+                    className="flex-grow bg-background border-input text-foreground placeholder:text-muted-foreground"
                     required
                   />
                   <Button
@@ -390,7 +390,7 @@ export default function BytesTab() {
                     onClick={suggestHeadlines}
                     disabled={isSuggestingHeadline || !newBody.trim()}
                     title="Suggest Headlines based on Body"
-                    className="border-purple-500 text-purple-400 hover:bg-purple-900/50 hover:text-purple-300 flex-shrink-0"
+                    className="border-primary/50 text-primary hover:bg-primary/10 flex-shrink-0"
                   >
                     {isSuggestingHeadline ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -415,7 +415,7 @@ export default function BytesTab() {
                           variant="secondary"
                           size="sm"
                           onClick={() => setNewHeadline(s)}
-                          className="w-full justify-start text-left text-gray-300 bg-gray-700 hover:bg-gray-600 h-auto py-1 px-2"
+                          className="w-full justify-start text-left text-foreground bg-muted hover:bg-muted/80 h-auto py-1 px-2"
                         >
                           {s}
                         </Button>
@@ -434,7 +434,7 @@ export default function BytesTab() {
                     value={newBody}
                     onChange={(e) => setNewBody(e.target.value)}
                     placeholder="What's happening? Your thoughts..."
-                    className="flex-grow bg-gray-700 border-gray-600 text-white placeholder-gray-500 min-h-[100px]"
+                    className="flex-grow bg-background border-input text-foreground placeholder:text-muted-foreground min-h-[100px]"
                     required
                   />
                   <Button
@@ -444,7 +444,7 @@ export default function BytesTab() {
                     onClick={suggestBodies}
                     disabled={isSuggestingBody || !newHeadline.trim()}
                     title="Suggest Body based on Headline"
-                    className="border-purple-500 text-purple-400 hover:bg-purple-900/50 hover:text-purple-300 flex-shrink-0 mt-0"
+                    className="border-primary/50 text-primary hover:bg-primary/10 flex-shrink-0 mt-0"
                   >
                     {isSuggestingBody ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -469,7 +469,7 @@ export default function BytesTab() {
                           variant="secondary"
                           size="sm"
                           onClick={() => setNewBody(s)}
-                          className="w-full justify-start text-left text-gray-300 bg-gray-700 hover:bg-gray-600 h-auto py-1 px-2 whitespace-pre-wrap break-words"
+                          className="w-full justify-start text-left text-foreground bg-muted hover:bg-muted/80 h-auto py-1 px-2 whitespace-pre-wrap break-words"
                         >
                           {s}
                         </Button>
@@ -488,7 +488,7 @@ export default function BytesTab() {
                     value={newImageUrl}
                     onChange={(e) => setNewImageUrl(e.target.value)}
                     placeholder="https://example.com/image.jpg"
-                    className="flex-grow bg-gray-700 border-gray-600 text-white placeholder-gray-500"
+                    className="flex-grow bg-background border-input text-foreground placeholder:text-muted-foreground"
                   />
                   <Dialog
                     open={isPexelsModalOpen}
@@ -500,12 +500,12 @@ export default function BytesTab() {
                         variant="outline"
                         size="icon"
                         title="Search Pexels for Image"
-                        className="border-green-500 text-green-400 hover:bg-green-900/50 hover:text-green-300 flex-shrink-0"
+                        className="border-primary/50 text-primary hover:bg-primary/10 flex-shrink-0"
                       >
                         <Search className="h-4 w-4" />
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[600px] bg-gray-900 border-gray-700 text-white">
+                    <DialogContent className="sm:max-w-[600px] bg-background border-border text-foreground">
                       <DialogHeader>
                         <DialogTitle>Search Pexels Images</DialogTitle>
                       </DialogHeader>
@@ -524,7 +524,7 @@ export default function BytesTab() {
                   value={newLink}
                   onChange={(e) => setNewLink(e.target.value)}
                   placeholder="https://related-link.com"
-                  className="bg-gray-700 border-gray-600 text-white placeholder-gray-500"
+                  className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                 />
               </div>
 
@@ -536,7 +536,7 @@ export default function BytesTab() {
                     variant="outline"
                     onClick={resetForm}
                     disabled={isSubmitting}
-                    className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                    className="border-input text-muted-foreground hover:bg-muted hover:text-foreground"
                   >
                     Cancel Edit
                   </Button>
@@ -544,7 +544,7 @@ export default function BytesTab() {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-blue-600 hover:bg-blue-700 min-w-[100px]"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground min-w-[100px]"
                 >
                   {isSubmitting ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -560,10 +560,10 @@ export default function BytesTab() {
         </Card>
 
         {/* Trending News Card */}
-        <Card className="lg:col-span-1 bg-gray-800 border-gray-700 text-white shadow-md glow-card">
+        <Card className="lg:col-span-1 bg-card border-border shadow-sm">
           <CardHeader>
-            <CardTitle className="text-xl">Trending News</CardTitle>
-            <span className="text-xs text-gray-400">
+            <CardTitle className="text-xl text-foreground">Trending News</CardTitle>
+            <span className="text-xs text-muted-foreground">
               Click to use as context
             </span>
           </CardHeader>
@@ -576,7 +576,7 @@ export default function BytesTab() {
       {/* Display Bytes Section - Changed to Slider */}
       <div className="mt-10 relative">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold text-white">Latest Bytes</h2>
+          <h2 className="text-2xl font-semibold text-foreground">Latest Bytes</h2>
           {/* Custom Navigation Buttons */}
           {!isLoading && !error && bytes.length > 3 && (
             <div className="flex gap-2">
@@ -584,7 +584,7 @@ export default function BytesTab() {
                 ref={swiperNavPrevRef}
                 variant="outline"
                 size="icon"
-                className="h-8 w-8 border-gray-600 text-gray-400 hover:bg-gray-700 hover:text-white"
+                className="h-8 w-8 border-input text-muted-foreground hover:bg-muted hover:text-foreground"
                 aria-label="Previous Bytes Slide"
               >
                 <ChevronLeft className="h-4 w-4" />
@@ -593,7 +593,7 @@ export default function BytesTab() {
                 ref={swiperNavNextRef}
                 variant="outline"
                 size="icon"
-                className="h-8 w-8 border-gray-600 text-gray-400 hover:bg-gray-700 hover:text-white"
+                className="h-8 w-8 border-input text-muted-foreground hover:bg-muted hover:text-foreground"
                 aria-label="Next Bytes Slide"
               >
                 <ChevronRight className="h-4 w-4" />
@@ -603,14 +603,14 @@ export default function BytesTab() {
         </div>
         {isLoading && (
           <div className="flex justify-center items-center py-10">
-            <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         )}
         {error && !isLoading && (
-          <p className="text-center text-red-500 py-10">Error: {error}</p>
+          <p className="text-center text-destructive py-10">Error: {error}</p>
         )}
         {!isLoading && !error && bytes.length === 0 && (
-          <p className="text-center text-gray-500 py-10">
+          <p className="text-center text-muted-foreground py-10">
             No bytes found. Create one above!
           </p>
         )}
@@ -646,7 +646,7 @@ export default function BytesTab() {
             {bytes.map((byte) => (
               <SwiperSlide key={byte._id} className="h-auto">
                 <motion.div variants={itemVariants} className="h-full">
-                  <Card className="h-full flex flex-col bg-gray-800/80 border border-gray-700 text-white shadow-sm transition-all duration-300 hover:scale-[1.02] hover:border-blue-600 hover:shadow-blue-900/30 glow-card-hover overflow-hidden">
+                  <Card className="h-full flex flex-col bg-card border-border shadow-sm transition-all duration-300 hover:border-primary hover:shadow-md overflow-hidden">
                     {byte.imageUrl && (
                       <div className="relative w-full h-40">
                         <Image
@@ -659,14 +659,14 @@ export default function BytesTab() {
                       </div>
                     )}
                     <CardContent className="p-4 flex-grow flex flex-col">
-                      <h3 className="text-lg font-semibold mb-2 text-gray-100 leading-tight">
+                      <h3 className="text-lg font-semibold mb-2 text-foreground leading-tight">
                         {byte.headline}
                       </h3>
-                      <p className="text-sm text-gray-400 flex-grow whitespace-pre-wrap break-words">
+                      <p className="text-sm text-muted-foreground flex-grow whitespace-pre-wrap break-words">
                         {byte.body}
                       </p>
                     </CardContent>
-                    <CardFooter className="p-3 border-t border-gray-700 flex items-center justify-between text-xs text-gray-500">
+                    <CardFooter className="p-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <CalendarDays className="h-3.5 w-3.5" />
                         {formatDate(byte.createdAt)}
@@ -677,7 +677,7 @@ export default function BytesTab() {
                             href={byte.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-1 rounded hover:bg-gray-700 text-gray-400 hover:text-blue-400"
+                            className="p-1 rounded hover:bg-muted text-muted-foreground hover:text-primary"
                             title="Visit link"
                           >
                             <ExternalLink className="h-4 w-4" />
@@ -687,7 +687,7 @@ export default function BytesTab() {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleEditClick(byte)}
-                          className="p-1 h-auto w-auto rounded hover:bg-gray-700 text-gray-400 hover:text-yellow-400"
+                          className="p-1 h-auto w-auto rounded hover:bg-muted text-muted-foreground hover:text-foreground"
                           title="Edit Byte"
                         >
                           <Edit className="h-4 w-4" />
@@ -696,7 +696,7 @@ export default function BytesTab() {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleDeleteByte(byte._id)}
-                          className="p-1 h-auto w-auto rounded hover:bg-gray-700 text-gray-400 hover:text-red-500"
+                          className="p-1 h-auto w-auto rounded hover:bg-muted text-muted-foreground hover:text-destructive"
                           title="Delete Byte"
                         >
                           <Trash2 className="h-4 w-4" />

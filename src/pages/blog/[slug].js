@@ -474,10 +474,12 @@ function SlugPage({ data, relatedPosts }) {
                     {data.content && (
                       <motion.div
                         variants={fadeInUpVariants}
-                        className="prose prose-lg max-w-none prose-headings:font-heading prose-headings:text-slate-900 prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-p:text-slate-600 prose-p:leading-relaxed prose-a:text-slate-900 prose-a:no-underline hover:prose-a:underline prose-strong:text-slate-900 prose-ul:text-slate-600 prose-ol:text-slate-600 prose-li:my-2 prose-blockquote:border-l-4 prose-blockquote:border-slate-300 prose-blockquote:bg-slate-100 prose-blockquote:p-6 prose-blockquote:rounded-r-2xl prose-blockquote:my-6 prose-code:bg-slate-100 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-slate-900 prose-pre:text-slate-100 prose-pre:rounded-2xl prose-pre:p-6"
                         style={{ fontFamily: "Inter, sans-serif" }}
                       >
-                        <TipTapRenderer content={data.content} />
+                        <TipTapRenderer
+                          content={data.content}
+                          className="prose-lg prose-headings:font-heading prose-headings:text-slate-900 prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-p:text-slate-600 prose-p:leading-relaxed prose-a:text-slate-900 prose-a:no-underline hover:prose-a:underline prose-strong:text-slate-900 prose-ul:text-slate-600 prose-ol:text-slate-600 prose-li:my-2 prose-blockquote:border-l-4 prose-blockquote:border-slate-300 prose-blockquote:bg-slate-100 prose-blockquote:p-6 prose-blockquote:rounded-r-2xl prose-blockquote:my-6 prose-code:bg-slate-100 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-[#09090b] prose-pre:text-zinc-100 prose-pre:rounded-2xl prose-pre:p-0 prose-pre:border prose-pre:border-zinc-800"
+                        />
                       </motion.div>
                     )}
 

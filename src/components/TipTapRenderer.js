@@ -46,7 +46,9 @@ lowlightInstance.register({
   sh: bash,
 });
 
-const TipTapRenderer = ({ content }) => {
+import { cn } from "@/lib/utils";
+
+const TipTapRenderer = ({ content, className }) => {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -83,7 +85,7 @@ const TipTapRenderer = ({ content }) => {
         lowlight: lowlightInstance, // Pass the created instance
         HTMLAttributes: {
           class:
-            "group relative rounded-xl border border-[#2d2d2d] bg-[#1e1e1e] text-[#d4d4d4] p-4 my-6 overflow-x-auto font-mono text-sm leading-relaxed",
+            "group relative rounded-xl border border-zinc-800 bg-[#09090b] text-zinc-100 p-5 my-6 overflow-x-auto font-mono text-sm leading-relaxed shadow-2xl",
         },
       }),
       // Add Table extensions
@@ -109,8 +111,10 @@ const TipTapRenderer = ({ content }) => {
     editable: false,
     editorProps: {
       attributes: {
-        class:
+        class: cn(
           "prose max-w-none focus:outline-none bg-transparent text-foreground prose-headings:text-foreground prose-a:text-blue-600 prose-blockquote:text-foreground prose-code:before:content-none prose-code:after:content-none prose-code:bg-muted prose-code:px-1.5 prose-code:py-1 prose-code:rounded prose-pre:bg-muted prose-pre:p-0 prose-li:marker:text-muted-foreground prose-table:text-foreground",
+          className
+        ),
       },
     },
     immediatelyRender: false,
@@ -143,21 +147,27 @@ const TipTapRenderer = ({ content }) => {
       const label = document.createElement("div");
       label.textContent = lang.toUpperCase();
       label.className =
-        "absolute top-2 left-2 px-2 py-0.5 rounded bg-[#2d2d2d] text-[#9cdcfe] text-xs font-semibold";
+        "absolute top-3 right-16 px-2 py-1 rounded text-xs font-medium text-zinc-400 select-none";
       pre.appendChild(label);
 
       // Copy button
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className =
-        "absolute top-2 right-2 px-2 py-0.5 rounded border border-[#3c3c3c] bg-[#252526] text-[#d4d4d4] text-xs hover:bg-[#2d2d2d] transition-colors";
-      btn.textContent = "Copy";
+        "absolute top-3 right-3 p-1.5 rounded-md bg-zinc-800/50 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-100 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100";
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`;
+      btn.ariaLabel = "Copy code";
+      
       btn.addEventListener("click", async () => {
         try {
           await navigator.clipboard.writeText(code.innerText);
-          const prev = btn.textContent;
-          btn.textContent = "Copied";
-          setTimeout(() => (btn.textContent = prev), 1200);
+          const originalIcon = btn.innerHTML;
+          btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`;
+          btn.classList.add("text-green-400");
+          setTimeout(() => {
+            btn.innerHTML = originalIcon;
+            btn.classList.remove("text-green-400");
+          }, 2000);
         } catch {}
       });
       pre.appendChild(btn);

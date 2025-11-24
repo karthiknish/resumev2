@@ -154,22 +154,22 @@ export default function DashboardTab({ unreadCount }) {
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StaggerItem index={0}>
-          <Card className="rounded-xl border border-slate-200 bg-white transition-all duration-300 shadow-sm hover:shadow-md">
+          <Card className="rounded-xl border border-border bg-card transition-all duration-300 shadow-sm hover:shadow-md">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-base font-heading font-semibold text-slate-600">
+              <CardTitle className="text-base font-heading font-semibold text-muted-foreground">
                 Total Posts
               </CardTitle>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-blue-100 bg-blue-50">
-                <FileText className="h-5 w-5 text-blue-600" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-primary/20 bg-primary/10">
+                <FileText className="h-5 w-5 text-primary" />
               </div>
             </CardHeader>
             <CardContent>
               {isLoading && totalPosts === 0 ? (
                 <div className="flex items-center gap-2">
-                  <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 </div>
               ) : (
-                <div className="text-3xl font-black text-slate-900">
+                <div className="text-3xl font-black text-foreground">
                   {totalPosts}
                 </div>
               )}
@@ -177,51 +177,51 @@ export default function DashboardTab({ unreadCount }) {
           </Card>
         </StaggerItem>
         <StaggerItem index={1}>
-          <Card className="rounded-xl border border-slate-200 bg-white transition-all duration-300 shadow-sm hover:shadow-md">
+          <Card className="rounded-xl border border-border bg-card transition-all duration-300 shadow-sm hover:shadow-md">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-base font-heading font-semibold text-slate-600">
+              <CardTitle className="text-base font-heading font-semibold text-muted-foreground">
                 Unread Messages
               </CardTitle>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-blue-100 bg-blue-50">
-                <MessageSquare className="h-5 w-5 text-blue-600" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-primary/20 bg-primary/10">
+                <MessageSquare className="h-5 w-5 text-primary" />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-black text-slate-900">
+              <div className="text-3xl font-black text-foreground">
                 {unreadCount ?? (
-                  <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 )}
               </div>
             </CardContent>
           </Card>
         </StaggerItem>
         <StaggerItem index={2}>
-          <Card className="rounded-xl border border-slate-200 bg-white transition-all duration-300 shadow-sm hover:shadow-md">
+          <Card className="rounded-xl border border-border bg-card transition-all duration-300 shadow-sm hover:shadow-md">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-base font-heading font-semibold text-slate-600">
+              <CardTitle className="text-base font-heading font-semibold text-muted-foreground">
                 Subscribers
               </CardTitle>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-blue-100 bg-blue-50">
-                <Users className="h-5 w-5 text-blue-600" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-primary/20 bg-primary/10">
+                <Users className="h-5 w-5 text-primary" />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-black text-slate-900">N/A</div>
+              <div className="text-3xl font-black text-foreground">N/A</div>
             </CardContent>
           </Card>
         </StaggerItem>
         <StaggerItem index={3}>
-          <Card className="rounded-xl border border-slate-200 bg-white transition-all duration-300 shadow-sm hover:shadow-md">
+          <Card className="rounded-xl border border-border bg-card transition-all duration-300 shadow-sm hover:shadow-md">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-base font-heading font-semibold text-slate-600">
+              <CardTitle className="text-base font-heading font-semibold text-muted-foreground">
                 Site Visitors
               </CardTitle>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-blue-100 bg-blue-50">
-                <BarChart2 className="h-5 w-5 text-blue-600" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-primary/20 bg-primary/10">
+                <BarChart2 className="h-5 w-5 text-primary" />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-black text-slate-900">N/A</div>
+              <div className="text-3xl font-black text-foreground">N/A</div>
             </CardContent>
           </Card>
         </StaggerItem>
@@ -231,16 +231,16 @@ export default function DashboardTab({ unreadCount }) {
       <div className="grid gap-5 lg:grid-cols-1">
         {/* Recent Blog Posts Table */}
         <StaggerItem index={1} className="lg:col-span-1">
-          <Card className="h-full rounded-2xl border border-slate-200 bg-white shadow-md">
+          <Card className="h-full rounded-2xl border border-border bg-card shadow-md">
             <CardHeader className="flex flex-col items-start justify-between gap-3 pb-5 md:flex-row md:items-center">
-              <CardTitle className="text-xl font-heading font-semibold text-slate-900">
+              <CardTitle className="text-xl font-heading font-semibold text-foreground">
                 Recent Blog Posts
               </CardTitle>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button
                   size="sm"
                   asChild
-                  className="rounded-xl bg-blue-600 text-white shadow-md transition-all duration-300 hover:bg-blue-700"
+                  className="rounded-xl bg-primary text-primary-foreground shadow-md transition-all duration-300 hover:bg-primary/90"
                 >
                   <Link href="/admin/blog/ai-create">
                     <Bot className="mr-2 h-4 w-4" /> AI Generator
@@ -249,7 +249,7 @@ export default function DashboardTab({ unreadCount }) {
                 <Button
                   size="sm"
                   asChild
-                  className="rounded-xl bg-blue-600 text-white shadow-md transition-all duration-300 hover:bg-blue-700"
+                  className="rounded-xl bg-primary text-primary-foreground shadow-md transition-all duration-300 hover:bg-primary/90"
                 >
                   <Link href="/admin/blog/create">
                     <FilePlus className="mr-2 h-4 w-4" /> Create New
@@ -260,29 +260,29 @@ export default function DashboardTab({ unreadCount }) {
             <CardContent>
               {isLoading && (
                 <div className="flex items-center justify-center py-10">
-                  <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white px-8 py-6 shadow-md">
-                    <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
+                  <div className="flex items-center gap-4 rounded-2xl border border-border bg-card px-8 py-6 shadow-md">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
                   </div>
                 </div>
               )}
               {error && !isLoading && (
                 <div className="flex items-center justify-center py-10">
-                  <div className="rounded-2xl border border-red-200 bg-red-50 px-8 py-6 text-center shadow-md">
-                    <h3 className="mb-2 text-2xl font-heading font-semibold text-red-700">
+                  <div className="rounded-2xl border border-destructive/20 bg-destructive/10 px-8 py-6 text-center shadow-md">
+                    <h3 className="mb-2 text-2xl font-heading font-semibold text-destructive">
                       Oops! Something went wrong
                     </h3>
-                    <p className="font-medium text-red-600">Error: {error}</p>
+                    <p className="font-medium text-destructive">Error: {error}</p>
                   </div>
                 </div>
               )}
               {!isLoading && !error && blogPosts.length === 0 && (
                 <div className="flex items-center justify-center py-10">
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-8 py-6 text-center shadow-md">
+                  <div className="rounded-2xl border border-border bg-muted/50 px-8 py-6 text-center shadow-md">
                     <div className="mb-4 text-6xl">📝</div>
-                    <h3 className="mb-2 text-2xl font-heading font-semibold text-slate-800">
+                    <h3 className="mb-2 text-2xl font-heading font-semibold text-foreground">
                       No Blog Posts Yet
                     </h3>
-                    <p className="font-medium text-slate-600">
+                    <p className="font-medium text-muted-foreground">
                       Create your first blog post to get started!
                     </p>
                   </div>
@@ -293,17 +293,17 @@ export default function DashboardTab({ unreadCount }) {
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
-                        <TableRow className="border-b border-slate-200 bg-slate-50">
-                          <TableHead className="text-left text-sm font-semibold uppercase tracking-wide text-slate-500">
+                        <TableRow className="border-b border-border bg-muted/50">
+                          <TableHead className="text-left text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                             Title
                           </TableHead>
-                          <TableHead className="text-left text-sm font-semibold uppercase tracking-wide text-slate-500">
+                          <TableHead className="text-left text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                             Status
                           </TableHead>
-                          <TableHead className="text-left text-sm font-semibold uppercase tracking-wide text-slate-500">
+                          <TableHead className="text-left text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                             Created At
                           </TableHead>
-                          <TableHead className="text-right text-sm font-semibold uppercase tracking-wide text-slate-500">
+                          <TableHead className="text-right text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                             Actions
                           </TableHead>
                         </TableRow>
@@ -312,9 +312,9 @@ export default function DashboardTab({ unreadCount }) {
                         {blogPosts.map((post) => (
                           <TableRow
                             key={post._id}
-                            className="border-b border-slate-100 transition-colors duration-200 hover:bg-slate-50"
+                            className="border-b border-border transition-colors duration-200 hover:bg-muted/50"
                           >
-                            <TableCell className="text-md font-semibold text-slate-900">
+                            <TableCell className="text-md font-semibold text-foreground">
                               {post.title}
                             </TableCell>
                             <TableCell>
@@ -365,13 +365,13 @@ export default function DashboardTab({ unreadCount }) {
                               >
                                 {isLoading && (
                                   <div className="mr-1 inline text-sm">
-                                    <Loader2 className="h-4 w-4 animate-spin text-blue-400" />
+                                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
                                   </div>
                                 )}
                                 {post.isPublished ? "Published" : "Draft"}
                               </Badge>
                             </TableCell>
-                            <TableCell className="font-medium text-slate-600">
+                            <TableCell className="font-medium text-muted-foreground">
                               {formatDate(post.createdAt)}
                             </TableCell>
                             <TableCell className="text-right space-x-2">
@@ -379,7 +379,7 @@ export default function DashboardTab({ unreadCount }) {
                                 variant="ghost"
                                 size="sm"
                                 asChild
-                                className="rounded-xl bg-blue-600 text-white shadow-sm transition-all duration-300 hover:bg-blue-700"
+                                className="rounded-xl bg-primary text-primary-foreground shadow-sm transition-all duration-300 hover:bg-primary/90"
                               >
                                 <Link href={`/admin/blog/edit/${post._id}`}>
                                   Edit
@@ -390,7 +390,7 @@ export default function DashboardTab({ unreadCount }) {
                                   variant="outline"
                                   size="sm"
                                   asChild
-                                  className="rounded-xl border border-blue-200 bg-white text-blue-600 transition-all duration-300 hover:bg-blue-50"
+                                  className="rounded-xl border border-primary/20 bg-card text-primary transition-all duration-300 hover:bg-primary/10"
                                 >
                                   <Link
                                     href={`/blog/${post.slug}`}
@@ -413,7 +413,7 @@ export default function DashboardTab({ unreadCount }) {
                                   <Button
                                     variant="destructive"
                                     size="sm"
-                                    className="rounded-xl bg-red-500 text-white shadow-sm transition-all duration-300 hover:bg-red-600"
+                                    className="rounded-xl bg-destructive text-destructive-foreground shadow-sm transition-all duration-300 hover:bg-destructive/90"
                                     onClick={() => handleDeleteClick(post._id)}
                                   >
                                     <Trash2 className="h-4 w-4" />
@@ -421,16 +421,16 @@ export default function DashboardTab({ unreadCount }) {
                                 </AlertDialogTrigger>
                                 {/* Render content only when this specific post is targeted */}
                                 {postToDelete === post._id && (
-                                  <AlertDialogContent className="rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-xl">
+                                  <AlertDialogContent className="rounded-2xl border border-border bg-card text-foreground shadow-xl">
                                     <AlertDialogHeader>
-                                      <AlertDialogTitle className="flex items-center gap-3 text-2xl font-heading font-semibold text-slate-900">
+                                      <AlertDialogTitle className="flex items-center gap-3 text-2xl font-heading font-semibold text-foreground">
                                         <div className="text-4xl">⚠️</div>
                                         Are you absolutely sure?
                                       </AlertDialogTitle>
-                                      <AlertDialogDescription className="text-lg font-medium text-slate-600">
+                                      <AlertDialogDescription className="text-lg font-medium text-muted-foreground">
                                         This action cannot be undone. This will
                                         permanently delete the blog post titled
-                                        <span className="font-bold text-red-600">
+                                        <span className="font-bold text-destructive">
                                           {" "}
                                           "
                                           {blogPosts.find(
@@ -443,7 +443,7 @@ export default function DashboardTab({ unreadCount }) {
                                     </AlertDialogHeader>
                                     <AlertDialogFooter className="gap-3">
                                       <AlertDialogCancel
-                                        className="rounded-xl border border-slate-200 bg-white px-5 py-2 text-slate-700 transition-all duration-300 hover:bg-slate-50"
+                                        className="rounded-xl border border-border bg-card px-5 py-2 text-muted-foreground transition-all duration-300 hover:bg-muted/50"
                                         onClick={() => setPostToDelete(null)}
                                       >
                                         Cancel
@@ -451,7 +451,7 @@ export default function DashboardTab({ unreadCount }) {
                                       <AlertDialogAction
                                         onClick={confirmDelete}
                                         disabled={isDeleting}
-                                        className="rounded-xl bg-red-500 px-5 py-2 text-white shadow-sm transition-all duration-300 hover:bg-red-600 disabled:opacity-70"
+                                        className="rounded-xl bg-destructive px-5 py-2 text-destructive-foreground shadow-sm transition-all duration-300 hover:bg-destructive/90 disabled:opacity-70"
                                       >
                                         {isDeleting ? (
                                           <Loader2 className="mr-2 h-4 w-4 animate-spin text-white" />
@@ -476,12 +476,12 @@ export default function DashboardTab({ unreadCount }) {
                         size="sm"
                         onClick={handlePreviousPage}
                         disabled={currentPage <= 1 || isLoading}
-                        className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-slate-600 transition-all duration-300 hover:bg-slate-50 disabled:opacity-40"
+                        className="rounded-xl border border-border bg-card px-4 py-2 text-muted-foreground transition-all duration-300 hover:bg-muted/50 disabled:opacity-40"
                       >
                         <ChevronLeft className="h-4 w-4 mr-1" /> Previous
                       </Button>
-                      <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2">
-                        <span className="text-sm font-semibold text-slate-600">
+                      <div className="rounded-xl border border-border bg-muted/50 px-4 py-2">
+                        <span className="text-sm font-semibold text-muted-foreground">
                           Page {currentPage} of {totalPages}
                         </span>
                       </div>
@@ -490,7 +490,7 @@ export default function DashboardTab({ unreadCount }) {
                         size="sm"
                         onClick={handleNextPage}
                         disabled={currentPage >= totalPages || isLoading}
-                        className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-slate-600 transition-all duration-300 hover:bg-slate-50 disabled:opacity-40"
+                        className="rounded-xl border border-border bg-card px-4 py-2 text-muted-foreground transition-all duration-300 hover:bg-muted/50 disabled:opacity-40"
                       >
                         Next <ChevronRight className="h-4 w-4 ml-1" />
                       </Button>

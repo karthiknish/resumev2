@@ -60,7 +60,7 @@ export default function CategoryPage() {
   return (
     <>
       <Head>
-        <title>{category} - Blog Categories</title>
+        <title>{`${category} - Blog Categories`}</title>
         <meta
           name="description"
           content={`Blog posts in the ${category} category`}

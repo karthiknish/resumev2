@@ -103,8 +103,8 @@ function CalendarTab() {
               isSelected
                 ? "bg-white"
                 : isToday
-                ? "bg-blue-500 ring-2 ring-blue-300"
-                : "bg-blue-500"
+                ? "bg-primary ring-2 ring-primary/30"
+                : "bg-primary"
             }`}
             aria-hidden="true"
           ></span>
@@ -116,22 +116,22 @@ function CalendarTab() {
   return (
     <SlideUp delay={0.2}>
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        <Card className="lg:col-span-2 overflow-hidden rounded-3xl border border-slate-200 bg-white text-slate-900 shadow-lg">
-          <CardHeader className="border-b border-slate-200 bg-slate-50 p-5">
-            <CardTitle className="mb-1 text-xl font-heading font-semibold text-slate-900">
+        <Card className="lg:col-span-2 overflow-hidden rounded-3xl border border-border bg-card text-foreground shadow-lg">
+          <CardHeader className="border-b border-border bg-muted/50 p-5">
+            <CardTitle className="mb-1 text-xl font-heading font-semibold text-foreground">
               📅 Blog Post Calendar
             </CardTitle>
-            <p className="font-medium text-slate-600">
+            <p className="font-medium text-muted-foreground">
               Dates with blog posts are marked with a blue accent dot.
             </p>
           </CardHeader>
           <CardContent className="flex justify-center p-5">
             {isLoading ? (
               <div className="flex items-center justify-center py-10">
-                <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>
             ) : error ? (
-              <p className="py-10 text-center text-red-600">
+              <p className="py-10 text-center text-destructive">
                 Error loading calendar data: {error}
               </p>
             ) : (
@@ -146,25 +146,25 @@ function CalendarTab() {
                     "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
                   month: "space-y-4",
                   caption: "flex justify-center pt-1 relative items-center",
-                  caption_label: "text-lg font-semibold text-blue-900",
+                  caption_label: "text-lg font-semibold text-primary",
                   nav: "space-x-1 flex items-center",
                   nav_button:
-                    "h-8 w-8 bg-white border border-blue-200 rounded-md p-0 opacity-80 hover:opacity-100 text-blue-700 hover:bg-blue-50 hover:border-blue-300 transition-colors shadow-sm",
+                    "h-8 w-8 bg-card border border-border rounded-md p-0 opacity-80 hover:opacity-100 text-primary hover:bg-primary/10 hover:border-primary/30 transition-colors shadow-sm",
                   nav_button_previous: "absolute left-1",
                   nav_button_next: "absolute right-1",
                   table: "w-full border-collapse space-y-1",
                   head_row: "flex",
-                  head_cell: "text-blue-700 w-9 rounded-md font-medium text-sm",
+                  head_cell: "text-primary w-9 rounded-md font-medium text-sm",
                   row: "flex w-full mt-2",
-                  cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected])]:bg-blue-100 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-                  day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 rounded-md hover:bg-blue-50 transition-colors",
+                  cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected])]:bg-primary/20 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                  day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 rounded-md hover:bg-primary/10 transition-colors",
                   day_selected:
-                    "bg-blue-600 text-white hover:bg-blue-700 focus:bg-blue-700 rounded-md shadow-sm",
-                  day_today: "bg-blue-100 text-blue-800 font-semibold",
-                  day_outside: "text-gray-400 opacity-70",
-                  day_disabled: "text-gray-300 opacity-50",
+                    "bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90 rounded-md shadow-sm",
+                  day_today: "bg-primary/20 text-primary font-semibold",
+                  day_outside: "text-muted-foreground opacity-70",
+                  day_disabled: "text-muted-foreground/50 opacity-50",
                   day_range_middle:
-                    "aria-selected:bg-blue-100 aria-selected:text-blue-800",
+                    "aria-selected:bg-primary/20 aria-selected:text-primary",
                   day_hidden: "invisible",
                 }}
               />
@@ -173,9 +173,9 @@ function CalendarTab() {
         </Card>
 
         <FadeIn delay={0.4}>
-          <Card className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-md">
-            <CardHeader className="border-b border-slate-200 bg-slate-50 p-5">
-              <CardTitle className="text-xl font-heading font-semibold text-slate-900">
+          <Card className="overflow-hidden rounded-2xl border border-border bg-card shadow-md">
+            <CardHeader className="border-b border-border bg-muted/50 p-5">
+              <CardTitle className="text-xl font-heading font-semibold text-foreground">
                 Posts on{" "}
                 {selectedDate ? format(selectedDate, "MMMM d, yyyy") : "..."}
               </CardTitle>
@@ -183,19 +183,19 @@ function CalendarTab() {
             <CardContent className="min-h-[200px] p-5">
               {isLoading ? (
                 <div className="flex justify-center items-center pt-10">
-                  <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                 </div>
               ) : postsOnSelectedDate.length > 0 ? (
                 <StaggerContainer className="space-y-4">
                   {postsOnSelectedDate.map((post, index) => (
                     <StaggerItem key={post._id} index={index}>
                       <HoverCard>
-                        <Card className="bg-white border border-blue-200 shadow-sm hover:shadow-md transition-shadow rounded-xl">
+                        <Card className="bg-card border border-border shadow-sm hover:shadow-md transition-shadow rounded-xl">
                           <CardContent className="p-4">
-                            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                            <h3 className="text-lg font-semibold text-foreground mb-2">
                               {post.title}
                             </h3>
-                            <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                            <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
                               {post.description || "No description available"}
                             </p>
                             <div className="flex justify-between items-center">
@@ -216,7 +216,7 @@ function CalendarTab() {
                                   variant="outline"
                                   size="sm"
                                   asChild
-                                  className="text-blue-700 border-blue-300 hover:bg-blue-50 hover:border-blue-400"
+                                  className="text-primary border-primary/30 hover:bg-primary/10 hover:border-primary/50"
                                 >
                                   <Link href={`/admin/blog/edit/${post._id}`}>
                                     Edit
@@ -226,7 +226,7 @@ function CalendarTab() {
                                   variant="default"
                                   size="sm"
                                   asChild
-                                  className="bg-blue-600 text-white hover:bg-blue-700"
+                                  className="bg-primary text-primary-foreground hover:bg-primary/90"
                                 >
                                   <Link
                                     href={`/blog/${post.slug}`}
@@ -246,17 +246,17 @@ function CalendarTab() {
               ) : (
                 <div className="flex flex-col items-center justify-center py-6 text-center">
                   <div className="text-4xl mb-3">📝</div>
-                  <p className="text-gray-600 font-medium">
+                  <p className="text-muted-foreground font-medium">
                     No posts found for this date
                   </p>
-                  <p className="text-gray-500 text-sm mt-1">
+                  <p className="text-muted-foreground text-sm mt-1">
                     Create a new blog post to get started
                   </p>
                 </div>
               )}
             </CardContent>
-            <CardFooter className="border-t border-slate-200 bg-white px-5 py-4">
-              <Button className="w-full rounded-lg bg-blue-600 text-white shadow-sm hover:bg-blue-700" asChild>
+            <CardFooter className="border-t border-border bg-card px-5 py-4">
+              <Button className="w-full rounded-lg bg-primary text-primary-foreground shadow-sm hover:bg-primary/90" asChild>
                 <Link href="/admin/blog/create">
                   <AiOutlineFileAdd className="mr-2 h-5 w-5" />
                   Create New Blog Post

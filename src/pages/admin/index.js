@@ -135,9 +135,9 @@ function AdminDashboard() {
   // Loading state
   if (status === "loading") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-100 via-white to-slate-200 text-slate-700">
-        <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white/90 px-8 py-6 shadow-xl">
-          <div className="h-6 w-6 animate-spin rounded-full border-4 border-blue-200 border-t-blue-500"></div>
+      <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
+        <div className="flex items-center gap-4 rounded-2xl border border-border bg-card/90 px-8 py-6 shadow-xl">
+          <div className="h-6 w-6 animate-spin rounded-full border-4 border-primary/30 border-t-primary"></div>
           <span className="font-heading text-xl font-semibold">
             Loading Admin Dashboard...
           </span>
@@ -149,9 +149,9 @@ function AdminDashboard() {
   // Redirect state
   if (!session && status !== "loading") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-100 via-white to-slate-200 text-slate-700">
-        <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white/90 px-8 py-6 shadow-xl">
-          <div className="h-6 w-6 animate-pulse rounded-full bg-blue-500/70"></div>
+      <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
+        <div className="flex items-center gap-4 rounded-2xl border border-border bg-card/90 px-8 py-6 shadow-xl">
+          <div className="h-6 w-6 animate-pulse rounded-full bg-primary/70"></div>
           <span className="font-heading text-xl font-semibold">
             Redirecting to sign in...
           </span>
@@ -163,9 +163,9 @@ function AdminDashboard() {
   // Not admin state (Show temporarily while checking/redirecting if needed)
   if (status === "authenticated" && !isAdmin) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-100 via-white to-slate-200 text-slate-700">
-        <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white/90 px-8 py-6 shadow-xl">
-          <div className="h-6 w-6 animate-pulse rounded-full bg-blue-500/70"></div>
+      <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
+        <div className="flex items-center gap-4 rounded-2xl border border-border bg-card/90 px-8 py-6 shadow-xl">
+          <div className="h-6 w-6 animate-pulse rounded-full bg-primary/70"></div>
           <span className="font-heading text-xl font-semibold">
             Checking access or redirecting...
           </span>
@@ -178,19 +178,19 @@ function AdminDashboard() {
   if (status === "authenticated" && isAdmin) {
     return (
       <PageTransition>
-        <div className="admin-dashboard min-h-screen bg-gradient-to-br from-slate-100 via-white to-slate-200 text-slate-900">
+        <div className="admin-dashboard min-h-screen bg-background text-foreground">
           <Head>
             <title>Admin Dashboard</title>
           </Head>
 
-          <PageContainer className="px-4 pt-20 text-slate-900 md:px-8 lg:px-10">
+          <PageContainer className="px-4 pt-24 md:pt-28 lg:pt-34 text-foreground md:px-8 lg:px-10">
             <SlideInLeft delay={0.2}>
               <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <h1 className="text-3xl font-heading font-bold leading-tight tracking-tight text-slate-900 sm:text-4xl">
+                  <h1 className="text-3xl font-heading font-bold leading-tight tracking-tight text-foreground sm:text-4xl">
                     Admin Dashboard
                   </h1>
-                  <p className="mt-2 text-sm text-slate-600 sm:text-base">
+                  <p className="mt-2 text-sm text-muted-foreground sm:text-base">
                     Review site activity, manage content, and monitor tools in one place.
                   </p>
                 </div>
@@ -199,7 +199,7 @@ function AdminDashboard() {
             </SlideInLeft>
 
             <FadeIn delay={0.3}>
-              <Separator className="my-5 h-[2px] rounded-full bg-slate-200" />
+              <Separator className="my-5 h-[2px] rounded-full bg-border" />
             </FadeIn>
 
             <Tabs
@@ -209,7 +209,7 @@ function AdminDashboard() {
             >
               <SlideUp delay={0.4}>
                 {/* Desktop TabsList (Hidden below lg) */}
-                <TabsList className="hidden w-full snap-x snap-mandatory justify-center gap-2 overflow-x-auto rounded-2xl border border-slate-200 bg-white py-3 shadow-sm scrollbar-thin md:py-4 lg:my-5 lg:flex">
+                <TabsList className="hidden w-full snap-x snap-mandatory justify-center gap-2 overflow-x-auto rounded-2xl border border-border bg-card py-3 shadow-sm scrollbar-thin md:py-4 lg:my-5 lg:flex">
                   {adminTabs.map((tab, index) => {
                     const gradients = [];
                     const gradientClass = "";
@@ -220,8 +220,8 @@ function AdminDashboard() {
                         value={tab.value}
                         className={`relative flex-shrink-0 snap-start min-w-[8rem] rounded-xl border px-3 py-2 text-sm font-semibold transition-all duration-300 md:min-w-[9rem] md:px-4 md:py-2.5 ${
                           activeTab === tab.value
-                            ? "border-blue-500 bg-blue-600 text-white shadow-md"
-                            : "border-transparent bg-slate-100 text-slate-600 hover:border-blue-200 hover:bg-white hover:text-slate-900"
+                            ? "border-primary bg-primary text-primary-foreground shadow-md"
+                            : "border-transparent bg-muted text-muted-foreground hover:border-primary/20 hover:bg-card hover:text-foreground"
                         }`}
                       >
                         <tab.Icon className="h-4 w-4" />{" "}
@@ -245,22 +245,22 @@ function AdminDashboard() {
                 {/* Mobile/Tablet Select (Visible below lg) */}
                 <div className="mb-5 block lg:hidden">
                   <Select value={activeTab} onValueChange={setActiveTab}>
-                    <SelectTrigger className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-3 text-base font-semibold text-slate-700 shadow-sm">
+                    <SelectTrigger className="w-full rounded-2xl border border-border bg-card px-5 py-3 text-base font-semibold text-foreground shadow-sm">
                       <SelectValue placeholder="Select a tab" />
                     </SelectTrigger>
-                    <SelectContent className="max-h-[60vh] overflow-auto rounded-2xl border border-slate-200 bg-white shadow-lg">
+                    <SelectContent className="max-h-[60vh] overflow-auto rounded-2xl border border-border bg-card shadow-lg">
                       {adminTabs.map((tab) => (
                         <SelectItem
                           key={tab.value}
                           value={tab.value}
-                          className="font-semibold text-slate-700"
+                          className="font-semibold text-foreground"
                         >
                           <div className="flex items-center">
                             <tab.Icon className="mr-3 h-5 w-5" />
                             <span>{tab.label}</span>
                             {tab.value === "contacts" &&
                               unreadContactsCount > 0 && (
-                                <span className="ml-3 inline-flex items-center justify-center rounded-full bg-red-100 px-2 py-1 text-xs font-bold text-red-600">
+                                <span className="ml-3 inline-flex items-center justify-center rounded-full bg-destructive/10 px-2 py-1 text-xs font-bold text-destructive">
                                   {unreadContactsCount > 9
                                     ? "9+"
                                     : unreadContactsCount}
@@ -275,7 +275,7 @@ function AdminDashboard() {
               </SlideUp>
 
               {/* Tab Content with Card-like Container */}
-              <div className="rounded-3xl border border-slate-200 bg-white p-5 text-slate-900 shadow-md md:p-6">
+              <div className="rounded-3xl border border-border bg-card p-5 text-foreground shadow-md md:p-6">
                 <AnimatePresence mode="wait">
                   {activeTab === "dashboard" && (
                     <DashboardTab key="dashboard" />

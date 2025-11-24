@@ -62,11 +62,11 @@ export default function TrendingNewsFeed({ onNewsSelect }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.1 }}
     >
-      <Card className="bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 shadow-xl rounded-3xl overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-purple-100 to-blue-100 border-b border-purple-200 flex flex-row items-center justify-between pb-3">
-          <CardTitle className="flex items-center gap-3 text-gray-800">
-            <div className="p-2 bg-white rounded-full shadow-md">
-              <Newspaper className="w-5 h-5 text-purple-600" />
+      <Card className="bg-card border border-border shadow-sm rounded-xl overflow-hidden">
+        <CardHeader className="bg-muted/30 border-b border-border flex flex-row items-center justify-between pb-3">
+          <CardTitle className="flex items-center gap-3 text-foreground">
+            <div className="p-2 bg-background rounded-full shadow-sm border border-border">
+              <Newspaper className="w-5 h-5 text-primary" />
             </div>
             <span className="font-bold">Trending Tech News</span>
           </CardTitle>
@@ -76,15 +76,15 @@ export default function TrendingNewsFeed({ onNewsSelect }) {
             onClick={fetchNews}
             disabled={isLoading}
             aria-label="Refresh News"
-            className="hover:bg-white/50 transition-colors"
+            className="hover:bg-muted transition-colors"
           >
-            <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""} text-purple-600`} />
+            <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""} text-primary`} />
           </Button>
         </CardHeader>
         <CardContent className="p-6">
         {/* GNews Usage Note */}
         <div className="mb-4">
-          <Badge variant="outline" className="text-xs bg-yellow-50 text-yellow-700 border-yellow-300">
+          <Badge variant="outline" className="text-xs bg-yellow-500/10 text-yellow-700 border-yellow-500/20 dark:text-yellow-400">
             ⚡ Powered by GNews (Free tier: 100 requests/day)
           </Badge>
         </div>
@@ -95,19 +95,19 @@ export default function TrendingNewsFeed({ onNewsSelect }) {
             animate={{ opacity: 1 }}
           >
             <div className="relative">
-              <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
-              <Sparkles className="h-4 w-4 text-purple-400 absolute -top-1 -right-1 animate-pulse" />
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <Sparkles className="h-4 w-4 text-primary/60 absolute -top-1 -right-1 animate-pulse" />
             </div>
-            <p className="text-gray-600 font-medium mt-3 text-sm">Loading latest tech news...</p>
+            <p className="text-muted-foreground font-medium mt-3 text-sm">Loading latest tech news...</p>
           </motion.div>
         )}
         {error && (
           <motion.div 
-            className="bg-red-50 border border-red-200 rounded-2xl p-4"
+            className="bg-destructive/10 border border-destructive/20 rounded-xl p-4"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <p className="text-red-700 text-sm font-medium">Error: {error}</p>
+            <p className="text-destructive text-sm font-medium">Error: {error}</p>
           </motion.div>
         )}
         {!isLoading && !error && news.length === 0 && (
@@ -116,9 +116,9 @@ export default function TrendingNewsFeed({ onNewsSelect }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="text-gray-400 text-5xl mb-4">📰</div>
-            <p className="text-gray-600 font-medium">No news items found</p>
-            <p className="text-gray-500 text-sm mt-2">Try refreshing to get the latest updates</p>
+            <div className="text-muted-foreground text-5xl mb-4">📰</div>
+            <p className="text-muted-foreground font-medium">No news items found</p>
+            <p className="text-muted-foreground/70 text-sm mt-2">Try refreshing to get the latest updates</p>
           </motion.div>
         )}
         {!isLoading && !error && news.length > 0 && (
@@ -128,15 +128,15 @@ export default function TrendingNewsFeed({ onNewsSelect }) {
             transition={{ duration: 0.5 }}
           >
             <div className="flex items-center gap-2 mb-4">
-              <Badge className="bg-purple-600 text-white">
+              <Badge className="bg-primary text-primary-foreground hover:bg-primary/90">
                 {news.length} {news.length === 1 ? 'article' : 'articles'}
               </Badge>
             </div>
-            <ul className="space-y-4 max-h-80 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-purple-300 scrollbar-track-purple-100">
+            <ul className="space-y-4 max-h-80 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
               {news.map((item, index) => (
                 <motion.li
                   key={index}
-                  className="bg-white border-2 border-purple-200 rounded-2xl p-4 hover:shadow-lg transition-all duration-300 group"
+                  className="bg-background border border-border rounded-xl p-4 hover:shadow-md transition-all duration-300 group"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
@@ -147,7 +147,7 @@ export default function TrendingNewsFeed({ onNewsSelect }) {
                       href={item.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-semibold text-gray-800 hover:text-purple-600 transition-colors mb-2 flex-grow group-hover:text-purple-700"
+                      className="font-semibold text-foreground hover:text-primary transition-colors mb-2 flex-grow"
                       title={`Read full article: ${item.headline}`}
                     >
                       {item.headline}
@@ -157,14 +157,14 @@ export default function TrendingNewsFeed({ onNewsSelect }) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 flex-shrink-0 text-purple-500 hover:text-purple-700 hover:bg-purple-100 transition-all duration-200 rounded-full"
+                      className="h-8 w-8 flex-shrink-0 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all duration-200 rounded-full"
                       onClick={() => handleSelect(item)}
                       title="Use this news for a new post idea"
                     >
                       <CopyPlus className="w-4 h-4" />
                     </Button>
                   </div>
-                  <p className="text-gray-600 text-sm leading-relaxed">{item.summary}</p>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{item.summary}</p>
                 </motion.li>
               ))}
             </ul>
