@@ -255,6 +255,7 @@ export default function Nav() {
                     <SlideInRight delay={1.0}>
                       <HoverCard scale={1.05}>
                         <Link
+                          style={{fontFamily: "Instrument Serif, serif"}}
                           href="/admin"
                           className={`text-lg font-medium relative group transition-colors duration-200 ${
                             router.pathname.startsWith("/admin")
@@ -271,6 +272,7 @@ export default function Nav() {
                   <SlideInRight delay={1.1}>
                     <HoverCard scale={1.05}>
                       <button
+                        style={{fontFamily: "Instrument Serif, serif"}}
                         onClick={handleSignOut}
                         className={`text-lg font-medium transition-colors duration-200 relative group ${navLinkBaseClass}`}
                       >

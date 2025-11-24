@@ -18,7 +18,6 @@ import {
 // Import the refactored components
 import BannerImageSection from "@/components/admin/blog-editor/BannerImageSection";
 import MetadataSection from "@/components/admin/blog-editor/MetadataSection";
-import ActionButtons from "@/components/admin/blog-editor/ActionButtons";
 
 import { AiOutlineClose } from "react-icons/ai";
 import TipTapEditor from "@/components/TipTapEditor";
@@ -282,7 +281,7 @@ function Edit() {
   };
 
   const BlogPreview = () => (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-auto bg-slate-900/80 p-4 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[150] flex items-start justify-center overflow-auto bg-slate-900/80 p-4 backdrop-blur-sm">
       <div className="w-full max-w-4xl my-8 overflow-hidden rounded-2xl bg-white shadow-2xl animate-in fade-in zoom-in duration-200">
         <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4 bg-slate-50">
           <h2 className="text-lg font-heading font-semibold text-slate-900">
@@ -332,7 +331,7 @@ function Edit() {
         <title>Edit: {formData.title || "Blog Post"}</title>
       </Head>
       <div className="min-h-screen bg-slate-50 text-slate-900">
-        <PageContainer className="pt-20 pb-12">
+        <PageContainer className="pt-32 pb-20 px-6 md:px-12">
           <div className="mx-auto max-w-[1600px]">
             {/* Header */}
             <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -399,76 +398,73 @@ function Edit() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-              {/* Main Editor Area */}
-              <div className="lg:col-span-8 xl:col-span-9 space-y-6">
-                <div className="space-y-4">
-                  <input
-                    type="text"
-                    value={formData.title}
-                    onChange={(e) =>
-                      handleFormChange("title", e.target.value)
-                    }
-                    placeholder="Post Title"
-                    className="w-full border-none bg-transparent text-4xl font-heading font-bold text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-0"
-                  />
-                  
-                  <div className="flex items-center gap-2 text-sm text-slate-500">
-                    <Badge variant="secondary" className="font-normal">
-                      {readingTimeMinutes} min read
-                    </Badge>
-                    <Badge
-                      variant={
-                        seoScore >= 80
-                          ? "success"
-                          : seoScore >= 60
-                          ? "warning"
-                          : "destructive"
-                      }
-                      className="font-normal"
-                    >
-                      SEO Score: {seoScore}/100
-                    </Badge>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleFormatContent}
-                      disabled={isFormatting}
-                      className="h-6 px-2 text-xs text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700"
-                    >
-                      {isFormatting ? (
-                        <Loader2 className="mr-1 h-3 w-3 animate-spin" />
-                      ) : (
-                        <Wand2 className="mr-1 h-3 w-3" />
-                      )}
-                      AI Format
-                    </Button>
-                  </div>
-                </div>
-
-                <TipTapEditor
-                  id="blog-content-editor"
-                  content={formData.content}
-                  onUpdate={(html) => handleContentChange(html)}
-                  className="min-h-[600px] border-none shadow-none"
+            <div className="max-w-5xl mx-auto space-y-8">
+              {/* Title & Badges */}
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) => handleFormChange("title", e.target.value)}
+                  placeholder="Post Title"
+                  className="w-full border-none bg-transparent text-4xl font-heading font-bold text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-0"
                 />
-              </div>
 
-              {/* Sidebar (Desktop) */}
-              <div className="hidden lg:col-span-4 xl:col-span-3 lg:block space-y-6">
-                <div className="sticky top-24 space-y-6">
-                  <BannerImageSection
-                    imageUrl={formData.imageUrl}
-                    onImageUrlChange={handleImageUrlChange}
-                  />
-                  <MetadataSection
-                    formData={formData}
-                    onFormChange={handleFormChange}
-                    isPublished={formData.isPublished}
-                    onPublishChange={handlePublishChange}
-                  />
+                <div className="flex items-center gap-2 text-sm text-slate-500">
+                  <Badge variant="secondary" className="font-normal">
+                    {readingTimeMinutes} min read
+                  </Badge>
+                  <Badge
+                    variant={
+                      seoScore >= 80
+                        ? "success"
+                        : seoScore >= 60
+                        ? "warning"
+                        : "destructive"
+                    }
+                    className="font-normal"
+                  >
+                    SEO Score: {seoScore}/100
+                  </Badge>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleFormatContent}
+                    disabled={isFormatting}
+                    className="h-6 px-2 text-xs text-primary hover:bg-primary/10 hover:text-primary"
+                  >
+                    {isFormatting ? (
+                      <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                    ) : (
+                      <Wand2 className="mr-1 h-3 w-3" />
+                    )}
+                    AI Format
+                  </Button>
                 </div>
               </div>
+
+              {/* Metadata Section (Top) */}
+              <MetadataSection
+                formData={formData}
+                onFormChange={handleFormChange}
+                isPublished={formData.isPublished}
+                onPublishChange={handlePublishChange}
+              />
+
+              {/* Banner Image (Middle) */}
+              <BannerImageSection
+                imageUrl={formData.imageUrl}
+                onImageUrlChange={handleImageUrlChange}
+              />
+            </div>
+
+            {/* Main Editor Area (Bottom) - Full Width */}
+            <div className="mt-8">
+              <TipTapEditor
+                id="blog-content-editor"
+                content={formData.content}
+                onUpdate={(html) => handleContentChange(html)}
+                className="min-h-[600px] border-none shadow-none"
+              />
             </div>
           </div>
         </PageContainer>

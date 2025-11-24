@@ -106,7 +106,7 @@ function PexelsImageSearch({ onImageSelect }) {
   return (
     <div className="flex flex-col h-full bg-background">
       {/* Header / Search Bar */}
-      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pb-4 border-b border-border">
+      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-6 py-4 border-b border-border">
         <form onSubmit={handleSearch} className="flex gap-2">
           <div className="relative flex-grow">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -159,7 +159,7 @@ function PexelsImageSearch({ onImageSelect }) {
       </div>
 
       {/* Content Area */}
-      <div className="flex-grow overflow-y-auto min-h-[300px] py-4">
+      <div className="flex-grow overflow-y-auto min-h-[300px] p-6">
         {error ? (
           <div className="flex flex-col items-center justify-center h-64 text-center p-6 rounded-xl border border-dashed border-destructive/20 bg-destructive/5">
             <ImageOff className="h-10 w-10 text-destructive/50 mb-3" />

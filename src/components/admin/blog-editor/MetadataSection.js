@@ -24,11 +24,6 @@ function MetadataSection({
   const [catSuggestionError, setCatSuggestionError] = useState("");
   const [catSuggestions, setCatSuggestions] = useState([]);
 
-  // State for Title Suggestions
-  const [isSuggestingTitle, setIsSuggestingTitle] = useState(false);
-  const [titleSuggestionError, setTitleSuggestionError] = useState("");
-  const [titleSuggestions, setTitleSuggestions] = useState([]);
-
   // State for Keyword/Tag Suggestions
   const [isSuggestingKeywords, setIsSuggestingKeywords] = useState(false);
   const [keywordSuggestionError, setKeywordSuggestionError] = useState("");
@@ -106,36 +101,6 @@ function MetadataSection({
     }
   }, [formData.title, formData.content]);
 
-  const handleSuggestTitles = useCallback(async () => {
-    if (!formData.title && !formData.content) {
-      setTitleSuggestionError("Please enter a title or some content first.");
-      return;
-    }
-    setIsSuggestingTitle(true);
-    setTitleSuggestionError("");
-    setTitleSuggestions([]);
-    try {
-      const response = await axios.post("/api/ai/suggest-titles", {
-        currentTitle: formData.title,
-        contentSnippet: formData.content,
-      });
-      if (response.data.success && response.data.suggestions) {
-        setTitleSuggestions(response.data.suggestions);
-      } else {
-        setTitleSuggestionError("Could not fetch title suggestions.");
-      }
-    } catch (err) {
-      console.error("Title suggestion error:", err);
-      setTitleSuggestionError(
-        err.response?.data?.error ||
-          err.message ||
-          "Failed to get title suggestions."
-      );
-    } finally {
-      setIsSuggestingTitle(false);
-    }
-  }, [formData.title, formData.content]);
-
   // New handler for suggesting keywords/tags
   const handleSuggestKeywords = useCallback(async () => {
     if (!formData.title && !formData.content) {
@@ -175,57 +140,6 @@ function MetadataSection({
 
   return (
     <div className="space-y-6 border-y border-blue-100 py-6">
-      {/* Title Input with Suggestion Button */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-2">
-          <Input
-            name="title"
-            value={formData.title || ""}
-            onChange={handleChange}
-            type="text"
-            className="flex-grow text-3xl md:text-4xl font-bold bg-background border-input focus:ring-0 focus:outline-none h-auto p-0 placeholder-muted-foreground text-foreground"
-            placeholder="Untitled Blog Post"
-            required
-          />
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={handleSuggestTitles}
-            disabled={
-              isSuggestingTitle || (!formData.title && !formData.content)
-            }
-            className="text-blue-600 hover:text-blue-700 disabled:text-muted-foreground flex-shrink-0"
-            title="Suggest better titles (AI)"
-          >
-            {isSuggestingTitle ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
-            ) : (
-              <Wand2 className="h-5 w-5" />
-            )}
-          </Button>
-        </div>
-        {titleSuggestionError && (
-          <p className="text-xs text-destructive mt-1">
-            {titleSuggestionError}
-          </p>
-        )}
-        {titleSuggestions.length > 0 && (
-          <div className="flex flex-col gap-1 mt-1 pl-2">
-            <span className="text-xs text-muted-foreground">Suggestions:</span>
-            {titleSuggestions.map((suggestion, index) => (
-              <button
-                key={index}
-                type="button"
-                onClick={() => onFormChange({ ...formData, title: suggestion })}
-                className="px-1.5 py-0.5 text-sm text-left bg-muted text-foreground rounded hover:bg-blue-600 hover:text-white transition-colors"
-              >
-                {suggestion}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
       {/* Metadata Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Description / Excerpt */}
@@ -413,6 +327,19 @@ function MetadataSection({
                 ))}
             </div>
           )}
+        </div>
+
+        {/* Publish Status */}
+        <div className="flex items-center justify-between space-x-2 rounded-lg border p-4 md:col-span-2 bg-background">
+          <div className="space-y-0.5">
+            <Label className="text-base text-foreground">Publish Status</Label>
+            <p className="text-sm text-muted-foreground">
+              {isPublished
+                ? "Post is live and visible to the public."
+                : "Post is currently a draft and hidden."}
+            </p>
+          </div>
+          <Switch checked={isPublished} onCheckedChange={onPublishChange} />
         </div>
       </div>
     </div>

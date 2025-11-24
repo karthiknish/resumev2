@@ -384,7 +384,7 @@ const MenuBar = ({
             <Button
               variant="outline"
               size="sm"
-              className="h-8 gap-2 border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:text-indigo-800"
+              className="h-8 gap-2 border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 hover:text-primary"
             >
               <Sparkles className="h-3.5 w-3.5" />
               <span className="hidden sm:inline-block">AI Tools</span>
@@ -494,7 +494,7 @@ const TipTapEditor = ({ content, onUpdate, id, className }) => {
       attributes: {
         ...(id ? { id } : {}),
         class:
-          "prose prose-slate max-w-none focus:outline-none min-h-[400px] px-8 py-6 prose-headings:font-heading prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-a:text-blue-600 prose-img:rounded-xl",
+          "prose prose-slate max-w-none w-full focus:outline-none min-h-[400px] px-8 py-6 prose-headings:font-heading prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-a:text-blue-600 prose-img:rounded-xl",
       },
     },
   });
@@ -627,7 +627,7 @@ const TipTapEditor = ({ content, onUpdate, id, className }) => {
       />
       <div className="relative flex-grow bg-white">
         {isCompleting && (
-          <div className="absolute top-4 right-4 z-10 flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1.5 text-sm font-medium text-indigo-700 shadow-sm border border-indigo-100">
+          <div className="absolute top-4 right-4 z-10 flex items-center gap-2 rounded-full bg-primary/5 px-3 py-1.5 text-sm font-medium text-primary shadow-sm border border-primary/20">
             <Loader2 className="h-3 w-3 animate-spin" />
             AI thinking...
           </div>
@@ -664,7 +664,7 @@ const TipTapEditor = ({ content, onUpdate, id, className }) => {
               variant="ghost"
               size="sm"
               onClick={() => runAiAction(AI_TOOL_ACTIONS[0])}
-              className="h-8 gap-1 px-2 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700"
+              className="h-8 gap-1 px-2 text-primary hover:bg-primary/10 hover:text-primary"
             >
               <Sparkles className="h-3 w-3" />
               <span className="text-xs font-medium">Improve</span>
@@ -685,7 +685,7 @@ const TipTapEditor = ({ content, onUpdate, id, className }) => {
           onClick={handleSentenceCompletion}
           disabled={isCompleting}
           size="sm"
-          className="h-7 bg-indigo-600 text-white hover:bg-indigo-700"
+          className="h-7 bg-primary text-primary-foreground hover:bg-primary/90"
         >
           {isCompleting ? (
             <Loader2 className="mr-1 h-3 w-3 animate-spin" />

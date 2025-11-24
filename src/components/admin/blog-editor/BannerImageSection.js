@@ -117,33 +117,17 @@ function BannerImageSection({ imageUrl, onImageUrlChange }) {
       {/* Pexels Search Dialog (Rendered unconditionally, controlled by state) */}
       <Dialog open={showPexelsSearch} onOpenChange={setShowPexelsSearch}>
         {/* No DialogTrigger needed here as it's controlled by state */}
-        {/* Added max-h and overflow to DialogContent */}
-        <DialogContent className="sm:max-w-[800px] bg-popover border-input text-popover-foreground max-h-[85vh] flex flex-col">
-          <DialogHeader className="flex-shrink-0">
-            {" "}
-            {/* Prevent header from shrinking */}
-            <DialogTitle style={{ fontFamily: "Space Grotesk, sans-serif" }}>
-              Search Pexels for Cover Image
-            </DialogTitle>
+        <DialogContent className="sm:max-w-[900px] h-[85vh] p-0 gap-0 bg-background flex flex-col overflow-hidden border-none shadow-2xl">
+          <DialogHeader className="sr-only">
+            <DialogTitle>Search Pexels</DialogTitle>
           </DialogHeader>
-          {/* Added flex-grow to the Pexels component wrapper, but removed overflow-y-auto to let the component handle it */}
-          <div className="flex-grow min-h-0 pr-1">
+          
+          {/* Added flex-grow to the Pexels component wrapper */}
+          <div className="flex-grow min-h-0 relative">
             <PexelsImageSearch onImageSelect={handlePexelsImageSelect} />
           </div>
-          <DialogFooter className="flex-shrink-0">
-            {" "}
-            {/* Prevent footer from shrinking */}
-            <DialogClose asChild>
-              <Button
-                style={{ fontFamily: "Space Grotesk, sans-serif" }}
-                type="button"
-                variant="outline"
-                className="bg-red-700 text-white"
-              >
-                Close
-              </Button>
-            </DialogClose>
-          </DialogFooter>
+          
+          {/* Close button is handled by DialogPrimitive.Close (the X icon) */}
         </DialogContent>
       </Dialog>
 
