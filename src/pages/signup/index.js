@@ -207,7 +207,7 @@ export default function SignUp() {
                 />
                 {formData.password && (
                   <div className="mt-2">
-                    <div className="flex justify-between text-sm text-foreground mb-1">
+                    <div className="flex justify-between text-sm text-slate-700 mb-1">
                       <span>Password Strength</span>
                       <span className={passwordStrength < 50 ? "text-red-500" : passwordStrength < 75 ? "text-yellow-500" : "text-green-500"}>
                         {getPasswordStrengthText()}
@@ -219,7 +219,7 @@ export default function SignUp() {
                         style={{ width: `${passwordStrength}%` }}
                       ></div>
                     </div>
-                    <div className="text-xs text-muted-foreground mt-1">
+                    <div className="text-xs text-slate-500 mt-1">
                       Use at least 8 characters with a mix of letters, numbers, and symbols
                     </div>
                   </div>
@@ -271,7 +271,7 @@ export default function SignUp() {
               </Link>
             </div>
 
-            <div className="mt-8 pt-6 border-t-2 border-primary/10 text-center">
+            <div className="mt-8 pt-6 border-t border-slate-100 text-center">
               <p className="text-slate-500 text-base font-medium mb-4">
                 Already have an account?
               </p>

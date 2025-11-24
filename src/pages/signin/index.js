@@ -68,10 +68,10 @@ export default function SignIn() {
   // If still checking auth status, show loading
   if (status === "loading") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-brandSecondary/10 flex items-center justify-center">
-        <div className="bg-card/80 backdrop-blur-sm border-2 border-primary/20 rounded-2xl px-8 py-6 shadow-xl flex items-center gap-4">
-          <div className="animate-spin text-3xl"></div>
-          <span className="text-foreground font-bold text-xl">Loading...</span>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="bg-white border border-slate-200 rounded-2xl px-8 py-6 shadow-sm flex items-center gap-4">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-slate-900"></div>
+          <span className="text-slate-900 font-semibold text-lg">Loading...</span>
         </div>
       </div>
     );
@@ -236,7 +236,7 @@ export default function SignIn() {
               </Link>
             </div>
 
-            <div className="mt-8 pt-6 border-t-2 border-primary/10 text-center">
+            <div className="mt-8 pt-6 border-t border-slate-100 text-center">
               <p className="text-slate-500 text-base font-medium mb-4">
                 Don't have an account?
               </p>

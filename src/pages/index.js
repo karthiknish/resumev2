@@ -167,24 +167,24 @@ const projects = [
 
 const testimonials = [
   {
-    name: "Sarah Johnson",
-    role: "Product Manager at TechCorp",
+    name: "Elena Rodriguez",
+    role: "VP of Product at FinFlow",
     content:
       "Karthik delivered our mobile app ahead of schedule. The quality was exceptional and the user experience is exactly what we envisioned.",
     rating: 5,
     avatar: "",
   },
   {
-    name: "Michael Chen",
-    role: "Startup Founder",
+    name: "David Park",
+    role: "Founder, HealthSync",
     content:
       "Working with Karthik transformed our idea into a production-ready platform. His cross-platform expertise saved us months of development time.",
     rating: 5,
     avatar: "",
   },
   {
-    name: "Emma Davis",
-    role: "CTO at InnovateLab",
+    name: "James Wilson",
+    role: "Engineering Lead at CloudScale",
     content:
       "The cloud infrastructure Karthik built for us has been rock-solid. Zero downtime and scales beautifully with our growing user base.",
     rating: 5,
@@ -657,6 +657,105 @@ const HomeScreen = () => {
           </div>
         </section>
 
+        {/* Stack Hub Section */}
+        <section className="relative py-32 overflow-hidden bg-slate-50">
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-slate-50 to-slate-100" />
+          </div>
+
+          <div className="relative z-10 max-w-7xl mx-auto px-4">
+            <div className="relative flex items-center justify-center min-h-[800px]">
+              {/* Central Content */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="relative z-20 text-center max-w-lg mx-auto"
+              >
+                <p className="text-xs uppercase tracking-[0.3em] text-slate-500 mb-6">
+                  Unified Ecosystem
+                </p>
+                <h2 className="font-heading text-4xl md:text-6xl text-slate-900 leading-tight mb-8">
+                  Bring your entire <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">stack</span> together.
+                </h2>
+                <Link href="/contact">
+                  <Button className="h-12 px-8 rounded-full bg-slate-900 text-white hover:bg-slate-800 text-base shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1">
+                    Start your project
+                  </Button>
+                </Link>
+              </motion.div>
+
+              {/* Orbiting Icons */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                {[
+                  { Icon: SiReact, color: "text-cyan-500", x: -35, y: -25, delay: 0 },
+                  { Icon: SiNextdotjs, color: "text-slate-900", x: 35, y: -25, delay: 0.1 },
+                  { Icon: SiNodedotjs, color: "text-green-600", x: -40, y: 5, delay: 0.2 },
+                  { Icon: SiTypescript, color: "text-blue-600", x: 40, y: 5, delay: 0.3 },
+                  { Icon: SiAmazonaws, color: "text-orange-500", x: -25, y: 35, delay: 0.4 },
+                  { Icon: SiDocker, color: "text-blue-500", x: 25, y: 35, delay: 0.5 },
+                  { Icon: SiPython, color: "text-yellow-500", x: 0, y: -40, delay: 0.6 },
+                  { Icon: SiPostgresql, color: "text-blue-400", x: 0, y: 40, delay: 0.7 },
+                  { Icon: TbBrandReactNative, color: "text-purple-600", x: -20, y: -45, delay: 0.8 },
+                  { Icon: SiFirebase, color: "text-yellow-600", x: 20, y: -45, delay: 0.9 },
+                  { Icon: SiMongodb, color: "text-green-500", x: -45, y: -15, delay: 1.0 },
+                  { Icon: SiStripe, color: "text-indigo-500", x: 45, y: -15, delay: 1.1 },
+                ].map((item, index) => (
+                  <React.Fragment key={index}>
+                    {/* Connection Line */}
+                    <motion.svg
+                      className="absolute top-0 left-0 w-full h-full z-0 opacity-20"
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 0.2 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1, delay: item.delay }}
+                    >
+                      <line
+                        x1="50%"
+                        y1="50%"
+                        x2={`${50 + item.x}%`}
+                        y2={`${50 + item.y}%`}
+                        stroke="currentColor"
+                        strokeWidth="1"
+                        strokeDasharray="4 4"
+                        className="text-slate-400"
+                      />
+                    </motion.svg>
+
+                    {/* Icon Bubble */}
+                    <motion.div
+                      className="absolute z-10"
+                      style={{ 
+                        left: `${50 + item.x}%`, 
+                        top: `${50 + item.y}%`,
+                        x: "-50%",
+                        y: "-50%"
+                      }}
+                      initial={{ opacity: 0, scale: 0 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ 
+                        type: "spring",
+                        stiffness: 260,
+                        damping: 20,
+                        delay: item.delay 
+                      }}
+                    >
+                      <div className="relative group">
+                        <div className="absolute inset-0 bg-white rounded-2xl shadow-lg opacity-80 blur-sm group-hover:opacity-100 transition-opacity" />
+                        <div className="relative flex items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-sm border border-slate-100 group-hover:scale-110 transition-transform duration-300">
+                          <item.Icon className={`w-8 h-8 ${item.color}`} />
+                        </div>
+                      </div>
+                    </motion.div>
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section className="py-20 md:py-28 bg-background relative">
           <div className="max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
             <div className="mb-20 md:text-center max-w-3xl mx-auto">
@@ -713,50 +812,87 @@ const HomeScreen = () => {
           </div>
         </section>
 
-        <section className="py-20 md:py-28 bg-slate-950 text-slate-100">
+        <section className="py-20 md:py-28 bg-slate-950 text-slate-100 overflow-hidden">
           <div className="max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="text-xs uppercase text-slate-400 tracking-[0.3em]"
-            >
-              Testimonials
-            </motion.p>
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="font-heading text-3xl sm:text-4xl leading-snug text-slate-50 mt-4 mb-12"
-            >
-              Product leaders partner with me when reliability, momentum, and polish matter.
-            </motion.h2>
-
-            <div className="grid gap-6 md:grid-cols-3">
-              {testimonials.map((testimonial, index) => (
-                <motion.div
-                  key={testimonial.name}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="h-full rounded-2xl border border-slate-800 bg-slate-900/60 p-6 backdrop-blur"
-                >
-                  <p className="text-sm text-slate-300 leading-relaxed mb-6">
-                    “{testimonial.content}”
-                  </p>
-                  <div>
-                    <p className="text-base text-slate-50 font-medium">
-                      {testimonial.name}
-                    </p>
-                    <p className="text-xs uppercase tracking-[0.25em] text-slate-500 mt-1">
-                      {testimonial.role}
-                    </p>
+            <div className="grid lg:grid-cols-[1fr_1.5fr] gap-12 lg:gap-20 items-start">
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="lg:sticky lg:top-32"
+              >
+                <p className="text-xs uppercase text-slate-400 tracking-[0.3em] mb-6">
+                  Testimonials
+                </p>
+                <h2 className="font-heading text-3xl sm:text-4xl leading-snug text-slate-50 mb-6">
+                  Trusted by product leaders who value craft.
+                </h2>
+                <p className="text-slate-400 leading-relaxed mb-8">
+                  I partner with founders and engineering teams to solve complex technical challenges without compromising on user experience.
+                </p>
+                <div className="flex items-center gap-4">
+                  <div className="flex -space-x-3">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div key={i} className="w-10 h-10 rounded-full border-2 border-slate-950 bg-slate-800 flex items-center justify-center text-xs font-medium text-slate-300">
+                        {String.fromCharCode(64 + i)}
+                      </div>
+                    ))}
                   </div>
-                </motion.div>
-              ))}
+                  <div className="text-sm text-slate-300">
+                    <span className="font-bold text-white">5.0</span> rating from 40+ clients
+                  </div>
+                </div>
+              </motion.div>
+
+              <div className="grid gap-6">
+                {testimonials.map((testimonial, index) => (
+                  <motion.div
+                    key={testimonial.name}
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="relative group"
+                  >
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur" />
+                    <div className="relative rounded-2xl border border-slate-800 bg-slate-900/80 p-8 backdrop-blur-sm hover:bg-slate-900/90 transition-colors">
+                      {/* Quote Icon */}
+                      <div className="absolute top-6 right-8 text-slate-800 group-hover:text-slate-700 transition-colors">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H15.017C14.4647 8 14.017 8.44772 14.017 9V11C14.017 11.5523 13.5693 12 13.017 12H12.017V5H22.017V15C22.017 18.3137 19.3307 21 16.017 21H14.017ZM5.0166 21L5.0166 18C5.0166 16.8954 5.91203 16 7.0166 16H10.0166C10.5689 16 11.0166 15.5523 11.0166 15V9C11.0166 8.44772 10.5689 8 10.0166 8H6.0166C5.46432 8 5.0166 8.44772 5.0166 9V11C5.0166 11.5523 4.56889 12 4.0166 12H3.0166V5H13.0166V15C13.0166 18.3137 10.3303 21 7.0166 21H5.0166Z" />
+                        </svg>
+                      </div>
+
+                      <div className="flex items-center gap-1 mb-4 text-yellow-500/80">
+                        {[...Array(5)].map((_, i) => (
+                          <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                          </svg>
+                        ))}
+                      </div>
+
+                      <p className="text-lg text-slate-300 leading-relaxed mb-6 relative z-10">
+                        "{testimonial.content}"
+                      </p>
+
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center text-sm font-bold text-slate-300 border border-slate-700">
+                          {testimonial.name.charAt(0)}
+                        </div>
+                        <div>
+                          <p className="text-base text-slate-50 font-medium">
+                            {testimonial.name}
+                          </p>
+                          <p className="text-xs uppercase tracking-wider text-slate-500 font-medium">
+                            {testimonial.role}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
