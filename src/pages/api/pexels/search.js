@@ -30,22 +30,28 @@ export default async function handler(req, res) {
 
   const { query, per_page = 15, page = 1 } = req.query;
 
-  if (!query || typeof query !== "string") {
-    return res.status(400).json({ message: "Search query is required." });
-  }
-
   try {
-    const pexelsUrl = `https://api.pexels.com/v1/search`;
+    let pexelsUrl;
+    let params = {
+      per_page: parseInt(per_page, 10),
+      page: parseInt(page, 10),
+    };
+
+    if (query && typeof query === "string" && query.trim().length > 0) {
+      pexelsUrl = `https://api.pexels.com/v1/search`;
+      params.query = query;
+      params.orientation = "landscape"; // Prefer landscape for search
+    } else {
+      // Fallback to curated photos if no query
+      pexelsUrl = `https://api.pexels.com/v1/curated`;
+      // Curated doesn't support orientation param in the same way, but returns mixed
+    }
+
     const response = await axios.get(pexelsUrl, {
       headers: {
         Authorization: PEXELS_API_KEY,
       },
-      params: {
-        query: query,
-        per_page: parseInt(per_page, 10),
-        page: parseInt(page, 10),
-        orientation: "landscape", // Prefer landscape images for banners
-      },
+      params: params,
     });
 
     // We only need specific fields from the Pexels response

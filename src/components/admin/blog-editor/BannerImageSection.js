@@ -126,8 +126,8 @@ function BannerImageSection({ imageUrl, onImageUrlChange }) {
               Search Pexels for Cover Image
             </DialogTitle>
           </DialogHeader>
-          {/* Added overflow-y-auto and flex-grow to the Pexels component wrapper */}
-          <div className="flex-grow overflow-y-auto pr-2">
+          {/* Added flex-grow to the Pexels component wrapper, but removed overflow-y-auto to let the component handle it */}
+          <div className="flex-grow min-h-0 pr-1">
             <PexelsImageSearch onImageSelect={handlePexelsImageSelect} />
           </div>
           <DialogFooter className="flex-shrink-0">

@@ -1,4 +1,4 @@
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useEditor, EditorContent, BubbleMenu } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useState, useCallback } from "react";
 import TextStyle from "@tiptap/extension-text-style";
@@ -41,6 +41,9 @@ import {
   MinusCircle,
   ListChecks,
   Loader2,
+  Wand2,
+  Check,
+  X,
 } from "lucide-react";
 import UnderlineExtension from "@tiptap/extension-underline";
 import Highlight from "@tiptap/extension-highlight";
@@ -76,6 +79,16 @@ import css from "highlight.js/lib/languages/css";
 import html from "highlight.js/lib/languages/xml"; // HTML is registered as xml
 import python from "highlight.js/lib/languages/python";
 import bash from "highlight.js/lib/languages/bash";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
 
 // Create the lowlight instance
 const lowlightInstance = createLowlight();
@@ -142,534 +155,262 @@ const MenuBar = ({
     return null;
   }
 
-  // Group buttons for better organization
-  const textFormattingButtons = [
-    {
-      action: () => editor.chain().focus().toggleBold().run(),
-      active: editor.isActive("bold"),
-      icon: Bold,
-      title: "Bold",
-      disabled: !editor.can().chain().focus().toggleBold().run(),
-    },
-    {
-      action: () => editor.chain().focus().toggleItalic().run(),
-      active: editor.isActive("italic"),
-      icon: Italic,
-      title: "Italic",
-      disabled: !editor.can().chain().focus().toggleItalic().run(),
-    },
-    {
-      action: () => editor.chain().focus().toggleUnderline().run(),
-      active: editor.isActive("underline"),
-      icon: Underline,
-      title: "Underline",
-      disabled: !editor.can().chain().focus().toggleUnderline().run(),
-    },
-    {
-      action: () => editor.chain().focus().toggleStrike().run(),
-      active: editor.isActive("strike"),
-      icon: Strikethrough,
-      title: "Strikethrough",
-      disabled: !editor.can().chain().focus().toggleStrike().run(),
-    },
-    {
-      action: () => editor.chain().focus().toggleCode().run(),
-      active: editor.isActive("code"),
-      icon: Code,
-      title: "Inline Code",
-      disabled: !editor.can().chain().focus().toggleCode().run(),
-    },
-    {
-      action: () => editor.chain().focus().toggleHighlight().run(),
-      active: editor.isActive("highlight"),
-      icon: Highlighter,
-      title: "Highlight",
-      disabled: !editor.can().chain().focus().toggleHighlight().run(),
-    },
-  ];
-
-  const headingButtons = [
-    {
-      action: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
-      active: editor.isActive("heading", { level: 1 }),
-      icon: Heading1,
-      title: "Heading 1",
-      disabled: !editor.can().chain().focus().toggleHeading({ level: 1 }).run(),
-    },
-    {
-      action: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
-      active: editor.isActive("heading", { level: 2 }),
-      icon: Heading2,
-      title: "Heading 2",
-      disabled: !editor.can().chain().focus().toggleHeading({ level: 2 }).run(),
-    },
-    {
-      action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
-      active: editor.isActive("heading", { level: 3 }),
-      icon: Heading3,
-      title: "Heading 3",
-      disabled: !editor.can().chain().focus().toggleHeading({ level: 3 }).run(),
-    },
-  ];
-
-  const listButtons = [
-    {
-      action: () => editor.chain().focus().toggleBulletList().run(),
-      active: editor.isActive("bulletList"),
-      icon: List,
-      title: "Bullet List",
-      disabled: !editor.can().chain().focus().toggleBulletList().run(),
-    },
-    {
-      action: () => editor.chain().focus().toggleOrderedList().run(),
-      active: editor.isActive("orderedList"),
-      icon: ListOrdered,
-      title: "Ordered List",
-      disabled: !editor.can().chain().focus().toggleOrderedList().run(),
-    },
-    {
-      action: () => editor.chain().focus().toggleTaskList().run(),
-      active: editor.isActive("taskList"),
-      icon: ListTodo,
-      title: "Task List",
-      disabled: !editor.can().chain().focus().toggleTaskList().run(),
-    },
-  ];
-
-  const alignmentButtons = [
-    {
-      action: () => editor.chain().focus().setTextAlign("left").run(),
-      active: editor.isActive({ textAlign: "left" }),
-      icon: AlignLeft,
-      title: "Align Left",
-      disabled: !editor.can().chain().focus().setTextAlign("left").run(),
-    },
-    {
-      action: () => editor.chain().focus().setTextAlign("center").run(),
-      active: editor.isActive({ textAlign: "center" }),
-      icon: AlignCenter,
-      title: "Align Center",
-      disabled: !editor.can().chain().focus().setTextAlign("center").run(),
-    },
-    {
-      action: () => editor.chain().focus().setTextAlign("right").run(),
-      active: editor.isActive({ textAlign: "right" }),
-      icon: AlignRight,
-      title: "Align Right",
-      disabled: !editor.can().chain().focus().setTextAlign("right").run(),
-    },
-    {
-      action: () => editor.chain().focus().setTextAlign("justify").run(),
-      active: editor.isActive({ textAlign: "justify" }),
-      icon: AlignJustify,
-      title: "Justify",
-      disabled: !editor.can().chain().focus().setTextAlign("justify").run(),
-    },
-  ];
-
-  const blockButtons = [
-    {
-      action: () => editor.chain().focus().toggleBlockquote().run(),
-      active: editor.isActive("blockquote"),
-      icon: Quote,
-      title: "Blockquote",
-      disabled: !editor.can().chain().focus().toggleBlockquote().run(),
-    },
-    {
-      action: () => editor.chain().focus().toggleCodeBlock().run(),
-      active: editor.isActive("codeBlock"),
-      icon: Code2,
-      title: "Code Block",
-      disabled: !editor.can().chain().focus().toggleCodeBlock().run(),
-    },
-    {
-      action: () => editor.chain().focus().setHorizontalRule().run(),
-      active: false,
-      icon: Minus,
-      title: "Horizontal Rule",
-      disabled: !editor.can().chain().focus().setHorizontalRule().run(),
-    },
-  ];
-
-  const linkImageButtons = [
-    {
-      action: () => {
-        const url = window.prompt("Enter the URL");
-        if (url) {
-          editor.chain().focus().setLink({ href: url }).run();
-        }
-      },
-      active: editor.isActive("link"),
-      icon: LinkIcon,
-      title: "Insert Link",
-      disabled: !editor.can().chain().focus().setLink({ href: "" }).run(),
-    },
-    {
-      action: () => {
-        const url = window.prompt("Enter the image URL");
-        if (url) {
-          editor.chain().focus().setImage({ src: url }).run();
-        }
-      },
-      active: false,
-      icon: ImageIcon,
-      title: "Insert Image",
-      disabled: !editor.can().chain().focus().setImage({ src: "" }).run(),
-    },
-  ];
-
-  const tableButtons = [
-    {
-      action: () =>
-        editor
-          .chain()
-          .focus()
-          .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
-          .run(),
-      active: false,
-      icon: TableIcon,
-      title: "Insert Table",
-      disabled: !editor.can().chain().focus().insertTable().run(),
-    },
-    {
-      action: () => editor.chain().focus().addColumnBefore().run(),
-      active: false,
-      icon: MoreHorizontal,
-      title: "Add Column Before",
-      disabled: !editor.can().chain().focus().addColumnBefore().run(),
-    },
-    {
-      action: () => editor.chain().focus().addColumnAfter().run(),
-      active: false,
-      icon: MoreHorizontal,
-      title: "Add Column After",
-      disabled: !editor.can().chain().focus().addColumnAfter().run(),
-    },
-    {
-      action: () => editor.chain().focus().deleteColumn().run(),
-      active: false,
-      icon: Minus,
-      title: "Delete Column",
-      disabled: !editor.can().chain().focus().deleteColumn().run(),
-    },
-    {
-      action: () => editor.chain().focus().addRowBefore().run(),
-      active: false,
-      icon: Type,
-      title: "Add Row Before",
-      disabled: !editor.can().chain().focus().addRowBefore().run(),
-    },
-    {
-      action: () => editor.chain().focus().addRowAfter().run(),
-      active: false,
-      icon: Type,
-      title: "Add Row After",
-      disabled: !editor.can().chain().focus().addRowAfter().run(),
-    },
-    {
-      action: () => editor.chain().focus().deleteRow().run(),
-      active: false,
-      icon: Minus,
-      title: "Delete Row",
-      disabled: !editor.can().chain().focus().deleteRow().run(),
-    },
-  ];
-
-  const utilityButtons = [
-    {
-      action: () => editor.chain().focus().undo().run(),
-      active: false,
-      icon: Undo,
-      title: "Undo",
-      disabled: !editor.can().chain().focus().undo().run(),
-    },
-    {
-      action: () => editor.chain().focus().redo().run(),
-      active: false,
-      icon: Redo,
-      title: "Redo",
-      disabled: !editor.can().chain().focus().redo().run(),
-    },
-    {
-      action: () => editor.chain().focus().unsetAllMarks().run(),
-      active: false,
-      icon: RemoveFormatting,
-      title: "Clear Formatting",
-      disabled: !editor.can().chain().focus().unsetAllMarks().run(),
-    },
-  ];
-
-  // Color Picker Component
-  const ColorPickerButton = ({ editor }) => {
-    const [showPicker, setShowPicker] = useState(false);
-    const colors = [
-      "#9CA3AF", // Gray
-      "#EF4444", // Red
-      "#F59E0B", // Amber
-      "#10B981", // Green
-      "#3B82F6", // Blue
-      "#8B5CF6", // Violet
-      "#EC4899", // Pink
-      "#000000", // Black
-    ];
-
-    const handleColorClick = (color) => {
-      editor.chain().focus().setColor(color).run();
-      setShowPicker(false);
-    };
-
-    return (
-      <div className="relative">
-        <button
-          type="button"
-          onClick={() => setShowPicker(!showPicker)}
-          className={`p-2 rounded-lg transition-all duration-200 ${
-            editor.isActive("textStyle", { color: "#9CA3AF" }) ||
-            editor.isActive("textStyle", { color: "#EF4444" }) ||
-            editor.isActive("textStyle", { color: "#F59E0B" }) ||
-            editor.isActive("textStyle", { color: "#10B981" }) ||
-            editor.isActive("textStyle", { color: "#3B82F6" }) ||
-            editor.isActive("textStyle", { color: "#8B5CF6" }) ||
-            editor.isActive("textStyle", { color: "#EC4899" }) ||
-            editor.isActive("textStyle", { color: "#000000" })
-              ? "bg-blue-600 text-white"
-              : "bg-gray-700 hover:bg-gray-600 text-gray-200"
-          } disabled:opacity-50 flex items-center justify-center`}
-          title="Text Color"
-        >
-          <Palette className="w-4 h-4" />
-        </button>
-        {showPicker && (
-          <div className="absolute z-20 top-full mt-2 p-3 bg-gray-800 border border-gray-700 rounded-lg shadow-xl flex flex-wrap gap-2 w-48">
-            {colors.map((color) => (
-              <button
-                key={color}
-                type="button"
-                onClick={() => handleColorClick(color)}
-                className="w-6 h-6 rounded-full border-2 border-gray-600 hover:scale-110 transition-transform"
-                style={{ backgroundColor: color }}
-                title={`Set color to ${color}`}
-              />
-            ))}
-            <button
-              key="unset"
-              type="button"
-              onClick={() => {
-                editor.chain().focus().unsetColor().run();
-                setShowPicker(false);
-              }}
-              className="w-6 h-6 rounded-full border-2 border-gray-600 bg-white text-black flex items-center justify-center text-xs hover:scale-110 transition-transform"
-              title="Remove Color"
-            >
-              ✕
-            </button>
-          </div>
-        )}
-      </div>
-    );
+  const setLink = () => {
+    const previousUrl = editor.getAttributes("link").href;
+    if (previousUrl) {
+      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      return;
+    }
+    const url = window.prompt("URL");
+    if (url === null) return;
+    if (url === "") {
+      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      return;
+    }
+    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   };
 
-  const HighlightPickerButton = ({ editor }) => {
-    const [showPicker, setShowPicker] = useState(false);
-    const colors = [
-      "#fff59d",
-      "#ffcc80",
-      "#80cbc4",
-      "#a5d6a7",
-      "#90caf9",
-      "#f48fb1",
-    ];
-    const handleColorClick = (color) => {
-      editor.chain().focus().setHighlight({ color }).run();
-      setShowPicker(false);
-    };
-    const clear = () => {
-      editor.chain().focus().unsetHighlight().run();
-      setShowPicker(false);
-    };
-    return (
-      <div className="relative">
-        <button
-          type="button"
-          onClick={() => setShowPicker(!showPicker)}
-          className={`p-2 rounded-lg border border-border bg-muted hover:bg-muted/80 text-foreground`}
+  const addImage = () => {
+    const url = window.prompt("Image URL");
+    if (url) {
+      editor.chain().focus().setImage({ src: url }).run();
+    }
+  };
+
+  return (
+    <div className="sticky top-0 z-20 flex flex-wrap items-center gap-1 border-b border-slate-200 bg-white/95 p-2 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+      <div className="flex items-center gap-1 border-r border-slate-200 pr-2 mr-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="h-8 gap-1 px-2 font-normal">
+              <Type className="h-4 w-4" />
+              <span className="hidden sm:inline-block">Text</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-48">
+            <DropdownMenuItem onClick={() => editor.chain().focus().setParagraph().run()}>
+              <span className="mr-2">¶</span> Paragraph
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>
+              <Heading1 className="mr-2 h-4 w-4" /> Heading 1
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>
+              <Heading2 className="mr-2 h-4 w-4" /> Heading 2
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}>
+              <Heading3 className="mr-2 h-4 w-4" /> Heading 3
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => editor.chain().focus().toggleBulletList().run()}>
+              <List className="mr-2 h-4 w-4" /> Bullet List
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().toggleOrderedList().run()}>
+              <ListOrdered className="mr-2 h-4 w-4" /> Numbered List
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().toggleTaskList().run()}>
+              <ListTodo className="mr-2 h-4 w-4" /> Task List
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().toggleBlockquote().run()}>
+              <Quote className="mr-2 h-4 w-4" /> Quote
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().toggleCodeBlock().run()}>
+              <Code2 className="mr-2 h-4 w-4" /> Code Block
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      <div className="flex items-center gap-0.5">
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn("h-8 w-8", editor.isActive("bold") && "bg-slate-100 text-slate-900")}
+          onClick={() => editor.chain().focus().toggleBold().run()}
+          title="Bold (Cmd+B)"
+        >
+          <Bold className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn("h-8 w-8", editor.isActive("italic") && "bg-slate-100 text-slate-900")}
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+          title="Italic (Cmd+I)"
+        >
+          <Italic className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn("h-8 w-8", editor.isActive("underline") && "bg-slate-100 text-slate-900")}
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
+          title="Underline (Cmd+U)"
+        >
+          <Underline className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn("h-8 w-8", editor.isActive("strike") && "bg-slate-100 text-slate-900")}
+          onClick={() => editor.chain().focus().toggleStrike().run()}
+          title="Strikethrough"
+        >
+          <Strikethrough className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn("h-8 w-8", editor.isActive("code") && "bg-slate-100 text-slate-900")}
+          onClick={() => editor.chain().focus().toggleCode().run()}
+          title="Inline Code"
+        >
+          <Code className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn("h-8 w-8", editor.isActive("highlight") && "bg-slate-100 text-slate-900")}
+          onClick={() => editor.chain().focus().toggleHighlight().run()}
           title="Highlight"
         >
-          <Highlighter className="w-4 h-4" />
-        </button>
-        {showPicker && (
-          <div className="absolute z-20 top-full mt-2 p-3 bg-card border border-border rounded-lg shadow-xl flex flex-wrap gap-2 w-48">
-            {colors.map((color) => (
-              <button
-                key={color}
-                type="button"
-                onClick={() => handleColorClick(color)}
-                className="w-6 h-6 rounded border border-border hover:scale-110 transition-transform"
-                style={{ backgroundColor: color }}
-                title={`Highlight ${color}`}
-              />
-            ))}
-            <button
-              type="button"
-              onClick={clear}
-              className="px-2 py-1 text-xs rounded border border-border bg-muted hover:bg-muted/80"
-            >
-              Clear
-            </button>
-          </div>
-        )}
+          <Highlighter className="h-4 w-4" />
+        </Button>
       </div>
-    );
-  };
 
-  // Toolbar Group Component
-  const ToolbarGroup = ({ title, children }) => (
-    <div className="flex items-center">
-      <div className="flex flex-wrap gap-1 p-1 bg-card border border-border rounded-lg">
-        {children}
+      <div className="mx-2 h-6 w-px bg-slate-200" />
+
+      <div className="flex items-center gap-0.5">
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn("h-8 w-8", editor.isActive({ textAlign: "left" }) && "bg-slate-100 text-slate-900")}
+          onClick={() => editor.chain().focus().setTextAlign("left").run()}
+          title="Align Left"
+        >
+          <AlignLeft className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn("h-8 w-8", editor.isActive({ textAlign: "center" }) && "bg-slate-100 text-slate-900")}
+          onClick={() => editor.chain().focus().setTextAlign("center").run()}
+          title="Align Center"
+        >
+          <AlignCenter className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn("h-8 w-8", editor.isActive({ textAlign: "right" }) && "bg-slate-100 text-slate-900")}
+          onClick={() => editor.chain().focus().setTextAlign("right").run()}
+          title="Align Right"
+        >
+          <AlignRight className="h-4 w-4" />
+        </Button>
+      </div>
+
+      <div className="mx-2 h-6 w-px bg-slate-200" />
+
+      <div className="flex items-center gap-0.5">
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn("h-8 w-8", editor.isActive("link") && "bg-slate-100 text-slate-900")}
+          onClick={setLink}
+          title="Link"
+        >
+          <LinkIcon className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
+          onClick={addImage}
+          title="Image"
+        >
+          <ImageIcon className="h-4 w-4" />
+        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-8 w-8" title="Table">
+              <TableIcon className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>
+              Insert Table
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().addColumnAfter().run()} disabled={!editor.can().addColumnAfter()}>
+              Add Column
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().addRowAfter().run()} disabled={!editor.can().addRowAfter()}>
+              Add Row
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().deleteTable().run()} disabled={!editor.can().deleteTable()}>
+              Delete Table
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      <div className="mx-2 h-6 w-px bg-slate-200" />
+
+      <div className="flex items-center gap-0.5">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
+          onClick={() => editor.chain().focus().undo().run()}
+          disabled={!editor.can().undo()}
+          title="Undo"
+        >
+          <Undo className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
+          onClick={() => editor.chain().focus().redo().run()}
+          disabled={!editor.can().redo()}
+          title="Redo"
+        >
+          <Redo className="h-4 w-4" />
+        </Button>
+      </div>
+
+      <div className="ml-auto flex items-center gap-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 gap-2 border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:text-indigo-800"
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline-block">AI Tools</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuLabel>AI Assistance</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {aiActions.map((action) => (
+              <DropdownMenuItem
+                key={action.key}
+                onClick={() => onAiAction?.(action)}
+                disabled={isAiBusy}
+              >
+                <action.icon className="mr-2 h-4 w-4" />
+                {action.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
-
-  // Toolbar Button Component
-  const ToolbarButton = ({
-    action,
-    active,
-    icon: Icon,
-    title,
-    disabled,
-    loading = false,
-  }) => (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <button
-          type="button"
-          onClick={action}
-          disabled={disabled}
-          className={`p-2 rounded-lg border border-border transition-all duration-200 ${
-            active
-              ? "bg-blue-600 text-white shadow-inner"
-              : "bg-muted hover:bg-muted/80 text-foreground"
-          } disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center`}
-        >
-          {loading ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            <Icon className="w-4 h-4" />
-          )}
-        </button>
-      </TooltipTrigger>
-      <TooltipContent>{title}</TooltipContent>
-    </Tooltip>
-  );
-
-  return (
-    <TooltipProvider>
-      <div className="flex flex-col gap-3 p-3 bg-card rounded-lg border border-border mb-4">
-        {/* Primary Tools - Always Visible */}
-        <div className="flex flex-wrap gap-2">
-          {/* Undo/Redo */}
-          <ToolbarGroup title="History">
-            {utilityButtons.slice(0, 2).map((button, index) => (
-              <ToolbarButton key={index} {...button} />
-            ))}
-          </ToolbarGroup>
-
-          {/* Text Formatting */}
-          <ToolbarGroup title="Text Formatting">
-            {textFormattingButtons.map((button, index) => (
-              <ToolbarButton key={index} {...button} />
-            ))}
-            <ColorPickerButton editor={editor} />
-            <HighlightPickerButton editor={editor} />
-          </ToolbarGroup>
-
-          {/* Headings */}
-          <ToolbarGroup title="Headings">
-            {headingButtons.map((button, index) => (
-              <ToolbarButton key={index} {...button} />
-            ))}
-          </ToolbarGroup>
-
-          {/* Lists */}
-          <ToolbarGroup title="Lists">
-            {listButtons.map((button, index) => (
-              <ToolbarButton key={index} {...button} />
-            ))}
-          </ToolbarGroup>
-
-          {/* Alignment */}
-          <ToolbarGroup title="Alignment">
-            {alignmentButtons.map((button, index) => (
-              <ToolbarButton key={index} {...button} />
-            ))}
-          </ToolbarGroup>
-
-          {/* Links and Media */}
-          <ToolbarGroup title="Links & Media">
-            {linkImageButtons.map((button, index) => (
-              <ToolbarButton key={index} {...button} />
-            ))}
-          </ToolbarGroup>
-
-          {/* Blocks */}
-          <ToolbarGroup title="Blocks">
-            {blockButtons.map((button, index) => (
-              <ToolbarButton key={index} {...button} />
-            ))}
-          </ToolbarGroup>
-
-          {/* Tables */}
-          <ToolbarGroup title="Tables">
-            {tableButtons.slice(0, 1).map((button, index) => (
-              <ToolbarButton key={index} {...button} />
-            ))}
-          </ToolbarGroup>
-
-          {/* Clear Formatting */}
-          <ToolbarGroup title="Utilities">
-            <ToolbarButton {...utilityButtons[2]} />
-          </ToolbarGroup>
-
-          {/* AI Tools */}
-          {aiActions.length > 0 && (
-            <ToolbarGroup title="AI Tools">
-              {aiActions.map((action) => (
-                <ToolbarButton
-                  key={action.key}
-                  action={() => onAiAction?.(action)}
-                  active={activeAiAction === action.key}
-                  icon={action.icon}
-                  title={action.label}
-                  disabled={
-                    isAiBusy ||
-                    !editor ||
-                    editor.state.selection.empty
-                  }
-                  loading={activeAiAction === action.key}
-                />
-              ))}
-            </ToolbarGroup>
-          )}
-        </div>
-
-        {/* Secondary Tools - Collapsible */}
-        <div className="flex flex-wrap gap-2">
-          {/* Table Tools (when table is active) */}
-          {editor.isActive("table") && (
-            <ToolbarGroup title="Table Editing">
-              {tableButtons.slice(1).map((button, index) => (
-                <ToolbarButton key={`table-${index}`} {...button} />
-              ))}
-            </ToolbarGroup>
-          )}
-        </div>
-      </div>
-    </TooltipProvider>
-  );
 };
 
-const TipTapEditor = ({ content, onUpdate, id }) => {
+const TipTapEditor = ({ content, onUpdate, id, className }) => {
   const [isCompleting, setIsCompleting] = useState(false);
   const [activeAIActionKey, setActiveAIActionKey] = useState(null);
   const [isAiBusy, setIsAiBusy] = useState(false);
@@ -677,9 +418,7 @@ const TipTapEditor = ({ content, onUpdate, id }) => {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
-        // Disable StarterKit's code block to use CodeBlockLowlight
         codeBlock: false,
-        // Keep other StarterKit defaults or configure as needed
         heading: {
           levels: [1, 2, 3],
         },
@@ -689,15 +428,18 @@ const TipTapEditor = ({ content, onUpdate, id }) => {
       UnderlineExtension,
       Highlight.configure({ multicolor: true }),
       Link.configure({
-        openOnClick: false, // Recommended for editor UX
+        openOnClick: false,
         autolink: true,
         linkOnPaste: true,
+        HTMLAttributes: {
+          class: "text-blue-600 hover:underline cursor-pointer",
+        },
       }),
       Image.configure({
-        inline: false, // Allow images to be block elements
-        allowBase64: true, // Allow pasting base64 images (optional)
+        inline: false,
+        allowBase64: true,
         HTMLAttributes: {
-          class: "rounded-lg border border-border",
+          class: "rounded-lg border border-slate-200 my-4",
         },
       }),
       TextAlign.configure({
@@ -715,64 +457,61 @@ const TipTapEditor = ({ content, onUpdate, id }) => {
           class: "flex items-start my-2",
         },
       }),
-      // Configure CodeBlockLowlight with languages
       CodeBlockLowlight.configure({
         lowlight: lowlightInstance,
         defaultLanguage: "plaintext",
         HTMLAttributes: {
-          class: "rounded-lg border border-border bg-muted p-4 my-4",
+          class: "rounded-lg border border-slate-200 bg-slate-50 p-4 my-4 font-mono text-sm",
         },
       }),
-      // Add Table extensions
       Table.configure({
-        resizable: true, // Allow column resizing
+        resizable: true,
         HTMLAttributes: {
-          class:
-            "table-auto border-collapse border border-border rounded-lg overflow-hidden my-4",
+          class: "table-auto border-collapse border border-slate-200 rounded-lg overflow-hidden my-4 w-full",
         },
       }),
       TableRow,
       TableHeader.configure({
         HTMLAttributes: {
-          class: "bg-muted border border-border",
+          class: "bg-slate-50 border border-slate-200 p-2 font-semibold text-left",
         },
       }),
       TableCell.configure({
         HTMLAttributes: {
-          class: "border border-border px-3 py-2",
+          class: "border border-slate-200 p-2",
         },
       }),
       CharacterCount.configure({
-        // Optional: set a very high limit or expose via props later
         limit: 50000,
       }),
     ],
-    content: content || "", // Use provided content or empty string
+    content: content || "",
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
-      // console.log("Editor Updated (HTML):", html); // Debug log
       onUpdate(html);
     },
     editorProps: {
       attributes: {
         ...(id ? { id } : {}),
         class:
-          "prose max-w-none focus:outline-none min-h-[400px] p-6 border border-border rounded-b-lg bg-card text-foreground prose-headings:text-foreground prose-a:text-blue-600 prose-blockquote:text-foreground prose-code:before:content-none prose-code:after:content-none prose-code:bg-muted prose-code:px-1.5 prose-code:py-1 prose-code:rounded prose-pre:bg-muted prose-pre:p-0 prose-li:marker:text-muted-foreground prose-table:text-foreground",
+          "prose prose-slate max-w-none focus:outline-none min-h-[400px] px-8 py-6 prose-headings:font-heading prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-a:text-blue-600 prose-img:rounded-xl",
       },
     },
   });
 
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
-      editor.commands.setContent(content, false);
+      // Only update if content is significantly different to avoid cursor jumps
+      // Simple length check for now
+      if (Math.abs(editor.getHTML().length - content.length) > 10) {
+         editor.commands.setContent(content, false);
+      }
     }
   }, [content, editor]);
 
   const runAiAction = useCallback(
     async (action) => {
-      if (!editor) {
-        return;
-      }
+      if (!editor) return;
 
       const { from, to } = editor.state.selection;
 
@@ -781,9 +520,7 @@ const TipTapEditor = ({ content, onUpdate, id }) => {
         return;
       }
 
-      const selectedText = editor.state.doc
-        .textBetween(from, to, "\n")
-        .trim();
+      const selectedText = editor.state.doc.textBetween(from, to, "\n").trim();
 
       if (!selectedText) {
         toast.info("Select some text to use AI tools.");
@@ -797,14 +534,9 @@ const TipTapEditor = ({ content, onUpdate, id }) => {
       const contextRadius = 800;
       const contextStart = Math.max(0, from - contextRadius);
       const contextEnd = Math.min(docSize, to + contextRadius);
-      const surrounding = editor.state.doc.textBetween(
-        contextStart,
-        contextEnd,
-        "\n"
-      );
+      const surrounding = editor.state.doc.textBetween(contextStart, contextEnd, "\n");
 
-      const toastId = `ai-${action.key}`;
-      toast.loading(action.loadingMessage, { id: toastId });
+      const toastId = toast.loading(action.loadingMessage);
 
       try {
         const response = await fetch("/api/ai/edit-selection", {
@@ -821,26 +553,9 @@ const TipTapEditor = ({ content, onUpdate, id }) => {
 
         if (response.ok && data.success && typeof data.replacement === "string") {
           const replacement = data.replacement.trim();
-          if (!replacement) {
-            throw new Error("AI returned an empty response.");
-          }
-          const inserted =
-            editor
-              .chain()
-              .focus()
-              .insertContentAt({ from, to }, replacement)
-              .run() ||
-            editor
-              .chain()
-              .focus()
-              .deleteRange({ from, to })
-              .insertContent(replacement)
-              .run();
-
-          if (!inserted) {
-            throw new Error("Unable to insert AI generated content.");
-          }
-
+          if (!replacement) throw new Error("AI returned an empty response.");
+          
+          editor.chain().focus().deleteRange({ from, to }).insertContent(replacement).run();
           toast.success(action.successMessage, { id: toastId });
         } else {
           throw new Error(data.message || "AI request failed.");
@@ -861,19 +576,10 @@ const TipTapEditor = ({ content, onUpdate, id }) => {
 
     const { state } = editor;
     const { from } = state.selection;
-
     const docSize = state.doc.content.size;
     const contextWindow = 800;
-    const textBeforeCursor = state.doc.textBetween(
-      Math.max(0, from - contextWindow),
-      from,
-      "\n"
-    );
-    const textAfterCursor = state.doc.textBetween(
-      from,
-      Math.min(docSize, from + 200),
-      "\n"
-    );
+    const textBeforeCursor = state.doc.textBetween(Math.max(0, from - contextWindow), from, "\n");
+    const textAfterCursor = state.doc.textBetween(from, Math.min(docSize, from + 200), "\n");
 
     if (!textBeforeCursor.trim()) {
       toast.info("Not enough context before cursor for AI completion.");
@@ -894,14 +600,8 @@ const TipTapEditor = ({ content, onUpdate, id }) => {
 
       if (response.ok && data.success && data.completion) {
         const completionText = data.completion;
-        const needsLeadingSpace =
-          textBeforeCursor.length > 0 &&
-          !textBeforeCursor.endsWith(" ") &&
-          !completionText.startsWith(" ");
-
-        const contentToInsert = needsLeadingSpace
-          ? ` ${completionText}`
-          : completionText;
+        const needsLeadingSpace = textBeforeCursor.length > 0 && !textBeforeCursor.endsWith(" ") && !completionText.startsWith(" ");
+        const contentToInsert = needsLeadingSpace ? ` ${completionText}` : completionText;
 
         editor.chain().focus().insertContent(contentToInsert).run();
         toast.success("AI completion inserted!", { id: "completion-toast" });
@@ -910,16 +610,14 @@ const TipTapEditor = ({ content, onUpdate, id }) => {
       }
     } catch (error) {
       console.error("Error fetching sentence completion:", error);
-      toast.error(`AI Completion Failed: ${error.message}`, {
-        id: "completion-toast",
-      });
+      toast.error(`AI Completion Failed: ${error.message}`, { id: "completion-toast" });
     } finally {
       setIsCompleting(false);
     }
   };
 
   return (
-    <div className="bg-gray-100 border border-gray-700 rounded-lg shadow-lg">
+    <div className={cn("flex min-h-[500px] w-full flex-col rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden", className)}>
       <MenuBar
         editor={editor}
         aiActions={AI_TOOL_ACTIONS}
@@ -927,16 +625,54 @@ const TipTapEditor = ({ content, onUpdate, id }) => {
         activeAiAction={activeAIActionKey}
         isAiBusy={isAiBusy}
       />
-      <div className="relative">
+      <div className="relative flex-grow bg-white">
         {isCompleting && (
-          <div className="absolute top-4 right-4 z-10 bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-2">
-            <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
+          <div className="absolute top-4 right-4 z-10 flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1.5 text-sm font-medium text-indigo-700 shadow-sm border border-indigo-100">
+            <Loader2 className="h-3 w-3 animate-spin" />
             AI thinking...
           </div>
         )}
         <EditorContent editor={editor} />
+        {editor && (
+          <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }} className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow-lg">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => editor.chain().focus().toggleBold().run()}
+              className={cn("h-8 w-8 p-0", editor.isActive("bold") && "bg-slate-100")}
+            >
+              <Bold className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => editor.chain().focus().toggleItalic().run()}
+              className={cn("h-8 w-8 p-0", editor.isActive("italic") && "bg-slate-100")}
+            >
+              <Italic className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => editor.chain().focus().toggleStrike().run()}
+              className={cn("h-8 w-8 p-0", editor.isActive("strike") && "bg-slate-100")}
+            >
+              <Strikethrough className="h-4 w-4" />
+            </Button>
+            <div className="mx-1 h-4 w-px bg-slate-200" />
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => runAiAction(AI_TOOL_ACTIONS[0])}
+              className="h-8 gap-1 px-2 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700"
+            >
+              <Sparkles className="h-3 w-3" />
+              <span className="text-xs font-medium">Improve</span>
+            </Button>
+          </BubbleMenu>
+        )}
       </div>
-      <div className="px-6 py-3 bg-muted/50 border-t border-border rounded-b-lg text-xs text-muted-foreground flex justify-between items-center">
+      <div className="flex items-center justify-between border-t border-slate-200 bg-slate-50 px-4 py-2 text-xs text-slate-500">
         <div>
           {editor && (
             <span>
@@ -945,22 +681,19 @@ const TipTapEditor = ({ content, onUpdate, id }) => {
             </span>
           )}
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleSentenceCompletion}
-            disabled={isCompleting}
-            className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium disabled:opacity-50 transition-colors flex items-center gap-1"
-          >
-            {isCompleting ? (
-              <>
-                <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Generating...
-              </>
-            ) : (
-              "AI Complete"
-            )}
-          </button>
-        </div>
+        <Button
+          onClick={handleSentenceCompletion}
+          disabled={isCompleting}
+          size="sm"
+          className="h-7 bg-indigo-600 text-white hover:bg-indigo-700"
+        >
+          {isCompleting ? (
+            <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+          ) : (
+            <Wand2 className="mr-1 h-3 w-3" />
+          )}
+          AI Complete
+        </Button>
       </div>
     </div>
   );
