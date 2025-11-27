@@ -1,82 +1,89 @@
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "./auth/[...nextauth]"; // Adjust path if needed
-import dbConnect from "@/lib/dbConnect"; // Adjust path if needed
-import { getCommentsByPostId, createComment } from "@/lib/commentService"; // Import service functions
-import mongoose from "mongoose";
+import { authOptions } from "./auth/[...nextauth]";
+import dbConnect from "@/lib/dbConnect";
+import { getCommentsByPostId, createComment } from "@/lib/commentService";
+import {
+  ApiResponse,
+  handleApiError,
+  validateBody,
+  isValidObjectId,
+} from "@/lib/apiUtils";
 
 export default async function handler(req, res) {
   const { method } = req;
-  await dbConnect();
 
-  switch (method) {
-    case "GET":
-      // Fetch comments for a specific blog post
-      try {
+  // Validate allowed methods
+  const allowedMethods = ["GET", "POST"];
+  if (!allowedMethods.includes(method)) {
+    return ApiResponse.methodNotAllowed(res, allowedMethods);
+  }
+
+  try {
+    await dbConnect();
+  } catch (error) {
+    console.error("[Comments API] Database connection error:", error);
+    return ApiResponse.serverError(res, "Database connection failed");
+  }
+
+  try {
+    switch (method) {
+      case "GET":
         const { blogPostId } = req.query;
-        // Validation is handled within the service function now
-        const comments = await getCommentsByPostId(blogPostId);
-        res.status(200).json({ success: true, data: comments });
-      } catch (error) {
-        console.error("GET Comments API Error:", error);
-        // Handle specific errors thrown by the service
-        if (error.message.includes("Valid Blog Post ID is required")) {
-          return res
-            .status(400)
-            .json({ success: false, message: error.message });
+
+        if (!blogPostId) {
+          return ApiResponse.badRequest(res, "Blog post ID is required");
         }
-        res
-          .status(500)
-          .json({ success: false, message: "Failed to fetch comments." });
-      }
-      break;
 
-    case "POST":
-      // Create a new comment (Allow anonymous)
-      try {
-        const session = await getServerSession(req, res, authOptions); // Get session if available
-        const { blogPostId, text, authorName: anonymousName } = req.body;
+        if (!isValidObjectId(blogPostId)) {
+          return ApiResponse.badRequest(res, "Invalid blog post ID format");
+        }
 
-        // Call the service function to handle creation and validation
-        const newComment = await createComment({
-          blogPostId,
-          text,
-          sessionUser: session?.user, // Pass user object from session if exists
-          anonymousName,
+        const comments = await getCommentsByPostId(blogPostId);
+        return ApiResponse.success(res, comments, "Comments retrieved successfully");
+
+      case "POST":
+        const session = await getServerSession(req, res, authOptions);
+
+        // Validate request body
+        const validation = validateBody(req.body, {
+          blogPostId: {
+            required: true,
+            type: "string",
+            validate: (v) => isValidObjectId(v) || "Invalid blog post ID",
+          },
+          text: {
+            required: true,
+            type: "string",
+            minLength: 1,
+            maxLength: 2000,
+            sanitize: true,
+            message: "Comment text is required (max 2000 characters)",
+          },
+          authorName: {
+            required: false,
+            type: "string",
+            maxLength: 100,
+            sanitize: true,
+          },
         });
 
-        res.status(201).json({ success: true, data: newComment });
-      } catch (error) {
-        console.error("POST Comment API Error:", error);
-        // Handle specific errors thrown by the service
-        if (
-          error.message.includes("required") ||
-          error.message.includes("cannot be empty") ||
-          error.message.includes("exceeds maximum length")
-        ) {
-          return res
-            .status(400)
-            .json({ success: false, message: error.message });
+        if (!validation.isValid) {
+          return ApiResponse.badRequest(res, "Validation failed", validation.errors);
         }
-        if (error.message.includes("not found")) {
-          return res
-            .status(404)
-            .json({ success: false, message: error.message });
-        }
-        // Handle potential duplicate key error from unique email constraint if applicable later
-        if (error.code === 11000) {
-          return res
-            .status(409)
-            .json({ success: false, message: "Duplicate entry error." }); // More generic for comments
-        }
-        res
-          .status(500)
-          .json({ success: false, message: "Failed to post comment." });
-      }
-      break;
 
-    default:
-      res.setHeader("Allow", ["GET", "POST"]);
-      res.status(405).end(`Method ${method} Not Allowed`);
-      break;
+        const newComment = await createComment({
+          blogPostId: validation.data.blogPostId,
+          text: validation.data.text,
+          sessionUser: session?.user,
+          anonymousName: validation.data.authorName,
+        });
+
+        return ApiResponse.created(res, newComment, "Comment posted successfully");
+
+      default:
+        return ApiResponse.methodNotAllowed(res, allowedMethods);
+    }
+  } catch (error) {
+    return handleApiError(res, error, "Comments API");
   }
 }

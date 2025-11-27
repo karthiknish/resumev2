@@ -1,6 +1,11 @@
 import dbConnect from "@/lib/dbConnect";
 import Contact from "@/models/Contact";
-import { getSession } from "next-auth/react"; // To check for admin session
+import {
+  ApiResponse,
+  requireAdmin,
+  handleApiError,
+  isValidObjectId,
+} from "@/lib/apiUtils";
 
 export default async function handler(req, res) {
   const {
@@ -8,54 +13,71 @@ export default async function handler(req, res) {
     method,
   } = req;
 
-  // Check for admin session - IMPORTANT for security
-  const session = await getSession({ req });
-  const isAdmin =
-    session?.user?.role === "admin" ||
-    session?.user?.isAdmin === true ||
-    session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-
-  if (!isAdmin) {
-    return res.status(403).json({ success: false, message: "Forbidden" });
+  // Validate allowed methods
+  const allowedMethods = ["GET", "DELETE", "PATCH"];
+  if (!allowedMethods.includes(method)) {
+    return ApiResponse.methodNotAllowed(res, allowedMethods);
   }
 
-  await dbConnect();
+  // Validate ID format
+  if (!id || !isValidObjectId(id)) {
+    return ApiResponse.badRequest(res, "Invalid contact ID format");
+  }
 
-  switch (method) {
-    case "DELETE":
-      try {
-        const deletedContact = await Contact.deleteOne({ _id: id });
-        if (!deletedContact || deletedContact.deletedCount === 0) {
-          return res
-            .status(404)
-            .json({ success: false, message: "Contact not found" });
-        }
-        res.status(200).json({ success: true, data: {} });
-      } catch (error) {
-        console.error("API Delete Error:", error);
-        res
-          .status(400)
-          .json({ success: false, message: error.message || "Server Error" });
-      }
-      break;
+  // Check admin authorization
+  const { authorized, response } = await requireAdmin(req, res);
+  if (!authorized) return response();
 
-    /* Potential GET handler for fetching a single contact if needed later
-    case 'GET':
-      try {
-        const contact = await Contact.findById(id);
+  try {
+    await dbConnect();
+  } catch (error) {
+    console.error("[Contacts API] Database connection error:", error);
+    return ApiResponse.serverError(res, "Database connection failed");
+  }
+
+  try {
+    switch (method) {
+      case "GET":
+        const contact = await Contact.findById(id).lean();
         if (!contact) {
-          return res.status(404).json({ success: false, message: 'Contact not found' });
+          return ApiResponse.notFound(res, "Contact not found");
         }
-        res.status(200).json({ success: true, data: contact });
-      } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
-      }
-      break;
-    */
+        return ApiResponse.success(res, contact, "Contact retrieved successfully");
 
-    default:
-      res.setHeader("Allow", ["DELETE"]); // Add GET if implemented
-      res.status(405).end(`Method ${method} Not Allowed`);
-      break;
+      case "PATCH":
+        // Update contact (e.g., mark as read)
+        const updates = {};
+        if (typeof req.body.isRead === "boolean") {
+          updates.isRead = req.body.isRead;
+        }
+
+        if (Object.keys(updates).length === 0) {
+          return ApiResponse.badRequest(res, "No valid fields to update");
+        }
+
+        const updatedContact = await Contact.findByIdAndUpdate(
+          id,
+          { $set: updates },
+          { new: true, runValidators: true }
+        ).lean();
+
+        if (!updatedContact) {
+          return ApiResponse.notFound(res, "Contact not found");
+        }
+
+        return ApiResponse.success(res, updatedContact, "Contact updated successfully");
+
+      case "DELETE":
+        const deletedContact = await Contact.findByIdAndDelete(id);
+        if (!deletedContact) {
+          return ApiResponse.notFound(res, "Contact not found");
+        }
+        return ApiResponse.success(res, null, "Contact deleted successfully");
+
+      default:
+        return ApiResponse.methodNotAllowed(res, allowedMethods);
+    }
+  } catch (error) {
+    return handleApiError(res, error, `Contacts API [${method}]`);
   }
 }

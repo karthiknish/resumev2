@@ -135,7 +135,7 @@ export default function ChatHistoryTab() {
     
     // Fallback for empty or unreadable messages
     return (
-      <span className="italic text-gray-500">
+      <span className="italic text-muted-foreground">
         [Empty or unreadable message]
       </span>
     );
@@ -147,14 +147,14 @@ export default function ChatHistoryTab() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <Card className="bg-white border border-slate-200 shadow-sm rounded-2xl">
-        <CardHeader className="pb-3 border-b border-slate-200">
-          <CardTitle className="flex items-center gap-2 text-lg font-heading font-semibold text-slate-900">
-            <div className="p-2 bg-slate-100 rounded-full">
+      <Card className="bg-card border border-border shadow-sm rounded-2xl">
+        <CardHeader className="pb-3 border-b border-border">
+          <CardTitle className="flex items-center gap-2 text-lg font-heading font-semibold text-foreground">
+            <div className="p-2 bg-muted rounded-full">
               <MessageSquare className="w-4 h-4 text-primary" />
             </div>
             Chat Conversations
-            <Badge variant="outline" className="text-xs font-medium text-slate-600 border-slate-200">
+            <Badge variant="outline" className="text-xs font-medium text-muted-foreground border-border">
               {chatHistories.length} {chatHistories.length === 1 ? "conversation" : "conversations"}
             </Badge>
           </CardTitle>
@@ -163,7 +163,7 @@ export default function ChatHistoryTab() {
         {/* Search Bar */}
         <div className="mb-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
               type="text"
               placeholder="Search conversations by email or message"
@@ -184,7 +184,7 @@ export default function ChatHistoryTab() {
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
               <Sparkles className="h-4 w-4 text-primary/50 absolute -top-1.5 -right-1.5 animate-pulse" />
             </div>
-            <p className="text-sm text-slate-500 mt-3">Loading chat conversations...</p>
+            <p className="text-sm text-muted-foreground mt-3">Loading chat conversations...</p>
           </motion.div>
         )}
         {error && !isLoading && (
@@ -193,8 +193,8 @@ export default function ChatHistoryTab() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <div className="bg-red-50 border border-red-200 rounded-xl p-5">
-              <p className="text-sm font-medium text-red-600">Unable to load conversations. {error}</p>
+            <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-5">
+              <p className="text-sm font-medium text-destructive">Unable to load conversations. {error}</p>
             </div>
           </motion.div>
         )}
@@ -204,11 +204,11 @@ export default function ChatHistoryTab() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 space-y-2">
-              <p className="text-sm font-medium text-slate-600">
+            <div className="bg-muted/50 border border-border rounded-xl p-6 space-y-2">
+              <p className="text-sm font-medium text-foreground">
                 {searchTerm ? "No matching conversations" : "No conversations yet"}
               </p>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-muted-foreground">
                 {searchTerm 
                   ? `No conversations found matching "${searchTerm}". Try a different search term.` 
                   : "Chat conversations will appear here once users start chatting with the AI."}
@@ -222,7 +222,7 @@ export default function ChatHistoryTab() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, staggerChildren: 0.1 }}
           >
-            <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-sm text-slate-500">
+            <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-sm text-muted-foreground">
               <p>
                 Showing {filteredHistories.length} of {chatHistories.length} conversations
               </p>
@@ -245,24 +245,24 @@ export default function ChatHistoryTab() {
                 >
                   <AccordionItem
                     value={`item-${index}`}
-                    className="border border-slate-200 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+                    className="border border-border rounded-xl bg-card shadow-sm hover:shadow-md transition-shadow overflow-hidden"
                   >
-                    <AccordionTrigger className="hover:no-underline px-5 py-3 bg-slate-50 hover:bg-slate-100 transition-colors">
+                    <AccordionTrigger className="hover:no-underline px-5 py-3 bg-muted/50 hover:bg-muted transition-colors">
                       <div className="flex justify-between items-center w-full gap-4">
                         <div className="flex items-center gap-3">
-                          <div className="p-2 bg-white border border-slate-200 rounded-full shadow-sm">
+                          <div className="p-2 bg-card border border-border rounded-full shadow-sm">
                             <User className="w-4 h-4 text-primary" />
                           </div>
                           <div className="text-left">
-                            <p className="font-semibold text-slate-800 text-sm">
+                            <p className="font-semibold text-foreground text-sm">
                               {history.email || "Anonymous User"}
                             </p>
-                            <p className="text-xs text-slate-500">
+                            <p className="text-xs text-muted-foreground">
                               {history.messages?.length || 0} {(history.messages?.length || 0) === 1 ? "message" : "messages"}
                             </p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2 text-xs text-slate-500">
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
                           <Clock className="w-4 h-4" />
                           <span>{formatDate(history.timestamp || history.lastUpdated)}</span>
                         </div>
@@ -289,7 +289,7 @@ export default function ChatHistoryTab() {
                               }`}
                             >
                               {!isUser && (
-                                <div className="p-2 bg-slate-100 rounded-full flex-shrink-0">
+                                <div className="p-2 bg-muted rounded-full flex-shrink-0">
                                   <Bot className="w-4 h-4 text-primary" />
                                 </div>
                               )}
@@ -297,12 +297,12 @@ export default function ChatHistoryTab() {
                                 className={`max-w-[85%] px-4 py-3 rounded-2xl shadow-sm ${
                                   isUser
                                     ? "bg-primary text-white rounded-br-md"
-                                    : "bg-slate-50 border border-slate-200 text-slate-700 rounded-bl-md"
+                                    : "bg-muted/50 border border-border text-foreground rounded-bl-md"
                                 }`}
                               >
                                 {renderMessageContent(msg)}
                                 <div className={`text-xs mt-2 ${
-                                  isUser ? "text-primary/20" : "text-slate-400"
+                                  isUser ? "text-primary/20" : "text-muted-foreground"
                                 }`}>
                                   {formatDate(msg.timestamp)}
                                 </div>
@@ -318,20 +318,20 @@ export default function ChatHistoryTab() {
                       </div>
                       {/* Display metadata if available */}
                       {(history.device || history.browser || history.ip) && (
-                        <div className="mt-4 pt-3 border-t border-slate-200">
+                        <div className="mt-4 pt-3 border-t border-border">
                           <div className="flex flex-wrap gap-2">
                             {history.device && (
-                              <Badge variant="outline" className="text-xs bg-slate-50 text-slate-500 border-slate-200">
+                              <Badge variant="outline" className="text-xs bg-muted/50 text-muted-foreground border-border">
                                 📱 {history.device}
                               </Badge>
                             )}
                             {history.browser && (
-                              <Badge variant="outline" className="text-xs bg-slate-50 text-slate-500 border-slate-200">
+                              <Badge variant="outline" className="text-xs bg-muted/50 text-muted-foreground border-border">
                                 🌐 {history.browser}
                               </Badge>
                             )}
                             {history.ip && (
-                              <Badge variant="outline" className="text-xs bg-slate-50 text-slate-500 border-slate-200">
+                              <Badge variant="outline" className="text-xs bg-muted/50 text-muted-foreground border-border">
                                 🌍 {history.ip}
                               </Badge>
                             )}

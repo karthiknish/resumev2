@@ -1,17 +1,10 @@
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../auth/[...nextauth]";
 import dbConnect from "@/lib/dbConnect";
 import ApiUsage from "@/models/ApiUsage";
-
-// Helper function to check admin status
-async function isAdminUser(req, res) {
-  const session = await getServerSession(req, res, authOptions);
-  return (
-    session?.user?.role === "admin" ||
-    session?.user?.isAdmin === true ||
-    session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL
-  );
-}
+import {
+  ApiResponse,
+  requireAdmin,
+  handleApiError,
+} from "@/lib/apiUtils";
 
 // Helper function to get today's date in YYYY-MM-DD format
 function getTodayDateString() {
@@ -23,27 +16,23 @@ function getTodayDateString() {
 }
 
 export default async function handler(req, res) {
-  const session = await getServerSession(req, res, authOptions);
-  if (!session) {
-    return res
-      .status(401)
-      .json({ success: false, message: "Not authenticated" });
-  }
-  const isAdmin = await isAdminUser(req, res);
-  if (!isAdmin) {
-    return res.status(403).json({ success: false, message: "Not authorized" });
-  }
-
+  // Only allow GET method
   if (req.method !== "GET") {
-    res.setHeader("Allow", ["GET"]);
-    return res
-      .status(405)
-      .json({ success: false, message: "Method not allowed" });
+    return ApiResponse.methodNotAllowed(res, ["GET"]);
   }
 
-  await dbConnect();
+  // Check admin authorization
+  const { authorized, response } = await requireAdmin(req, res);
+  if (!authorized) return response();
 
-  const { apiName } = req.query; // Allow filtering by apiName if needed, e.g., ?apiName=gnews
+  try {
+    await dbConnect();
+  } catch (error) {
+    console.error("[API Usage] Database connection error:", error);
+    return ApiResponse.serverError(res, "Database connection failed");
+  }
+
+  const { apiName } = req.query;
   const today = getTodayDateString();
 
   try {
@@ -63,11 +52,8 @@ export default async function handler(req, res) {
       usageData = await ApiUsage.find({ date: today }).lean();
     }
 
-    res.status(200).json({ success: true, data: usageData });
+    return ApiResponse.success(res, usageData, "API usage data retrieved");
   } catch (error) {
-    console.error("Error fetching API usage:", error);
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to fetch API usage data." });
+    return handleApiError(res, error, "API Usage");
   }
 }

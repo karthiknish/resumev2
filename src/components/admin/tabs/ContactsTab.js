@@ -71,11 +71,11 @@ export default function ContactsTab() {
   };
 
   return (
-    <Card className="rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-md">
+    <Card className="rounded-2xl border border-border bg-card text-foreground shadow-md">
       <CardHeader>
-        <CardTitle className="flex items-center gap-3 text-xl font-heading font-semibold text-slate-900">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-blue-100 bg-blue-50">
-            <Mail className="h-5 w-5 text-blue-600" />
+        <CardTitle className="flex items-center gap-3 text-xl font-heading font-semibold text-foreground">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-primary/20 bg-primary/10">
+            <Mail className="h-5 w-5 text-primary" />
           </div>
           Contact Form Submissions ({contacts.length})
         </CardTitle>
@@ -83,9 +83,9 @@ export default function ContactsTab() {
       <CardContent>
         {isLoading && (
           <div className="flex items-center justify-center py-10">
-            <div className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white px-6 py-5 shadow-sm">
+            <div className="flex items-center gap-4 rounded-xl border border-border bg-card px-6 py-5 shadow-sm">
               <div className="text-3xl animate-spin">💬</div>
-              <span className="text-base font-semibold text-slate-700">
+              <span className="text-base font-semibold text-foreground">
                 Loading contacts...
               </span>
             </div>
@@ -93,23 +93,23 @@ export default function ContactsTab() {
         )}
         {error && !isLoading && (
           <div className="flex items-center justify-center py-10">
-            <div className="rounded-xl border border-red-200 bg-red-50 px-6 py-5 text-center shadow-sm">
+            <div className="rounded-xl border border-destructive/20 bg-destructive/10 px-6 py-5 text-center shadow-sm">
               <div className="mb-4 text-6xl">😕</div>
-              <h3 className="mb-2 text-xl font-heading font-semibold text-red-700">
+              <h3 className="mb-2 text-xl font-heading font-semibold text-destructive">
                 Oops! Something went wrong
               </h3>
-              <p className="font-medium text-red-600">Error: {error}</p>
+              <p className="font-medium text-destructive">Error: {error}</p>
             </div>
           </div>
         )}
         {!isLoading && !error && contacts.length === 0 && (
           <div className="flex items-center justify-center py-10">
-            <div className="rounded-xl border border-slate-200 bg-slate-50 px-6 py-5 text-center shadow-sm">
+            <div className="rounded-xl border border-border bg-muted/50 px-6 py-5 text-center shadow-sm">
               <div className="mb-4 text-6xl">📭</div>
-              <h3 className="mb-2 text-xl font-heading font-semibold text-slate-800">
+              <h3 className="mb-2 text-xl font-heading font-semibold text-foreground">
                 No Contact Submissions Yet
               </h3>
-              <p className="font-medium text-slate-600">
+              <p className="font-medium text-muted-foreground">
                 When users submit the contact form, they'll appear here!
               </p>
             </div>
@@ -119,11 +119,11 @@ export default function ContactsTab() {
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="border-b border-slate-200 bg-slate-50">
-                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Name</TableHead>
-                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Email</TableHead>
-                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Message</TableHead>
-                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Received On</TableHead>
+                <TableRow className="border-b border-border bg-muted/50">
+                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">Name</TableHead>
+                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">Email</TableHead>
+                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">Message</TableHead>
+                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">Received On</TableHead>
                   {/* <TableHead className="text-right text-gray-700 font-bold text-lg">Actions</TableHead> */}
                 </TableRow>
               </TableHeader>
@@ -131,12 +131,12 @@ export default function ContactsTab() {
                 {contacts.map((contact) => (
                   <TableRow
                     key={contact._id}
-                    className="align-top border-b border-slate-100 transition-colors duration-200 hover:bg-slate-50"
+                    className="align-top border-b border-border transition-colors duration-200 hover:bg-muted/50"
                   >
-                    <TableCell className="text-base font-semibold text-slate-900">
+                    <TableCell className="text-base font-semibold text-foreground">
                       <div className="flex items-center gap-3">
-                        <div className="rounded-lg border border-blue-100 bg-blue-50 p-1">
-                          <User className="h-4 w-4 text-blue-600" />
+                        <div className="rounded-lg border border-primary/20 bg-primary/10 p-1">
+                          <User className="h-4 w-4 text-primary" />
                         </div>
                         {contact.name}
                       </div>
@@ -144,25 +144,25 @@ export default function ContactsTab() {
                     <TableCell>
                       <a
                         href={`mailto:${contact.email}`}
-                        className="font-medium text-blue-600 transition-colors duration-200 hover:text-blue-800 hover:underline"
+                        className="font-medium text-primary transition-colors duration-200 hover:text-primary/80 hover:underline"
                       >
                         {contact.email}
                       </a>
                     </TableCell>
-                    <TableCell className="max-w-sm whitespace-pre-wrap break-words text-sm text-slate-700">
+                    <TableCell className="max-w-sm whitespace-pre-wrap break-words text-sm text-muted-foreground">
                       <div className="flex items-start gap-3">
-                        <div className="mt-1 rounded-lg border border-blue-100 bg-blue-50 p-1">
-                          <MessageCircle className="h-4 w-4 flex-shrink-0 text-blue-600" />
+                        <div className="mt-1 rounded-lg border border-primary/20 bg-primary/10 p-1">
+                          <MessageCircle className="h-4 w-4 flex-shrink-0 text-primary" />
                         </div>
-                        <span className="font-medium text-slate-700">{contact.message}</span>
+                        <span className="font-medium text-muted-foreground">{contact.message}</span>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2 text-slate-600">
-                        <div className="rounded-lg border border-blue-100 bg-blue-50 p-1">
-                          <CalendarDays className="h-4 w-4 text-blue-600" />
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <div className="rounded-lg border border-primary/20 bg-primary/10 p-1">
+                          <CalendarDays className="h-4 w-4 text-primary" />
                         </div>
-                        <span className="font-medium text-slate-600">
+                        <span className="font-medium text-muted-foreground">
                           {formatDate(contact.createdAt)}
                         </span>
                       </div>

@@ -1,116 +1,131 @@
 import dbConnect from "@/lib/dbConnect";
 import Contact from "@/models/Contact";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "./auth/[...nextauth]"; // Adjust path if needed
-
-// Helper function to check admin status
-async function isAdminUser(req, res) {
-  const session = await getServerSession(req, res, authOptions);
-  return (
-    session?.user?.role === "admin" ||
-    session?.user?.isAdmin === true ||
-    session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL
-  );
-}
+import {
+  ApiResponse,
+  requireAdmin,
+  validateBody,
+  parsePagination,
+  createPaginationMeta,
+  handleApiError,
+  isValidEmail,
+  isValidObjectId,
+} from "@/lib/apiUtils";
 
 export default async function handler(req, res) {
   const { method } = req;
-  await dbConnect();
 
-  // Admin check required for GET (listing) and potentially DELETE later
-  if (req.method === "GET" || req.method === "DELETE") {
-    const isAdmin = await isAdminUser(req, res);
-    if (!isAdmin) {
-      return res
-        .status(403)
-        .json({ success: false, message: "Forbidden: Admin access required" });
-    }
+  // Validate allowed methods early
+  const allowedMethods = ["GET", "POST"];
+  if (!allowedMethods.includes(method)) {
+    return ApiResponse.methodNotAllowed(res, allowedMethods);
   }
 
-  switch (method) {
-    case "GET":
-      try {
+  try {
+    await dbConnect();
+  } catch (error) {
+    console.error("[Contacts API] Database connection error:", error);
+    return ApiResponse.serverError(res, "Database connection failed");
+  }
+
+  // Admin check required for GET (listing)
+  if (method === "GET") {
+    const { authorized, response } = await requireAdmin(req, res);
+    if (!authorized) return response();
+  }
+
+  try {
+    switch (method) {
+      case "GET":
         // Check for countOnly query parameter
         if (req.query.countOnly === "true") {
           const filter =
-            req.query.isRead === "false" ? { isRead: { $ne: true } } : {}; // Filter for unread if requested
+            req.query.isRead === "false" ? { isRead: { $ne: true } } : {};
           const count = await Contact.countDocuments(filter);
-          return res.status(200).json({ success: true, count });
+          return ApiResponse.success(res, { count }, "Contact count retrieved");
         }
 
-        // Default: Fetch contacts, sorted by creation date descending
-        const limit = parseInt(req.query.limit, 10); // Get limit from query
-        let query = Contact.find({}).sort({ createdAt: -1 });
+        // Support pagination
+        const { page, limit, skip } = parsePagination(req.query, { page: 1, limit: 50, maxLimit: 200 });
+        
+        // Build filter
+        const filter = {};
+        if (req.query.isRead === "true") filter.isRead = true;
+        if (req.query.isRead === "false") filter.isRead = { $ne: true };
 
-        if (!isNaN(limit) && limit > 0) {
-          query = query.limit(limit); // Apply limit if valid number provided
+        // Execute query with pagination
+        const [contacts, total] = await Promise.all([
+          Contact.find(filter)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .lean(),
+          Contact.countDocuments(filter),
+        ]);
+
+        return ApiResponse.success(
+          res,
+          { contacts, pagination: createPaginationMeta(total, page, limit) },
+          "Contacts retrieved successfully"
+        );
+
+
+      case "POST":
+        // Validate request body
+        const validation = validateBody(req.body, {
+          name: {
+            required: true,
+            type: "string",
+            minLength: 2,
+            maxLength: 100,
+            sanitize: true,
+            message: "Name must be between 2 and 100 characters",
+          },
+          email: {
+            required: true,
+            type: "string",
+            email: true,
+            maxLength: 255,
+            message: "Valid email address is required",
+          },
+          message: {
+            required: true,
+            type: "string",
+            minLength: 10,
+            maxLength: 5000,
+            sanitize: true,
+            message: "Message must be between 10 and 5000 characters",
+          },
+        });
+
+        if (!validation.isValid) {
+          return ApiResponse.badRequest(
+            res,
+            "Validation failed",
+            validation.errors
+          );
         }
 
-        const contacts = await query.lean(); // Execute query
+        const { name, email, message } = validation.data;
 
-        res.status(200).json({ success: true, data: contacts });
-      } catch (error) {
-        console.error("API Contacts GET Error:", error);
-        res
-          .status(500)
-          .json({ success: false, message: "Failed to fetch contacts" });
-      }
-      break;
-
-    case "POST": // This was the original contact form submission logic
-      try {
-        const { name, email, message } = req.body;
-        if (!name || !email || !message) {
-          return res
-            .status(400)
-            .json({ success: false, message: "Missing required fields" });
-        }
-        if (!/\S+@\S+\.\S+/.test(email)) {
-          return res
-            .status(400)
-            .json({
-              success: false,
-              message: "Invalid email address provided.",
-            });
-        }
-
-        // Save contact message using the service function (assuming it exists and handles validation)
-        // If not using service, create directly:
+        // Create contact submission
         const newContact = await Contact.create({
           name,
           email,
           message,
           createdAt: new Date(),
-          isRead: false, // Default to unread
+          isRead: false,
         });
 
-        // TODO: Consider moving email sending logic here if it wasn't moved to a service
-        // For now, just save to DB
+        return ApiResponse.created(
+          res,
+          newContact,
+          "Contact submission received. We'll get back to you soon!"
+        );
 
-        res
-          .status(201)
-          .json({
-            success: true,
-            message: "Contact submission received.",
-            data: newContact,
-          });
-      } catch (error) {
-        console.error("Contact form submission error:", error);
-        res
-          .status(500)
-          .json({
-            success: false,
-            message: "Error processing contact submission",
-          });
-      }
-      break;
-
-    // Add DELETE later if needed (using req.query.id)
-    // case "DELETE": ...
-
-    default:
-      res.setHeader("Allow", ["GET", "POST"]); // Add other methods like DELETE later
-      res.status(405).end(`Method ${method} Not Allowed`);
-      break;
+      default:
+        return ApiResponse.methodNotAllowed(res, allowedMethods);
+    }
+  } catch (error) {
+    return handleApiError(res, error, "Contacts API");
   }
 }

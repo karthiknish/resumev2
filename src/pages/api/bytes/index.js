@@ -1,81 +1,63 @@
 import dbConnect from "@/lib/dbConnect";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../auth/[...nextauth]"; // Adjust path if needed
-import { getAllBytes, createByte } from "@/lib/byteService"; // Import service functions
-
-// Helper function to check admin status (can be moved to a shared util if used elsewhere)
-async function isAdminUser(req, res) {
-  const session = await getServerSession(req, res, authOptions);
-  return (
-    session?.user?.role === "admin" ||
-    session?.user?.isAdmin === true ||
-    session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL
-  );
-}
+import {
+  ApiResponse,
+  requireAdmin,
+  handleApiError,
+  parsePagination,
+  createPaginationMeta,
+} from "@/lib/apiUtils";
+import { getAllBytes, createByte } from "@/lib/byteService";
 
 export default async function handler(req, res) {
   const { method } = req;
-  await dbConnect();
+
+  // Validate allowed methods
+  const allowedMethods = ["GET", "POST"];
+  if (!allowedMethods.includes(method)) {
+    return ApiResponse.methodNotAllowed(res, allowedMethods);
+  }
+
+  try {
+    await dbConnect();
+  } catch (error) {
+    console.error("[Bytes API] Database connection error:", error);
+    return ApiResponse.serverError(res, "Database connection failed");
+  }
 
   try {
     switch (method) {
       case "GET":
-        // Fetch all bytes
         const bytes = await getAllBytes();
-        res.status(200).json({ success: true, data: bytes });
-        break;
+        return ApiResponse.success(res, bytes, "Bytes retrieved successfully");
 
       case "POST":
         // Check for admin privileges before creating
-        const isAdmin = await isAdminUser(req, res);
-        if (!isAdmin) {
-          return res.status(403).json({
-            success: false,
-            message: "Forbidden: Admin access required",
-          });
+        const { authorized, response } = await requireAdmin(req, res);
+        if (!authorized) return response();
+
+        // Log the received body data (for debugging)
+        if (process.env.NODE_ENV === "development") {
+          console.log("[API /api/bytes POST] Received body:", JSON.stringify(req.body, null, 2));
         }
 
-        // Log the received body data
-        console.log(
-          "[API /api/bytes POST] Received body:",
-          JSON.stringify(req.body, null, 2)
-        ); // Log stringified body
+        // Validate required fields
+        if (!req.body.headline || !req.body.body) {
+          return ApiResponse.badRequest(res, "Headline and body are required");
+        }
 
-        // Create a new byte using the service function (validation happens inside)
+        // Create a new byte using the service function
         const newByte = await createByte(req.body);
 
-        // Log the created byte data returned from service
-        console.log(
-          "[API /api/bytes POST] Byte created by service:",
-          JSON.stringify(newByte, null, 2)
-        ); // Log stringified result
+        if (process.env.NODE_ENV === "development") {
+          console.log("[API /api/bytes POST] Byte created:", JSON.stringify(newByte, null, 2));
+        }
 
-        res.status(201).json({ success: true, data: newByte });
-        break;
+        return ApiResponse.created(res, newByte, "Byte created successfully");
 
       default:
-        res.setHeader("Allow", ["GET", "POST"]);
-        res.status(405).end(`Method ${method} Not Allowed`);
-        break;
+        return ApiResponse.methodNotAllowed(res, allowedMethods);
     }
   } catch (error) {
-    console.error(`API Bytes ${method} Error:`, error);
-    // Handle specific errors from the service
-    if (error.message.includes("required")) {
-      return res.status(400).json({ success: false, message: error.message });
-    }
-    // Handle potential validation errors if added later in service
-    if (error.name === "ValidationError") {
-      return res
-        .status(400)
-        .json({ success: false, message: error.message, errors: error.errors });
-    }
-    // Generic error
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: `Failed to ${method === "POST" ? "create" : "fetch"} byte(s).`,
-      });
+    return handleApiError(res, error, "Bytes API");
   }
 }

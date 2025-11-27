@@ -36,7 +36,7 @@ const PomodoroTab = () => {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-heading font-semibold text-slate-900">
+      <h2 className="text-2xl font-heading font-semibold text-foreground">
         Pomodoro Productivity
       </h2>
       {/* Render the Pomodoro Timer */}
@@ -45,9 +45,9 @@ const PomodoroTab = () => {
       {/* Additional Features */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {/* Weekly Pomodoros Bar Chart */}
-        <Card className="bg-white border border-slate-200 text-slate-700 shadow-sm rounded-2xl">
+        <Card className="bg-card border border-border text-foreground shadow-sm rounded-2xl">
           <CardHeader className="pb-3">
-            <CardTitle className="text-md font-heading font-semibold text-slate-900">
+            <CardTitle className="text-md font-heading font-semibold text-foreground">
               Weekly Pomodoros
             </CardTitle>
           </CardHeader>
@@ -82,35 +82,35 @@ const PomodoroTab = () => {
         </Card>
 
         {/* Work Mode Toggle */}
-        <Card className="bg-white border border-slate-200 text-slate-700 shadow-sm rounded-2xl">
+        <Card className="bg-card border border-border text-foreground shadow-sm rounded-2xl">
           <CardHeader className="pb-3">
-            <CardTitle className="text-md font-heading font-semibold text-slate-900">
+            <CardTitle className="text-md font-heading font-semibold text-foreground">
               Work Mode
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-500 capitalize">
+              <span className="text-sm text-muted-foreground capitalize">
                 Current: {workMode}
               </span>
               <Button
                 onClick={toggleWorkMode}
                 variant="outline"
-                className="border-slate-200 text-slate-600 hover:bg-slate-100"
+                className="border-border text-muted-foreground hover:bg-muted/50"
               >
                 Switch to {workMode === "sitting" ? "Standing" : "Sitting"}
               </Button>
             </div>
-            <p className="text-xs text-slate-500 mt-3">
+            <p className="text-xs text-muted-foreground mt-3">
               Switching between sitting and standing can reduce fatigue.
             </p>
           </CardContent>
         </Card>
 
         {/* Placeholder for Pomodoro Activity Heatmap */}
-        <Card className="bg-white border border-slate-200 text-slate-700 shadow-sm rounded-2xl">
+        <Card className="bg-card border border-border text-foreground shadow-sm rounded-2xl">
           <CardHeader className="pb-3">
-            <CardTitle className="text-md font-heading font-semibold text-slate-900">
+            <CardTitle className="text-md font-heading font-semibold text-foreground">
               Activity Heatmap
             </CardTitle>
           </CardHeader>

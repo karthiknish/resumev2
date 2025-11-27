@@ -85,9 +85,9 @@ const HackerNewsFeed = () => {
   }, [storyIds]); // Re-run when storyIds state changes
 
   return (
-    <Card className="bg-white border border-slate-200 shadow-sm rounded-2xl h-[520px] flex flex-col">
+    <Card className="bg-card border border-border shadow-sm rounded-2xl h-[520px] flex flex-col">
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center justify-between text-lg font-heading font-semibold text-slate-900">
+        <CardTitle className="flex items-center justify-between text-lg font-heading font-semibold text-foreground">
           <span>Hacker News Top Stories</span>
           {isLoading && (
             <Loader2 className="h-4 w-4 animate-spin text-primary" />
@@ -96,10 +96,10 @@ const HackerNewsFeed = () => {
       </CardHeader>
       <CardContent className="flex-grow overflow-hidden p-0">
         {error && !isLoading && (
-          <p className="text-sm text-red-500 text-center py-8 px-4">{error}</p>
+          <p className="text-sm text-destructive text-center py-8 px-4">{error}</p>
         )}
         {!isLoading && !error && stories.length === 0 && (
-          <p className="text-sm text-slate-500 text-center py-8 px-4">
+          <p className="text-sm text-muted-foreground text-center py-8 px-4">
             No stories loaded.
           </p>
         )}
@@ -109,7 +109,7 @@ const HackerNewsFeed = () => {
               {stories.map((story) => (
                 <li
                   key={story.id}
-                  className="p-4 bg-slate-50 rounded-xl border border-slate-200 hover:bg-white transition-colors"
+                  className="p-4 bg-muted/50 rounded-xl border border-border hover:bg-card transition-colors"
                 >
                   <a
                     href={
@@ -122,17 +122,17 @@ const HackerNewsFeed = () => {
                   >
                     {story.title}
                   </a>
-                  <div className="flex items-center justify-between text-xs text-slate-500">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
                     <div className="flex items-center gap-3 flex-wrap">
                       <Badge
                         variant="secondary"
-                        className="flex items-center gap-1 px-2 py-0.5 text-xs bg-slate-200 text-slate-600"
+                        className="flex items-center gap-1 px-2 py-0.5 text-xs bg-muted text-muted-foreground"
                       >
                         <Star className="h-3 w-3" /> {story.score} points
                       </Badge>
                       <Badge
                         variant="outline"
-                        className="flex items-center gap-1 px-2 py-0.5 border-slate-300 text-slate-500"
+                        className="flex items-center gap-1 px-2 py-0.5 border-border text-muted-foreground"
                       >
                         <MessageSquare className="h-3 w-3" /> {story.descendants ?? 0} comments
                       </Badge>
@@ -143,7 +143,7 @@ const HackerNewsFeed = () => {
                       variant="ghost"
                       size="sm"
                       asChild
-                      className="p-1 h-auto text-slate-500 hover:text-primary hover:bg-slate-100"
+                      className="p-1 h-auto text-muted-foreground hover:text-primary hover:bg-muted/50"
                       title="View on Hacker News"
                     >
                       <a
