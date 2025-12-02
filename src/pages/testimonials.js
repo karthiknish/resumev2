@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import { motion } from "framer-motion";
 import { FaQuoteLeft, FaStar, FaGithub } from "react-icons/fa";
-import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import Link from "next/link";
 import { FadeIn, HoverCard } from "@/components/animations/MotionComponents";
 import PageContainer from "@/components/PageContainer";

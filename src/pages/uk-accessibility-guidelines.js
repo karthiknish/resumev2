@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { Card } from "@/components/ui/card";
 import UkSeo from "@/components/UkSeo";
 import JsonLd, { createWebsiteSchema } from "@/components/JsonLd";
@@ -223,20 +222,19 @@ export default function UkAccessibilityGuidelines() {
       <JsonLd data={websiteSchema} />
       <JsonLd data={guideSchema} />
 
-      <div className="min-h-screen bg-black/95 p-8 relative">
-        <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
+      <div className="min-h-screen bg-slate-50 p-8 relative">
         <div className="max-w-6xl mx-auto space-y-8">
-          <Card className="border-none bg-black/60 backdrop-blur-sm p-6">
+          <Card className="border-none bg-white border border-slate-200 shadow-sm backdrop-blur-sm p-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="text-3xl font-bold text-white mb-6 font-calendas">
+              <h1 className="text-3xl font-bold text-slate-900 mb-6 font-calendas">
                 UK Web Accessibility Guidelines
               </h1>
 
-              <p className="text-gray-300 mb-8 font-calendas max-w-3xl">
+              <p className="text-slate-600 mb-8 font-calendas max-w-3xl">
                 A comprehensive guide to accessibility standards, regulations,
                 and best practices specifically for websites targeting UK
                 audiences. This resource helps developers ensure compliance with
@@ -245,7 +243,7 @@ export default function UkAccessibilityGuidelines() {
               </p>
 
               {/* Navigation tabs */}
-              <div className="mb-10 border-b border-gray-800">
+              <div className="mb-10 border-b border-slate-200">
                 <div className="flex flex-wrap -mb-px">
                   {[
                     { id: "overview", label: "Overview" },
@@ -259,7 +257,7 @@ export default function UkAccessibilityGuidelines() {
                       className={`inline-block py-4 px-4 text-sm font-medium ${
                         activeSection === tab.id
                           ? "text-blue-500 border-b-2 border-blue-500"
-                          : "text-gray-400 hover:text-gray-300"
+                          : "text-slate-500 hover:text-slate-700"
                       }`}
                       onClick={() => setActiveSection(tab.id)}
                     >
@@ -276,11 +274,11 @@ export default function UkAccessibilityGuidelines() {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <div className="bg-blue-900/30 rounded-lg p-6 mb-8">
-                    <h2 className="text-2xl font-bold text-white mb-4">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+                    <h2 className="text-2xl font-bold text-slate-900 mb-4">
                       Why UK-Specific Accessibility Matters
                     </h2>
-                    <p className="text-gray-300 mb-4">
+                    <p className="text-slate-600 mb-4">
                       While web accessibility is a global concern, the United
                       Kingdom has specific legal requirements, standards, and
                       cultural contexts that developers need to understand.
@@ -289,7 +287,7 @@ export default function UkAccessibilityGuidelines() {
                     <ul className="space-y-3">
                       <li className="flex items-start">
                         <FaCheck className="text-green-500 mt-1 mr-3 flex-shrink-0" />
-                        <span className="text-gray-300">
+                        <span className="text-slate-600">
                           Complying with UK-specific legislation such as the
                           Equality Act 2010 and the Public Sector Bodies
                           Accessibility Regulations 2018
@@ -297,7 +295,7 @@ export default function UkAccessibilityGuidelines() {
                       </li>
                       <li className="flex items-start">
                         <FaCheck className="text-green-500 mt-1 mr-3 flex-shrink-0" />
-                        <span className="text-gray-300">
+                        <span className="text-slate-600">
                           Understanding the unique expectations of British users
                           regarding language, formatting, and cultural
                           references
@@ -305,14 +303,14 @@ export default function UkAccessibilityGuidelines() {
                       </li>
                       <li className="flex items-start">
                         <FaCheck className="text-green-500 mt-1 mr-3 flex-shrink-0" />
-                        <span className="text-gray-300">
+                        <span className="text-slate-600">
                           Working with UK-specific organizations and resources
                           that support web accessibility
                         </span>
                       </li>
                       <li className="flex items-start">
                         <FaCheck className="text-green-500 mt-1 mr-3 flex-shrink-0" />
-                        <span className="text-gray-300">
+                        <span className="text-slate-600">
                           Following best practices from successful British
                           websites and digital services
                         </span>
@@ -321,11 +319,11 @@ export default function UkAccessibilityGuidelines() {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div className="bg-gray-900 rounded-lg p-6">
-                      <h3 className="text-xl font-bold text-white mb-3">
+                    <div className="bg-white border border-slate-200 rounded-lg p-6">
+                      <h3 className="text-xl font-bold text-slate-900 mb-3">
                         UK Legal Requirements
                       </h3>
-                      <p className="text-gray-300 mb-4">
+                      <p className="text-slate-600 mb-4">
                         The UK has specific legislation that mandates web
                         accessibility, particularly for public sector websites
                         and services provided to the public. Failure to comply
@@ -341,11 +339,11 @@ export default function UkAccessibilityGuidelines() {
                       </button>
                     </div>
 
-                    <div className="bg-gray-900 rounded-lg p-6">
-                      <h3 className="text-xl font-bold text-white mb-3">
+                    <div className="bg-white border border-slate-200 rounded-lg p-6">
+                      <h3 className="text-xl font-bold text-slate-900 mb-3">
                         UK User Expectations
                       </h3>
-                      <p className="text-gray-300 mb-4">
+                      <p className="text-slate-600 mb-4">
                         British users have specific expectations regarding
                         language, terminology, date formats, and other cultural
                         elements. Meeting these expectations improves usability
@@ -361,34 +359,34 @@ export default function UkAccessibilityGuidelines() {
                     </div>
                   </div>
 
-                  <div className="bg-gray-900 rounded-lg p-6 mb-8">
-                    <h3 className="text-xl font-bold text-white mb-3">
+                  <div className="bg-white border border-slate-200 rounded-lg p-6 mb-8">
+                    <h3 className="text-xl font-bold text-slate-900 mb-3">
                       Accessibility in the UK: Key Statistics
                     </h3>
                     <ul className="space-y-4">
-                      <li className="text-gray-300">
+                      <li className="text-slate-600">
                         <span className="font-bold text-blue-400">
                           14.6 million
                         </span>{" "}
                         people in the UK have a disability (22% of the
                         population)
                       </li>
-                      <li className="text-gray-300">
+                      <li className="text-slate-600">
                         <span className="font-bold text-blue-400">
                           4.1 million
                         </span>{" "}
                         disabled adults in the UK never use the internet
                       </li>
-                      <li className="text-gray-300">
+                      <li className="text-slate-600">
                         <span className="font-bold text-blue-400">71%</span> of
                         users with disabilities will leave a website if it's not
                         accessible
                       </li>
-                      <li className="text-gray-300">
+                      <li className="text-slate-600">
                         <span className="font-bold text-blue-400">98%</span> of
                         UK home pages have at least one WCAG 2.0 failure
                       </li>
-                      <li className="text-gray-300">
+                      <li className="text-slate-600">
                         <span className="font-bold text-blue-400">
                           £11.75 billion
                         </span>{" "}
@@ -407,7 +405,7 @@ export default function UkAccessibilityGuidelines() {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <h2 className="text-2xl font-bold text-white mb-6">
+                  <h2 className="text-2xl font-bold text-slate-900 mb-6">
                     UK Accessibility Regulations & Standards
                   </h2>
 
@@ -418,23 +416,23 @@ export default function UkAccessibilityGuidelines() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: index * 0.1 }}
-                        className="bg-gray-900 rounded-lg p-6"
+                        className="bg-white border border-slate-200 rounded-lg p-6"
                       >
-                        <h3 className="text-xl font-bold text-white mb-3">
+                        <h3 className="text-xl font-bold text-slate-900 mb-3">
                           {guideline.title}
                         </h3>
-                        <p className="text-gray-300 mb-4">
+                        <p className="text-slate-600 mb-4">
                           {guideline.description}
                         </p>
 
-                        <h4 className="text-lg font-semibold text-white mb-3">
+                        <h4 className="text-lg font-semibold text-slate-900 mb-3">
                           Key Requirements:
                         </h4>
                         <ul className="space-y-2 mb-4">
                           {guideline.requirements.map((req, idx) => (
                             <li key={idx} className="flex items-start">
                               <FaCheck className="text-green-500 mt-1 mr-3 flex-shrink-0" />
-                              <span className="text-gray-300">{req}</span>
+                              <span className="text-slate-600">{req}</span>
                             </li>
                           ))}
                         </ul>
@@ -461,15 +459,15 @@ export default function UkAccessibilityGuidelines() {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <h2 className="text-2xl font-bold text-white mb-6">
+                  <h2 className="text-2xl font-bold text-slate-900 mb-6">
                     UK Accessibility Best Practices
                   </h2>
 
-                  <div className="bg-blue-900/30 rounded-lg p-6 mb-8">
-                    <h3 className="text-xl font-bold text-white mb-3">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+                    <h3 className="text-xl font-bold text-slate-900 mb-3">
                       UK-Specific Considerations
                     </h3>
-                    <p className="text-gray-300 mb-4">
+                    <p className="text-slate-600 mb-4">
                       Beyond general accessibility guidelines, these UK-specific
                       best practices will help make your site more accessible
                       and user-friendly for British users:
@@ -483,60 +481,60 @@ export default function UkAccessibilityGuidelines() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: index * 0.1 }}
-                        className="bg-gray-900 rounded-lg p-6"
+                        className="bg-white border border-slate-200 rounded-lg p-6"
                       >
-                        <h3 className="text-xl font-bold text-white mb-3">
+                        <h3 className="text-xl font-bold text-slate-900 mb-3">
                           {practice.title}
                         </h3>
-                        <p className="text-gray-300 mb-3">
+                        <p className="text-slate-600 mb-3">
                           {practice.description}
                         </p>
-                        <div className="bg-gray-800 p-3 rounded">
-                          <p className="text-gray-400 text-sm mb-1">Example:</p>
-                          <p className="text-gray-300">{practice.example}</p>
+                        <div className="bg-slate-100 p-3 rounded">
+                          <p className="text-slate-500 text-sm mb-1">Example:</p>
+                          <p className="text-slate-600">{practice.example}</p>
                         </div>
                       </motion.div>
                     ))}
                   </div>
 
-                  <div className="bg-gray-900 rounded-lg p-6">
-                    <h3 className="text-xl font-bold text-white mb-4">
+                  <div className="bg-white border border-slate-200 rounded-lg p-6">
+                    <h3 className="text-xl font-bold text-slate-900 mb-4">
                       UK Accessibility Statement Requirements
                     </h3>
-                    <p className="text-gray-300 mb-4">
+                    <p className="text-slate-600 mb-4">
                       UK websites, especially public sector sites, must include
                       an accessibility statement that includes:
                     </p>
                     <ul className="space-y-3 mb-6">
                       <li className="flex items-start">
                         <FaCheck className="text-green-500 mt-1 mr-3 flex-shrink-0" />
-                        <span className="text-gray-300">
+                        <span className="text-slate-600">
                           Statement of commitment to providing an accessible
                           website
                         </span>
                       </li>
                       <li className="flex items-start">
                         <FaCheck className="text-green-500 mt-1 mr-3 flex-shrink-0" />
-                        <span className="text-gray-300">
+                        <span className="text-slate-600">
                           Detailed information about the site's accessibility
                           level
                         </span>
                       </li>
                       <li className="flex items-start">
                         <FaCheck className="text-green-500 mt-1 mr-3 flex-shrink-0" />
-                        <span className="text-gray-300">
+                        <span className="text-slate-600">
                           Known accessibility issues with explanations
                         </span>
                       </li>
                       <li className="flex items-start">
                         <FaCheck className="text-green-500 mt-1 mr-3 flex-shrink-0" />
-                        <span className="text-gray-300">
+                        <span className="text-slate-600">
                           Methods for users to report accessibility problems
                         </span>
                       </li>
                       <li className="flex items-start">
                         <FaCheck className="text-green-500 mt-1 mr-3 flex-shrink-0" />
-                        <span className="text-gray-300">
+                        <span className="text-slate-600">
                           Enforcement procedure information
                         </span>
                       </li>
@@ -561,11 +559,11 @@ export default function UkAccessibilityGuidelines() {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <h2 className="text-2xl font-bold text-white mb-6">
+                  <h2 className="text-2xl font-bold text-slate-900 mb-6">
                     UK Accessibility Case Studies
                   </h2>
 
-                  <p className="text-gray-300 mb-8">
+                  <p className="text-slate-600 mb-8">
                     Learn from these UK organizations that have successfully
                     implemented accessibility standards and created inclusive
                     digital experiences:
@@ -578,23 +576,23 @@ export default function UkAccessibilityGuidelines() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: index * 0.1 }}
-                        className="bg-gray-900 rounded-lg p-6"
+                        className="bg-white border border-slate-200 rounded-lg p-6"
                       >
-                        <h3 className="text-xl font-bold text-white mb-3">
+                        <h3 className="text-xl font-bold text-slate-900 mb-3">
                           {study.organization}
                         </h3>
-                        <p className="text-gray-300 mb-4">
+                        <p className="text-slate-600 mb-4">
                           {study.description}
                         </p>
 
-                        <h4 className="text-lg font-semibold text-white mb-3">
+                        <h4 className="text-lg font-semibold text-slate-900 mb-3">
                           Key Achievements:
                         </h4>
                         <ul className="space-y-2 mb-4">
                           {study.achievements.map((achievement, idx) => (
                             <li key={idx} className="flex items-start">
                               <FaCheck className="text-green-500 mt-1 mr-3 flex-shrink-0" />
-                              <span className="text-gray-300">
+                              <span className="text-slate-600">
                                 {achievement}
                               </span>
                             </li>
@@ -623,7 +621,7 @@ export default function UkAccessibilityGuidelines() {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <h2 className="text-2xl font-bold text-white mb-6">
+                  <h2 className="text-2xl font-bold text-slate-900 mb-6">
                     UK Accessibility Tools & Resources
                   </h2>
 
@@ -634,12 +632,12 @@ export default function UkAccessibilityGuidelines() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: index * 0.1 }}
-                        className="bg-gray-900 rounded-lg p-6"
+                        className="bg-white border border-slate-200 rounded-lg p-6"
                       >
-                        <h3 className="text-xl font-bold text-white mb-3">
+                        <h3 className="text-xl font-bold text-slate-900 mb-3">
                           {tool.name}
                         </h3>
-                        <p className="text-gray-300 mb-4">{tool.description}</p>
+                        <p className="text-slate-600 mb-4">{tool.description}</p>
                         <a
                           href={tool.website}
                           target="_blank"
@@ -652,8 +650,8 @@ export default function UkAccessibilityGuidelines() {
                     ))}
                   </div>
 
-                  <div className="bg-blue-900/30 rounded-lg p-6 mb-8">
-                    <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+                    <h3 className="text-xl font-bold text-slate-900 mb-4 flex items-center">
                       <FaInfoCircle className="mr-2" /> Official UK Guidance
                       Documents
                     </h3>
@@ -711,11 +709,11 @@ export default function UkAccessibilityGuidelines() {
               )}
 
               {/* Call to action section */}
-              <div className="mt-12 bg-blue-900/30 rounded-lg p-8 text-center">
-                <h2 className="text-2xl font-bold text-white mb-4">
+              <div className="mt-12 bg-blue-50 border border-blue-200 rounded-lg p-8 text-center">
+                <h2 className="text-2xl font-bold text-slate-900 mb-4">
                   Need Help With UK Accessibility Compliance?
                 </h2>
-                <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
+                <p className="text-slate-600 mb-6 max-w-2xl mx-auto">
                   If you need assistance ensuring your website meets UK
                   accessibility standards or would like to share accessibility
                   resources, please get in touch.

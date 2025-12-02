@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { Card } from "@/components/ui/card";
 import UkSeo from "@/components/UkSeo";
 import JsonLd, { createWebsiteSchema } from "@/components/JsonLd";
@@ -191,20 +190,19 @@ export default function UkTechEvents() {
       <JsonLd data={websiteSchema} />
       <JsonLd data={eventsSchema} />
 
-      <div className="min-h-screen bg-black/95 p-8 relative">
-        <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
+      <div className="min-h-screen bg-slate-50 p-8 relative">
         <div className="max-w-6xl mx-auto space-y-8">
-          <Card className="border-none bg-black/60 backdrop-blur-sm p-6">
+          <Card className="border-none bg-white border border-slate-200 shadow-sm backdrop-blur-sm p-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="text-3xl font-bold text-white mb-6 font-calendas">
+              <h1 className="text-3xl font-bold text-slate-900 mb-6 font-calendas">
                 UK Tech Events Calendar 2024
               </h1>
 
-              <p className="text-gray-300 mb-8 font-calendas max-w-3xl">
+              <p className="text-slate-600 mb-8 font-calendas max-w-3xl">
                 Stay connected with the UK's vibrant tech community through this
                 curated calendar of web development conferences, meetups, and
                 workshops across Britain. From London to Edinburgh, discover
@@ -214,12 +212,12 @@ export default function UkTechEvents() {
               {/* Search and filter section */}
               <div className="mb-8">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-                  <div className="flex items-center bg-gray-900 rounded-lg px-4 py-2 w-full md:w-auto">
-                    <FaFilter className="text-gray-500 mr-2" />
+                  <div className="flex items-center bg-white border border-slate-200 rounded-lg px-4 py-2 w-full md:w-auto">
+                    <FaFilter className="text-slate-500 mr-2" />
                     <select
                       value={filter}
                       onChange={(e) => setFilter(e.target.value)}
-                      className="bg-transparent text-white focus:outline-none w-full"
+                      className="bg-transparent text-slate-900 focus:outline-none w-full"
                     >
                       <option value="all">All Events</option>
                       <option value="conference">Conferences</option>
@@ -227,9 +225,9 @@ export default function UkTechEvents() {
                     </select>
                   </div>
 
-                  <div className="flex items-center bg-gray-900 rounded-lg px-4 py-2 w-full md:w-auto">
+                  <div className="flex items-center bg-white border border-slate-200 rounded-lg px-4 py-2 w-full md:w-auto">
                     <svg
-                      className="w-4 h-4 text-gray-500 mr-2"
+                      className="w-4 h-4 text-slate-500 mr-2"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -247,7 +245,7 @@ export default function UkTechEvents() {
                       placeholder="Search events or locations..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="bg-transparent text-white focus:outline-none w-full"
+                      className="bg-transparent text-slate-900 focus:outline-none w-full"
                     />
                   </div>
                 </div>
@@ -256,7 +254,7 @@ export default function UkTechEvents() {
               {/* Featured events section */}
               {featuredEvents.length > 0 && (
                 <div className="mb-12">
-                  <h2 className="text-2xl font-bold text-white mb-6">
+                  <h2 className="text-2xl font-bold text-slate-900 mb-6">
                     Featured Events
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -266,20 +264,20 @@ export default function UkTechEvents() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: index * 0.1 }}
-                        className="bg-gray-900 rounded-lg p-6 h-full flex flex-col"
+                        className="bg-white border border-slate-200 rounded-lg p-6 h-full flex flex-col"
                       >
-                        <h3 className="text-xl font-bold text-white mb-3">
+                        <h3 className="text-xl font-bold text-slate-900 mb-3">
                           {event.title}
                         </h3>
-                        <div className="flex items-center text-gray-400 mb-2">
+                        <div className="flex items-center text-slate-500 mb-2">
                           <FaCalendarAlt className="mr-2" />
                           <span>{event.date}</span>
                         </div>
-                        <div className="flex items-center text-gray-400 mb-4">
+                        <div className="flex items-center text-slate-500 mb-4">
                           <FaMapMarkerAlt className="mr-2" />
                           <span>{event.location}</span>
                         </div>
-                        <p className="text-gray-300 mb-4 flex-grow">
+                        <p className="text-slate-600 mb-4 flex-grow">
                           {event.description}
                         </p>
                         <a
@@ -298,7 +296,7 @@ export default function UkTechEvents() {
 
               {/* All events listing */}
               <div>
-                <h2 className="text-2xl font-bold text-white mb-6">
+                <h2 className="text-2xl font-bold text-slate-900 mb-6">
                   All Events
                 </h2>
 
@@ -310,22 +308,22 @@ export default function UkTechEvents() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3, delay: index * 0.05 }}
-                        className="bg-gray-900 rounded-lg p-6"
+                        className="bg-white border border-slate-200 rounded-lg p-6"
                       >
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                           <div>
-                            <h3 className="text-xl font-bold text-white mb-2">
+                            <h3 className="text-xl font-bold text-slate-900 mb-2">
                               {event.title}
                             </h3>
-                            <div className="flex items-center text-gray-400 mb-2">
+                            <div className="flex items-center text-slate-500 mb-2">
                               <FaCalendarAlt className="mr-2" />
                               <span>{event.date}</span>
                             </div>
-                            <div className="flex items-center text-gray-400 mb-4">
+                            <div className="flex items-center text-slate-500 mb-4">
                               <FaMapMarkerAlt className="mr-2" />
                               <span>{event.location}</span>
                             </div>
-                            <p className="text-gray-300 mb-4">
+                            <p className="text-slate-600 mb-4">
                               {event.description}
                             </p>
                           </div>
@@ -344,8 +342,8 @@ export default function UkTechEvents() {
                     ))}
                   </div>
                 ) : (
-                  <div className="bg-gray-900 rounded-lg p-8 text-center">
-                    <p className="text-gray-300 mb-4">
+                  <div className="bg-white border border-slate-200 rounded-lg p-8 text-center">
+                    <p className="text-slate-600 mb-4">
                       No events found matching your search criteria.
                     </p>
                     <button
@@ -362,11 +360,11 @@ export default function UkTechEvents() {
               </div>
 
               {/* Submit event section */}
-              <div className="mt-12 bg-blue-900/30 rounded-lg p-8 text-center">
-                <h2 className="text-2xl font-bold text-white mb-4">
+              <div className="mt-12 bg-blue-50 border border-blue-200 rounded-lg p-8 text-center">
+                <h2 className="text-2xl font-bold text-slate-900 mb-4">
                   Know of an Event?
                 </h2>
-                <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
+                <p className="text-slate-600 mb-6 max-w-2xl mx-auto">
                   If you're organizing a tech event in the UK or know of one
                   that should be added to this calendar, please get in touch.
                   We're always looking to help promote the British tech

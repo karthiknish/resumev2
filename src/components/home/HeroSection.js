@@ -2,7 +2,6 @@ import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { Spotlight } from "@/components/ui/spotlight";
-import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { TextRotate } from "@/components/ui/text-rotate";
 
 // Technology icons with enhanced styling
@@ -41,8 +40,8 @@ export default function HeroSection() {
   return (
     <div ref={containerRef} className="relative min-h-screen overflow-hidden bg-background">
       {/* Animated Background */}
-      <BackgroundBeamsWithCollision className="absolute inset-0">
-        <div className="absolute inset-0 bg-white/85" />
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-blue-50/30" />
 
         {/* Dynamic Spotlight Effect */}
         <Spotlight
@@ -79,7 +78,7 @@ export default function HeroSection() {
             </motion.div>
           ))}
         </div>
-      </BackgroundBeamsWithCollision>
+      </div>
       
       {/* Main Content */}
       <motion.div 

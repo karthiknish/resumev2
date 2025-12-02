@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { Card } from "@/components/ui/card";
 import UkSeo from "@/components/UkSeo";
 import JsonLd, { createWebsiteSchema } from "@/components/JsonLd";
@@ -285,20 +284,19 @@ export default function UkWebDevGlossary() {
       <JsonLd data={websiteSchema} />
       <JsonLd data={glossarySchema} />
 
-      <div className="min-h-screen bg-black/95 p-8 relative">
-        <BackgroundBeamsWithCollision className="absolute inset-0 -z-10" />
+      <div className="min-h-screen bg-slate-50 p-8 relative">
         <div className="max-w-6xl mx-auto space-y-8">
-          <Card className="border-none bg-black/60 backdrop-blur-sm p-6">
+          <Card className="border-none bg-white border border-slate-200 shadow-sm backdrop-blur-sm p-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="text-3xl font-bold text-white mb-6 font-calendas">
+              <h1 className="text-3xl font-bold text-slate-900 mb-6 font-calendas">
                 UK Web Development Glossary
               </h1>
 
-              <p className="text-gray-300 mb-8 font-calendas max-w-3xl">
+              <p className="text-slate-600 mb-8 font-calendas max-w-3xl">
                 A comprehensive reference of web development terminology with
                 UK-specific context, regulatory information, and British
                 industry standards. This glossary is tailored for developers
@@ -306,11 +304,11 @@ export default function UkWebDevGlossary() {
               </p>
 
               {/* UK-specific terms highlight */}
-              <div className="mb-12 bg-blue-900/30 rounded-lg p-6">
-                <h2 className="text-2xl font-bold text-white mb-4">
+              <div className="mb-12 bg-blue-50 border border-blue-200 rounded-lg p-6">
+                <h2 className="text-2xl font-bold text-slate-900 mb-4">
                   UK-Specific Terms
                 </h2>
-                <p className="text-gray-300 mb-6">
+                <p className="text-slate-600 mb-6">
                   These terms have particular relevance to web development in
                   the United Kingdom, covering UK regulations, standards, and
                   practices.
@@ -322,12 +320,12 @@ export default function UkWebDevGlossary() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ duration: 0.3, delay: index * 0.05 }}
-                      className="bg-gray-800 rounded-lg p-4"
+                      className="bg-white border border-slate-200 rounded-lg p-4"
                     >
-                      <h3 className="text-lg font-bold text-white mb-2">
+                      <h3 className="text-lg font-bold text-slate-900 mb-2">
                         {term.term}
                       </h3>
-                      <p className="text-gray-300 text-sm">
+                      <p className="text-slate-600 text-sm">
                         {term.definition.substring(0, 100)}...
                       </p>
                     </motion.div>
@@ -338,9 +336,9 @@ export default function UkWebDevGlossary() {
               {/* Search and alphabet navigation */}
               <div className="mb-8">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-                  <div className="flex items-center bg-gray-900 rounded-lg px-4 py-2 w-full md:w-auto">
+                  <div className="flex items-center bg-white border border-slate-200 rounded-lg px-4 py-2 w-full md:w-auto">
                     <svg
-                      className="w-4 h-4 text-gray-500 mr-2"
+                      className="w-4 h-4 text-slate-500 mr-2"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -358,7 +356,7 @@ export default function UkWebDevGlossary() {
                       placeholder="Search terms..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="bg-transparent text-white focus:outline-none w-full"
+                      className="bg-transparent text-slate-900 focus:outline-none w-full"
                     />
                   </div>
                 </div>
@@ -372,7 +370,7 @@ export default function UkWebDevGlossary() {
                       className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${
                         activeLetter === letter
                           ? "bg-blue-600 text-white"
-                          : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                          : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-100"
                       }`}
                     >
                       {letter}
@@ -393,17 +391,17 @@ export default function UkWebDevGlossary() {
                         transition={{ duration: 0.3, delay: index * 0.05 }}
                         className={`p-6 rounded-lg ${
                           item.category === "uk-specific"
-                            ? "bg-blue-900/20 border-l-4 border-blue-500"
-                            : "bg-gray-900"
+                            ? "bg-blue-50 border border-blue-200 border-l-4 border-l-blue-500"
+                            : "bg-white border border-slate-200"
                         }`}
                       >
-                        <h2 className="text-xl font-bold text-white mb-3">
+                        <h2 className="text-xl font-bold text-slate-900 mb-3">
                           {item.term}
                         </h2>
-                        <p className="text-gray-300">{item.definition}</p>
+                        <p className="text-slate-600">{item.definition}</p>
                         {item.category === "uk-specific" && (
                           <div className="mt-3">
-                            <span className="inline-block bg-blue-900/50 text-blue-300 text-xs px-2 py-1 rounded-full">
+                            <span className="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">
                               UK-Specific
                             </span>
                           </div>
@@ -412,8 +410,8 @@ export default function UkWebDevGlossary() {
                     ))}
                   </div>
                 ) : (
-                  <div className="bg-gray-900 rounded-lg p-8 text-center">
-                    <p className="text-gray-300 mb-4">
+                  <div className="bg-white border border-slate-200 rounded-lg p-8 text-center">
+                    <p className="text-slate-600 mb-4">
                       No terms found matching your search criteria.
                     </p>
                     <button
