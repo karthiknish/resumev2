@@ -7,7 +7,7 @@ export function SkeletonLoader({ className, height }) {
       className={`animate-pulse ${className}`}
       style={{ height: height || "100%" }}
     >
-      <div className="bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 rounded-xl h-full w-full" />
+      <div className="bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-xl h-full w-full" />
     </div>
   );
 }
@@ -16,7 +16,7 @@ export function AnimatedSkeletonLoader({ className }) {
   return (
     <div className={`${className}`}>
       <motion.div
-        className="bg-gradient-to-r from-gray-200 via-primary/20 to-gray-200 dark:from-gray-700 dark:via-primary/20 dark:to-gray-700 rounded-xl h-full w-full"
+        className="bg-gradient-to-r from-gray-200 via-primary/20 to-gray-200 rounded-xl h-full w-full"
         animate={{
           backgroundPosition: ["0% center", "100% center", "0% center"],
         }}
@@ -36,11 +36,11 @@ export function AnimatedSkeletonLoader({ className }) {
 export function BackgroundBeamsLoader({ className }) {
   return (
     <div className={`relative overflow-hidden ${className}`}>
-      <div className="absolute inset-0 opacity-20 dark:opacity-10">
+      <div className="absolute inset-0 opacity-20">
         {Array.from({ length: 8 }).map((_, i) => (
           <motion.div
             key={i}
-            className="absolute bg-primary/30 dark:bg-primary/20 rounded-full"
+            className="absolute bg-primary/30 rounded-full"
             style={{
               width: `${20 + Math.random() * 30}vw`,
               height: `${2 + Math.random() * 3}px`,

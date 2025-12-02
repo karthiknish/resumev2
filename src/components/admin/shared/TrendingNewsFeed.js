@@ -84,7 +84,7 @@ export default function TrendingNewsFeed({ onNewsSelect }) {
         <CardContent className="p-6">
         {/* GNews Usage Note */}
         <div className="mb-4">
-          <Badge variant="outline" className="text-xs bg-yellow-500/10 text-yellow-700 border-yellow-500/20 dark:text-yellow-400">
+          <Badge variant="outline" className="text-xs bg-yellow-500/10 text-yellow-700 border-yellow-500/20">
             ⚡ Powered by GNews (Free tier: 100 requests/day)
           </Badge>
         </div>
