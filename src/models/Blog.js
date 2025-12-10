@@ -45,7 +45,18 @@ const BlogSchema = new mongoose.Schema(
       trim: true,
       default: "Uncategorized", // Optional: Provide a default
     },
-    // Removed audio-related fields
+    viewCount: {
+      type: Number,
+      default: 0,
+    },
+    likes: [{
+      type: String, // Can be user ID (authenticated) or session ID (anonymous)
+      trim: true,
+    }],
+    scheduledPublishAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );

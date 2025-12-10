@@ -24,6 +24,8 @@ import { checkAdminStatus } from "@/lib/authUtils";
 import dbConnect from "@/lib/dbConnect"; // <-- Import dbConnect
 import Blog from "@/models/Blog"; // <-- Import Blog model
 import { ChevronUpIcon } from "@heroicons/react/24/solid";
+import LikeButton from "@/components/LikeButton";
+import NewsletterCTA from "@/components/NewsletterCTA";
 
 function SlugPage({ data, relatedPosts }) {
   // Add relatedPosts to props destructuring
@@ -544,6 +546,18 @@ function SlugPage({ data, relatedPosts }) {
 
               {/* Render Related Posts Section */}
               <RelatedPosts posts={relatedPosts} />
+
+              {/* Like Button and View Count */}
+              <div className="mt-12 flex justify-center">
+                <LikeButton
+                  blogId={data._id}
+                  initialLikeCount={data.likes?.length || 0}
+                  initialViewCount={data.viewCount || 0}
+                />
+              </div>
+
+              {/* Newsletter CTA */}
+              <NewsletterCTA />
 
               {/* Render Comments Section with themed container */}
               <div className="mt-16">

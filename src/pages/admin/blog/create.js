@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import PageContainer from "@/components/PageContainer";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Wand2, ArrowLeft, Eye, Save, LayoutPanelLeft } from "lucide-react";
+import { Loader2, Wand2, ArrowLeft, Eye, Save, LayoutPanelLeft, Clock, Trash2 } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -24,6 +24,8 @@ import TipTapEditor from "@/components/TipTapEditor";
 import TipTapRenderer from "@/components/TipTapRenderer";
 import useDebounce from "@/hooks/useDebounce";
 import { toast } from "sonner";
+
+const DRAFT_STORAGE_KEY = "blog_draft_create";
 
 function CreateBlog() {
   const router = useRouter();
@@ -44,6 +46,72 @@ function CreateBlog() {
   const [submitStatus, setSubmitStatus] = useState([]);
   const [showPreview, setShowPreview] = useState(false);
   const [isFormatting, setIsFormatting] = useState(false);
+  const [lastSaved, setLastSaved] = useState(null);
+  const [hasDraft, setHasDraft] = useState(false);
+
+  // Debounced form data for auto-save (save after 3 seconds of no changes)
+  const debouncedFormData = useDebounce(formData, 3000);
+
+  // Restore draft from localStorage on mount
+  useEffect(() => {
+    try {
+      const savedDraft = localStorage.getItem(DRAFT_STORAGE_KEY);
+      if (savedDraft) {
+        const parsed = JSON.parse(savedDraft);
+        if (parsed.formData && (parsed.formData.title || parsed.formData.content)) {
+          setFormData(parsed.formData);
+          setLastSaved(parsed.savedAt ? new Date(parsed.savedAt) : null);
+          setHasDraft(true);
+          toast.success("Draft restored!", {
+            description: "Your previous draft has been loaded.",
+            duration: 4000,
+          });
+        }
+      }
+    } catch (e) {
+      console.error("Error restoring draft:", e);
+    }
+  }, []);
+
+  // Auto-save draft to localStorage when form changes
+  useEffect(() => {
+    // Only save if there's meaningful content
+    if (debouncedFormData.title || debouncedFormData.content) {
+      try {
+        const draftData = {
+          formData: debouncedFormData,
+          savedAt: new Date().toISOString(),
+        };
+        localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draftData));
+        setLastSaved(new Date());
+        setHasDraft(true);
+      } catch (e) {
+        console.error("Error saving draft:", e);
+      }
+    }
+  }, [debouncedFormData]);
+
+  // Clear draft from localStorage
+  const clearDraft = useCallback(() => {
+    try {
+      localStorage.removeItem(DRAFT_STORAGE_KEY);
+      setHasDraft(false);
+      setLastSaved(null);
+      setFormData({
+        title: "",
+        imageUrl: "",
+        content: "",
+        description: "",
+        excerpt: "",
+        category: "",
+        tags: [],
+        isPublished: false,
+      });
+      toast.success("Draft cleared!");
+    } catch (e) {
+      console.error("Error clearing draft:", e);
+    }
+  }, []);
 
   const getPlainText = (html) => {
     if (!html) return "";
@@ -167,6 +235,9 @@ function CreateBlog() {
       if (result.success) {
         setSubmitStatus([true, "Blog post created successfully!"]);
         toast.success("Blog post created successfully!");
+        // Clear draft from localStorage after successful creation
+        localStorage.removeItem(DRAFT_STORAGE_KEY);
+        setHasDraft(false);
         // Redirect to edit page of the new post
         const newId = result.data._id || result.data.slug;
         router.push(`/admin/blog/edit/${newId}`);
@@ -260,6 +331,22 @@ function CreateBlog() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
+                {/* Auto-save indicator */}
+                {hasDraft && lastSaved && (
+                  <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500">
+                    <Clock className="h-3 w-3" />
+                    <span>Draft saved {lastSaved.toLocaleTimeString()}</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={clearDraft}
+                      className="h-6 px-2 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    >
+                      <Trash2 className="h-3 w-3 mr-1" />
+                      Clear
+                    </Button>
+                  </div>
+                )}
                 <Sheet>
                   <SheetTrigger asChild>
                     <Button variant="outline" className="lg:hidden">
