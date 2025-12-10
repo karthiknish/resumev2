@@ -205,8 +205,8 @@ function CalendarTab() {
                                 }
                                 className={
                                   post.isPublished
-                                    ? "bg-green-100 text-green-800 hover:bg-green-100"
-                                    : "bg-yellow-100 text-yellow-800 hover:bg-yellow-100"
+                                    ? "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                                    : "border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100"
                                 }
                               >
                                 {post.isPublished ? "Published" : "Draft"}

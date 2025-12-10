@@ -67,7 +67,7 @@ export default function SubscribersTab() {
         )}
         {error && !isLoading && (
           <div className="text-center py-8">
-            <p className="text-sm font-medium text-red-500">Error: {error}</p>
+            <p className="text-sm font-medium text-destructive">Error: {error}</p>
           </div>
         )}
         {!isLoading && !error && subscribers.length === 0 && (
