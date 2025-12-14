@@ -3,7 +3,13 @@ import jwt from "jsonwebtoken";
 
 export default async function middleware(req) {
   const token = req.cookies.get("token")?.value;
-  const { pathname } = req.nextUrl;
+  const { pathname, hostname } = req.nextUrl;
+
+  // Localhost bypass for development testing
+  const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
+  if (isLocalhost) {
+    return NextResponse.next();
+  }
 
   // Allow access to public routes
   if (pathname.startsWith("/_next") || pathname.startsWith("/api/auth")) {

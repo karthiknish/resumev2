@@ -38,6 +38,22 @@ export default function Contact() {
           name="description"
           content="Get in touch with me for any inquiries, collaborations, or project discussions. Based in Liverpool, UK."
         />
+        <link rel="canonical" href="https://karthiknish.com/contact" />
+
+        {/* Open Graph */}
+        <meta property="og:title" content="Contact - Karthik Nishanth | Cross Platform Developer" />
+        <meta property="og:description" content="Get in touch for project inquiries, collaborations, or discussions about web and mobile development." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://karthiknish.com/contact" />
+        <meta property="og:image" content="https://karthiknish.com/Logo.png" />
+        <meta property="og:site_name" content="Karthik Nishanth" />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Contact - Karthik Nishanth" />
+        <meta name="twitter:description" content="Get in touch for project inquiries, collaborations, or discussions." />
+        <meta name="twitter:image" content="https://karthiknish.com/Logo.png" />
+        <meta name="twitter:site" content="@karthiknish" />
 
         {/* Google Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />

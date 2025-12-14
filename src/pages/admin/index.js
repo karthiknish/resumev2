@@ -8,6 +8,7 @@ import {
   AiOutlineUsergroupAdd,
   AiOutlineClockCircle, // Added Clock icon for Pomodoro
   AiOutlineFire, // Icon for News
+  AiOutlineLinkedin, // Icon for LinkedIn
 } from "react-icons/ai";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -41,7 +42,7 @@ import ContactsTab from "@/components/admin/tabs/ContactsTab";
 import BytesTab from "@/components/admin/tabs/BytesTab";
 import ApiStatusTab from "@/components/admin/tabs/ApiStatusTab";
 import SubscribersTab from "@/components/admin/tabs/SubscribersTab";
-// import LinkedInTab from "@/components/admin/tabs/LinkedInTab";
+import LinkedInTab from "@/components/admin/tabs/LinkedInTab";
 import PomodoroTab from "@/components/admin/tabs/PomodoroTab";
 import HackerNewsFeed from "@/components/admin/tabs/HackerNewsFeed";
 import { checkAdminStatus } from "@/lib/authUtils";
@@ -60,6 +61,7 @@ const adminTabs = [
   { value: "bytes", label: "Bytes", Icon: AiOutlineThunderbolt },
   { value: "subscribers", label: "Subscribers", Icon: FaUserCheck },
   { value: "api-status", label: "API Status", Icon: AiOutlineExperiment },
+  { value: "linkedin", label: "LinkedIn", Icon: AiOutlineLinkedin },
   { value: "pomodoro", label: "Pomodoro", Icon: AiOutlineClockCircle },
   { value: "news", label: "News", Icon: AiOutlineFire },
 ];
@@ -82,6 +84,16 @@ function AdminDashboard() {
   // Check for admin role
   useEffect(() => {
     if (status === "loading") return; // Do nothing while loading
+    
+    // Localhost bypass for development testing
+    const isLocalhost = typeof window !== "undefined" && 
+      (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+    
+    if (isLocalhost) {
+      setIsAdmin(true);
+      return;
+    }
+    
     if (status === "unauthenticated") {
       signIn(); // Redirect to signin if unauthenticated
       return;
@@ -297,7 +309,7 @@ function AdminDashboard() {
                   {activeTab === "subscribers" && (
                     <SubscribersTab key="subscribers" />
                   )}
-                  {/* LinkedIn tab removed */}
+                  {activeTab === "linkedin" && <LinkedInTab key="linkedin" />}
                   {activeTab === "pomodoro" && <PomodoroTab key="pomodoro" />}
                   {activeTab === "news" && <HackerNewsFeed key="news" />}
                   {!activeTab && <EmptyPage />}

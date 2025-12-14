@@ -132,16 +132,32 @@ function Index({ initialPosts = [], categories = [] }) {
   return (
     <>
       <Head>
-        <title>Blog - Karthik Nishanth | Full Stack Developer</title>
+        <title>Blog - Karthik Nishanth | Cross Platform Developer</title>
         <meta
           name="description"
-          content="Read the latest articles on web development, technology, and more by Karthik Nishanth."
+          content="Read the latest articles on web development, mobile apps, AI, and technology by Karthik Nishanth."
         />
         <meta
           name="keywords"
-          content="blog, web development, technology, full stack, cloud, react, nodejs, karthik, nishanth, liverpool, uk"
+          content="blog, web development, technology, cross platform, cloud, react, react native, nodejs, karthik, nishanth, liverpool, uk"
         />
         <meta name="author" content="Karthik Nishanth" />
+        <link rel="canonical" href="https://karthiknish.com/blog" />
+
+        {/* Open Graph */}
+        <meta property="og:title" content="Blog - Karthik Nishanth | Cross Platform Developer" />
+        <meta property="og:description" content="Read the latest articles on web development, mobile apps, AI, and technology by Karthik Nishanth." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://karthiknish.com/blog" />
+        <meta property="og:image" content="https://karthiknish.com/Logo.png" />
+        <meta property="og:site_name" content="Karthik Nishanth" />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Blog - Karthik Nishanth" />
+        <meta name="twitter:description" content="Read the latest articles on web development, mobile apps, AI, and technology." />
+        <meta name="twitter:image" content="https://karthiknish.com/Logo.png" />
+        <meta name="twitter:site" content="@karthiknish" />
 
         {/* Google Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />

@@ -191,10 +191,16 @@ function About() {
         <meta property="og:url" content="https://karthiknish.com/about" />
         <meta
           property="og:image"
-          content="https://karthiknish.com/images/og-image.jpg" // Consider updating OG image
+          content="https://karthiknish.com/Logo.png"
         />
         <link rel="canonical" href="https://karthiknish.com/about" />
 
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="About Me - Karthik Nishanth | Cross Platform Developer" />
+        <meta name="twitter:description" content="Cross Platform Developer specializing in modern web and mobile technologies, based in Liverpool." />
+        <meta name="twitter:image" content="https://karthiknish.com/Logo.png" />
+        <meta name="twitter:site" content="@karthiknish" />
       </Head>
       <PageContainer>
         <div className="min-h-screen overflow-x-hidden">

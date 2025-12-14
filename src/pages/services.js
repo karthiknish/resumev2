@@ -236,9 +236,16 @@ export default function Services() {
         <meta property="og:url" content="https://karthiknish.com/services" />
         <meta
           property="og:image"
-          content="https://karthiknish.com/images/og-image.jpg"
+          content="https://karthiknish.com/Logo.png"
         />
         <link rel="canonical" href="https://karthiknish.com/services" />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Services - Karthik Nishanth | Cross Platform Partner" />
+        <meta name="twitter:description" content="Explore product, engineering, and growth engagements for modern web and mobile software." />
+        <meta name="twitter:image" content="https://karthiknish.com/Logo.png" />
+        <meta name="twitter:site" content="@karthiknish" />
 
         {serviceSchemas.map((schema, index) => (
           <JsonLd key={`service-schema-${index}`} data={schema} />
