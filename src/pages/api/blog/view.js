@@ -1,4 +1,4 @@
-import { getDocument, updateDocument } from "@/lib/firebase";
+import { getDocument, updateDocument, runQuery, fieldFilter } from "@/lib/firebase";
 import { ApiResponse } from "@/lib/apiUtils";
 
 export default async function handler(req, res) {
@@ -13,15 +13,24 @@ export default async function handler(req, res) {
       return ApiResponse.badRequest(res, "Blog ID is required");
     }
 
-    // Get current blog
-    const blog = await getDocument("blogs", blogId);
+    // Try to get blog directly by ID (slug)
+    let blog = await getDocument("blogs", blogId);
+    
+    // If not found, try to find by slug field (for legacy MongoDB ObjectId references)
+    if (!blog) {
+      const results = await runQuery("blogs", [fieldFilter("slug", "EQUAL", blogId)]);
+      if (results.length > 0) {
+        blog = results[0];
+      }
+    }
+
     if (!blog) {
       return ApiResponse.notFound(res, "Blog post not found");
     }
 
     // Increment view count
     const newViewCount = (blog.viewCount || 0) + 1;
-    await updateDocument("blogs", blogId, { viewCount: newViewCount });
+    await updateDocument("blogs", blog._id, { viewCount: newViewCount });
 
     return ApiResponse.success(res, {
       viewCount: newViewCount,

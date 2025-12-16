@@ -1,10 +1,10 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "./auth/[...nextauth]";
 import {
-  getCollection,
   createDocument,
   runQuery,
   fieldFilter,
+  getCollection,
 } from "@/lib/firebase";
 import {
   ApiResponse,
@@ -29,12 +29,14 @@ export default async function handler(req, res) {
           return ApiResponse.badRequest(res, "Blog post ID is required");
         }
 
-        // Fetch comments for this blog post
-        const comments = await runQuery(
-          "comments",
-          [fieldFilter("blogPostId", "EQUAL", blogPostId)],
-          [{ field: { fieldPath: "createdAt" }, direction: "ASCENDING" }]
-        );
+        // Try fetching all comments and filter by blogPostId
+        // This handles both slug-based and MongoDB ObjectId references
+        const result = await getCollection("comments");
+        const allComments = result.documents || [];
+        
+        const comments = allComments
+          .filter(c => c.blogPostId === blogPostId)
+          .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
         return ApiResponse.success(res, comments, "Comments retrieved successfully");
 
