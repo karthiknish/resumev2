@@ -14,17 +14,27 @@ export const authOptions = {
       async authorize(credentials) {
         try {
           const emailLower = credentials.email.toLowerCase();
+          console.log("[NextAuth] Attempting login for:", emailLower);
           
           // Fetch users from Firebase
           const result = await getCollection("users");
           const users = result.documents || [];
+          console.log("[NextAuth] Found users count:", users.length);
+          console.log("[NextAuth] User emails:", users.map(u => u.email));
+          
           const user = users.find(u => u.email === emailLower);
 
           if (!user) {
+            console.log("[NextAuth] No user found with email:", emailLower);
             throw new Error("No user found with this email");
           }
 
+          console.log("[NextAuth] Found user:", user.email, "Role:", user.role);
+          console.log("[NextAuth] Password hash exists:", !!user.password);
+
           const isValid = await bcrypt.compare(credentials.password, user.password);
+          console.log("[NextAuth] Password valid:", isValid);
+          
           if (!isValid) {
             throw new Error("Invalid password");
           }
@@ -36,7 +46,7 @@ export const authOptions = {
             role: user.role,
           };
         } catch (error) {
-          console.error("Auth error:", error);
+          console.error("[NextAuth] Auth error:", error.message);
           return null;
         }
       },

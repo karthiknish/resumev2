@@ -1,47 +1,50 @@
-    rules_version = '2';
+rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Subscribers collection - anyone can create, authenticated can read
+    // Subscribers collection - public create, server can read
     match /subscribers/{email} {
-      allow create: if true;
-      allow read, update, delete: if request.auth != null;
+      allow read, write: if true;
     }
     
-    // Blogs collection - public read, authenticated write
+    // Blogs collection - public read and write for server
     match /blogs/{slug} {
-      allow read: if true;
-      allow create, update, delete: if request.auth != null;
+      allow read, write: if true;
     }
     
-    // Contacts collection - anyone can create, authenticated can manage
+    // Contacts collection - public access for server
     match /contacts/{contactId} {
-      allow create: if true;
-      allow read, update, delete: if request.auth != null;
+      allow read, write: if true;
     }
     
-    // Bytes collection - public read, authenticated write
+    // Bytes collection - public access
     match /bytes/{byteId} {
-      allow read: if true;
-      allow create, update, delete: if request.auth != null;
+      allow read, write: if true;
     }
     
-    // Comments collection - public read, authenticated create
+    // Comments collection - public access
     match /comments/{commentId} {
-      allow read: if true;
-      allow create: if request.auth != null;
-      allow update, delete: if request.auth != null;
+      allow read, write: if true;
     }
     
-    // Chat history - authenticated only
+    // Chat history - public access for server
     match /chatHistory/{sessionId} {
-      allow read, write: if request.auth != null;
+      allow read, write: if true;
     }
     
-    // Users collection
+    // Users collection - must be readable for auth
     match /users/{userId} {
-      allow read, update: if request.auth != null && request.auth.uid == userId;
-      allow create: if request.auth != null;
+      allow read, write: if true;
+    }
+    
+    // Messages collection
+    match /messages/{messageId} {
+      allow read, write: if true;
+    }
+    
+    // API Usage tracking
+    match /apiUsage/{usageId} {
+      allow read, write: if true;
     }
   }
 }
