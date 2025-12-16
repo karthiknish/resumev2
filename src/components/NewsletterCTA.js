@@ -104,10 +104,25 @@ export default function NewsletterCTA() {
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+        {/* Honeypot field - hidden from users, visible to bots */}
+        <div style={{ position: "absolute", left: "-9999px", opacity: 0 }} aria-hidden="true">
+          <label htmlFor="newsletter_hp">Leave this field empty</label>
+          <input
+            type="text"
+            id="newsletter_hp"
+            name="_honeypot"
+            value={honeypot}
+            onChange={(e) => setHoneypot(e.target.value)}
+            tabIndex={-1}
+            autoComplete="off"
+          />
+        </div>
         <div className="relative flex-1">
           <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
           <Input
             type="email"
+            id="newsletter_email"
+            name="email"
             placeholder="your@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
