@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@calcom/embed-react": "^1.5.3",
+    "@getbrevo/brevo": "3.0.1",
     "@google-cloud/text-to-speech": "5.8.1",
     "@heroicons/react": "^2.2.0",
     "@radix-ui/colors": "^3.0.0",

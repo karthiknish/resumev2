@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 export default function ContactForm() {
@@ -6,9 +6,16 @@ export default function ContactForm() {
     name: "",
     email: "",
     message: "",
+    _honeypot: "", // Hidden honeypot field
   });
+  const [formLoadTime, setFormLoadTime] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Track when the form loads for timing-based spam detection
+  useEffect(() => {
+    setFormLoadTime(Date.now());
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,7 +36,13 @@ export default function ContactForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          _honeypot: formData._honeypot,
+          _timestamp: formLoadTime,
+        }),
       });
 
       const data = await response.json();
@@ -43,6 +56,7 @@ export default function ContactForm() {
         name: "",
         email: "",
         message: "",
+        _honeypot: "",
       });
 
       // Redirect to success page using window.location
@@ -101,6 +115,29 @@ export default function ContactForm() {
         onSubmit={handleSubmit}
         className="space-y-5 sm:space-y-6 max-w-2xl mx-auto"
       >
+        {/* Honeypot field - hidden from users, visible to bots */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            left: "-9999px",
+            opacity: 0,
+            height: 0,
+            overflow: "hidden",
+          }}
+        >
+          <label htmlFor="_honeypot">Leave this field empty</label>
+          <input
+            type="text"
+            id="_honeypot"
+            name="_honeypot"
+            value={formData._honeypot}
+            onChange={handleChange}
+            tabIndex={-1}
+            autoComplete="off"
+          />
+        </div>
+
         <div className="space-y-4 sm:space-y-6">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
