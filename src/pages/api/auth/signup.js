@@ -1,5 +1,4 @@
-import dbConnect from "@/lib/dbConnect";
-import User from "@/models/User";
+import { getDocument, createDocument } from "@/lib/firebase";
 import bcrypt from "bcryptjs";
 
 export default async function handler(req, res) {
@@ -8,17 +7,17 @@ export default async function handler(req, res) {
   }
 
   try {
-    await dbConnect();
-
     const { name, email, password } = req.body;
 
-    // Validate input
     if (!name || !email || !password) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
+    const emailLower = email.toLowerCase();
+    const docId = emailLower.replace(/[^a-z0-9]/g, "_");
+
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await getDocument("users", docId);
     if (existingUser) {
       return res.status(400).json({ message: "Email already registered" });
     }
@@ -26,25 +25,23 @@ export default async function handler(req, res) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Create new user with explicit role assignment
-    const user = await User.create({
+    // Create new user
+    const user = await createDocument("users", docId, {
       name,
-      email,
+      email: emailLower,
       password: hashedPassword,
-      role: "user", // Explicitly set default role to 'user'
+      role: "user",
+      createdAt: new Date(),
     });
-
-    // Remove password from response
-    const userWithoutPassword = {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role, // Include role in response
-    };
 
     return res.status(201).json({
       message: "User created successfully",
-      user: userWithoutPassword,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
     });
   } catch (error) {
     console.error("Signup error:", error);

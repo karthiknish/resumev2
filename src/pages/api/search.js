@@ -1,15 +1,11 @@
-import dbConnect from "@/lib/dbConnect"; // Adjusted path assuming lib is at root src level
-import Blog from "@/models/Blog"; // Adjusted path
-import Byte from "@/models/Byte"; // Adjusted path
+import { getCollection } from "@/lib/firebase";
 
 export default async function handler(req, res) {
-  const { q } = req.query; // Search query parameter
+  const { q } = req.query;
 
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);
-    return res
-      .status(405)
-      .json({ success: false, message: "Method Not Allowed" });
+    return res.status(405).json({ success: false, message: "Method Not Allowed" });
   }
 
   if (!q || typeof q !== "string" || !q.trim()) {
@@ -20,50 +16,52 @@ export default async function handler(req, res) {
   }
 
   try {
-    await dbConnect();
+    const searchTerm = q.trim().toLowerCase();
 
-    const searchQuery = { $text: { $search: q.trim() } };
-    const projection = { score: { $meta: "textScore" } }; // Project the text search score
-
-    // --- Search Blogs and Bytes in Parallel ---
-    const [blogResults, byteResults] = await Promise.all([
-      Blog.find(
-        { ...searchQuery, isPublished: true }, // Only search published blogs
-        projection
-      )
-        .select("title slug createdAt description imageUrl") // Select fields needed for display
-        .sort({ score: { $meta: "textScore" } }) // Sort by relevance
-        .limit(10) // Limit results per type
-        .lean(), // Use lean for performance
-      Byte.find(searchQuery, projection)
-        .select("headline body createdAt link imageUrl") // Select fields needed for display
-        .sort({ score: { $meta: "textScore" } }) // Sort by relevance
-        .limit(10) // Limit results per type
-        .lean(),
+    // Fetch blogs and bytes
+    const [blogsResult, bytesResult] = await Promise.all([
+      getCollection("blogs"),
+      getCollection("bytes"),
     ]);
 
-    // Add type identifier
-    const typedBlogResults = blogResults.map((doc) => ({
-      ...doc,
-      type: "blog",
-    }));
-    const typedByteResults = byteResults.map((doc) => ({
-      ...doc,
-      type: "byte",
-    }));
+    const blogs = blogsResult.documents || [];
+    const bytes = bytesResult.documents || [];
 
-    // --- Combine and Sort Results ---
-    const combinedResults = [...typedBlogResults, ...typedByteResults];
+    // Filter published blogs by search term
+    const blogResults = blogs
+      .filter((blog) => {
+        if (!blog.isPublished) return false;
+        const searchable = `${blog.title || ""} ${blog.description || ""} ${blog.content || ""} ${(blog.tags || []).join(" ")}`.toLowerCase();
+        return searchable.includes(searchTerm);
+      })
+      .map((blog) => ({
+        ...blog,
+        type: "blog",
+        score: calculateScore(blog, searchTerm),
+      }))
+      .slice(0, 10);
 
-    // Sort combined results by textScore (descending)
-    combinedResults.sort((a, b) => b.score - a.score);
+    // Filter bytes by search term
+    const byteResults = bytes
+      .filter((byte) => {
+        const searchable = `${byte.headline || ""} ${byte.body || ""}`.toLowerCase();
+        return searchable.includes(searchTerm);
+      })
+      .map((byte) => ({
+        ...byte,
+        type: "byte",
+        score: calculateScore(byte, searchTerm),
+      }))
+      .slice(0, 10);
 
-    // Optional: Limit total results
-    const finalResults = combinedResults.slice(0, 15); // Limit total combined results
+    // Combine and sort by score
+    const combinedResults = [...blogResults, ...byteResults]
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 15);
 
     return res.status(200).json({
       success: true,
-      results: finalResults,
+      results: combinedResults,
     });
   } catch (error) {
     console.error("API Search Error:", error);
@@ -72,4 +70,24 @@ export default async function handler(req, res) {
       message: error.message || "Error performing search",
     });
   }
+}
+
+function calculateScore(doc, searchTerm) {
+  let score = 0;
+  const term = searchTerm.toLowerCase();
+  
+  // Title/headline match (highest weight)
+  const title = (doc.title || doc.headline || "").toLowerCase();
+  if (title.includes(term)) score += 10;
+  if (title.startsWith(term)) score += 5;
+  
+  // Description/body match
+  const desc = (doc.description || doc.body || "").toLowerCase();
+  if (desc.includes(term)) score += 3;
+  
+  // Tags match
+  const tags = (doc.tags || []).join(" ").toLowerCase();
+  if (tags.includes(term)) score += 5;
+  
+  return score;
 }

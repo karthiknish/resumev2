@@ -1,10 +1,12 @@
-import dbConnect from "@/lib/dbConnect";
-import Contact from "@/models/Contact";
+import {
+  getDocument,
+  updateDocument,
+  deleteDocument,
+} from "@/lib/firebase";
 import {
   ApiResponse,
   requireAdmin,
   handleApiError,
-  isValidObjectId,
 } from "@/lib/apiUtils";
 
 export default async function handler(req, res) {
@@ -13,15 +15,13 @@ export default async function handler(req, res) {
     method,
   } = req;
 
-  // Validate allowed methods
   const allowedMethods = ["GET", "DELETE", "PATCH"];
   if (!allowedMethods.includes(method)) {
     return ApiResponse.methodNotAllowed(res, allowedMethods);
   }
 
-  // Validate ID format
-  if (!id || !isValidObjectId(id)) {
-    return ApiResponse.badRequest(res, "Invalid contact ID format");
+  if (!id) {
+    return ApiResponse.badRequest(res, "Contact ID is required");
   }
 
   // Check admin authorization
@@ -29,23 +29,20 @@ export default async function handler(req, res) {
   if (!authorized) return response();
 
   try {
-    await dbConnect();
-  } catch (error) {
-    console.error("[Contacts API] Database connection error:", error);
-    return ApiResponse.serverError(res, "Database connection failed");
-  }
-
-  try {
     switch (method) {
       case "GET":
-        const contact = await Contact.findById(id).lean();
+        const contact = await getDocument("contacts", id);
         if (!contact) {
           return ApiResponse.notFound(res, "Contact not found");
         }
         return ApiResponse.success(res, contact, "Contact retrieved successfully");
 
       case "PATCH":
-        // Update contact (e.g., mark as read)
+        const existingContact = await getDocument("contacts", id);
+        if (!existingContact) {
+          return ApiResponse.notFound(res, "Contact not found");
+        }
+
         const updates = {};
         if (typeof req.body.isRead === "boolean") {
           updates.isRead = req.body.isRead;
@@ -55,23 +52,16 @@ export default async function handler(req, res) {
           return ApiResponse.badRequest(res, "No valid fields to update");
         }
 
-        const updatedContact = await Contact.findByIdAndUpdate(
-          id,
-          { $set: updates },
-          { new: true, runValidators: true }
-        ).lean();
-
-        if (!updatedContact) {
-          return ApiResponse.notFound(res, "Contact not found");
-        }
-
+        const updatedContact = await updateDocument("contacts", id, updates);
         return ApiResponse.success(res, updatedContact, "Contact updated successfully");
 
       case "DELETE":
-        const deletedContact = await Contact.findByIdAndDelete(id);
-        if (!deletedContact) {
+        const contactToDelete = await getDocument("contacts", id);
+        if (!contactToDelete) {
           return ApiResponse.notFound(res, "Contact not found");
         }
+
+        await deleteDocument("contacts", id);
         return ApiResponse.success(res, null, "Contact deleted successfully");
 
       default:

@@ -1,28 +1,18 @@
-import dbConnect from "@/lib/dbConnect";
-import Blog from "@/models/Blog";
+import { getDocument, updateDocument } from "@/lib/firebase";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
-import { ApiResponse, isValidObjectId } from "@/lib/apiUtils";
+import { ApiResponse } from "@/lib/apiUtils";
 
 export default async function handler(req, res) {
-  const { method } = req;
-
-  if (method !== "POST") {
+  if (req.method !== "POST") {
     return ApiResponse.methodNotAllowed(res, ["POST"]);
-  }
-
-  try {
-    await dbConnect();
-  } catch (error) {
-    console.error("[Like API] Database connection error:", error);
-    return ApiResponse.serverError(res, "Database connection failed");
   }
 
   try {
     const { blogId } = req.body;
 
-    if (!blogId || !isValidObjectId(blogId)) {
-      return ApiResponse.badRequest(res, "Valid blog ID is required");
+    if (!blogId) {
+      return ApiResponse.badRequest(res, "Blog ID is required");
     }
 
     // Get session or generate anonymous ID
@@ -32,26 +22,28 @@ export default async function handler(req, res) {
       `anon_${Date.now()}_${Math.random().toString(36).slice(2)}`;
 
     // Find the blog post
-    const blog = await Blog.findById(blogId);
+    const blog = await getDocument("blogs", blogId);
     if (!blog) {
       return ApiResponse.notFound(res, "Blog post not found");
     }
 
-    // Toggle like
-    const likeIndex = blog.likes.indexOf(identifierId);
+    // Initialize likes array if doesn't exist
+    const likes = blog.likes || [];
+    const likeIndex = likes.indexOf(identifierId);
     let action;
 
     if (likeIndex > -1) {
       // Unlike - remove from array
-      blog.likes.splice(likeIndex, 1);
+      likes.splice(likeIndex, 1);
       action = "unliked";
     } else {
       // Like - add to array
-      blog.likes.push(identifierId);
+      likes.push(identifierId);
       action = "liked";
     }
 
-    await blog.save();
+    // Update the blog
+    await updateDocument("blogs", blogId, { likes });
 
     // Set cookie for anonymous users
     if (!session?.user) {
@@ -62,7 +54,7 @@ export default async function handler(req, res) {
     }
 
     return ApiResponse.success(res, {
-      likeCount: blog.likes.length,
+      likeCount: likes.length,
       isLiked: action === "liked",
       action,
     }, `Post ${action} successfully`);

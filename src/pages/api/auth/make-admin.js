@@ -1,19 +1,14 @@
-import dbConnect from "@/lib/dbConnect";
-import User from "@/models/User";
+import { getCollection, updateDocument } from "@/lib/firebase";
 
 export default async function handler(req, res) {
-  // Only allow POST requests
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  // Check admin secret to authorize this operation
   const { email, adminSecret } = req.body;
 
   if (!adminSecret || adminSecret !== process.env.ADMIN_SECRET_KEY) {
-    return res
-      .status(401)
-      .json({ message: "Unauthorized: Invalid admin secret" });
+    return res.status(401).json({ message: "Unauthorized: Invalid admin secret" });
   }
 
   if (!email) {
@@ -21,18 +16,19 @@ export default async function handler(req, res) {
   }
 
   try {
-    await dbConnect();
-
-    // Find the user by email
-    const user = await User.findOne({ email });
+    const emailLower = email.toLowerCase();
+    
+    // Find user in Firebase
+    const result = await getCollection("users");
+    const users = result.documents || [];
+    const user = users.find(u => u.email === emailLower);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     // Update user role to admin
-    user.role = "admin";
-    await user.save();
+    await updateDocument("users", user._id, { role: "admin" });
 
     return res.status(200).json({
       message: "User role updated to admin successfully",
@@ -40,7 +36,7 @@ export default async function handler(req, res) {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role,
+        role: "admin",
       },
     });
   } catch (error) {

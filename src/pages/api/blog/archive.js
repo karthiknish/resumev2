@@ -1,5 +1,4 @@
-import dbConnect from "../../../lib/dbConnect";
-import Blog from "../../../models/Blog";
+import { runQuery, fieldFilter } from "@/lib/firebase";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -7,13 +6,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    await dbConnect();
-
     // Get all published posts
-    const posts = await Blog.find({ status: "published" })
-      .sort({ createdAt: -1 }) // Sort by newest first
-      .select("title slug excerpt content image category createdAt")
-      .lean();
+    const posts = await runQuery(
+      "blogs",
+      [fieldFilter("isPublished", "EQUAL", true)],
+      [{ field: { fieldPath: "createdAt" }, direction: "DESCENDING" }]
+    );
 
     // Organize posts by year and month
     const archiveData = {};
@@ -21,20 +19,24 @@ export default async function handler(req, res) {
     posts.forEach((post) => {
       const date = new Date(post.createdAt);
       const year = date.getFullYear();
-      const month = date.getMonth() + 1; // JavaScript months are 0-indexed
+      const month = date.getMonth() + 1;
 
-      // Initialize year if it doesn't exist
       if (!archiveData[year]) {
         archiveData[year] = {};
       }
 
-      // Initialize month if it doesn't exist
       if (!archiveData[year][month]) {
         archiveData[year][month] = [];
       }
 
-      // Add post to the appropriate year and month
-      archiveData[year][month].push(post);
+      archiveData[year][month].push({
+        title: post.title,
+        slug: post.slug,
+        description: post.description,
+        imageUrl: post.imageUrl,
+        category: post.category,
+        createdAt: post.createdAt,
+      });
     });
 
     return res.status(200).json({

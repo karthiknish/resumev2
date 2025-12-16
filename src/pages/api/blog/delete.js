@@ -1,10 +1,8 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
-import dbConnect from "@/lib/dbConnect";
-import Blog from "@/models/Blog";
+import { getDocument, deleteDocument } from "@/lib/firebase";
 
 export default async function handler(req, res) {
-  // Check for authenticated session
   const session = await getServerSession(req, res, authOptions);
   if (!session) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -15,27 +13,19 @@ export default async function handler(req, res) {
   }
 
   try {
-    await dbConnect();
-
     const { id } = req.query;
     if (!id) {
       return res.status(400).json({ message: "Blog ID is required" });
     }
 
-    // Find blog post and verify ownership
-    const blog = await Blog.findById(id);
+    // Find blog post
+    const blog = await getDocument("blogs", id);
     if (!blog) {
       return res.status(404).json({ message: "Blog post not found" });
     }
 
-    // Verify ownership or admin status
-    if (blog.author.toString() !== session.user.id) {
-      return res
-        .status(403)
-        .json({ message: "Not authorized to delete this post" });
-    }
-
-    await Blog.findByIdAndDelete(id);
+    // Delete the blog
+    await deleteDocument("blogs", id);
 
     return res.status(200).json({
       success: true,

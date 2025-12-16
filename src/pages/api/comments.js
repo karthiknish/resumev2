@@ -1,28 +1,23 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "./auth/[...nextauth]";
-import dbConnect from "@/lib/dbConnect";
-import { getCommentsByPostId, createComment } from "@/lib/commentService";
+import {
+  getCollection,
+  createDocument,
+  runQuery,
+  fieldFilter,
+} from "@/lib/firebase";
 import {
   ApiResponse,
   handleApiError,
   validateBody,
-  isValidObjectId,
 } from "@/lib/apiUtils";
 
 export default async function handler(req, res) {
   const { method } = req;
 
-  // Validate allowed methods
   const allowedMethods = ["GET", "POST"];
   if (!allowedMethods.includes(method)) {
     return ApiResponse.methodNotAllowed(res, allowedMethods);
-  }
-
-  try {
-    await dbConnect();
-  } catch (error) {
-    console.error("[Comments API] Database connection error:", error);
-    return ApiResponse.serverError(res, "Database connection failed");
   }
 
   try {
@@ -34,22 +29,22 @@ export default async function handler(req, res) {
           return ApiResponse.badRequest(res, "Blog post ID is required");
         }
 
-        if (!isValidObjectId(blogPostId)) {
-          return ApiResponse.badRequest(res, "Invalid blog post ID format");
-        }
+        // Fetch comments for this blog post
+        const comments = await runQuery(
+          "comments",
+          [fieldFilter("blogPostId", "EQUAL", blogPostId)],
+          [{ field: { fieldPath: "createdAt" }, direction: "ASCENDING" }]
+        );
 
-        const comments = await getCommentsByPostId(blogPostId);
         return ApiResponse.success(res, comments, "Comments retrieved successfully");
 
       case "POST":
         const session = await getServerSession(req, res, authOptions);
 
-        // Validate request body
         const validation = validateBody(req.body, {
           blogPostId: {
             required: true,
             type: "string",
-            validate: (v) => isValidObjectId(v) || "Invalid blog post ID",
           },
           text: {
             required: true,
@@ -71,11 +66,13 @@ export default async function handler(req, res) {
           return ApiResponse.badRequest(res, "Validation failed", validation.errors);
         }
 
-        const newComment = await createComment({
+        const docId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        const newComment = await createDocument("comments", docId, {
           blogPostId: validation.data.blogPostId,
           text: validation.data.text,
-          sessionUser: session?.user,
-          anonymousName: validation.data.authorName,
+          authorName: session?.user?.name || validation.data.authorName || "Anonymous",
+          authorId: session?.user?.id || null,
+          createdAt: new Date(),
         });
 
         return ApiResponse.created(res, newComment, "Comment posted successfully");

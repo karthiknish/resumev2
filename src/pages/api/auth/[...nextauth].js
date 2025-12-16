@@ -1,8 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import dbConnect from "@/lib/dbConnect";
-import User from "@/models/User";
 import bcrypt from "bcryptjs";
+import { getCollection } from "@/lib/firebase";
 
 export const authOptions = {
   providers: [
@@ -14,17 +13,18 @@ export const authOptions = {
       },
       async authorize(credentials) {
         try {
-          await dbConnect();
+          const emailLower = credentials.email.toLowerCase();
+          
+          // Fetch users from Firebase
+          const result = await getCollection("users");
+          const users = result.documents || [];
+          const user = users.find(u => u.email === emailLower);
 
-          const user = await User.findOne({ email: credentials.email });
           if (!user) {
             throw new Error("No user found with this email");
           }
 
-          const isValid = await bcrypt.compare(
-            credentials.password,
-            user.password
-          );
+          const isValid = await bcrypt.compare(credentials.password, user.password);
           if (!isValid) {
             throw new Error("Invalid password");
           }
@@ -36,6 +36,7 @@ export const authOptions = {
             role: user.role,
           };
         } catch (error) {
+          console.error("Auth error:", error);
           return null;
         }
       },
@@ -68,4 +69,3 @@ export const authOptions = {
 };
 
 export default NextAuth(authOptions);
-

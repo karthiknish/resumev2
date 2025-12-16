@@ -1,6 +1,4 @@
-// src/pages/api/blog/categories/index.js
-import dbConnect from "@/lib/dbConnect";
-import Blog from "@/models/Blog";
+import { getCollection, runQuery, fieldFilter } from "@/lib/firebase";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -8,30 +6,30 @@ export default async function handler(req, res) {
   }
 
   try {
-    await dbConnect();
+    // Get all published blogs
+    const blogs = await runQuery(
+      "blogs",
+      [fieldFilter("isPublished", "EQUAL", true)]
+    );
 
-    // Use distinct to get unique category values from published posts
-    // Filter out null, undefined, or empty strings, and the default "Uncategorized" if desired
-    const categories = await Blog.distinct("category", {
-      isPublished: true, // Only consider published posts
-      category: { $ne: null, $nin: ["", "Uncategorized"] }, // Exclude null, empty, and "Uncategorized"
+    // Extract unique categories
+    const categorySet = new Set();
+    blogs.forEach((blog) => {
+      if (blog.category && blog.category !== "" && blog.category !== "Uncategorized") {
+        categorySet.add(blog.category);
+      }
     });
 
-    // Sort categories alphabetically
-    categories.sort();
-
-    // Optionally add "All" or keep "Uncategorized" if needed for filtering logic
-    // For now, just returning the distinct, non-default categories.
+    // Convert to sorted array
+    const categories = Array.from(categorySet).sort();
 
     return res.status(200).json({ success: true, categories });
   } catch (error) {
     console.error("Error fetching blog categories:", error);
-    return res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal Server Error",
-        error: error.message,
-      });
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
   }
 }

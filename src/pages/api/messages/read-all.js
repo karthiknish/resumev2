@@ -1,5 +1,4 @@
-import dbConnect from "@/lib/dbConnect";
-import Message from "@/models/Message";
+import { getCollection, updateDocument } from "@/lib/firebase";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { checkAdminStatus } from "@/lib/authUtils";
@@ -11,7 +10,6 @@ export default async function handler(req, res) {
   }
 
   const session = await getServerSession(req, res, authOptions);
-
   const isAdmin = checkAdminStatus(session);
 
   if (!session || !isAdmin) {
@@ -19,22 +17,21 @@ export default async function handler(req, res) {
   }
 
   try {
-    await dbConnect();
-
-    const result = await Message.updateMany(
-      { isRead: false },
-      { $set: { isRead: true } }
-    );
-
-    if (result.acknowledged) {
-      res
-        .status(200)
-        .json({ success: true, modifiedCount: result.modifiedCount });
-    } else {
-      res.status(500).json({ message: "Failed to update messages" });
+    const result = await getCollection("messages");
+    const messages = result.documents || [];
+    
+    // Find unread messages and mark them as read
+    const unreadMessages = messages.filter(m => !m.isRead);
+    let modifiedCount = 0;
+    
+    for (const message of unreadMessages) {
+      await updateDocument("messages", message._id, { isRead: true });
+      modifiedCount++;
     }
+
+    return res.status(200).json({ success: true, modifiedCount });
   } catch (error) {
     console.error("Error marking all messages as read:", error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 }

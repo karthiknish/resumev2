@@ -1,5 +1,4 @@
-import dbConnect from "../../../../lib/dbConnect";
-import Blog from "../../../../models/Blog";
+import { runQuery, fieldFilter } from "@/lib/firebase";
 
 export default async function handler(req, res) {
   const { category } = req.query;
@@ -9,20 +8,30 @@ export default async function handler(req, res) {
   }
 
   try {
-    await dbConnect();
+    // Get all published posts
+    const allPosts = await runQuery(
+      "blogs",
+      [fieldFilter("isPublished", "EQUAL", true)],
+      [{ field: { fieldPath: "createdAt" }, direction: "DESCENDING" }]
+    );
 
-    // Find all published posts in the specified category
-    const posts = await Blog.find({
-      category: { $regex: new RegExp(category, "i") }, // Case insensitive search
-      status: "published",
-    })
-      .sort({ createdAt: -1 }) // Sort by newest first
-      .select("title slug excerpt content image category createdAt updatedAt")
-      .lean();
+    // Filter by category (case insensitive)
+    const posts = allPosts.filter(post => {
+      if (!post.category) return false;
+      return post.category.toLowerCase() === category.toLowerCase();
+    });
 
     return res.status(200).json({
       success: true,
-      posts,
+      posts: posts.map(post => ({
+        title: post.title,
+        slug: post.slug,
+        description: post.description,
+        imageUrl: post.imageUrl,
+        category: post.category,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+      })),
     });
   } catch (error) {
     console.error("Error fetching category posts:", error);

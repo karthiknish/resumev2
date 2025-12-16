@@ -1,41 +1,30 @@
-import dbConnect from "@/lib/dbConnect";
-import Blog from "@/models/Blog";
-import { ApiResponse, isValidObjectId } from "@/lib/apiUtils";
+import { getDocument, updateDocument } from "@/lib/firebase";
+import { ApiResponse } from "@/lib/apiUtils";
 
 export default async function handler(req, res) {
-  const { method } = req;
-
-  if (method !== "POST") {
+  if (req.method !== "POST") {
     return ApiResponse.methodNotAllowed(res, ["POST"]);
-  }
-
-  try {
-    await dbConnect();
-  } catch (error) {
-    console.error("[View API] Database connection error:", error);
-    return ApiResponse.serverError(res, "Database connection failed");
   }
 
   try {
     const { blogId } = req.body;
 
-    if (!blogId || !isValidObjectId(blogId)) {
-      return ApiResponse.badRequest(res, "Valid blog ID is required");
+    if (!blogId) {
+      return ApiResponse.badRequest(res, "Blog ID is required");
     }
 
-    // Increment view count
-    const blog = await Blog.findByIdAndUpdate(
-      blogId,
-      { $inc: { viewCount: 1 } },
-      { new: true, select: "viewCount" }
-    );
-
+    // Get current blog
+    const blog = await getDocument("blogs", blogId);
     if (!blog) {
       return ApiResponse.notFound(res, "Blog post not found");
     }
 
+    // Increment view count
+    const newViewCount = (blog.viewCount || 0) + 1;
+    await updateDocument("blogs", blogId, { viewCount: newViewCount });
+
     return ApiResponse.success(res, {
-      viewCount: blog.viewCount,
+      viewCount: newViewCount,
     }, "View recorded");
 
   } catch (error) {

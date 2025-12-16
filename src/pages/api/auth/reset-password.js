@@ -1,5 +1,4 @@
-import dbConnect from "@/lib/dbConnect";
-import User from "@/models/User";
+import { getCollection, updateDocument } from "@/lib/firebase";
 import bcrypt from "bcryptjs";
 
 export default async function handler(req, res) {
@@ -8,34 +7,30 @@ export default async function handler(req, res) {
   }
 
   try {
-    await dbConnect();
     const { token, email, password } = req.body;
 
-    // Validate input
     if (!token || !email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Token, email, and password are required" });
+      return res.status(400).json({ message: "Token, email, and password are required" });
     }
 
-    // Check password strength
     if (password.length < 8) {
-      return res
-        .status(400)
-        .json({ message: "Password must be at least 8 characters long" });
+      return res.status(400).json({ message: "Password must be at least 8 characters long" });
     }
+
+    const emailLower = email.toLowerCase();
 
     // Find user with valid reset token
-    const user = await User.findOne({
-      email,
-      resetPasswordToken: token,
-      resetPasswordExpires: { $gt: Date.now() },
-    });
+    const result = await getCollection("users");
+    const users = result.documents || [];
+    const user = users.find(u => 
+      u.email === emailLower && 
+      u.resetPasswordToken === token &&
+      u.resetPasswordExpires && new Date(u.resetPasswordExpires) > new Date()
+    );
 
     if (!user) {
       return res.status(400).json({
-        message:
-          "Password reset token is invalid or has expired. Please request a new password reset.",
+        message: "Password reset token is invalid or has expired. Please request a new password reset.",
       });
     }
 
@@ -43,15 +38,13 @@ export default async function handler(req, res) {
     const hashedPassword = await bcrypt.hash(password, 12);
 
     // Update user's password and clear reset token
-    await User.findByIdAndUpdate(user._id, {
+    await updateDocument("users", user._id, {
       password: hashedPassword,
-      resetPasswordToken: undefined,
-      resetPasswordExpires: undefined,
+      resetPasswordToken: null,
+      resetPasswordExpires: null,
     });
 
-    return res
-      .status(200)
-      .json({ message: "Password has been reset successfully" });
+    return res.status(200).json({ message: "Password has been reset successfully" });
   } catch (error) {
     console.error("Reset password error:", error);
     return res.status(500).json({ message: "Internal server error" });
