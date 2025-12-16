@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner"; // Using sonner for notifications
 import { Input } from "@/components/ui/input"; // Assuming shadcn/ui input
@@ -8,9 +8,16 @@ import { useRouter } from "next/router"; // Import useRouter
 
 export default function NewsletterSignup() {
   const [email, setEmail] = useState("");
+  const [honeypot, setHoneypot] = useState("");
+  const [formLoadTime, setFormLoadTime] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
   const router = useRouter(); // Initialize router
+
+  // Track form load time for spam detection
+  useEffect(() => {
+    setFormLoadTime(Date.now());
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,7 +37,11 @@ export default function NewsletterSignup() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({
+          email,
+          _honeypot: honeypot,
+          _timestamp: formLoadTime,
+        }),
       });
 
       const data = await response.json();
@@ -38,8 +49,6 @@ export default function NewsletterSignup() {
       if (response.ok) {
         // Redirect on success
         router.push("/newsletter/thank-you");
-        // Optionally clear email here if needed, though redirect makes it less critical
-        // setEmail("");
       } else {
         // Keep error handling
         toast.error(data.message || "Subscription failed. Please try again.");
@@ -63,6 +72,29 @@ export default function NewsletterSignup() {
         Notes on product delivery, engineering systems, and the lessons learned while shipping with founders and teams.
       </p>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Honeypot field - hidden from users, visible to bots */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            left: "-9999px",
+            opacity: 0,
+            height: 0,
+            overflow: "hidden",
+          }}
+        >
+          <label htmlFor="newsletter_hp">Leave this field empty</label>
+          <input
+            type="text"
+            id="newsletter_hp"
+            name="_honeypot"
+            value={honeypot}
+            onChange={(e) => setHoneypot(e.target.value)}
+            tabIndex={-1}
+            autoComplete="off"
+          />
+        </div>
+
         <motion.div whileHover={{ scale: 1.02 }} transition={{ duration: 0.2 }}>
           <Input
             type="email"

@@ -10,6 +10,8 @@ import {
   ChevronDown,
   Zap,
   RefreshCw,
+  AlertTriangle,
+  Inbox,
 } from "lucide-react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -166,7 +168,9 @@ function ErrorSlide({ error, onRetry }) {
         transition={{ duration: 0.6 }}
         className="max-w-md"
       >
-        <div className="text-6xl mb-6">⚠️</div>
+        <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-red-500/10 flex items-center justify-center">
+          <AlertTriangle className="w-8 h-8 text-red-400" />
+        </div>
         <h3 className="font-heading text-3xl text-slate-50 mb-4">
           Oops! Something went wrong
         </h3>
@@ -198,15 +202,15 @@ function EmptySlide() {
         className="max-w-md"
       >
         <motion.div
-          animate={{ rotate: [0, 10, -10, 0] }}
+          animate={{ scale: [1, 1.05, 1] }}
           transition={{
             duration: 2,
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="text-6xl mb-6"
+          className="w-16 h-16 mx-auto mb-6 rounded-full bg-slate-800 flex items-center justify-center"
         >
-          📭
+          <Inbox className="w-8 h-8 text-slate-400" />
         </motion.div>
         <h3 className="font-heading text-4xl text-slate-50 mb-4">
           No Bytes Yet

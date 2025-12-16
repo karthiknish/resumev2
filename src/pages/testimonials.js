@@ -6,6 +6,7 @@ import Link from "next/link";
 import { FadeIn, HoverCard } from "@/components/animations/MotionComponents";
 import PageContainer from "@/components/PageContainer";
 import { RxAvatar } from "react-icons/rx";
+import { Users, Star } from "lucide-react";
 
 export default function Testimonials({ testimonials }) {
   const [filteredTestimonials, setFilteredTestimonials] = useState([]);
@@ -123,7 +124,7 @@ export default function Testimonials({ testimonials }) {
                         : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300"
                     }`}
                   >
-                    <span className="mr-2">👥</span>
+                    <Users className="w-4 h-4 mr-2" />
                     Colleagues
                   </motion.button>
                 </div>
@@ -202,7 +203,7 @@ export default function Testimonials({ testimonials }) {
                           ? "bg-slate-100 text-slate-700 border border-slate-200"
                           : "bg-slate-50 text-slate-600 border border-slate-200"
                       }`}>
-                        <span>{testimonial.category === "client" ? "" : "👥"}</span>
+                        {testimonial.category === "client" ? null : <Users className="w-4 h-4" />}
                         {testimonial.category === "client" ? "Client" : "Colleague"}
                       </div>
                     </div>
@@ -225,9 +226,9 @@ export default function Testimonials({ testimonials }) {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.8 }}
-                      className="text-6xl mb-6"
+                      className="w-16 h-16 mx-auto mb-6 rounded-full bg-white/10 flex items-center justify-center"
                     >
-                      💫
+                      <Star className="w-8 h-8 text-white" />
                     </motion.div>
                     <h2 className="font-heading text-3xl md:text-4xl text-white mb-6">
                       Ready to share your experience?

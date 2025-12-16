@@ -9,6 +9,7 @@ import {
   AiOutlineClockCircle, // Added Clock icon for Pomodoro
   AiOutlineFire, // Icon for News
   AiOutlineLinkedin, // Icon for LinkedIn
+  AiOutlineSend, // Icon for Newsletter
 } from "react-icons/ai";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -45,6 +46,7 @@ import SubscribersTab from "@/components/admin/tabs/SubscribersTab";
 import LinkedInTab from "@/components/admin/tabs/LinkedInTab";
 import PomodoroTab from "@/components/admin/tabs/PomodoroTab";
 import HackerNewsFeed from "@/components/admin/tabs/HackerNewsFeed";
+import NewsletterTab from "@/components/admin/tabs/NewsletterTab";
 import { checkAdminStatus } from "@/lib/authUtils";
 import { toast } from "sonner";
 
@@ -60,6 +62,7 @@ const adminTabs = [
   },
   { value: "bytes", label: "Bytes", Icon: AiOutlineThunderbolt },
   { value: "subscribers", label: "Subscribers", Icon: FaUserCheck },
+  { value: "newsletter", label: "Newsletter", Icon: AiOutlineSend },
   { value: "api-status", label: "API Status", Icon: AiOutlineExperiment },
   { value: "linkedin", label: "LinkedIn", Icon: AiOutlineLinkedin },
   { value: "pomodoro", label: "Pomodoro", Icon: AiOutlineClockCircle },
@@ -308,6 +311,9 @@ function AdminDashboard() {
                   )}
                   {activeTab === "subscribers" && (
                     <SubscribersTab key="subscribers" />
+                  )}
+                  {activeTab === "newsletter" && (
+                    <NewsletterTab key="newsletter" />
                   )}
                   {activeTab === "linkedin" && <LinkedInTab key="linkedin" />}
                   {activeTab === "pomodoro" && <PomodoroTab key="pomodoro" />}

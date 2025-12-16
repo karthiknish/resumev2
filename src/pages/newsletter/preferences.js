@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Mail, Bell, Eye, Shield, X } from "lucide-react";
+import { Mail, Bell, Eye, Shield, X, Newspaper, Rocket, Briefcase, Globe, Wrench, Loader2 } from "lucide-react";
 
 export default function NewsletterPreferences() {
   const [preferences, setPreferences] = useState({
@@ -161,44 +161,48 @@ export default function NewsletterPreferences() {
                     title: "Weekly Digest",
                     description:
                       "Get a summary of the latest articles and updates every week",
-                    icon: "📰",
+                    icon: Newspaper,
                   },
                   {
                     id: "projectUpdates",
                     title: "Project Updates",
                     description:
                       "Stay informed about new projects and development progress",
-                    icon: "🚀",
+                    icon: Rocket,
                   },
                   {
                     id: "careerTips",
                     title: "Career Tips",
                     description:
                       "Receive advice on career growth and development opportunities",
-                    icon: "💼",
+                    icon: Briefcase,
                   },
                   {
                     id: "industryNews",
                     title: "Industry News",
                     description:
                       "Get the latest news and trends in technology and development",
-                    icon: "🌐",
+                    icon: Globe,
                   },
                   {
                     id: "productUpdates",
                     title: "Product Updates",
                     description:
                       "Learn about new tools, features, and releases that might interest you",
-                    icon: "🔧",
+                    icon: Wrench,
                   },
-                ].map((pref) => (
+                ].map((pref) => {
+                  const IconComponent = pref.icon;
+                  return (
                   <motion.div
                     key={pref.id}
                     whileHover={{ scale: 1.01 }}
                     className="flex items-center justify-between p-4 bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 rounded-2xl"
                   >
                     <div className="flex items-center gap-4">
-                      <span className="text-2xl">{pref.icon}</span>
+                      <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
+                        <IconComponent className="w-5 h-5 text-indigo-600" />
+                      </div>
                       <div>
                         <h3 className="font-bold text-gray-900">{pref.title}</h3>
                         <p className="text-sm text-gray-600">
@@ -217,8 +221,9 @@ export default function NewsletterPreferences() {
                     >
                       {preferences[pref.id] ? "Subscribed" : "Subscribe"}
                     </Button>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  );
+                })}
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
@@ -231,7 +236,7 @@ export default function NewsletterPreferences() {
                 >
                   {isSaving ? (
                     <>
-                      <span className="animate-spin">🌀</span> Saving...
+                      <Loader2 className="w-5 h-5 animate-spin" /> Saving...
                     </>
                   ) : (
                     <>

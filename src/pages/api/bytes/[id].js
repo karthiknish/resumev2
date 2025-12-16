@@ -1,12 +1,13 @@
-import dbConnect from "@/lib/dbConnect";
+import {
+  getDocument,
+  updateDocument,
+  deleteDocument,
+} from "@/lib/firebase";
 import {
   ApiResponse,
   requireAdmin,
   handleApiError,
-  isValidObjectId,
 } from "@/lib/apiUtils";
-import { updateByte } from "@/lib/byteService";
-import Byte from "@/models/Byte";
 
 export default async function handler(req, res) {
   const {
@@ -14,22 +15,14 @@ export default async function handler(req, res) {
     method,
   } = req;
 
-  // Validate allowed methods
   const allowedMethods = ["GET", "PUT", "DELETE"];
   if (!allowedMethods.includes(method)) {
     return ApiResponse.methodNotAllowed(res, allowedMethods);
   }
 
-  // Validate ID format
-  if (!id || !isValidObjectId(id)) {
-    return ApiResponse.badRequest(res, "Invalid byte ID format");
-  }
-
-  try {
-    await dbConnect();
-  } catch (error) {
-    console.error("[Bytes API] Database connection error:", error);
-    return ApiResponse.serverError(res, "Database connection failed");
+  // Validate ID
+  if (!id) {
+    return ApiResponse.badRequest(res, "Byte ID is required");
   }
 
   // Check for admin privileges for write/delete operations
@@ -41,27 +34,36 @@ export default async function handler(req, res) {
   try {
     switch (method) {
       case "GET":
-        const byte = await Byte.findById(id).lean();
+        const byte = await getDocument("bytes", id);
         if (!byte) {
           return ApiResponse.notFound(res, "Byte not found");
         }
         return ApiResponse.success(res, byte, "Byte retrieved successfully");
 
       case "PUT":
-        const updatedByte = await updateByte(id, req.body);
-        if (process.env.NODE_ENV === "development") {
-          console.log(`[API /api/bytes PUT] Updated byte ${id}:`, JSON.stringify(updatedByte, null, 2));
+        const existingByte = await getDocument("bytes", id);
+        if (!existingByte) {
+          return ApiResponse.notFound(res, "Byte not found");
         }
+
+        const updateData = {
+          ...req.body,
+          updatedAt: new Date(),
+        };
+        // Remove id from update data if present
+        delete updateData.id;
+        delete updateData._id;
+
+        const updatedByte = await updateDocument("bytes", id, updateData);
         return ApiResponse.success(res, updatedByte, "Byte updated successfully");
 
       case "DELETE":
-        const deletedByte = await Byte.findByIdAndDelete(id);
-        if (!deletedByte) {
+        const byteToDelete = await getDocument("bytes", id);
+        if (!byteToDelete) {
           return ApiResponse.notFound(res, "Byte not found for deletion");
         }
-        if (process.env.NODE_ENV === "development") {
-          console.log(`[API /api/bytes DELETE] Deleted byte ${id}`);
-        }
+
+        await deleteDocument("bytes", id);
         return ApiResponse.success(res, null, "Byte deleted successfully");
 
       default:

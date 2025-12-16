@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { Loader2 } from "lucide-react";
+import { Loader2, User } from "lucide-react";
 
 // Only initialize Modal in browser environment
 if (typeof window !== "undefined") {
@@ -431,7 +431,7 @@ function Chatbot() {
                       className="flex-shrink-0 w-10 h-10 rounded-2xl bg-[#1a3c74] text-white border border-[#254f96] flex items-center justify-center mb-1 shadow-sm"
                       whileHover={{ scale: 1.05 }}
                     >
-                      <span className="text-xl">👤</span>
+                      <User className="w-5 h-5" />
                     </motion.div>
                   )}
 

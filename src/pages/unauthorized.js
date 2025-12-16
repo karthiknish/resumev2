@@ -3,6 +3,7 @@ import Link from "next/link";
 import Head from "next/head";
 import { motion } from "framer-motion";
 import PageContainer from "@/components/PageContainer";
+import { Lock } from "lucide-react";
 
 export default function Unauthorized() {
   return (
@@ -29,7 +30,7 @@ export default function Unauthorized() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="mx-auto flex items-center justify-center h-24 w-24 rounded-full bg-red-50 border border-red-100 mb-6"
               >
-                <span className="text-4xl">🔐</span>
+                <Lock className="w-10 h-10 text-red-500" />
               </motion.div>
 
               <h1 className="font-heading text-4xl font-bold text-slate-900 mb-4">

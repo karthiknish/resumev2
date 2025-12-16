@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Loader2, Mail, CalendarDays, User, MessageCircle } from "lucide-react";
+import { Loader2, Mail, CalendarDays, User, MessageCircle, AlertCircle, Inbox } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -84,7 +84,7 @@ export default function ContactsTab() {
         {isLoading && (
           <div className="flex items-center justify-center py-10">
             <div className="flex items-center gap-4 rounded-xl border border-border bg-card px-6 py-5 shadow-sm">
-              <div className="text-3xl animate-spin">💬</div>
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
               <span className="text-base font-semibold text-foreground">
                 Loading contacts...
               </span>
@@ -94,7 +94,9 @@ export default function ContactsTab() {
         {error && !isLoading && (
           <div className="flex items-center justify-center py-10">
             <div className="rounded-xl border border-destructive/20 bg-destructive/10 px-6 py-5 text-center shadow-sm">
-              <div className="mb-4 text-6xl">😕</div>
+              <div className="mb-4 flex justify-center">
+                <AlertCircle className="w-12 h-12 text-destructive" />
+              </div>
               <h3 className="mb-2 text-xl font-heading font-semibold text-destructive">
                 Oops! Something went wrong
               </h3>
@@ -105,7 +107,9 @@ export default function ContactsTab() {
         {!isLoading && !error && contacts.length === 0 && (
           <div className="flex items-center justify-center py-10">
             <div className="rounded-xl border border-border bg-muted/50 px-6 py-5 text-center shadow-sm">
-              <div className="mb-4 text-6xl">📭</div>
+              <div className="mb-4 flex justify-center">
+                <Inbox className="w-12 h-12 text-muted-foreground" />
+              </div>
               <h3 className="mb-2 text-xl font-heading font-semibold text-foreground">
                 No Contact Submissions Yet
               </h3>

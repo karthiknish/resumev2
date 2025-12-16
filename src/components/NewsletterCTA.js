@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,8 +9,15 @@ import { Loader2, Mail, Sparkles } from "lucide-react";
 
 export default function NewsletterCTA() {
   const [email, setEmail] = useState("");
+  const [honeypot, setHoneypot] = useState("");
+  const [formLoadTime, setFormLoadTime] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
+
+  // Track form load time for spam detection
+  useEffect(() => {
+    setFormLoadTime(Date.now());
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,7 +33,11 @@ export default function NewsletterCTA() {
       const response = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({
+          email,
+          _honeypot: honeypot,
+          _timestamp: formLoadTime,
+        }),
       });
 
       const data = await response.json();
@@ -34,7 +45,7 @@ export default function NewsletterCTA() {
       if (response.ok) {
         setIsSubscribed(true);
         setEmail("");
-        toast.success("You're on the list! 🎉");
+        toast.success("You're on the list!");
       } else {
         throw new Error(data.message || "Failed to subscribe");
       }

@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import PageContainer from "@/components/PageContainer";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Mail, Archive, Share2, Twitter } from "lucide-react";
+import { CheckCircle, Mail, Archive, Share2, Twitter, Flame, Smartphone } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function NewsletterThankYou() {
@@ -58,16 +58,14 @@ export default function NewsletterThankYou() {
                 <motion.span
                   animate={{
                     scale: [1, 1.2, 1],
-                    rotate: [0, 10, -10, 0],
                   }}
                   transition={{
                     duration: 2,
                     repeat: Infinity,
                     ease: "easeInOut",
                   }}
-                  className="text-xl"
                 >
-                  📧
+                  <Mail className="w-5 h-5" />
                 </motion.span>
                 <span>Newsletter Subscription</span>
               </motion.div>
@@ -150,10 +148,10 @@ export default function NewsletterThankYou() {
                     <span></span> Project spotlights
                   </div>
                   <div className="flex items-center gap-2">
-                    <span>🔥</span> Exclusive content
+                    <Flame className="w-4 h-4" /> Exclusive content
                   </div>
                   <div className="flex items-center gap-2">
-                    <span>📱</span> Career tips
+                    <Smartphone className="w-4 h-4" /> Career tips
                   </div>
                 </div>
               </div>
@@ -210,7 +208,7 @@ export default function NewsletterThankYou() {
                     style={{ fontFamily: "Space Grotesk, sans-serif" }}
                   >
                     <span className="bg-gradient-to-r from-primary to-brandSecondary bg-clip-text text-transparent">
-                      Share the Love! 💙
+                      Share the Love!
                     </span>
                   </h3>
                   <p className="text-gray-700 font-medium">

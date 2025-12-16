@@ -4,16 +4,16 @@ import { useEffect, useRef, useState } from "react";
 import { Spotlight } from "@/components/ui/spotlight";
 import { TextRotate } from "@/components/ui/text-rotate";
 
-// Technology icons with enhanced styling
+// Technology icons with text abbreviations
 const techStack = [
-  { name: "React", icon: "⚛️" },
-  { name: "React Native", icon: "📱" },
-  { name: "Next.js", icon: "▲" },
-  { name: "Node.js", icon: "🟢" },
-  { name: "TypeScript", icon: "🔷" },
-  { name: "MongoDB", icon: "🍃" },
-  { name: "AWS", icon: "☁️" },
-  { name: "Docker", icon: "🐳" },
+  { name: "React", icon: "R" },
+  { name: "React Native", icon: "RN" },
+  { name: "Next.js", icon: "N" },
+  { name: "Node.js", icon: "No" },
+  { name: "TypeScript", icon: "TS" },
+  { name: "MongoDB", icon: "M" },
+  { name: "AWS", icon: "A" },
+  { name: "Docker", icon: "D" },
 ];
 
 export default function HeroSection() {

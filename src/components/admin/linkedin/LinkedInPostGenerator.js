@@ -29,11 +29,11 @@ const HISTORY_KEY = "linkedin-post-history";
 const MAX_HISTORY = 10;
 
 const POST_TYPES = [
-  { value: "insight", label: "💡 Insight", description: "Share a professional observation" },
-  { value: "story", label: "📖 Story", description: "Tell a personal story with a lesson" },
-  { value: "tutorial", label: "🛠️ Tutorial", description: "Provide a quick how-to or tip" },
-  { value: "opinion", label: "🎯 Opinion", description: "Express a thought-provoking view" },
-  { value: "celebration", label: "🎉 Celebration", description: "Celebrate an achievement" },
+  { value: "insight", label: "Insight", description: "Share a professional observation" },
+  { value: "story", label: "Story", description: "Tell a personal story with a lesson" },
+  { value: "tutorial", label: "Tutorial", description: "Provide a quick how-to or tip" },
+  { value: "opinion", label: "Opinion", description: "Express a thought-provoking view" },
+  { value: "celebration", label: "Celebration", description: "Celebrate an achievement" },
 ];
 
 const TONES = [
