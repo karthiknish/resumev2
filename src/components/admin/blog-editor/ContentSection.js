@@ -3,7 +3,7 @@ import React, { useState, useCallback } from "react";
 import TipTapEditor from "@/components/TipTapEditor"; // Import TipTapEditor
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Loader2, Sparkles, Wand2, ListChecks } from "lucide-react"; // Added Wand2 for Format
+import { Loader2, Sparkles, Wand2, ListChecks, Bot } from "lucide-react"; // Added Bot for Agent Mode
 import { AiOutlineEye } from "react-icons/ai"; // Keep AiOutlineEye
 import axios from "axios";
 import { toast } from "sonner"; // For displaying success/error messages
@@ -15,6 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 
 function ContentSection({
   content,
@@ -22,6 +23,7 @@ function ContentSection({
   onTogglePreview,
   blogTitle, // Keep blogTitle for Generate Content
   onOutlineTitle = () => {},
+  onTitleChange = () => {}, // New prop for Agent Mode to update title
 }) {
   const [isGeneratingContent, setIsGeneratingContent] = useState(false);
   const [contentGenError, setContentGenError] = useState("");
@@ -31,6 +33,12 @@ function ContentSection({
   const [outlineData, setOutlineData] = useState(null);
   const [outlineError, setOutlineError] = useState("");
   const [isOutlineOpen, setIsOutlineOpen] = useState(false);
+
+  // Agent Mode state
+  const [isAgentModeOpen, setIsAgentModeOpen] = useState(false);
+  const [agentContext, setAgentContext] = useState("");
+  const [isAgentGenerating, setIsAgentGenerating] = useState(false);
+  const [agentError, setAgentError] = useState("");
 
   // Handler for generating content draft
   const handleGenerateContent = useCallback(async () => {
@@ -159,6 +167,64 @@ function ContentSection({
     }
   }, [blogTitle]);
 
+  // Handler for Agent Mode blog generation
+  const handleAgentGenerate = useCallback(async () => {
+    if (!agentContext?.trim()) {
+      setAgentError("Please provide context for generating the blog.");
+      toast.error("Please provide context for generating the blog.");
+      return;
+    }
+
+    setIsAgentGenerating(true);
+    setAgentError("");
+
+    const toastId = "agent-generate-toast";
+    toast.loading("Agent is writing your blog...", { id: toastId });
+
+    try {
+      const response = await axios.post("/api/ai/agent-generate-blog", {
+        context: agentContext,
+      });
+
+      if (response.data.success && response.data.data) {
+        const { title, content: generatedContent } = response.data.data;
+        
+        // Update title if provided
+        if (title) {
+          onTitleChange(title);
+        }
+        
+        // Update content
+        if (generatedContent) {
+          setContent(generatedContent);
+        }
+
+        toast.success("Blog generated successfully!", { id: toastId });
+        setIsAgentModeOpen(false);
+        setAgentContext("");
+      } else {
+        throw new Error(response.data.message || "Failed to generate blog.");
+      }
+    } catch (err) {
+      console.error("[ContentSection] Agent Mode error:", err);
+      const message =
+        err.response?.data?.message ||
+        err.message ||
+        "Failed to generate blog.";
+      setAgentError(message);
+      toast.error(`Generation failed: ${message}`, { id: toastId });
+    } finally {
+      setIsAgentGenerating(false);
+    }
+  }, [agentContext, onTitleChange, setContent]);
+
+  const handleAgentModeOpenChange = useCallback((open) => {
+    setIsAgentModeOpen(open);
+    if (!open) {
+      setAgentError("");
+    }
+  }, []);
+
   const handleApplyOutline = useCallback(
     (mode) => {
       if (!outlineData) {
@@ -239,6 +305,23 @@ function ContentSection({
               <Wand2 className="mr-1 h-4 w-4" /> // Using Wand2 icon
             )}
             Format
+          </Button>
+          {/* --- Agent Mode Button --- */}
+          <Button
+            type="button"
+            onClick={() => setIsAgentModeOpen(true)}
+            disabled={isAgentGenerating}
+            variant="outline"
+            size="sm"
+            className="flex items-center border-violet-500/30 text-violet-600 hover:bg-violet-500/10 dark:text-violet-400"
+            title="Generate full blog from context (AI Agent)"
+          >
+            {isAgentGenerating ? (
+              <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+            ) : (
+              <Bot className="mr-1 h-4 w-4" />
+            )}
+            Agent Mode
           </Button>
           {/* --- Outline Button --- */}
           <Button
@@ -384,6 +467,66 @@ function ContentSection({
               onClick={() => handleApplyOutline("replace")}
             >
               Replace Editor Content
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Agent Mode Dialog */}
+      <Dialog open={isAgentModeOpen} onOpenChange={handleAgentModeOpenChange}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Bot className="h-5 w-5 text-violet-500" />
+              Agent Mode
+            </DialogTitle>
+            <DialogDescription>
+              Describe what you want to write about and the AI agent will generate
+              a complete blog post with title and content.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="agent-context">Context / Instructions</Label>
+              <Textarea
+                id="agent-context"
+                placeholder="E.g., Write a blog about React Server Components, explaining what they are, their benefits over client components, and how to migrate existing components. Include code examples and best practices."
+                value={agentContext}
+                onChange={(e) => setAgentContext(e.target.value)}
+                className="min-h-[150px] resize-y"
+                disabled={isAgentGenerating}
+              />
+            </div>
+            {agentError && (
+              <p className="text-sm text-destructive">{agentError}</p>
+            )}
+          </div>
+          <DialogFooter className="gap-2 sm:gap-3">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => handleAgentModeOpenChange(false)}
+              disabled={isAgentGenerating}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleAgentGenerate}
+              disabled={isAgentGenerating || !agentContext?.trim()}
+              className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
+            >
+              {isAgentGenerating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Generate Blog
+                </>
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

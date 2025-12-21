@@ -1,7 +1,7 @@
 // src/lib/gemini.js
 
 // Single model configured per product requirement
-const modelOptions = ["gemini-2.0-flash"];
+const modelOptions = ["gemini-3-flash-preview"];
 
 /**
  * Calls the Google Gemini API with a given prompt, trying multiple models sequentially.

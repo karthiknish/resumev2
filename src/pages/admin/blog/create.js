@@ -5,7 +5,7 @@ import PageContainer from "@/components/PageContainer";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Wand2, ArrowLeft, Eye, Save, LayoutPanelLeft, Clock, Trash2 } from "lucide-react";
+import { Loader2, Wand2, ArrowLeft, Eye, Save, LayoutPanelLeft, Clock, Trash2, Bot, Sparkles } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -14,6 +14,15 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 
 // Import the refactored components
 import BannerImageSection from "@/components/admin/blog-editor/BannerImageSection";
@@ -48,6 +57,12 @@ function CreateBlog() {
   const [isFormatting, setIsFormatting] = useState(false);
   const [lastSaved, setLastSaved] = useState(null);
   const [hasDraft, setHasDraft] = useState(false);
+
+  // Agent Mode state
+  const [isAgentModeOpen, setIsAgentModeOpen] = useState(false);
+  const [agentContext, setAgentContext] = useState("");
+  const [isAgentGenerating, setIsAgentGenerating] = useState(false);
+  const [agentError, setAgentError] = useState("");
 
   // Debounced form data for auto-save (save after 3 seconds of no changes)
   const debouncedFormData = useDebounce(formData, 3000);
@@ -188,6 +203,54 @@ function CreateBlog() {
       toast.error(`Formatting failed: ${errorMsg}`);
     } finally {
       setIsFormatting(false);
+    }
+  };
+
+  // Handler for Agent Mode blog generation
+  const handleAgentGenerate = async () => {
+    if (!agentContext?.trim()) {
+      setAgentError("Please provide context for generating the blog.");
+      toast.error("Please provide context for generating the blog.");
+      return;
+    }
+
+    setIsAgentGenerating(true);
+    setAgentError("");
+
+    const toastId = "agent-generate-toast";
+    toast.loading("Agent is writing your blog...", { id: toastId });
+
+    try {
+      const response = await fetch("/api/ai/agent-generate-blog", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ context: agentContext }),
+      });
+      const data = await response.json();
+
+      if (response.ok && data.success && data.data) {
+        const { title, content } = data.data;
+        
+        // Update form data with generated title and content
+        setFormData((prev) => ({
+          ...prev,
+          title: title || prev.title,
+          content: content || prev.content,
+        }));
+
+        toast.success("Blog generated successfully!", { id: toastId });
+        setIsAgentModeOpen(false);
+        setAgentContext("");
+      } else {
+        throw new Error(data.message || "Failed to generate blog.");
+      }
+    } catch (err) {
+      console.error("Agent Mode error:", err);
+      const message = err?.message || "Failed to generate blog.";
+      setAgentError(message);
+      toast.error(`Generation failed: ${message}`, { id: toastId });
+    } finally {
+      setIsAgentGenerating(false);
     }
   };
 
@@ -432,6 +495,20 @@ function CreateBlog() {
                     )}
                     AI Format
                   </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsAgentModeOpen(true)}
+                    disabled={isAgentGenerating}
+                    className="h-6 px-2 text-xs text-violet-600 hover:bg-violet-500/10 hover:text-violet-700 dark:text-violet-400"
+                  >
+                    {isAgentGenerating ? (
+                      <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                    ) : (
+                      <Bot className="mr-1 h-3 w-3" />
+                    )}
+                    Agent Mode
+                  </Button>
                 </div>
               </div>
 
@@ -463,6 +540,72 @@ function CreateBlog() {
         </PageContainer>
       </div>
       {showPreview && <BlogPreview />}
+
+      {/* Agent Mode Dialog */}
+      <Dialog open={isAgentModeOpen} onOpenChange={(open) => {
+        setIsAgentModeOpen(open);
+        if (!open) setAgentError("");
+      }}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Bot className="h-5 w-5 text-violet-500" />
+              Agent Mode
+            </DialogTitle>
+            <DialogDescription>
+              Describe what you want to write about and the AI agent will generate
+              a complete blog post with title and content.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="agent-context">Context / Instructions</Label>
+              <Textarea
+                id="agent-context"
+                placeholder="E.g., Write a blog about React Server Components, explaining what they are, their benefits over client components, and how to migrate existing components. Include code examples and best practices."
+                value={agentContext}
+                onChange={(e) => setAgentContext(e.target.value)}
+                className="min-h-[150px] resize-y"
+                disabled={isAgentGenerating}
+              />
+            </div>
+            {agentError && (
+              <p className="text-sm text-destructive">{agentError}</p>
+            )}
+          </div>
+          <DialogFooter className="gap-2 sm:gap-3">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => {
+                setIsAgentModeOpen(false);
+                setAgentError("");
+              }}
+              disabled={isAgentGenerating}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleAgentGenerate}
+              disabled={isAgentGenerating || !agentContext?.trim()}
+              className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
+            >
+              {isAgentGenerating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Generate Blog
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
