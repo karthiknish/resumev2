@@ -157,7 +157,7 @@ export default function ContactForm() {
               value={formData.name}
               onChange={handleChange}
               type="text"
-              className="w-full px-4 sm:px-5 py-3 sm:py-4 text-slate-900 bg-white border border-slate-200 rounded-xl focus:border-slate-400 focus:ring-4 focus:ring-slate-200 focus:outline-none transition-all duration-300 text-base"
+              className="form-input sm:px-5 sm:py-4 text-base"
               placeholder="John Doe"
               required
             />
@@ -181,7 +181,7 @@ export default function ContactForm() {
               value={formData.email}
               onChange={handleChange}
               type="email"
-              className="w-full px-4 sm:px-5 py-3 sm:py-4 text-slate-900 bg-white border border-slate-200 rounded-xl focus:border-slate-400 focus:ring-4 focus:ring-slate-200 focus:outline-none transition-all duration-300 text-base"
+              className="form-input sm:px-5 sm:py-4 text-base"
               placeholder="john@example.com"
               required
             />
@@ -204,7 +204,7 @@ export default function ContactForm() {
               name="message"
               value={formData.message}
               onChange={handleChange}
-              className="w-full px-4 sm:px-5 py-3 sm:py-4 text-slate-900 bg-white border border-slate-200 rounded-xl focus:border-slate-400 focus:ring-4 focus:ring-slate-200 focus:outline-none transition-all duration-300 text-base resize-none"
+              className="form-input sm:px-5 sm:py-4 text-base resize-none"
               placeholder="Tell me about your amazing project idea..."
               rows={5}
               required

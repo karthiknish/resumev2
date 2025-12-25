@@ -136,6 +136,40 @@
 
 /* Add custom utilities */
 @layer utilities {
+  /* Form input consistent styling */
+  .form-input {
+    @apply w-full px-4 py-3 bg-background border border-input rounded-xl 
+           text-foreground placeholder:text-muted-foreground
+           focus:border-ring focus:ring-4 focus:ring-ring/20 focus:outline-none
+           transition-all duration-300;
+  }
+
+  /* Section padding utilities */
+  .section-padding-sm {
+    @apply py-16 md:py-20;
+  }
+
+  .section-padding-md {
+    @apply py-20 md:py-28;
+  }
+
+  .section-padding-lg {
+    @apply py-24 md:py-32;
+  }
+
+  /* Container width variants */
+  .container-sm {
+    @apply max-w-3xl mx-auto px-6 sm:px-10 md:px-12;
+  }
+
+  .container-md {
+    @apply max-w-5xl mx-auto px-6 sm:px-10 md:px-12;
+  }
+
+  .container-lg {
+    @apply max-w-6xl mx-auto px-6 sm:px-10 md:px-12;
+  }
+
   /* Subtle dot pattern for mobile hero background */
   .bg-dot-pattern-mobile {
     background-image: radial-gradient(theme('colors.gray.700') 1px, transparent 1px);
@@ -173,6 +207,18 @@
      background-color: theme('colors.gray.500');
    }
 
+}
+
+/* Reduced motion support for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 @layer components {
