@@ -128,6 +128,10 @@
     font-family: 'Calendas', serif; /* Ensure Calendas is defined or imported */
   }
 
+  .font-heading {
+    font-family: var(--font-instrument-serif), Georgia, "Times New Roman", serif;
+  }
+
   .font-serif {
     font-family: var(--font-instrument-serif), Georgia, "Times New Roman", serif;
   }

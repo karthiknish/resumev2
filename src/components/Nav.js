@@ -230,7 +230,7 @@ export default function Nav() {
                   <HoverCard scale={1.05}>
                     <Link
                       href={link.href}
-                      className={`text-base lg:text-lg relative group text-black font-medium transition-colors duration-200 ${
+                      className={`text-base lg:text-lg relative group font-heading transition-colors duration-200 ${
                         (link.href === "/" && router.pathname === "/") ||
                         (link.href !== "/" &&
                           (router.pathname === link.href ||
@@ -238,8 +238,8 @@ export default function Nav() {
                               router.pathname.startsWith("/blog")) ||
                             (link.href === "/bytes" &&
                               router.pathname.startsWith("/bytes"))))
-                          ? `${navLinkActiveClass}`
-                          : `${navLinkBaseClass}`
+                          ? "text-foreground"
+                          : "text-muted-foreground hover:text-foreground"
                       }`}
                     >
                       {link.label}
@@ -256,10 +256,10 @@ export default function Nav() {
                       <HoverCard scale={1.05}>
                         <Link
                           href="/admin"
-                          className={`text-lg font-medium relative group transition-colors duration-200 ${
+                          className={`text-lg font-heading relative group transition-colors duration-200 ${
                             router.pathname.startsWith("/admin")
-                              ? `${navLinkActiveClass}`
-                              : `${navLinkBaseClass}`
+                              ? "text-foreground"
+                              : "text-muted-foreground hover:text-foreground"
                           }`}
                         >
                           Admin
@@ -272,7 +272,7 @@ export default function Nav() {
                     <HoverCard scale={1.05}>
                       <button
                         onClick={handleSignOut}
-                        className={`text-lg font-medium transition-colors duration-200 relative group ${navLinkBaseClass}`}
+                        className="text-lg font-heading transition-colors duration-200 relative group text-muted-foreground hover:text-foreground"
                       >
                         Sign Out
                       </button>
