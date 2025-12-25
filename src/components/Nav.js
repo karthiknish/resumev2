@@ -52,7 +52,7 @@ export default function Nav() {
   const mobileLinkBaseClass = "text-muted-foreground hover:bg-secondary/60 hover:text-foreground";
   const mobileLinkActiveClass = "text-primary bg-secondary/60";
   const mobileSignOutClass = "text-muted-foreground hover:text-foreground hover:bg-secondary/60";
-  const instrumentSerifStyle = { fontFamily: "Instrument Serif, serif" };
+
 
   // Debounce search query
   const debouncedSearchQuery = useDebounce(searchQuery, 300); // 300ms debounce
@@ -228,7 +228,7 @@ export default function Nav() {
               {navLinks.map((link) => (
                 <SlideInRight key={link.href} delay={link.delay}>
                   <HoverCard scale={1.05}>
-                    <Link style={{fontFamily: "Instrument Serif, serif"}}
+                    <Link
                       href={link.href}
                       className={`text-base lg:text-lg relative group text-black font-medium transition-colors duration-200 ${
                         (link.href === "/" && router.pathname === "/") ||
@@ -255,7 +255,6 @@ export default function Nav() {
                     <SlideInRight delay={1.0}>
                       <HoverCard scale={1.05}>
                         <Link
-                          style={{fontFamily: "Instrument Serif, serif"}}
                           href="/admin"
                           className={`text-lg font-medium relative group transition-colors duration-200 ${
                             router.pathname.startsWith("/admin")
@@ -272,7 +271,6 @@ export default function Nav() {
                   <SlideInRight delay={1.1}>
                     <HoverCard scale={1.05}>
                       <button
-                        style={{fontFamily: "Instrument Serif, serif"}}
                         onClick={handleSignOut}
                         className={`text-lg font-medium transition-colors duration-200 relative group ${navLinkBaseClass}`}
                       >
@@ -359,7 +357,7 @@ export default function Nav() {
                     onClick={handleLinkClick}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    style={instrumentSerifStyle}
+
                   >
                     {link.label}
                   </motion.a>
@@ -379,7 +377,7 @@ export default function Nav() {
                       onClick={handleLinkClick}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      style={instrumentSerifStyle}
+
                     >
                       Admin
                     </motion.a>
@@ -394,7 +392,7 @@ export default function Nav() {
                     }}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    style={instrumentSerifStyle}
+
                   >
                     Sign Out
                   </motion.a>

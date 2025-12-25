@@ -89,6 +89,10 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 47.4% 11.2%;
     --radius: 0.75rem;
+
+    /* Dark section colors for consistent dark theme areas */
+    --dark-section-bg: 222.2 47.4% 4%;
+    --dark-section-foreground: 210 40% 98%;
   }
 
   /* --- Theme Definitions --- */
@@ -122,6 +126,10 @@
    /* Add custom font styles */
   .font-calendas {
     font-family: 'Calendas', serif; /* Ensure Calendas is defined or imported */
+  }
+
+  .font-serif {
+    font-family: var(--font-instrument-serif), Georgia, "Times New Roman", serif;
   }
 
 }

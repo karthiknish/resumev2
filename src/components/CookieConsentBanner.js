@@ -10,7 +10,7 @@ function CookieConsentBanner({ onAccept, onDecline }) {
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: "100%", opacity: 0 }}
       transition={{ type: "spring", stiffness: 400, damping: 40 }}
-      className="fixed bottom-0 left-0 right-0 z-[2000] bg-white/95 backdrop-blur-md border-t border-slate-200 text-slate-800 p-4 shadow-[0_-8px_30px_rgba(15,23,42,0.08)]"
+      className="fixed bottom-0 left-0 right-0 z-[120] bg-white/95 backdrop-blur-md border-t border-slate-200 text-slate-800 p-4 shadow-[0_-8px_30px_rgba(15,23,42,0.08)]"
     >
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         <p className="text-sm text-slate-600 text-center md:text-left leading-relaxed">

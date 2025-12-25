@@ -265,7 +265,7 @@ function About() {
                 >
                   {stats.map((stat) => (
                     <div key={stat.label} className="space-y-1">
-                      <p style={{fontFamily:"Instrument Serif"}} className="font-heading text-2xl text-white">{stat.value}</p>
+                      <p className="font-heading text-2xl text-white">{stat.value}</p>
                       <p className="text-sm leading-snug text-white/70">{stat.label}</p>
                     </div>
                   ))}

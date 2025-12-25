@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaTimesCircle } from "react-icons/fa";
@@ -15,6 +15,17 @@ const SearchOverlay = ({
   handleResultClick,
   debouncedSearchQuery,
 }) => {
+  // Handle Escape key to close overlay
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        toggleSearch();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [toggleSearch]);
+
   return (
     <motion.div
       className="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-[110] flex flex-col items-center justify-start pt-20 sm:pt-28 p-4 relative overflow-hidden min-h-0"
