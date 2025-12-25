@@ -2,15 +2,45 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 
-// Design tokens from website
-const DESIGN = {
-  backgroundColor: "#0f172a", // Dark slate
-  accentColor: "#3b82f6",     // Blue
-  textColor: "#f8fafc",       // Light white
-  headingFont: "Instrument Serif",
-  bodyFont: "Inter",
-  aspectRatio: "4:5",
+// Nano Banana Pro - Google's advanced image generation model with superior text rendering
+const IMAGE_MODEL = "gemini-3-pro-image-preview";
+// Gemini 3 Flash - Latest fast text model for content generation
+const TEXT_MODEL = "gemini-3-flash-preview";
+
+// Style presets for carousel designs
+const STYLE_PRESETS = {
+  dark_pro: {
+    name: "Dark Pro",
+    background: "deep charcoal black (#0a0a0a) with subtle gradient to dark slate (#1a1a2e)",
+    accent: "vibrant electric blue (#3b82f6)",
+    textColor: "crisp white (#ffffff)",
+    secondaryText: "light gray (#a1a1aa)",
+    style: "sleek, modern, tech-forward",
+  },
+  light_pro: {
+    name: "Light Pro", 
+    background: "clean white (#ffffff) with subtle warm undertones",
+    accent: "deep blue (#1e40af)",
+    textColor: "near-black (#0f172a)",
+    secondaryText: "gray (#64748b)",
+    style: "clean, professional, minimalist",
+  },
+  gradient: {
+    name: "Gradient",
+    background: "rich gradient from deep purple (#4c1d95) to deep blue (#1e3a8a)",
+    accent: "bright cyan (#22d3ee)",
+    textColor: "white (#ffffff)",
+    secondaryText: "light purple (#c4b5fd)",
+    style: "bold, creative, eye-catching",
+  },
 };
+
+// Aspect ratio configurations
+const ASPECT_RATIOS = {
+  portrait: { ratio: "4:5", dimensions: "1080x1350 pixels", description: "optimal for LinkedIn mobile" },
+  square: { ratio: "1:1", dimensions: "1080x1080 pixels", description: "universal format" },
+};
+
 
 export default async function handler(req, res) {
   // Localhost bypass for development testing
@@ -38,7 +68,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { topic, slideCount = 5, slideContents = null } = req.body;
+    const { 
+      topic, 
+      slideCount = 5, 
+      slideContents = null,
+      style = "dark_pro",
+      aspectRatio = "portrait"
+    } = req.body;
 
     if (!topic || typeof topic !== "string" || !topic.trim()) {
       return res.status(400).json({
@@ -55,14 +91,18 @@ export default async function handler(req, res) {
       });
     }
 
+    // Validate style and aspect ratio
+    const selectedStyle = STYLE_PRESETS[style] || STYLE_PRESETS.dark_pro;
+    const selectedAspectRatio = ASPECT_RATIOS[aspectRatio] || ASPECT_RATIOS.portrait;
+
     // Step 1: Generate slide content if not provided
     let slides = slideContents;
     if (!slides) {
       slides = await generateSlideContent(apiKey, topic.trim(), slideCount);
     }
 
-    // Step 2: Generate images for each slide
-    const images = await generateSlideImages(apiKey, slides);
+    // Step 2: Generate images for each slide using Nano Banana Pro
+    const images = await generateSlideImages(apiKey, slides, selectedStyle, selectedAspectRatio);
 
     return res.status(200).json({
       success: true,
@@ -71,7 +111,9 @@ export default async function handler(req, res) {
       metadata: {
         topic: topic.trim(),
         slideCount: slides.length,
-        design: DESIGN,
+        style: selectedStyle.name,
+        aspectRatio: selectedAspectRatio.ratio,
+        model: IMAGE_MODEL,
       },
     });
   } catch (error) {
@@ -102,7 +144,7 @@ Return ONLY valid JSON array, no markdown, no explanation:
 [{"slideNumber": 1, "heading": "...", "body": "...", "hasNumber": false}, ...]`;
 
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${TEXT_MODEL}:generateContent?key=${apiKey}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -136,66 +178,126 @@ Return ONLY valid JSON array, no markdown, no explanation:
   return JSON.parse(jsonMatch[0]);
 }
 
-// Generate image for a single slide
-async function generateSlideImage(apiKey, slide, isFirstSlide = false) {
+// Generate image for a single slide using Nano Banana Pro
+async function generateSlideImage(apiKey, slide, isFirstSlide, isLastSlide, style, aspectRatio, totalSlides) {
   const { slideNumber, heading, body, hasNumber } = slide;
 
   const numberPrefix = hasNumber ? `${slideNumber}. ` : "";
   const formattedHeading = `${numberPrefix}${heading}`;
 
-  // Different prompt for cover slide vs content slides
-  const coverSlidePrompt = `Create a stunning LinkedIn carousel COVER slide image:
+  // Build design context from style preset
+  const designContext = `
+DESIGN STYLE: ${style.name} - ${style.style}
+BACKGROUND: ${style.background}
+ACCENT COLOR: ${style.accent}
+TEXT COLOR: ${style.textColor}
+SECONDARY TEXT: ${style.secondaryText}
+ASPECT RATIO: ${aspectRatio.ratio} (${aspectRatio.dimensions})
+`;
 
-VISUAL DESIGN:
-- Dark charcoal/slate background (hex #1a1a1a or similar dark gray)
-- 4:5 aspect ratio (portrait mode, 1080x1350px)
-- Include a simple, friendly cartoon illustration at the bottom half
-- Cartoon style: clean line art, light blue colored characters (like tech professionals, interview scenes, or relevant to the topic)
-- Characters should be minimalist, modern vector-style illustrations
+  // Cover slide prompt - optimized for LinkedIn engagement
+  const coverSlidePrompt = `Generate a stunning LinkedIn carousel COVER slide that grabs attention.
+${designContext}
 
-TEXT LAYOUT:
+CRITICAL TEXT RENDERING REQUIREMENTS:
+- Render ALL text with PERFECT legibility - this is the most important requirement
+- Use large, bold sans-serif typography (similar to Inter, Helvetica Neue, or SF Pro)
+- Headline font size equivalent to 48-60pt for maximum mobile readability
+- Subtitle font size equivalent to 24-28pt
+- Ensure extremely high contrast between text and background
+- NO text overlapping with decorative elements
+
+LAYOUT:
 - Title: "${heading}"
-  - Large, bold white text
-  - Key phrases colored in bright blue (#3b82f6)
-  - Position in top 40% of image
+  - Position in upper 40% of image
+  - Bold weight, ${style.textColor}
+  - Key action words can use ${style.accent} color
   
 - Subtitle: "${body}"
-  - Smaller white text in parentheses style
-  - Below the main title
-  
-STYLE REFERENCE: Like a modern tech infographic with clean typography and friendly illustrations. Think Cultivated Culture or similar professional LinkedIn carousels.`;
+  - Position below title with generous spacing (at least 40px gap)
+  - Medium weight, ${style.secondaryText}
 
-  const contentSlidePrompt = `Create a professional LinkedIn carousel content slide image:
+VISUAL ELEMENTS:
+- Add subtle decorative elements that don't interfere with text
+- Consider: abstract geometric shapes, soft gradients, or minimal icons
+- Keep bottom 30% relatively clean for visual breathing room
+- Add a small "Swipe →" indicator in bottom right corner
 
-VISUAL DESIGN:
-- Dark charcoal/slate background (hex #1a1a1a)
-- 4:5 aspect ratio (portrait, 1080x1350px)
-- Clean, minimal design with excellent typography
-- Small subtle brand logo placeholder at bottom center
+STYLE: Premium, modern LinkedIn carousel. Think professional tech company design standards.`;
 
-TEXT LAYOUT:
+  // Content slide prompt - clear hierarchy and readability
+  const contentSlidePrompt = `Generate a professional LinkedIn carousel CONTENT slide with perfect typography.
+${designContext}
+
+CRITICAL TEXT RENDERING REQUIREMENTS:
+- ALL text must be PERFECTLY legible - prioritize readability above all else
+- Use clean sans-serif font (Inter, Helvetica Neue, or SF Pro style)
+- Heading: large bold text, minimum 36pt equivalent
+- Body: regular weight, minimum 20pt equivalent for mobile readability
+- Line height: 1.5x for body text
+- Maximum 50 words visible on slide
+
+LAYOUT:
 - Heading: "${formattedHeading}"
-  - Large, bold white sans-serif font
-  ${hasNumber ? `- The number "${slideNumber}." should be in bright blue (#3b82f6)` : ""}
+  ${hasNumber ? `- The number "${slideNumber}" should be prominently displayed in ${style.accent} color` : ""}
   - Position in upper portion with left alignment
-  - Leave breathing room at top edge
+  - Leave 60px+ margin from top edge
+  - Text color: ${style.textColor}
   
-- Body text: "${body}"
-  - Regular weight white text
-  - Good line spacing and readability
-  - Bullet points if the text has multiple items
-  - Position below heading with comfortable spacing
+- Body: "${body}"
+  - Position below heading with 30px+ comfortable spacing
+  - Text color: ${style.secondaryText}
+  - If multiple points, use bullet points or numbered list format
+  - Left-aligned for easy scanning
+
+VISUAL ELEMENTS:
+- Minimal decorative elements - content is king
+- Subtle accent line or shape using ${style.accent} color
+- Clean margins: 60px on sides
+- Slide number indicator: "${slideNumber}/${totalSlides}" in bottom corner (small, subtle)
+
+STYLE: Clean, scannable, professional. Mobile-first design.`;
+
+  // CTA/Closing slide prompt
+  const ctaSlidePrompt = `Generate a compelling LinkedIn carousel CLOSING/CTA slide.
+${designContext}
+
+CRITICAL TEXT RENDERING REQUIREMENTS:
+- ALL text PERFECTLY legible - highest priority
+- Bold, impactful typography
+- CTA headline: 36-48pt equivalent
+- Supporting text: 20-24pt equivalent
+
+LAYOUT:
+- Main CTA: "${heading}"
+  - Centered, bold, prominent
+  - ${style.textColor}
   
-TYPOGRAPHY:
-- Clean, modern sans-serif font (like Inter or Helvetica)
-- Strong visual hierarchy
-- High contrast for readability
-- Professional, not cluttered`;
+- Supporting text: "${body}"
+  - Below main CTA
+  - ${style.secondaryText}
 
-  const prompt = isFirstSlide ? coverSlidePrompt : contentSlidePrompt;
+VISUAL ELEMENTS:
+- More dynamic than content slides
+- Consider: arrow pointing right, engagement icons (like, comment, share)
+- Add "Follow for more" or similar engagement prompt
+- Subtle branding element in corner
 
+STYLE: Memorable, action-oriented, professional.`;
+
+  // Select appropriate prompt
+  let prompt;
+  if (isFirstSlide) {
+    prompt = coverSlidePrompt;
+  } else if (isLastSlide) {
+    prompt = ctaSlidePrompt;
+  } else {
+    prompt = contentSlidePrompt;
+  }
+
+  // Use Nano Banana Pro for superior text rendering
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL}:generateContent?key=${apiKey}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -230,16 +332,27 @@ TYPOGRAPHY:
   throw new Error(`No image generated for slide ${slideNumber}`);
 }
 
-// Generate all slide images
-async function generateSlideImages(apiKey, slides) {
+// Generate all slide images using Nano Banana Pro
+async function generateSlideImages(apiKey, slides, style, aspectRatio) {
   const images = [];
+  const totalSlides = slides.length;
 
   // Generate images sequentially to avoid rate limits
   for (let i = 0; i < slides.length; i++) {
     const slide = slides[i];
     const isFirstSlide = i === 0;
+    const isLastSlide = i === slides.length - 1;
+    
     try {
-      const image = await generateSlideImage(apiKey, slide, isFirstSlide);
+      const image = await generateSlideImage(
+        apiKey, 
+        slide, 
+        isFirstSlide, 
+        isLastSlide, 
+        style, 
+        aspectRatio,
+        totalSlides
+      );
       images.push(image);
     } catch (error) {
       console.error(`Error generating slide ${slide.slideNumber}:`, error);

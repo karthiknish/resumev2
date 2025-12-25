@@ -24,6 +24,8 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function CarouselGenerator() {
   const [topic, setTopic] = useState("");
   const [slideCount, setSlideCount] = useState("5");
+  const [style, setStyle] = useState("dark_pro");
+  const [aspectRatio, setAspectRatio] = useState("portrait");
   const [isGenerating, setIsGenerating] = useState(false);
   const [slides, setSlides] = useState([]);
   const [images, setImages] = useState([]);
@@ -54,6 +56,8 @@ export default function CarouselGenerator() {
         body: JSON.stringify({
           topic: topic.trim(),
           slideCount: parseInt(slideCount, 10),
+          style,
+          aspectRatio,
         }),
       });
 
@@ -162,6 +166,38 @@ export default function CarouselGenerator() {
                           {num} slides
                         </SelectItem>
                       ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-foreground mb-1.5 block">
+                    Style Preset
+                  </Label>
+                  <Select value={style} onValueChange={setStyle} disabled={isGenerating}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="dark_pro">Dark Pro</SelectItem>
+                      <SelectItem value="light_pro">Light Pro</SelectItem>
+                      <SelectItem value="gradient">Gradient</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium text-foreground mb-1.5 block">
+                    Aspect Ratio
+                  </Label>
+                  <Select value={aspectRatio} onValueChange={setAspectRatio} disabled={isGenerating}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="portrait">Portrait (4:5)</SelectItem>
+                      <SelectItem value="square">Square (1:1)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
