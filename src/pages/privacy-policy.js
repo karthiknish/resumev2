@@ -6,8 +6,24 @@ export default function PrivacyPolicy() {
   return (
     <>
       <Head>
-        <title>Privacy Policy - Karthik Nishanth</title>
-        <meta name="description" content="Website Privacy Policy" />
+        <title>Privacy Policy - Karthik Nishanth | Cross-Platform Developer</title>
+        <meta name="description" content="Website Privacy Policy - Learn how we protect and handle your personal information." />
+        <link rel="canonical" href="https://karthiknish.com/privacy-policy" />
+
+        {/* Open Graph */}
+        <meta property="og:title" content="Privacy Policy - Karthik Nishanth | Cross-Platform Developer" />
+        <meta property="og:description" content="Learn how we protect and handle your personal information." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://karthiknish.com/privacy-policy" />
+        <meta property="og:image" content="https://karthiknish.com/Logo.png" />
+        <meta property="og:site_name" content="Karthik Nishanth" />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Privacy Policy - Karthik Nishanth" />
+        <meta name="twitter:description" content="Learn how we protect and handle your personal information." />
+        <meta name="twitter:image" content="https://karthiknish.com/Logo.png" />
+        <meta name="twitter:site" content="@karthiknish" />
       </Head>
       <PageContainer
         bgClassName="bg-gradient-to-br from-slate-100 via-white to-slate-200"

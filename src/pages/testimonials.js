@@ -25,27 +25,16 @@ export default function Testimonials({ testimonials }) {
   return (
     <>
       <Head>
-        <title>Testimonials - Karthik Nishanth | Full Stack Developer</title>
+        <title>Testimonials - Karthik Nishanth | Cross-Platform Developer</title>
         <meta
           name="description"
-          content="Client testimonials and endorsements for Karthik Nishanth, Full Stack Developer"
+          content="Client testimonials and endorsements for Karthik Nishanth, Cross-Platform Developer"
         />
         <meta
           name="keywords"
           content="testimonials, reviews, client feedback, web development, full stack developer"
         />
         
-        {/* Google Fonts */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="true"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital,wght@0,400;0,600;1,400&display=swap"
-          rel="stylesheet"
-        />
       </Head>
       <PageContainer>
         <div className="min-h-screen relative bg-slate-50">
@@ -98,7 +87,6 @@ export default function Testimonials({ testimonials }) {
                         : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300"
                     }`}
                   >
-                    <span className="mr-2"></span>
                     All Reviews
                   </motion.button>
                   <motion.button
@@ -111,7 +99,6 @@ export default function Testimonials({ testimonials }) {
                         : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300"
                     }`}
                   >
-                    <span className="mr-2"></span>
                     Clients
                   </motion.button>
                   <motion.button
@@ -243,7 +230,6 @@ export default function Testimonials({ testimonials }) {
                         whileTap={{ scale: 0.95 }}
                         className="bg-white text-slate-900 px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-3 mx-auto"
                       >
-                        <span className="text-xl"></span>
                         Submit a Testimonial
                         <motion.span
                           animate={{ x: [0, 5, 0] }}

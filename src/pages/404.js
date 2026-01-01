@@ -45,7 +45,7 @@ export default function FourOhFour() {
               <Link href="/services">
                 <Button
                   variant="outline"
-                  className="w-full sm:w-auto rounded-xl border-white/20 text-black hover:bg-white/10 hover:text-white"
+                  className="w-full sm:w-auto rounded-xl border-white/20 text-white hover:bg-white/10"
                 >
                   Explore services
                 </Button>

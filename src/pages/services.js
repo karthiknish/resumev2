@@ -318,7 +318,7 @@ export default function Services() {
                       { label: "Delivery model", value: "Async-first" },
                     ].map((stat) => (
                       <div key={stat.label} className="space-y-1">
-                        <p style={{fontFamily:"Instrument Serif"}} className="font-heading text-2xl text-white">{stat.value}</p>
+                        <p className="font-heading text-2xl text-white">{stat.value}</p>
                         <p className="text-sm text-slate-300 leading-snug">{stat.label}</p>
                       </div>
                     ))}

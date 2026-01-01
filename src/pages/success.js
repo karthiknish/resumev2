@@ -17,8 +17,7 @@ export default function Success() {
       </Head>
       <PageContainer>
         <div
-          className="min-h-screen mt-24 relative flex items-center justify-center"
-          style={{ fontFamily: "Inter, sans-serif" }}
+          className="min-h-screen mt-24 relative flex items-center justify-center font-sans"
         >
           {/* Subtle Background */}
           <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-slate-100"></div>

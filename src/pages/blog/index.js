@@ -1,4 +1,3 @@
-"use client";
 import { useEffect, useState, useMemo } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -451,15 +450,6 @@ function Index({ initialPosts = [], categories = [] }) {
                 className="text-center py-20"
               >
                 <div className="bg-white rounded-3xl p-12 border border-slate-200 shadow-sm max-w-2xl mx-auto">
-                  <motion.div
-                    animate={{ rotate: [0, 10, -10, 0] }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="text-6xl mb-6"
-                  ></motion.div>
                   <h3
                     className="font-heading text-2xl text-slate-900 mb-4"
                   >
