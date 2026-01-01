@@ -19,13 +19,21 @@ export default async function handler(req, res) {
   try {
     switch (method) {
       case "GET":
-        const result = await getCollection("bytes");
+        const limit = req.query.limit ? parseInt(req.query.limit) : null;
+        const pageToken = req.query.pageToken || null;
+
+        const result = await getCollection("bytes", { 
+          pageSize: limit, 
+          pageToken: pageToken,
+          orderBy: "createdAt desc" 
+        });
+        
         let bytes = result.documents || [];
         
-        // Sort by createdAt descending
-        bytes.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        
-        return ApiResponse.success(res, bytes, "Bytes retrieved successfully");
+        return ApiResponse.success(res, {
+          bytes,
+          nextPageToken: result.nextPageToken || null
+        }, "Bytes retrieved successfully");
 
       case "POST":
         // Check for admin privileges

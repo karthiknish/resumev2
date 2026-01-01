@@ -28,15 +28,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 import PexelsImageSearch from "@/components/admin/PexelsImageSearch";
 import TrendingNewsFeed from "@/components/admin/shared/TrendingNewsFeed";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Import Swiper React components
@@ -78,6 +82,8 @@ const itemVariants = {
 export default function BytesTab() {
   const [bytes, setBytes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [nextPageToken, setNextPageToken] = useState(null);
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -100,8 +106,9 @@ export default function BytesTab() {
   // Pexels Modal State
   const [isPexelsModalOpen, setIsPexelsModalOpen] = useState(false);
 
-  // State for instructions visibility
-  const [showInstructions, setShowInstructions] = useState(true);
+  // AlertDialog state for deletion
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [byteToDelete, setByteToDelete] = useState(null);
 
   // Ref for Swiper navigation
   const swiperNavPrevRef = useRef(null);
@@ -111,20 +118,35 @@ export default function BytesTab() {
     fetchBytes();
   }, []);
 
-  const fetchBytes = async () => {
-    setIsLoading(true);
+  const fetchBytes = async (token = null) => {
+    if (token) {
+      setIsFetchingMore(true);
+    } else {
+      setIsLoading(true);
+    }
     setError(null);
     try {
-      const response = await fetch("/api/bytes");
+      const limit = 12; // Fetch 12 at a time
+      const url = token 
+        ? `/api/bytes?limit=${limit}&pageToken=${token}` 
+        : `/api/bytes?limit=${limit}`;
+      
+      const response = await fetch(url);
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || "Failed to fetch bytes");
       }
       const data = await response.json();
       if (data.success && data.data) {
-        setBytes(data.data);
+        const newBytes = data.data.bytes || [];
+        if (token) {
+          setBytes((prev) => [...prev, ...newBytes]);
+        } else {
+          setBytes(newBytes);
+        }
+        setNextPageToken(data.data.nextPageToken || null);
       } else {
-        setBytes([]);
+        if (!token) setBytes([]);
         setError("No bytes found or invalid response format");
       }
     } catch (err) {
@@ -132,7 +154,15 @@ export default function BytesTab() {
       toast.error(err.message || "Could not load bytes.");
     } finally {
       setIsLoading(false);
+      setIsFetchingMore(false);
     }
+  };
+
+  // Helper for character count color
+  const getCountColor = (count, max) => {
+    if (count > max) return "text-destructive";
+    if (count > max * 0.9) return "text-orange-500";
+    return "text-muted-foreground";
   };
 
   // Combined Create/Update Handler
@@ -159,7 +189,6 @@ export default function BytesTab() {
     const method = isEditing ? "PUT" : "POST";
 
     try {
-      console.log(`Submitting Byte Data (${method}) to ${url}:`, byteData);
 
       const response = await fetch(url, {
         method: method,
@@ -191,26 +220,32 @@ export default function BytesTab() {
       toast.error(
         err.message || `Failed to ${isEditing ? "update" : "create"} byte.`
       );
-      console.error("Byte form submission error:", err);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleDeleteByte = async (id) => {
-    if (!confirm("Are you sure you want to delete this byte?")) {
-      return;
-    }
+  const confirmDeleteByte = (id) => {
+    setByteToDelete(id);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDeleteByte = async () => {
+    if (!byteToDelete) return;
+    
     try {
-      const response = await fetch(`/api/bytes/${id}`, { method: "DELETE" });
+      const response = await fetch(`/api/bytes/${byteToDelete}`, { method: "DELETE" });
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || "Failed to delete byte");
       }
-      setBytes((prev) => prev.filter((byte) => byte._id !== id));
+      setBytes((prev) => prev.filter((byte) => byte._id !== byteToDelete));
       toast.success("Byte deleted successfully!");
     } catch (err) {
       toast.error(err.message || "Failed to delete byte.");
+    } finally {
+      setIsDeleteDialogOpen(false);
+      setByteToDelete(null);
     }
   };
 
@@ -261,7 +296,6 @@ export default function BytesTab() {
 
   // --- News Selection Handler ---
   const handleNewsSelect = (headline, summary) => {
-    console.log("[BytesTab] handleNewsSelect called with:", headline, summary);
     setNewHeadline(headline);
     setNewBody(`Trending now: ${headline}\n\n${summary}\n\nMy thoughts: `);
     setNewImageUrl("");
@@ -272,7 +306,6 @@ export default function BytesTab() {
 
   // --- Pexels Image Selection Handler ---
   const handlePexelsSelect = (url, alt) => {
-    console.log("[BytesTab] Pexels image selected:", url);
     setNewImageUrl(url);
     setIsPexelsModalOpen(false);
   };
@@ -319,7 +352,7 @@ export default function BytesTab() {
           >
             <Card className="bg-muted/50 border border-primary/20 relative shadow-sm">
               <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-lg font-bold text-foreground" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                <CardTitle className="flex items-center gap-2 text-lg font-bold text-foreground font-heading">
                   <Info className="h-5 w-5 text-primary" />
                   Welcome to Bytes!
                 </CardTitle>
@@ -365,14 +398,14 @@ export default function BytesTab() {
           className="lg:col-span-2 bg-card border-border shadow-sm rounded-xl"
         >
           <CardHeader>
-            <CardTitle className="text-xl font-bold text-foreground" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+            <CardTitle className="text-xl font-bold text-foreground font-heading">
               {isEditing ? "✏️ Edit Byte" : "✨ Create New Byte"}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleFormSubmit} className="space-y-4">
               {/* Headline Input with AI Suggestion */}
-              <div>
+              <div className="space-y-1.5">
                 <Label htmlFor="headline">Headline</Label>
                 <div className="flex items-center gap-2">
                   <Input
@@ -399,34 +432,38 @@ export default function BytesTab() {
                     )}
                   </Button>
                 </div>
-                {/* Headline Suggestions */}
-                <AnimatePresence>
-                  {headlineSuggestions.length > 0 && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="mt-2 space-y-1"
-                    >
-                      {headlineSuggestions.map((s, i) => (
-                        <Button
-                          key={i}
-                          type="button"
-                          variant="secondary"
-                          size="sm"
-                          onClick={() => setNewHeadline(s)}
-                          className="w-full justify-start text-left text-foreground bg-muted hover:bg-muted/80 h-auto py-1 px-2"
-                        >
-                          {s}
-                        </Button>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <div className="flex justify-between items-center mt-1">
+                  <AnimatePresence>
+                    {headlineSuggestions.length > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="space-y-1 flex-grow mr-4"
+                      >
+                        {headlineSuggestions.map((s, i) => (
+                          <Button
+                            key={i}
+                            type="button"
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => setNewHeadline(s)}
+                            className="w-full justify-start text-left text-foreground bg-muted hover:bg-muted/80 h-auto py-1 px-2"
+                          >
+                            {s}
+                          </Button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  <span className={cn("text-[10px] font-medium ml-auto", getCountColor(newHeadline.length, 200))}>
+                    {newHeadline.length}/200
+                  </span>
+                </div>
               </div>
 
               {/* Body Textarea with AI Suggestion */}
-              <div>
+              <div className="space-y-1.5">
                 <Label htmlFor="body">Body</Label>
                 <div className="flex items-start gap-2">
                   <Textarea
@@ -453,30 +490,34 @@ export default function BytesTab() {
                     )}
                   </Button>
                 </div>
-                {/* Body Suggestions */}
-                <AnimatePresence>
-                  {bodySuggestions.length > 0 && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="mt-2 space-y-1"
-                    >
-                      {bodySuggestions.map((s, i) => (
-                        <Button
-                          key={i}
-                          type="button"
-                          variant="secondary"
-                          size="sm"
-                          onClick={() => setNewBody(s)}
-                          className="w-full justify-start text-left text-foreground bg-muted hover:bg-muted/80 h-auto py-1 px-2 whitespace-pre-wrap break-words"
-                        >
-                          {s}
-                        </Button>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <div className="flex justify-between items-center mt-1">
+                  <AnimatePresence>
+                    {bodySuggestions.length > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="space-y-1 flex-grow mr-4"
+                      >
+                        {bodySuggestions.map((s, i) => (
+                          <Button
+                            key={i}
+                            type="button"
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => setNewBody(s)}
+                            className="w-full justify-start text-left text-foreground bg-muted hover:bg-muted/80 h-auto py-1 px-2 whitespace-pre-wrap break-words"
+                          >
+                            {s}
+                          </Button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  <span className={cn("text-[10px] font-medium ml-auto", getCountColor(newBody.length, 500))}>
+                    {newBody.length}/500
+                  </span>
+                </div>
               </div>
 
               {/* Image URL and Pexels Search */}
@@ -623,9 +664,11 @@ export default function BytesTab() {
               prevEl: swiperNavPrevRef.current,
               nextEl: swiperNavNextRef.current,
             }}
-            onBeforeInit={(swiper) => {
+            onInit={(swiper) => {
               swiper.params.navigation.prevEl = swiperNavPrevRef.current;
               swiper.params.navigation.nextEl = swiperNavNextRef.current;
+              swiper.navigation.init();
+              swiper.navigation.update();
             }}
             breakpoints={{
               640: {
@@ -695,7 +738,7 @@ export default function BytesTab() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => handleDeleteByte(byte._id)}
+                          onClick={() => confirmDeleteByte(byte._id)}
                           className="p-1 h-auto w-auto rounded hover:bg-muted text-muted-foreground hover:text-destructive"
                           title="Delete Byte"
                         >
@@ -709,7 +752,51 @@ export default function BytesTab() {
             ))}
           </Swiper>
         )}
+
+        {/* Load More Section */}
+        {nextPageToken && !isLoading && (
+          <div className="mt-8 flex justify-center">
+            <Button
+              variant="outline"
+              onClick={() => fetchBytes(nextPageToken)}
+              disabled={isFetchingMore}
+              className="gap-2 min-w-[140px]"
+            >
+              {isFetchingMore ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                <>
+                  Load More Bytes
+                </>
+              )}
+            </Button>
+          </div>
+        )}
       </div>
+
+      {/* Deletion Confirmation Dialog */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the byte.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteByte}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
