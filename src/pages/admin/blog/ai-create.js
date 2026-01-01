@@ -78,11 +78,19 @@ export default function AICreateBlog() {
 
   useEffect(() => {
     if (status === "loading") return;
+
+    // Localhost bypass for development testing
+    const isLocalhost = typeof window !== "undefined" && 
+      (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+
+    if (isLocalhost) return;
+
     if (status === "unauthenticated") {
       toast.error("Authentication required. Redirecting to signin...");
       router.push("/signin");
       return;
     }
+
     if (session && !checkAdminStatus(session)) {
       toast.error("Access Denied: Admin privileges required.");
       router.push("/");
@@ -112,6 +120,18 @@ export default function AICreateBlog() {
         .map((k) => k.trim())
         .filter((k) => k);
 
+      // Attempt to fetch a relevant image from Pexels
+      let finalImageUrl = `https://images.pexels.com/photos/733856/pexels-photo-733856.jpeg?auto=compress&cs=tinysrgb&w=1200&h=630&dpr=1`; // Solid fallback
+      try {
+        const pexelsRes = await fetch(`/api/pexels/search?query=${encodeURIComponent(topic || "technology")}&per_page=1`);
+        const pexelsData = await pexelsRes.json();
+        if (pexelsData.success && pexelsData.photos && pexelsData.photos.length > 0) {
+          finalImageUrl = pexelsData.photos[0].src.landscape || pexelsData.photos[0].src.large;
+        }
+      } catch (err) {
+        console.error("Failed to fetch Pexels image:", err);
+      }
+
       const response = await fetch("/api/blog/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -119,9 +139,7 @@ export default function AICreateBlog() {
           title: generatedContent.title,
           content: generatedContent.content,
           excerpt,
-          imageUrl: `https://source.unsplash.com/random/1200x630/?${encodeURIComponent(
-            topic || "ai blog"
-          )}`,
+          imageUrl: finalImageUrl,
           tags: keywordsArray,
           isPublished: false,
           category: "AI Generated",
@@ -266,8 +284,8 @@ export default function AICreateBlog() {
 
   if (status === "loading") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50">
-        <Loader2 className="h-10 w-10 animate-spin text-slate-600" />
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -279,14 +297,14 @@ export default function AICreateBlog() {
       <Head>
         <title>AI Blog Generator</title>
       </Head>
-      <div className="min-h-screen bg-slate-50 text-slate-900">
+      <div className="min-h-screen bg-background text-foreground">
         <PageContainer className="pt-24 pb-12">
           <div className="mx-auto max-w-4xl">
             <div className="mb-8 text-center">
-              <h1 className="mb-2 text-3xl font-heading font-bold text-slate-900 sm:text-4xl">
+              <h1 className="mb-2 text-3xl font-heading font-bold text-foreground sm:text-4xl">
                 AI Blog Generator
               </h1>
-              <p className="text-slate-600">
+              <p className="text-muted-foreground">
                 Create engaging content in minutes with AI assistance.
               </p>
             </div>
@@ -299,8 +317,8 @@ export default function AICreateBlog() {
                     <div
                       className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold transition-colors ${
                         step >= s
-                          ? "bg-slate-900 text-white"
-                          : "bg-slate-200 text-slate-500"
+                          ? "bg-foreground text-background"
+                          : "bg-muted text-muted-foreground"
                       }`}
                     >
                       {step > s ? <CheckCircle2 className="h-5 w-5" /> : s}
@@ -308,7 +326,7 @@ export default function AICreateBlog() {
                     {s < 3 && (
                       <div
                         className={`mx-2 h-1 w-12 rounded-full transition-colors ${
-                          step > s ? "bg-slate-900" : "bg-slate-200"
+                          step > s ? "bg-foreground" : "bg-muted"
                         }`}
                       />
                     )}
@@ -326,7 +344,7 @@ export default function AICreateBlog() {
                   exit={{ opacity: 0, x: 20 }}
                   className="space-y-6"
                 >
-                  <Card className="border-slate-200 shadow-sm">
+                  <Card className="border-border shadow-sm">
                     <CardHeader>
                       <CardTitle>Choose your source</CardTitle>
                       <CardDescription>
@@ -340,7 +358,7 @@ export default function AICreateBlog() {
                         onValueChange={setMode}
                         className="w-full"
                       >
-                        <TabsList className="grid w-full grid-cols-2 bg-slate-100">
+                        <TabsList className="grid w-full grid-cols-2 bg-muted">
                           <TabsTrigger value="topic">Topic & Idea</TabsTrigger>
                           <TabsTrigger value="link">Article URL</TabsTrigger>
                         </TabsList>
@@ -415,7 +433,7 @@ export default function AICreateBlog() {
                         <Button
                           onClick={handleGenerateOutline}
                           disabled={!topic.trim() || loadingSection === "outline"}
-                          className="bg-slate-900 text-white hover:bg-slate-800"
+                          className="bg-primary text-primary-foreground hover:bg-primary/90"
                         >
                           {loadingSection === "outline" ? (
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -428,7 +446,7 @@ export default function AICreateBlog() {
                         <Button
                           onClick={handleConvertLink}
                           disabled={!articleUrl.trim() || loadingSection === "link"}
-                          className="bg-slate-900 text-white hover:bg-slate-800"
+                          className="bg-primary text-primary-foreground hover:bg-primary/90"
                         >
                           {loadingSection === "link" ? (
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -451,7 +469,7 @@ export default function AICreateBlog() {
                   exit={{ opacity: 0, x: 20 }}
                   className="space-y-6"
                 >
-                  <Card className="border-slate-200 shadow-sm">
+                  <Card className="border-border shadow-sm">
                     <CardHeader>
                       <CardTitle>Review Outline</CardTitle>
                       <CardDescription>
@@ -468,9 +486,9 @@ export default function AICreateBlog() {
                         />
                       </div>
                       {generatedOutline && (
-                        <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-                          <h3 className="mb-2 font-semibold text-slate-900">Outline Structure</h3>
-                          <ul className="list-inside list-disc space-y-1 text-slate-700">
+                        <div className="rounded-lg border border-border bg-muted/50 p-4">
+                          <h3 className="mb-2 font-semibold text-foreground">Outline Structure</h3>
+                          <ul className="list-inside list-disc space-y-1 text-muted-foreground">
                             {generatedOutline.headings.map((h, i) => (
                               <li key={i}>{h}</li>
                             ))}
@@ -486,7 +504,7 @@ export default function AICreateBlog() {
                       <Button
                         onClick={handleGenerateFullPost}
                         disabled={loadingSection === "generate"}
-                        className="bg-slate-900 text-white hover:bg-slate-800"
+                        className="bg-primary text-primary-foreground hover:bg-primary/90"
                       >
                         {loadingSection === "generate" ? (
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -508,7 +526,7 @@ export default function AICreateBlog() {
                   exit={{ opacity: 0, x: 20 }}
                   className="space-y-6"
                 >
-                  <Card className="border-slate-200 shadow-sm">
+                  <Card className="border-border shadow-sm">
                     <CardHeader className="flex flex-row items-center justify-between">
                       <div>
                         <CardTitle>Generated Content</CardTitle>
@@ -523,14 +541,14 @@ export default function AICreateBlog() {
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="rounded-xl border border-slate-200 bg-slate-50 p-6">
+                      <div className="rounded-xl border border-border bg-muted/30 p-6">
                         {generatedContent ? (
-                          <article className="prose max-w-none prose-headings:font-heading prose-headings:text-slate-900 prose-p:text-slate-700">
+                          <article className="prose max-w-none prose-headings:font-heading prose-headings:text-foreground prose-p:text-muted-foreground">
                             <h1>{generatedContent.title}</h1>
                             <TipTapRenderer content={generatedContent.content} />
                           </article>
                         ) : (
-                          <div className="flex h-64 items-center justify-center text-slate-500">
+                          <div className="flex h-64 items-center justify-center text-muted-foreground">
                             No content generated yet.
                           </div>
                         )}

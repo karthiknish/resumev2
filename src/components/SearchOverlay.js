@@ -28,7 +28,7 @@ const SearchOverlay = ({
 
   return (
     <motion.div
-      className="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-[110] flex flex-col items-center justify-start pt-20 sm:pt-28 p-4 relative overflow-hidden min-h-0"
+      className="fixed inset-0 bg-white/95 backdrop-blur-xl z-[110] flex flex-col items-center justify-start pt-20 sm:pt-28 p-4 relative overflow-hidden min-h-0"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -39,7 +39,7 @@ const SearchOverlay = ({
       {/* Close Button */}
       <motion.button
         onClick={toggleSearch}
-        className="absolute top-6 right-6 text-slate-200 hover:text-white transition-colors z-[111] p-2 rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/20"
+        className="absolute top-6 right-6 text-slate-600 hover:text-slate-900 transition-colors z-[111] p-2 rounded-full bg-slate-100/80 backdrop-blur-sm hover:bg-slate-200"
         aria-label="Close Search"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}

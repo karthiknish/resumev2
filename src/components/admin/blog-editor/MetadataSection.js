@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Loader2, Sparkles, Wand2 } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 
 function MetadataSection({
@@ -139,7 +139,7 @@ function MetadataSection({
   };
 
   return (
-    <div className="space-y-6 border-y border-blue-100 py-6">
+    <div className="space-y-6 border-y border-border py-6">
       {/* Metadata Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Description / Excerpt */}

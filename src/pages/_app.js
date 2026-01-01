@@ -1,5 +1,5 @@
 import "@/styles/globals.css";
-import "highlight.js/styles/atom-one-dark.css"; // Dark theme for code highlighting
+import "highlight.js/styles/atom-one-light.css"; // Light theme for code highlighting
 import Script from "next/script";
 import { useRouter } from "next/router";
 import React, { useEffect, useState, lazy, Suspense } from "react"; // Import React

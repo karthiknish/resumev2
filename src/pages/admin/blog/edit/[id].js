@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import PageContainer from "@/components/PageContainer";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -25,7 +26,10 @@ import TipTapRenderer from "@/components/TipTapRenderer";
 import useDebounce from "@/hooks/useDebounce";
 import { toast } from "sonner";
 
+import { checkAdminStatus } from "@/lib/authUtils";
+
 function Edit() {
+  const { data: session, status } = useSession();
   const router = useRouter();
   const { id: blogId } = router.query;
 
@@ -42,7 +46,6 @@ function Edit() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [submitStatus, setSubmitStatus] = useState([]);
   const [showPreview, setShowPreview] = useState(false);
   const [isFormatting, setIsFormatting] = useState(false);
   const [lastSavedSnapshot, setLastSavedSnapshot] = useState({ ...formData });
@@ -50,6 +53,28 @@ function Edit() {
   const [autoSaveMessage, setAutoSaveMessage] = useState("");
 
   const debouncedFormData = useDebounce(formData, 1500);
+
+  // Check for admin status
+  useEffect(() => {
+    if (status === "loading") return;
+
+    // Localhost bypass for development testing
+    const isLocalhost = typeof window !== "undefined" && 
+      (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+
+    if (isLocalhost) return;
+
+    if (status === "unauthenticated") {
+      toast.error("Authentication required. Redirecting to signin...");
+      router.push("/signin");
+      return;
+    }
+
+    if (session && !checkAdminStatus(session)) {
+      toast.error("Access Denied: Admin privileges required.");
+      router.push("/");
+    }
+  }, [status, session, router]);
 
   const getPlainText = (html) => {
     if (!html) return "";
@@ -239,42 +264,24 @@ function Edit() {
       return;
     }
 
-    const dataToUpdate = {
-      id: blogId,
-      title: formData.title,
-      imageUrl: formData.imageUrl,
-      content: formData.content || "",
-      description: formData.excerpt || formData.description || "",
-      excerpt: formData.excerpt,
-      category: formData.category,
-      tags: formData.tags.filter((tag) => tag),
-      isPublished: formData.isPublished,
-    };
-
     try {
-      const res = await fetch(`/api/blog/edit`, {
+      const response = await fetch("/api/blog/edit", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dataToUpdate),
+        body: JSON.stringify({ id: blogId, ...formData }),
       });
-      const result = await res.json();
 
+      const result = await response.json();
       if (result.success) {
-        setSubmitStatus([true, "Blog post updated successfully!"]);
         toast.success("Blog post updated successfully!");
-        router.push("/blog");
+        router.push("/admin");
       } else {
-        const apiErrorMsg = result.message || "Failed to update blog post";
-        setError(apiErrorMsg);
-        setSubmitStatus([false, apiErrorMsg]);
-        toast.error(apiErrorMsg);
+        setError(result.message || "Failed to update blog post");
+        toast.error(result.message || "Failed to update blog post");
       }
     } catch (err) {
-      const networkErrorMsg = "Network error occurred while saving.";
-      setError(networkErrorMsg);
-      setSubmitStatus([false, networkErrorMsg]);
-      toast.error(networkErrorMsg);
-      console.error(err);
+      setError("An unexpected error occurred");
+      toast.error("An unexpected error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -282,23 +289,23 @@ function Edit() {
 
   const BlogPreview = () => (
     <div className="fixed inset-0 z-[150] flex items-start justify-center overflow-auto bg-slate-900/80 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-4xl my-8 overflow-hidden rounded-2xl bg-white shadow-2xl animate-in fade-in zoom-in duration-200">
-        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4 bg-slate-50">
-          <h2 className="text-lg font-heading font-semibold text-slate-900">
+      <div className="w-full max-w-4xl my-8 overflow-hidden rounded-2xl bg-background border border-border shadow-2xl animate-in fade-in zoom-in duration-200">
+        <div className="flex items-center justify-between border-b border-border px-6 py-4 bg-muted/30">
+          <h2 className="text-lg font-heading font-semibold text-foreground">
             Preview
           </h2>
           <Button
             variant="ghost"
             size="icon"
             onClick={togglePreview}
-            className="text-slate-500 hover:text-slate-900"
+            className="text-muted-foreground hover:text-foreground"
           >
             <AiOutlineClose size={20} />
           </Button>
         </div>
         <div className="max-h-[80vh] overflow-auto px-8 py-8">
           {formData.imageUrl && (
-            <div className="mb-8 overflow-hidden rounded-xl shadow-sm">
+            <div className="mb-8 overflow-hidden rounded-xl shadow-sm border border-border">
               <img
                 src={formData.imageUrl}
                 alt={formData.title}
@@ -306,10 +313,10 @@ function Edit() {
               />
             </div>
           )}
-          <h1 className="mb-6 text-4xl font-heading font-bold text-slate-900">
+          <h1 className="mb-6 text-4xl font-heading font-bold text-foreground">
             {formData.title}
           </h1>
-          <div className="prose prose-lg max-w-none text-slate-700 prose-headings:font-heading prose-headings:text-slate-900 prose-a:text-blue-600">
+          <div className="prose prose-lg max-w-none text-muted-foreground prose-headings:font-heading prose-headings:text-foreground prose-a:text-primary">
             <TipTapRenderer content={formData.content} />
           </div>
         </div>
@@ -317,10 +324,10 @@ function Edit() {
     </div>
   );
 
-  if (isLoading && !blogId) {
+  if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50">
-        <Loader2 className="h-10 w-10 animate-spin text-slate-400" />
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -330,7 +337,7 @@ function Edit() {
       <Head>
         <title>Edit: {formData.title || "Blog Post"}</title>
       </Head>
-      <div className="min-h-screen bg-slate-50 text-slate-900">
+      <div className="min-h-screen bg-background text-foreground">
         <PageContainer className="pt-32 pb-20 px-6 md:px-12">
           <div className="mx-auto max-w-[1600px]">
             {/* Header */}
@@ -340,15 +347,15 @@ function Edit() {
                   variant="ghost"
                   size="icon"
                   onClick={() => router.back()}
-                  className="rounded-full hover:bg-slate-200"
+                  className="rounded-full hover:bg-muted"
                 >
                   <ArrowLeft className="h-5 w-5" />
                 </Button>
                 <div>
-                  <h1 className="text-2xl font-heading font-bold text-slate-900">
+                  <h1 className="text-2xl font-heading font-bold text-foreground">
                     Edit Post
                   </h1>
-                  <p className="text-sm text-slate-500">
+                  <p className="text-sm text-muted-foreground">
                     {isAutoSaving ? "Saving..." : autoSaveMessage || "All changes saved"}
                   </p>
                 </div>
@@ -398,6 +405,12 @@ function Edit() {
               </div>
             </div>
 
+            {error && (
+              <div className="mb-6 rounded-lg bg-destructive/10 p-4 text-sm text-destructive">
+                {error}
+              </div>
+            )}
+
             <div className="max-w-5xl mx-auto space-y-8">
               {/* Title & Badges */}
               <div className="space-y-4">
@@ -406,10 +419,10 @@ function Edit() {
                   value={formData.title}
                   onChange={(e) => handleFormChange("title", e.target.value)}
                   placeholder="Post Title"
-                  className="w-full border-none bg-transparent text-4xl font-heading font-bold text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-0"
+                  className="w-full border-none bg-transparent text-4xl font-heading font-bold text-foreground placeholder:text-muted focus:outline-none focus:ring-0"
                 />
 
-                <div className="flex items-center gap-2 text-sm text-slate-500">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Badge variant="secondary" className="font-normal">
                     {readingTimeMinutes} min read
                   </Badge>
@@ -442,19 +455,21 @@ function Edit() {
                 </div>
               </div>
 
-              {/* Metadata Section (Top) */}
-              <MetadataSection
-                formData={formData}
-                onFormChange={handleFormChange}
-                isPublished={formData.isPublished}
-                onPublishChange={handlePublishChange}
-              />
+              <div className="lg:block hidden space-y-8">
+                {/* Metadata Section (Top) */}
+                <MetadataSection
+                  formData={formData}
+                  onFormChange={handleFormChange}
+                  isPublished={formData.isPublished}
+                  onPublishChange={handlePublishChange}
+                />
 
-              {/* Banner Image (Middle) */}
-              <BannerImageSection
-                imageUrl={formData.imageUrl}
-                onImageUrlChange={handleImageUrlChange}
-              />
+                {/* Banner Image (Middle) */}
+                <BannerImageSection
+                  imageUrl={formData.imageUrl}
+                  onImageUrlChange={handleImageUrlChange}
+                />
+              </div>
             </div>
 
             {/* Main Editor Area (Bottom) - Full Width */}

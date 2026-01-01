@@ -81,7 +81,7 @@ function AdminDashboard() {
   }, []);
 
   // State specifically for unread count (now for Contacts)
-  const [unreadContactsCount, setUnreadContactsCount] = useState(0);
+  const [unreadContactsCount, setUnreadContactsCount] = useState(null);
   const [isLoadingContactsCount, setIsLoadingContactsCount] = useState(true);
 
   // Check for admin role
@@ -293,7 +293,10 @@ function AdminDashboard() {
               <div className="rounded-3xl border border-border bg-card p-5 text-foreground shadow-md md:p-6">
                 <AnimatePresence mode="wait">
                   {activeTab === "dashboard" && (
-                    <DashboardTab key="dashboard" />
+                    <DashboardTab 
+                      key="dashboard" 
+                      unreadCount={unreadContactsCount}
+                    />
                   )}
                   {activeTab === "calendar" && <CalendarTab key="calendar" />}
                   {activeTab === "chat-history" && (

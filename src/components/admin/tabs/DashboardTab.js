@@ -60,10 +60,40 @@ export default function DashboardTab({ unreadCount }) {
   const [totalPosts, setTotalPosts] = useState(0);
   const [postToDelete, setPostToDelete] = useState(null); // State to hold ID of post to delete
   const [isDeleting, setIsDeleting] = useState(false); // State for delete loading
+  const [subscribersCount, setSubscribersCount] = useState(null);
+  const [visitorsCount, setVisitorsCount] = useState(null);
+  const [isLoadingStats, setIsLoadingStats] = useState(true);
 
   useEffect(() => {
     fetchPosts(currentPage);
+    fetchDashboardStats();
   }, [currentPage]);
+
+  const fetchDashboardStats = async () => {
+    setIsLoadingStats(true);
+    try {
+      // Fetch Subscribers count
+      const subRes = await fetch("/api/subscribers");
+      if (subRes.ok) {
+        const subData = await subRes.json();
+        setSubscribersCount(subData.count || 0);
+      }
+
+      // Fetch API usage (as a proxy for visitors/activity)
+      const usageRes = await fetch("/api/admin/api-usage");
+      if (usageRes.ok) {
+        const usageData = await usageRes.json();
+        const totalUsage = Array.isArray(usageData.data) 
+          ? usageData.data.reduce((acc, curr) => acc + (curr.count || 0), 0)
+          : (usageData.data?.count || 0);
+        setVisitorsCount(totalUsage);
+      }
+    } catch (err) {
+      console.error("Error fetching dashboard stats:", err);
+    } finally {
+      setIsLoadingStats(false);
+    }
+  };
 
   const fetchPosts = async (page) => {
     setIsLoading(true);
@@ -206,7 +236,15 @@ export default function DashboardTab({ unreadCount }) {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-black text-foreground">N/A</div>
+              {isLoadingStats ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : (
+                <div className="text-3xl font-black text-foreground">
+                  {subscribersCount ?? "0"}
+                </div>
+              )}
             </CardContent>
           </Card>
         </StaggerItem>
@@ -221,7 +259,15 @@ export default function DashboardTab({ unreadCount }) {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-black text-foreground">N/A</div>
+              {isLoadingStats ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : (
+                <div className="text-3xl font-black text-foreground">
+                  {visitorsCount ?? "0"}
+                </div>
+              )}
             </CardContent>
           </Card>
         </StaggerItem>
@@ -242,7 +288,7 @@ export default function DashboardTab({ unreadCount }) {
                   asChild
                   className="rounded-xl bg-primary text-primary-foreground shadow-md transition-all duration-300 hover:bg-primary/90"
                 >
-                  <Link href="/admin/blog/ai-create">
+                  <Link href="/admin/blog/ai-create" aria-label="Use AI to generate a blog post">
                     <Bot className="mr-2 h-4 w-4" /> AI Generator
                   </Link>
                 </Button>
@@ -251,7 +297,7 @@ export default function DashboardTab({ unreadCount }) {
                   asChild
                   className="rounded-xl bg-primary text-primary-foreground shadow-md transition-all duration-300 hover:bg-primary/90"
                 >
-                  <Link href="/admin/blog/create">
+                  <Link href="/admin/blog/create" aria-label="Create a new blog post manually">
                     <FilePlus className="mr-2 h-4 w-4" /> Create New
                   </Link>
                 </Button>
@@ -353,6 +399,44 @@ export default function DashboardTab({ unreadCount }) {
                                     setIsLoading(false);
                                   }
                                 }}
+                                onKeyDown={async (e) => {
+                                  if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setIsLoading(true);
+                                    try {
+                                      const res = await fetch(`/api/blog/edit`, {
+                                        method: "PUT",
+                                        headers: {
+                                          "Content-Type": "application/json",
+                                        },
+                                        body: JSON.stringify({
+                                          id: post._id,
+                                          isPublished: !post.isPublished,
+                                        }),
+                                      });
+                                      if (!res.ok) {
+                                        toast.error("Failed to update status");
+                                      } else {
+                                        toast.success(
+                                          `Status changed to ${
+                                            !post.isPublished
+                                              ? "Published"
+                                              : "Draft"
+                                          }`
+                                        );
+                                        fetchPosts(currentPage);
+                                      }
+                                    } catch (err) {
+                                      toast.error("Failed to update status");
+                                    } finally {
+                                      setIsLoading(false);
+                                    }
+                                  }
+                                }}
+                                tabIndex={0}
+                                role="button"
+                                aria-label={`Toggle publication status. Currently ${post.isPublished ? 'Published' : 'Draft'}`}
                                 variant={
                                   post.isPublished ? "success" : "warning"
                                 }
@@ -381,7 +465,7 @@ export default function DashboardTab({ unreadCount }) {
                                 asChild
                                 className="rounded-xl bg-primary text-primary-foreground shadow-sm transition-all duration-300 hover:bg-primary/90"
                               >
-                                <Link href={`/admin/blog/edit/${post._id}`}>
+                                <Link href={`/admin/blog/edit/${post._id}`} aria-label={`Edit blog post: ${post.title}`}>
                                   Edit
                                 </Link>
                               </Button>
@@ -395,6 +479,7 @@ export default function DashboardTab({ unreadCount }) {
                                   <Link
                                     href={`/blog/${post.slug}`}
                                     target="_blank"
+                                    aria-label={`View live blog post: ${post.title}`}
                                   >
                                     View
                                   </Link>
@@ -415,6 +500,7 @@ export default function DashboardTab({ unreadCount }) {
                                     size="sm"
                                     className="rounded-xl bg-destructive text-destructive-foreground shadow-sm transition-all duration-300 hover:bg-destructive/90"
                                     onClick={() => handleDeleteClick(post._id)}
+                                    aria-label={`Delete blog post: ${post.title}`}
                                   >
                                     <Trash2 className="h-4 w-4" />
                                   </Button>
@@ -477,6 +563,7 @@ export default function DashboardTab({ unreadCount }) {
                         onClick={handlePreviousPage}
                         disabled={currentPage <= 1 || isLoading}
                         className="rounded-xl border border-border bg-card px-4 py-2 text-muted-foreground transition-all duration-300 hover:bg-muted/50 disabled:opacity-40"
+                        aria-label="Go to previous page"
                       >
                         <ChevronLeft className="h-4 w-4 mr-1" /> Previous
                       </Button>
@@ -491,6 +578,7 @@ export default function DashboardTab({ unreadCount }) {
                         onClick={handleNextPage}
                         disabled={currentPage >= totalPages || isLoading}
                         className="rounded-xl border border-border bg-card px-4 py-2 text-muted-foreground transition-all duration-300 hover:bg-muted/50 disabled:opacity-40"
+                        aria-label="Go to next page"
                       >
                         Next <ChevronRight className="h-4 w-4 ml-1" />
                       </Button>

@@ -313,7 +313,7 @@ function ContentSection({
             disabled={isAgentGenerating}
             variant="outline"
             size="sm"
-            className="flex items-center border-violet-500/30 text-violet-600 hover:bg-violet-500/10 dark:text-violet-400"
+            className="flex items-center border-violet-500/30 text-violet-600 hover:bg-violet-500/10"
             title="Generate full blog from context (AI Agent)"
           >
             {isAgentGenerating ? (

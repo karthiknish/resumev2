@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import PageContainer from "@/components/PageContainer";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -37,6 +38,7 @@ import { toast } from "sonner";
 const DRAFT_STORAGE_KEY = "blog_draft_create";
 
 function CreateBlog() {
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -52,7 +54,6 @@ function CreateBlog() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [submitStatus, setSubmitStatus] = useState([]);
   const [showPreview, setShowPreview] = useState(false);
   const [isFormatting, setIsFormatting] = useState(false);
   const [lastSaved, setLastSaved] = useState(null);
@@ -66,6 +67,33 @@ function CreateBlog() {
 
   // Debounced form data for auto-save (save after 3 seconds of no changes)
   const debouncedFormData = useDebounce(formData, 3000);
+
+  // Check for admin status
+  useEffect(() => {
+    if (status === "loading") return;
+
+    // Localhost bypass for development testing
+    const isLocalhost = typeof window !== "undefined" && 
+      (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+
+    if (isLocalhost) return;
+
+    if (status === "unauthenticated") {
+      toast.error("Authentication required. Redirecting to signin...");
+      router.push("/signin");
+      return;
+    }
+
+    const isAdmin =
+      session?.user?.role === "admin" ||
+      session?.user?.isAdmin === true ||
+      session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+
+    if (!isAdmin) {
+      toast.error("Access Denied: Admin privileges required.");
+      router.push("/");
+    }
+  }, [status, session, router]);
 
   // Restore draft from localStorage on mount
   useEffect(() => {
@@ -108,6 +136,9 @@ function CreateBlog() {
 
   // Clear draft from localStorage
   const clearDraft = useCallback(() => {
+    if (!window.confirm("Are you sure you want to clear the current draft? All unsaved changes will be lost.")) {
+      return;
+    }
     try {
       localStorage.removeItem(DRAFT_STORAGE_KEY);
       setHasDraft(false);
@@ -257,7 +288,6 @@ function CreateBlog() {
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
     setIsLoading(true);
-    setSubmitStatus([]);
     setError("");
 
     const missingFields = [];
@@ -270,7 +300,6 @@ function CreateBlog() {
     if (missingFields.length > 0) {
       const errorMsg = `Missing required field(s): ${missingFields.join(", ")}`;
       setError(errorMsg);
-      setSubmitStatus([false, errorMsg]);
       toast.error(errorMsg);
       setIsLoading(false);
       return;
@@ -296,7 +325,6 @@ function CreateBlog() {
       const result = await res.json();
 
       if (result.success) {
-        setSubmitStatus([true, "Blog post created successfully!"]);
         toast.success("Blog post created successfully!");
         // Clear draft from localStorage after successful creation
         localStorage.removeItem(DRAFT_STORAGE_KEY);
@@ -307,7 +335,6 @@ function CreateBlog() {
       } else {
         const apiErrorMsg = result.message || "Failed to create blog post";
         setError(apiErrorMsg);
-        setSubmitStatus([false, apiErrorMsg]);
         toast.error(apiErrorMsg);
       }
     } catch (err) {
@@ -323,23 +350,23 @@ function CreateBlog() {
 
   const BlogPreview = () => (
     <div className="fixed inset-0 z-[150] flex items-start justify-center overflow-auto bg-slate-900/80 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-4xl my-8 overflow-hidden rounded-2xl bg-white shadow-2xl animate-in fade-in zoom-in duration-200">
-        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4 bg-slate-50">
-          <h2 className="text-lg font-heading font-semibold text-slate-900">
+      <div className="w-full max-w-4xl my-8 overflow-hidden rounded-2xl bg-background border border-border shadow-2xl animate-in fade-in zoom-in duration-200">
+        <div className="flex items-center justify-between border-b border-border px-6 py-4 bg-muted/30">
+          <h2 className="text-lg font-heading font-semibold text-foreground">
             Preview
           </h2>
           <Button
             variant="ghost"
             size="icon"
             onClick={togglePreview}
-            className="text-slate-500 hover:text-slate-900"
+            className="text-muted-foreground hover:text-foreground"
           >
             <AiOutlineClose size={20} />
           </Button>
         </div>
         <div className="max-h-[80vh] overflow-auto px-8 py-8">
           {formData.imageUrl && (
-            <div className="mb-8 overflow-hidden rounded-xl shadow-sm">
+            <div className="mb-8 overflow-hidden rounded-xl shadow-sm border border-border">
               <img
                 src={formData.imageUrl}
                 alt={formData.title}
@@ -347,10 +374,10 @@ function CreateBlog() {
               />
             </div>
           )}
-          <h1 className="mb-6 text-4xl font-heading font-bold text-slate-900">
+          <h1 className="mb-6 text-4xl font-heading font-bold text-foreground">
             {formData.title}
           </h1>
-          <div className="prose prose-lg max-w-none text-slate-700 prose-headings:font-heading prose-headings:text-slate-900 prose-a:text-blue-600">
+          <div className="prose prose-lg max-w-none text-muted-foreground prose-headings:font-heading prose-headings:text-foreground prose-a:text-primary">
             <TipTapRenderer content={formData.content} />
           </div>
         </div>
@@ -363,7 +390,7 @@ function CreateBlog() {
       <Head>
         <title>Create New Post</title>
       </Head>
-      <div className="min-h-screen bg-slate-50 text-slate-900">
+      <div className="min-h-screen bg-background text-foreground">
         <PageContainer className="pt-32 pb-20 px-6 md:px-12">
           <div className="mx-auto max-w-[1600px]">
             {/* Header */}
@@ -373,15 +400,15 @@ function CreateBlog() {
                   variant="ghost"
                   size="icon"
                   onClick={() => router.back()}
-                  className="rounded-full hover:bg-slate-200"
+                  className="rounded-full hover:bg-muted"
                 >
                   <ArrowLeft className="h-5 w-5" />
                 </Button>
                 <div>
-                  <h1 className="text-2xl font-heading font-bold text-slate-900">
+                  <h1 className="text-2xl font-heading font-bold text-foreground">
                     Create New Post
                   </h1>
-                  <p className="text-sm text-slate-500">
+                  <p className="text-sm text-muted-foreground">
                     Draft a new blog post from scratch or{" "}
                     <button
                       onClick={() => router.push("/admin/blog/ai-create")}
@@ -396,7 +423,7 @@ function CreateBlog() {
               <div className="flex items-center gap-2">
                 {/* Auto-save indicator */}
                 {hasDraft && lastSaved && (
-                  <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500">
+                  <div className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground">
                     <Clock className="h-3 w-3" />
                     <span>Draft saved {lastSaved.toLocaleTimeString()}</span>
                     <Button
@@ -455,6 +482,12 @@ function CreateBlog() {
             </div>
 
             <div className="max-w-5xl mx-auto space-y-8">
+              {error && (
+                <div className="mb-6 rounded-lg bg-destructive/10 p-4 text-sm text-destructive">
+                  {error}
+                </div>
+              )}
+
               {/* Title & Badges */}
               <div className="space-y-4">
                 <input
@@ -462,10 +495,10 @@ function CreateBlog() {
                   value={formData.title}
                   onChange={(e) => handleFormChange("title", e.target.value)}
                   placeholder="Post Title"
-                  className="w-full border-none bg-transparent text-4xl font-heading font-bold text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-0"
+                  className="w-full border-none bg-transparent text-4xl font-heading font-bold text-foreground placeholder:text-muted focus:outline-none focus:ring-0"
                 />
 
-                <div className="flex items-center gap-2 text-sm text-slate-500">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Badge variant="secondary" className="font-normal">
                     {readingTimeMinutes} min read
                   </Badge>
@@ -500,7 +533,7 @@ function CreateBlog() {
                     size="sm"
                     onClick={() => setIsAgentModeOpen(true)}
                     disabled={isAgentGenerating}
-                    className="h-6 px-2 text-xs text-violet-600 hover:bg-violet-500/10 hover:text-violet-700 dark:text-violet-400"
+                    className="h-6 px-2 text-xs text-violet-600 hover:bg-violet-500/10 hover:text-violet-700"
                   >
                     {isAgentGenerating ? (
                       <Loader2 className="mr-1 h-3 w-3 animate-spin" />
@@ -512,19 +545,21 @@ function CreateBlog() {
                 </div>
               </div>
 
-              {/* Metadata Section (Top) */}
-              <MetadataSection
-                formData={formData}
-                onFormChange={handleFormChange}
-                isPublished={formData.isPublished}
-                onPublishChange={handlePublishChange}
-              />
+              <div className="max-w-5xl mx-auto space-y-8 lg:block hidden">
+                {/* Metadata Section (Top) */}
+                <MetadataSection
+                  formData={formData}
+                  onFormChange={handleFormChange}
+                  isPublished={formData.isPublished}
+                  onPublishChange={handlePublishChange}
+                />
 
-              {/* Banner Image (Middle) */}
-              <BannerImageSection
-                imageUrl={formData.imageUrl}
-                onImageUrlChange={handleImageUrlChange}
-              />
+                {/* Banner Image (Middle) */}
+                <BannerImageSection
+                  imageUrl={formData.imageUrl}
+                  onImageUrlChange={handleImageUrlChange}
+                />
+              </div>
             </div>
 
             {/* Main Editor Area (Bottom) - Full Width */}

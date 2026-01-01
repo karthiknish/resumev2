@@ -90,9 +90,9 @@
     --ring: 222.2 47.4% 11.2%;
     --radius: 0.75rem;
 
-    /* Dark section colors for consistent dark theme areas */
-    --dark-section-bg: 222.2 47.4% 4%;
-    --dark-section-foreground: 210 40% 98%;
+    /* Standard section colors */
+    --section-bg: 0 0% 100%;
+    --section-foreground: 222.2 47.4% 11.2%;
   }
 
   /* --- Theme Definitions --- */
@@ -192,20 +192,17 @@
    /* Custom scrollbar styles (optional) */
   .scrollbar-thin {
     scrollbar-width: thin; /* Firefox */
-    scrollbar-color: theme('colors.gray.600') theme('colors.gray.800'); /* Firefox */
   }
   .scrollbar-thin::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
   .scrollbar-thin::-webkit-scrollbar-track {
-    background: theme('colors.gray.800');
     border-radius: 3px;
   }
   .scrollbar-thin::-webkit-scrollbar-thumb {
     background-color: theme('colors.gray.600');
     border-radius: 3px;
-    border: 1px solid theme('colors.gray.800');
   }
    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
      background-color: theme('colors.gray.500');

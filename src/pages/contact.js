@@ -1,15 +1,16 @@
-import React, { useEffect } from "react"; // Removed useState
+import React, { useEffect } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import Cal, { getCalApi } from "@calcom/embed-react"; // Import Cal.com component
+import Cal, { getCalApi } from "@calcom/embed-react";
 import Services from "@/components/Services";
 import PageContainer from "@/components/PageContainer";
 import { FadeIn } from "@/components/animations/MotionComponents";
-import ContactForm from "@/components/ContactForm"; // <-- Import the new component
+import ContactForm from "@/components/ContactForm";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Mail, Calendar } from "lucide-react";
 
 export default function Contact() {
-  // Add useEffect for Cal.com API interaction
   useEffect(() => {
     (async function () {
       try {
@@ -19,9 +20,6 @@ export default function Contact() {
             hideEventTypeDetails: false,
             layout: "month_view",
             theme: "light",
-            // Optional: Add theme and styles if needed
-            // theme: "dark",
-            // styles: { branding: { brandColor: "#000000" } }
           });
         }
       } catch (e) {
@@ -124,37 +122,63 @@ export default function Contact() {
             </div>
           </section>
 
-          {/* Booking */}
-          <section className="py-16 md:py-20 bg-white">
+          {/* Unified Contact Tabs */}
+          <section className="py-16 md:py-24 bg-white relative">
             <div className="max-w-5xl mx-auto px-6 sm:px-10 md:px-12">
               <FadeIn delay={0.1}>
-                <div className="bg-white border border-slate-200 rounded-3xl shadow-sm p-6 sm:p-8">
-                  <motion.h2
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                    viewport={{ once: true }}
-                    className="font-heading text-3xl sm:text-4xl leading-snug text-slate-900 text-center"
-                  >
-                    Book a 15-minute consultation
-                  </motion.h2>
-                  <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.1 }}
-                    viewport={{ once: true }}
-                    className="mt-4 text-base text-slate-600 text-center max-w-2xl mx-auto"
-                  >
-                    Pick a time that works for you. We’ll talk through your goals, timelines, and the best way to move forward.
-                  </motion.p>
-                  <div className="mt-8 min-h-[400px] bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-center">
-                    <Cal
-                      namespace="15min"
-                      calLink="karthik-nish/15min"
-                      style={{ width: "100%", height: "100%", minHeight: "450px", overflow: "scroll" }}
-                      config={{ layout: "month_view" }}
-                    />
-                  </div>
+                <div className="text-center mb-12">
+                  <h2 className="font-heading text-3xl sm:text-4xl leading-snug text-slate-900">
+                    Get in touch
+                  </h2>
+                  <p className="mt-4 text-base text-slate-600 max-w-2xl mx-auto">
+                    Choose the way that works best for you—send a quick message or book a focused consultation.
+                  </p>
+                </div>
+
+                <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
+                  <Tabs defaultValue="message" className="w-full">
+                    <div className="flex justify-center border-b border-slate-100 bg-slate-50/50 p-2">
+                      <TabsList className="bg-slate-200/50 p-1">
+                        <TabsTrigger 
+                          value="message" 
+                          className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-600 px-6 py-2.5 rounded-lg transition-all"
+                        >
+                          <Mail className="w-4 h-4" />
+                          <span>Quick Message</span>
+                        </TabsTrigger>
+                        <TabsTrigger 
+                          value="meeting" 
+                          className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-600 px-6 py-2.5 rounded-lg transition-all"
+                        >
+                          <Calendar className="w-4 h-4" />
+                          <span>Schedule a Call</span>
+                        </TabsTrigger>
+                      </TabsList>
+                    </div>
+
+                    <div className="p-6 sm:p-10">
+                      <TabsContent value="message" className="mt-0 outline-none">
+                        <div className="max-w-2xl mx-auto">
+                          <ContactForm />
+                        </div>
+                      </TabsContent>
+
+                      <TabsContent value="meeting" className="mt-0 outline-none">
+                        <div className="text-center mb-8">
+                          <h3 className="font-heading text-2xl text-slate-900 mb-2">Book a 15-minute consultation</h3>
+                          <p className="text-slate-600">Pick a time that works for you. We’ll talk through your goals and timelines.</p>
+                        </div>
+                        <div className="min-h-[500px] bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-center overflow-hidden">
+                          <Cal
+                            namespace="15min"
+                            calLink="karthik-nish/15min"
+                            style={{ width: "100%", height: "100%", minHeight: "500px" }}
+                            config={{ layout: "month_view" }}
+                          />
+                        </div>
+                      </TabsContent>
+                    </div>
+                  </Tabs>
                 </div>
               </FadeIn>
             </div>
@@ -240,16 +264,6 @@ export default function Contact() {
               </div>
             </div>
           </section>
-
-          {/* Contact form */}
-          <section className="py-16 md:py-20 bg-background">
-            <div className="max-w-5xl mx-auto px-6 sm:px-10 md:px-12">
-              <FadeIn delay={0.1}>
-                <ContactForm />
-              </FadeIn>
-            </div>
-          </section>
-
         </div>
       </PageContainer>
     </>
