@@ -1,6 +1,13 @@
 // Import expect matchers from jest-dom
 require("@testing-library/jest-dom");
 
+// Mock ResizeObserver (required by Radix UI components)
+global.ResizeObserver = jest.fn().mockImplementation(() => ({
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+}));
+
 // Mock next/router globally for all tests
 jest.mock("next/router", () => ({
   useRouter() {

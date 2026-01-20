@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,6 +21,8 @@ import {
   RefreshCw,
   History,
   Trash2,
+  Hash,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -44,6 +46,121 @@ const TONES = [
   { value: "educational", label: "Educational" },
 ];
 
+/**
+ * LinkedIn Hashtag Suggestions Library
+ * Categorized hashtags for LinkedIn content
+ */
+const HASHTAG_CATEGORIES = {
+  technology: [
+    "#JavaScript", "#TypeScript", "#React", "#NextJS", "#NodeJS",
+    "#Python", "#WebDevelopment", "#Frontend", "#Backend", "#FullStack",
+    "#DevOps", "#CloudComputing", "#AWS", "#Azure", "#GCP",
+    "#Docker", "#Kubernetes", "#CI/CD", "#Git", "#API",
+  ],
+  career: [
+    "#CareerGrowth", "#JobSearch", "#Leadership", "#Management",
+    "#RemoteWork", "#WorkLifeBalance", "#ProfessionalDevelopment",
+    "#Mentorship", "#Networking", "#SoftSkills", "#CareerAdvice",
+    "#TechCareer", "#WomenInTech", "#Hiring", "#JobTips",
+  ],
+  ai: [
+    "#AI", "#MachineLearning", "#DeepLearning", "#ChatGPT", "#LLM",
+    "#GenerativeAI", "#AIAutomation", "#AIEthics", "#DataScience",
+    "#PromptEngineering", "#ArtificialIntelligence", "#AItools",
+  ],
+  startup: [
+    "#StartupLife", "#Entrepreneurship", "#BuildingInPublic",
+    "#ProductLaunch", "#MVP", "#SaaS", "#B2B", "#TechStartup",
+    "#Founders", "#Startup", "#Innovation", "#ProductManagement",
+  ],
+  learning: [
+    "#LearningToCode", "#Coding", "#Programming", "#Tutorial",
+    "#TechTips", "#CodeNewbie", "#100DaysOfCode", "#LearnInPublic",
+    "#WebDev", "#Developer", "#Engineering", "#TechCommunity",
+  ],
+  industry: [
+    "#TechTrends", "#FutureOfWork", "#DigitalTransformation",
+    "#SoftwareEngineering", "#TechIndustry", "#Technology",
+    "#Innovation", "#TechNews", "#Cybersecurity", "#DataPrivacy",
+  ],
+};
+
+// Flatten all hashtags for easy searching
+const ALL_HASHTAGS = Object.values(HASHTAG_CATEGORIES).flat();
+
+/**
+ * Suggest hashtags based on topic text
+ * @param {string} text - The topic/post text
+ * @param {number} limit - Maximum number of suggestions
+ * @returns {string[]} Array of suggested hashtags
+ */
+const suggestHashtags = (text, limit = 8) => {
+  if (!text || typeof text !== "string") return [];
+
+  const textLower = text.toLowerCase();
+  const suggestions = new Set();
+  const scores = new Map();
+
+  ALL_HASHTAGS.forEach((hashtag) => {
+    const tagLower = hashtag.toLowerCase().replace("#", "");
+    let score = 0;
+
+    // Exact word match
+    if (textLower.includes(tagLower)) {
+      score += 10;
+    }
+
+    // Partial match for longer tags
+    if (tagLower.length > 4) {
+      const tagParts = tagLower.split(/(?=[A-Z])/).join(" ").toLowerCase();
+      if (textLower.includes(tagParts) || tagParts.includes(textLower)) {
+        score += 5;
+      }
+    }
+
+    // Check for related keywords
+    const relatedKeywords = {
+      "react": ["#React", "#Frontend", "#WebDevelopment", "#JavaScript"],
+      "nextjs": ["#NextJS", "#React", "#FullStack"],
+      "node": ["#NodeJS", "#Backend", "#JavaScript"],
+      "api": ["#API", "#Backend", "#WebDevelopment"],
+      "aws": ["#AWS", "#CloudComputing", "#DevOps"],
+      "docker": ["#Docker", "#DevOps", "#Kubernetes"],
+      "career": ["#CareerGrowth", "#ProfessionalDevelopment", "#TechCareer"],
+      "job": ["#JobSearch", "#CareerAdvice", "#Hiring"],
+      "ai": ["#AI", "#ArtificialIntelligence", "#MachineLearning"],
+      "machine learning": ["#MachineLearning", "#AI", "#DataScience"],
+      "startup": ["#Startup", "#Entrepreneurship", "#BuildingInPublic"],
+      "product": ["#ProductManagement", "#SaaS", "#ProductLaunch"],
+      "team": ["#Leadership", "#Management", "#SoftSkills"],
+      "remote": ["#RemoteWork", "#WorkLifeBalance"],
+      "learn": ["#LearningToCode", "#Tutorial", "#TechTips"],
+      "code": ["#Coding", "#Programming", "#WebDevelopment"],
+      "javascript": ["#JavaScript", "#TypeScript", "#Frontend"],
+      "typescript": ["#TypeScript", "#JavaScript", "#Frontend"],
+      "python": ["#Python", "#Backend", "#DataScience"],
+    };
+
+    Object.entries(relatedKeywords).forEach(([keyword, tags]) => {
+      if (textLower.includes(keyword)) {
+        tags.forEach((tag) => {
+          if (tag === hashtag) score += 3;
+        });
+      }
+    });
+
+    if (score > 0) {
+      scores.set(hashtag, score);
+    }
+  });
+
+  // Sort by score and return top suggestions
+  return Array.from(scores.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([hashtag]) => hashtag);
+};
+
 export default function LinkedInPostGenerator({ initialTopic = "" }) {
   const [topic, setTopic] = useState(initialTopic);
   const [postType, setPostType] = useState("insight");
@@ -57,6 +174,26 @@ export default function LinkedInPostGenerator({ initialTopic = "" }) {
   const [copied, setCopied] = useState(false);
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [selectedHashtags, setSelectedHashtags] = useState([]);
+  const [customHashtag, setCustomHashtag] = useState("");
+
+  // LinkedIn character limit
+  const LINKEDIN_CHAR_LIMIT = 3000;
+  const charCount = generatedPost.length;
+  const charPercentage = (charCount / LINKEDIN_CHAR_LIMIT) * 100;
+  const isNearLimit = charPercentage > 90;
+  const isOverLimit = charCount > LINKEDIN_CHAR_LIMIT;
+
+  // Generate hashtag suggestions based on topic
+  const hashtagSuggestions = useMemo(
+    () => suggestHashtags(topic, 8),
+    [topic]
+  );
+
+  // Combine selected hashtags with suggestions (excluding already selected)
+  const availableSuggestions = hashtagSuggestions.filter(
+    (tag) => !selectedHashtags.includes(tag)
+  );
 
   useEffect(() => {
     try {
@@ -163,6 +300,51 @@ export default function LinkedInPostGenerator({ initialTopic = "" }) {
     setHistory([]);
     localStorage.removeItem(HISTORY_KEY);
     toast.success("History cleared");
+  };
+
+  const addHashtag = (tag) => {
+    if (!selectedHashtags.includes(tag)) {
+      setSelectedHashtags([...selectedHashtags, tag]);
+    }
+  };
+
+  const removeHashtag = (tag) => {
+    setSelectedHashtags(selectedHashtags.filter((h) => h !== tag));
+  };
+
+  const addCustomHashtag = () => {
+    const trimmed = customHashtag.trim();
+    if (trimmed) {
+      const formatted = trimmed.startsWith("#") ? trimmed : `#${trimmed}`;
+      if (/^#[\w]+$/.test(formatted) && !selectedHashtags.includes(formatted)) {
+        addHashtag(formatted);
+        setCustomHashtag("");
+        toast.success("Hashtag added");
+      } else if (!/^#[\w]+$/.test(formatted)) {
+        toast.error("Invalid hashtag format. Use letters, numbers, and underscores only.");
+      } else {
+        toast.info("Hashtag already added");
+      }
+    }
+  };
+
+  const handleCustomHashtagKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addCustomHashtag();
+    }
+  };
+
+  const getCharCountColor = () => {
+    if (isOverLimit) return "text-destructive";
+    if (isNearLimit) return "text-warning";
+    return "text-muted-foreground";
+  };
+
+  const getCharCountBgColor = () => {
+    if (isOverLimit) return "bg-destructive";
+    if (isNearLimit) return "bg-warning";
+    return "bg-primary";
   };
 
   return (
@@ -327,6 +509,103 @@ export default function LinkedInPostGenerator({ initialTopic = "" }) {
               </label>
             </div>
 
+            {/* Hashtag Suggestions Section */}
+            <AnimatePresence>
+              {(hashtagSuggestions.length > 0 || selectedHashtags.length > 0) && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="space-y-3"
+                >
+                  {/* Selected Hashtags */}
+                  {selectedHashtags.length > 0 && (
+                    <div className="p-3 bg-muted/30 rounded-xl border border-border">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                          <Hash className="w-3 h-3" />
+                          Selected Hashtags ({selectedHashtags.length})
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setSelectedHashtags([])}
+                          className="text-xs text-muted-foreground hover:text-destructive h-6 px-2"
+                        >
+                          Clear all
+                        </Button>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {selectedHashtags.map((tag) => (
+                          <motion.div
+                            key={tag}
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0 }}
+                          >
+                            <Badge
+                              variant="secondary"
+                              className="gap-1 pr-1 text-xs cursor-pointer hover:bg-destructive/20 group"
+                              onClick={() => removeHashtag(tag)}
+                            >
+                              <span>{tag}</span>
+                              <X className="w-3 h-3 opacity-50 group-hover:opacity-100" />
+                            </Badge>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Hashtag Suggestions */}
+                  {availableSuggestions.length > 0 && (
+                    <div className="p-3 bg-muted/30 rounded-xl border border-border">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                          <Sparkles className="w-3 h-3" />
+                          Suggested Hashtags
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5 mb-2">
+                        {availableSuggestions.slice(0, 6).map((tag) => (
+                          <Badge
+                            key={tag}
+                            variant="outline"
+                            className="text-xs cursor-pointer hover:bg-primary/10 hover:border-primary/50"
+                            onClick={() => addHashtag(tag)}
+                          >
+                            + {tag}
+                          </Badge>
+                        ))}
+                      </div>
+
+                      {/* Custom Hashtag Input */}
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={customHashtag}
+                          onChange={(e) => setCustomHashtag(e.target.value)}
+                          onKeyDown={handleCustomHashtagKeyDown}
+                          placeholder="Add custom hashtag..."
+                          disabled={isLoading}
+                          className="flex-1 h-8 px-2 text-xs rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                        />
+                        <Button
+                          type="button"
+                          size="sm"
+                          onClick={addCustomHashtag}
+                          disabled={isLoading || !customHashtag.trim()}
+                          className="h-8 px-3"
+                        >
+                          Add
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             <Button type="submit" disabled={isLoading || !topic.trim()} className="w-full">
               {isLoading ? (
                 <>
@@ -394,6 +673,28 @@ export default function LinkedInPostGenerator({ initialTopic = "" }) {
                   <div className="text-foreground whitespace-pre-wrap text-sm leading-relaxed">
                     {generatedPost}
                   </div>
+                </div>
+
+                {/* Character Counter */}
+                <div className="flex items-center justify-between mb-3 px-1">
+                  <div className="flex items-center gap-2">
+                    <div className="h-1.5 w-24 bg-muted rounded-full overflow-hidden">
+                      <motion.div
+                        className={`h-full ${getCharCountBgColor()}`}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${Math.min(charPercentage, 100)}%` }}
+                        transition={{ duration: 0.3 }}
+                      />
+                    </div>
+                    <span className={`text-xs font-medium ${getCharCountColor()}`}>
+                      {charCount.toLocaleString()} / {LINKEDIN_CHAR_LIMIT.toLocaleString()}
+                    </span>
+                  </div>
+                  {isOverLimit && (
+                    <span className="text-xs text-destructive font-medium">
+                      {charCount - LINKEDIN_CHAR_LIMIT} characters over limit
+                    </span>
+                  )}
                 </div>
 
                 <div className="flex flex-wrap gap-2">

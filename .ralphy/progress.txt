@@ -422,3 +422,78 @@
   - `prd.md` (marked task as complete)
   - `.ralphy/progress.txt` (updated)
 
+
+### Phase 3: LinkedIn Features - Task 1 & 2 COMPLETED
+
+**Task 1**: Add hashtag suggestions to `src/components/admin/linkedin/LinkedInPostGenerator.js`
+
+**Task 2**: Add character counter with LinkedIn 3000 char limit
+
+**Implementation**:
+- Added comprehensive hashtag suggestions feature to LinkedInPostGenerator:
+  - **Hashtag Library**: Created categorized hashtag library with 6 categories:
+    - Technology: 20 hashtags (#JavaScript, #React, #NextJS, #NodeJS, #Python, etc.)
+    - Career: 15 hashtags (#CareerGrowth, #JobSearch, #Leadership, #RemoteWork, etc.)
+    - AI: 12 hashtags (#AI, #MachineLearning, #DeepLearning, #ChatGPT, etc.)
+    - Startup: 11 hashtags (#StartupLife, #Entrepreneurship, #BuildingInPublic, etc.)
+    - Learning: 11 hashtags (#LearningToCode, #Coding, #Programming, #Tutorial, etc.)
+    - Industry: 10 hashtags (#TechTrends, #FutureOfWork, #DigitalTransformation, etc.)
+  - **Smart Suggestion Algorithm** (`suggestHashtags` function):
+    - Exact word matching (score: 10)
+    - Partial matching for longer tags (score: 5)
+    - Related keyword matching (score: 3)
+    - Sorts by relevance score and returns top 8 suggestions
+  - **Selected Hashtags Management**:
+    - Click suggested hashtags to add them
+    - Click selected hashtags to remove them
+    - "Clear all" button to remove all selected hashtags
+    - Selected hashtags shown with count badge
+  - **Custom Hashtag Input**:
+    - Input field for custom hashtags
+    - Auto-adds # prefix if not present
+    - Validation for valid hashtag format (letters, numbers, underscores only)
+    - Prevents duplicate hashtags
+    - Enter key support for quick adding
+  - **Dynamic UI**:
+    - Animations using Framer Motion
+    - Suggestions section only appears when there are suggestions or selected hashtags
+    - Selected hashtags filtered out from suggestions
+- Added character counter feature:
+  - LinkedIn 3000 character limit enforcement
+  - Visual progress bar showing usage percentage
+  - Color-coded warnings:
+    - Normal (muted foreground) under 90%
+    - Warning color at 90%+ (2700+ characters)
+    - Destructive color when over limit (3000+ characters)
+  - "X characters over limit" message when exceeding limit
+  - Animated progress bar using Framer Motion
+- Updated component imports to include `Hash` and `X` icons from lucide-react
+
+**Testing**:
+- Created `src/components/admin/linkedin/__tests__/LinkedInPostGenerator.test.js` with 27 test cases
+- Tests verify:
+  - Hashtag suggestions for different topics (technology, career, AI, startup) (4 tests)
+  - No suggestions for empty or gibberish input (2 tests)
+  - Selected hashtags management (add, remove, clear all, count) (4 tests)
+  - Custom hashtag input (add, auto-add #, invalid format, duplicate, Enter key, disabled state) (6 tests)
+  - Character counter display and formatting (2 tests)
+  - Character counter warning colors (near limit, over limit) (2 tests)
+  - Character counter over limit message (1 test)
+  - Hashtag filtering (exclude selected from suggestions) (2 tests)
+  - Update suggestions when topic changes (1 test)
+  - Accessibility (labels, clickable badges) (2 tests)
+  - Component integration (with API, animations) (2 tests)
+- Added `ResizeObserver` mock to `jest.setup.js` for Radix UI Slider component compatibility
+
+**Results**:
+- 345/345 tests passing (27 new + 318 existing)
+- ESLint passing with no errors
+- Files created:
+  - `src/components/admin/linkedin/__tests__/LinkedInPostGenerator.test.js`
+- Files modified:
+  - `src/components/admin/linkedin/LinkedInPostGenerator.js`
+  - `jest.setup.js`
+  - `prd.md` (marked tasks as complete)
+- Dependencies installed:
+  - `@radix-ui/react-slider@1.3.6`
+
