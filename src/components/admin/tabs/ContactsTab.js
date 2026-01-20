@@ -151,9 +151,9 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
   return (
     <Card className="rounded-2xl border border-border bg-card text-foreground shadow-md">
       <CardHeader>
-        <CardTitle className="flex items-center gap-3 text-xl font-heading font-semibold text-foreground">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-primary/20 bg-primary/10">
-            <Mail className="h-5 w-5 text-primary" />
+        <CardTitle className="flex items-center gap-2 sm:gap-3 text-lg sm:text-xl font-heading font-semibold text-foreground">
+          <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg border border-primary/20 bg-primary/10">
+            <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
           </div>
           Contact Form Submissions ({totalContacts})
         </CardTitle>
@@ -167,13 +167,13 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
                   <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Name
                   </TableHead>
-                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground hidden sm:table-cell">
                     Email
                   </TableHead>
                   <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Message
                   </TableHead>
-                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground hidden sm:table-cell">
                     Received On
                   </TableHead>
                   <TableHead className="text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -184,25 +184,25 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
               <TableBody>
                 {[...Array(5)].map((_, i) => (
                   <TableRow key={i} className="border-b border-border">
-                    <TableCell className="py-3">
-                      <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 bg-slate-200 rounded-lg animate-pulse" />
-                        <div className="h-5 w-24 bg-slate-200 rounded animate-pulse" />
+                    <TableCell className="py-2.5 sm:py-3">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="h-8 w-8 sm:h-10 sm:w-10 bg-slate-200 rounded-lg animate-pulse" />
+                        <div className="h-4 w-20 sm:w-24 bg-slate-200 rounded animate-pulse" />
                       </div>
                     </TableCell>
-                    <TableCell className="py-3">
-                      <div className="h-5 w-32 bg-slate-200 rounded animate-pulse" />
+                    <TableCell className="py-2.5 sm:py-3 hidden sm:table-cell">
+                      <div className="h-4 w-24 sm:w-32 bg-slate-200 rounded animate-pulse" />
                     </TableCell>
-                    <TableCell className="py-3">
-                      <div className="h-4 w-full bg-slate-100 rounded animate-pulse" />
+                    <TableCell className="py-2.5 sm:py-3">
+                      <div className="h-3.5 w-full sm:h-4 bg-slate-100 rounded animate-pulse" />
                     </TableCell>
-                    <TableCell className="py-3">
-                      <div className="h-5 w-32 bg-slate-200 rounded animate-pulse" />
+                    <TableCell className="py-2.5 sm:py-3 hidden sm:table-cell">
+                      <div className="h-4 w-24 sm:w-32 bg-slate-200 rounded animate-pulse" />
                     </TableCell>
-                    <TableCell className="py-3 text-right">
-                      <div className="flex justify-end gap-2">
-                        <div className="h-8 w-8 bg-slate-200 rounded-lg animate-pulse" />
-                        <div className="h-8 w-16 bg-slate-200 rounded-lg animate-pulse" />
+                    <TableCell className="py-2.5 sm:py-3 text-right">
+                      <div className="flex justify-end gap-1.5 sm:gap-2">
+                        <div className="h-7 w-7 sm:h-8 sm:w-8 bg-slate-200 rounded-lg animate-pulse" />
+                        <div className="h-7 w-14 sm:h-8 sm:w-16 bg-slate-200 rounded-lg animate-pulse" />
                       </div>
                     </TableCell>
                   </TableRow>
@@ -232,13 +232,13 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
                   <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Name
                   </TableHead>
-                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground hidden sm:table-cell">
                     Email
                   </TableHead>
                   <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Message
                   </TableHead>
-                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground hidden sm:table-cell">
                     Received On
                   </TableHead>
                   <TableHead className="text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -266,13 +266,13 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
                   <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Name
                   </TableHead>
-                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground hidden sm:table-cell">
                     Email
                   </TableHead>
                   <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Message
                   </TableHead>
-                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground hidden sm:table-cell">
                     Received On
                   </TableHead>
                   <TableHead className="text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -286,43 +286,45 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
                     key={contact._id}
                     className="align-top border-b border-border transition-colors duration-200 hover:bg-muted/50"
                   >
-                    <TableCell className="text-base font-semibold text-foreground">
-                      <div className="flex items-center gap-3">
-                        <div className="rounded-lg border border-primary/20 bg-primary/10 p-1">
-                          <User className="h-4 w-4 text-primary" />
+                    <TableCell className="text-sm sm:text-base font-semibold text-foreground">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="rounded-lg border border-primary/20 bg-primary/10 p-0.5 sm:p-1">
+                          <User className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                         </div>
-                        {contact.name}
-                        {!contact.isRead && (
-                          <span
-                            className="flex h-2 w-2 rounded-full bg-primary"
-                            title="New message"
-                            aria-label="New unread message"
-                          ></span>
-                        )}
+                        <div className="flex items-center gap-1.5 sm:gap-2">
+                          <span className="truncate">{contact.name}</span>
+                          {!contact.isRead && (
+                            <span
+                              className="flex h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-primary shrink-0"
+                              title="New message"
+                              aria-label="New unread message"
+                            ></span>
+                          )}
+                        </div>
                       </div>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden sm:table-cell">
                       <a
                         href={`mailto:${contact.email}`}
-                        className="font-medium text-primary transition-colors duration-200 hover:text-primary/80 hover:underline"
+                        className="font-medium text-primary transition-colors duration-200 hover:text-primary/80 hover:underline text-sm"
                       >
                         {contact.email}
                       </a>
                     </TableCell>
-                    <TableCell className="max-w-sm whitespace-pre-wrap break-words text-sm text-muted-foreground">
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 rounded-lg border border-primary/20 bg-primary/10 p-1">
-                          <MessageCircle className="h-4 w-4 flex-shrink-0 text-primary" />
+                    <TableCell className="max-w-[200px] sm:max-w-sm whitespace-pre-wrap break-words text-xs sm:text-sm text-muted-foreground">
+                      <div className="flex items-start gap-2 sm:gap-3">
+                        <div className="mt-0.5 sm:mt-1 rounded-lg border border-primary/20 bg-primary/10 p-0.5 sm:p-1 shrink-0">
+                          <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0 text-primary" />
                         </div>
-                        <span className="font-medium text-muted-foreground">
+                        <span className="font-medium text-muted-foreground line-clamp-3">
                           {contact.message}
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <div className="rounded-lg border border-primary/20 bg-primary/10 p-1">
-                          <CalendarDays className="h-4 w-4 text-primary" />
+                    <TableCell className="hidden sm:table-cell">
+                      <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                        <div className="rounded-lg border border-primary/20 bg-primary/10 p-0.5 sm:p-1">
+                          <CalendarDays className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                         </div>
                         <span className="font-medium text-muted-foreground">
                           {formatDate(contact.createdAt)}
@@ -330,21 +332,21 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
                       </div>
                     </TableCell>
                     <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
+                      <div className="flex justify-end gap-1 sm:gap-2">
                         <Button
                           variant="ghost"
                           size="sm"
-                          className={`h-8 w-8 rounded-lg p-0 ${contact.isRead ? "text-muted-foreground" : "text-primary"}`}
+                          className={`h-7 w-7 sm:h-8 sm:w-8 rounded-lg p-0 ${contact.isRead ? "text-muted-foreground" : "text-primary"}`}
                           onClick={() => handleToggleRead(contact)}
                           aria-label={contact.isRead ? "Mark as unread" : "Mark as read"}
                           title={contact.isRead ? "Mark as unread" : "Mark as read"}
                         >
-                          {contact.isRead ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          {contact.isRead ? <EyeOff className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : <Eye className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
                         </Button>
                         <Button
                           variant="destructive"
                           size="sm"
-                          className="h-8 rounded-lg px-3 text-xs font-semibold"
+                          className="h-7 sm:h-8 rounded-lg px-2 sm:px-3 text-[10px] sm:text-xs font-semibold"
                           onClick={() => handleDelete(contact._id)}
                           aria-label="Delete contact submission"
                         >
@@ -359,19 +361,19 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
           </div>
           {/* Pagination Controls */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-end space-x-4 py-6">
+            <div className="flex items-center justify-end gap-3 sm:gap-4 py-4 sm:py-6">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handlePreviousPage}
                 disabled={currentPage <= 1 || isLoading}
-                className="rounded-xl border border-border bg-card px-4 py-2 text-muted-foreground transition-all duration-300 hover:bg-muted/50 disabled:opacity-40"
+                className="rounded-lg sm:rounded-xl border border-border bg-card px-3 py-1.5 sm:px-4 sm:py-2 text-muted-foreground transition-all duration-300 hover:bg-muted/50 disabled:opacity-40 text-xs sm:text-sm"
                 aria-label="Go to previous page"
               >
-                <ChevronLeft className="h-4 w-4 mr-1" /> Previous
+                <ChevronLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /> Previous
               </Button>
-              <div className="rounded-xl border border-border bg-muted/50 px-4 py-2">
-                <span className="text-sm font-semibold text-muted-foreground">
+              <div className="rounded-lg sm:rounded-xl border border-border bg-muted/50 px-3 py-1.5 sm:px-4 sm:py-2">
+                <span className="text-xs sm:text-sm font-semibold text-muted-foreground">
                   Page {currentPage} of {totalPages}
                 </span>
               </div>
@@ -380,10 +382,10 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
                 size="sm"
                 onClick={handleNextPage}
                 disabled={currentPage >= totalPages || isLoading}
-                className="rounded-xl border border-border bg-card px-4 py-2 text-muted-foreground transition-all duration-300 hover:bg-muted/50 disabled:opacity-40"
+                className="rounded-lg sm:rounded-xl border border-border bg-card px-3 py-1.5 sm:px-4 sm:py-2 text-muted-foreground transition-all duration-300 hover:bg-muted/50 disabled:opacity-40 text-xs sm:text-sm"
                 aria-label="Go to next page"
               >
-                Next <ChevronRight className="h-4 w-4 ml-1" />
+                Next <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 ml-1" />
               </Button>
             </div>
           )}
