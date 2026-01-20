@@ -24,9 +24,9 @@ Centralize theme system with proper UI/UX updates. Fix social posting, LinkedIn 
 - [x] Implement share preview modal component
 
 ### Phase 3: LinkedIn Features
-- [ ] Add hashtag suggestions to `src/components/admin/linkedin/LinkedInPostGenerator.js`
-- [ ] Add character counter with LinkedIn 3000 char limit
-- [ ] Create emoji picker component for LinkedIn posts
+- [x] Add hashtag suggestions to `src/components/admin/linkedin/LinkedInPostGenerator.js`
+- [x] Add character counter with LinkedIn 3000 char limit
+- [x] Create emoji picker component for LinkedIn posts
 - [ ] Add post template library (Hook, Story, CTA formats)
 - [ ] Enhance `src/components/admin/linkedin/CarouselGenerator.js` with template library
 - [ ] Add drag-and-drop slide reordering for carousels

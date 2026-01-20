@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import EmojiPicker from "./EmojiPicker";
 
 const HISTORY_KEY = "linkedin-post-history";
 const MAX_HISTORY = 10;
@@ -423,9 +424,15 @@ export default function LinkedInPostGenerator({ initialTopic = "" }) {
 
           <form onSubmit={handleGenerate} className="space-y-4">
             <div>
-              <Label htmlFor="topic" className="text-sm font-medium text-foreground mb-1.5 block">
-                Topic / Idea
-              </Label>
+              <div className="flex items-center justify-between mb-1.5">
+                <Label htmlFor="topic" className="text-sm font-medium text-foreground">
+                  Topic / Idea
+                </Label>
+                <EmojiPicker
+                  onEmojiSelect={(emoji) => setTopic((prev) => prev + emoji)}
+                  triggerClassName="h-8 w-8 p-0"
+                />
+              </div>
               <Textarea
                 id="topic"
                 value={topic}
@@ -690,11 +697,17 @@ export default function LinkedInPostGenerator({ initialTopic = "" }) {
                       {charCount.toLocaleString()} / {LINKEDIN_CHAR_LIMIT.toLocaleString()}
                     </span>
                   </div>
-                  {isOverLimit && (
-                    <span className="text-xs text-destructive font-medium">
-                      {charCount - LINKEDIN_CHAR_LIMIT} characters over limit
-                    </span>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <EmojiPicker
+                      onEmojiSelect={(emoji) => setGeneratedPost((prev) => prev + emoji)}
+                      triggerClassName="h-7 w-7 p-0"
+                    />
+                    {isOverLimit && (
+                      <span className="text-xs text-destructive font-medium">
+                        {charCount - LINKEDIN_CHAR_LIMIT} characters over limit
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 <div className="flex flex-wrap gap-2">
