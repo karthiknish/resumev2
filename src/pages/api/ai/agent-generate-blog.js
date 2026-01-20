@@ -3,6 +3,129 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { callGemini } from "@/lib/gemini";
 
+/**
+ * Fetches and extracts content from a URL
+ * Supports various content types and handles fetching errors gracefully
+ * @param {string} url - The URL to fetch content from
+ * @returns {Promise<string>} - The extracted text content from the URL
+ */
+async function fetchUrlContent(url) {
+  try {
+    // Validate URL format
+    let validUrl;
+    try {
+      validUrl = new URL(url);
+    } catch (urlError) {
+      throw new Error(`Invalid URL format: ${url}`);
+    }
+
+    // Only allow HTTP/HTTPS protocols
+    if (!['http:', 'https:'].includes(validUrl.protocol)) {
+      throw new Error('Only HTTP and HTTPS URLs are supported');
+    }
+
+    console.log(`[Agent Mode] Fetching URL: ${validUrl.href}`);
+
+    // Configure fetch with timeout and user agent
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+
+    const response = await fetch(validUrl.href, {
+      signal: controller.signal,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; BlogAgent/1.0; +https://karthiknishanth.com)',
+      },
+    });
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const contentType = response.headers.get('content-type') || '';
+    let content = '';
+
+    // Handle different content types
+    if (contentType.includes('application/json')) {
+      const json = await response.json();
+      content = JSON.stringify(json, null, 2);
+    } else if (contentType.includes('text/')) {
+      content = await response.text();
+    } else {
+      // For other types, try to get text anyway
+      content = await response.text();
+    }
+
+    // Extract meaningful text from HTML
+    if (contentType.includes('text/html')) {
+      content = extractTextFromHtml(content);
+    }
+
+    // Clean up the content
+    content = content
+      .replace(/\s+/g, ' ')  // Normalize whitespace
+      .replace(/\n{3,}/g, '\n\n')  // Remove excessive line breaks
+      .trim();
+
+    // Limit content length to avoid token limits
+    const maxContentLength = 10000; // Approx 2500-3000 tokens
+    if (content.length > maxContentLength) {
+      content = content.substring(0, maxContentLength) + '\n\n[Content truncated...]';
+    }
+
+    console.log(`[Agent Mode] Successfully fetched ${content.length} characters from URL`);
+    return content;
+
+  } catch (error) {
+    console.error(`[Agent Mode] Error fetching URL:`, error.message);
+    throw error;
+  }
+}
+
+/**
+ * Extracts meaningful text content from HTML
+ * Removes scripts, styles, and other non-content elements
+ * @param {string} html - The HTML content
+ * @returns {string} - The extracted text content
+ */
+function extractTextFromHtml(html) {
+  // Remove script tags, style tags, and comments
+  let text = html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ')
+    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, ' ')
+    .replace(/<!--[\s\S]*?-->/g, ' ');
+
+  // Extract text from common content elements
+  const contentTags = ['article', 'main', 'div', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'span'];
+  const tagPattern = new RegExp(`<(${contentTags.join('|')})\\b[^>]*>([\\s\\S]*?)<\\/\\1>`, 'gi');
+  const matches = [...text.matchAll(tagPattern)];
+
+  if (matches.length > 0) {
+    // Use matched content, preferring longer elements (likely to contain more content)
+    text = matches
+      .sort((a, b) => b[0].length - a[0].length)
+      .slice(0, 20) // Take top 20 largest elements
+      .map(m => m[2])
+      .join(' ');
+  }
+
+  // Remove all remaining HTML tags
+  text = text.replace(/<[^>]+>/g, ' ');
+
+  // Decode HTML entities
+  const entities = {
+    '&nbsp;': ' ', '&amp;': '&', '&lt;': '<', '&gt;': '>',
+    '&quot;': '"', '&apos;': "'", '&mdash;': '—', '&ndash;': '–',
+    '&hellip;': '...', '&rsquo;': ''', '&lsquo;': ''',
+    '&rdquo;': '"', '&ldquo;': '"',
+  };
+  for (const [entity, char] of Object.entries(entities)) {
+    text = text.replace(new RegExp(entity, 'g'), char);
+  }
+
+  return text;
+}
+
 export default async function handler(req, res) {
   // Check for authenticated session
   const session = await getServerSession(req, res, authOptions);
@@ -25,10 +148,32 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { context } = req.body;
+    const { context, url } = req.body;
 
-    if (!context?.trim()) {
-      return res.status(400).json({ message: "Context is required" });
+    if (!context?.trim() && !url?.trim()) {
+      return res.status(400).json({ message: "Context or URL is required" });
+    }
+
+    let enhancedContext = context || '';
+
+    // If URL is provided, fetch its content and enhance the context
+    if (url?.trim()) {
+      try {
+        const urlContent = await fetchUrlContent(url.trim());
+        if (urlContent) {
+          enhancedContext = enhancedContext.trim()
+            ? `${enhancedContext.trim()}\n\n**Reference Content from URL:**\n${urlContent}`
+            : `**Reference Content from URL:**\n${urlContent}`;
+        }
+      } catch (urlError) {
+        console.error('[Agent Mode] URL fetch failed, proceeding with context only:', urlError.message);
+        // Continue with just the context if URL fetch fails
+        enhancedContext = enhancedContext.trim() || '';
+      }
+    }
+
+    if (!enhancedContext?.trim()) {
+      return res.status(400).json({ message: "Unable to generate content from the provided input" });
     }
 
     const generationConfig = {
@@ -44,7 +189,7 @@ export default async function handler(req, res) {
       Based on the following context provided by the user, generate a complete blog post with a compelling title and rich content.
 
       **User Context:**
-      ${context}
+      ${enhancedContext}
 
       **Your Task:**
       1. First, create an engaging, SEO-friendly title based on the context

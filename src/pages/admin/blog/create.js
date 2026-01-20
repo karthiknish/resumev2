@@ -83,6 +83,7 @@ function CreateBlog() {
   // Agent Mode state
   const [isAgentModeOpen, setIsAgentModeOpen] = useState(false);
   const [agentContext, setAgentContext] = useState("");
+  const [agentUrl, setAgentUrl] = useState("");
   const [isAgentGenerating, setIsAgentGenerating] = useState(false);
   const [agentError, setAgentError] = useState("");
 
@@ -295,9 +296,9 @@ function CreateBlog() {
 
   // Handler for Agent Mode blog generation
   const handleAgentGenerate = async () => {
-    if (!agentContext?.trim()) {
-      setAgentError("Please provide context for generating the blog.");
-      toast.error("Please provide context for generating the blog.");
+    if (!agentContext?.trim() && !agentUrl?.trim()) {
+      setAgentError("Please provide context or a URL for generating the blog.");
+      toast.error("Please provide context or a URL for generating the blog.");
       return;
     }
 
@@ -311,13 +312,13 @@ function CreateBlog() {
       const response = await fetch("/api/ai/agent-generate-blog", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ context: agentContext }),
+        body: JSON.stringify({ context: agentContext, url: agentUrl }),
       });
       const data = await response.json();
 
       if (response.ok && data.success && data.data) {
         const { title, content } = data.data;
-        
+
         // Update form data with generated title and content
         setFormData((prev) => ({
           ...prev,
@@ -328,6 +329,7 @@ function CreateBlog() {
         toast.success("Blog generated successfully!", { id: toastId });
         setIsAgentModeOpen(false);
         setAgentContext("");
+        setAgentUrl("");
       } else {
         throw new Error(data.message || "Failed to generate blog.");
       }
@@ -689,6 +691,18 @@ function CreateBlog() {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
+              <Label htmlFor="agent-url">URL (Optional)</Label>
+              <input
+                id="agent-url"
+                type="url"
+                placeholder="https://example.com/article"
+                value={agentUrl}
+                onChange={(e) => setAgentUrl(e.target.value)}
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={isAgentGenerating}
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="agent-context">Context / Instructions</Label>
               <Textarea
                 id="agent-context"
@@ -718,7 +732,7 @@ function CreateBlog() {
             <Button
               type="button"
               onClick={handleAgentGenerate}
-              disabled={isAgentGenerating || !agentContext?.trim()}
+              disabled={isAgentGenerating || (!agentContext?.trim() && !agentUrl?.trim())}
               className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
             >
               {isAgentGenerating ? (
