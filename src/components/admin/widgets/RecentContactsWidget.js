@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Mail, User, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { ContactListItemSkeleton } from "@/components/ui/loading-states";
+import { EmptyState } from "@/components/ui/empty-state";
 
 // Helper to format date relative to now
 const formatRelativeDate = (dateString) => {
@@ -68,10 +69,13 @@ export default function RecentContactsWidget() {
           </div>
         )}
         {!isLoading && !error && contacts.length === 0 && (
-          <div className="flex justify-center items-center flex-grow">
-            <p className="text-gray-400 text-center">
-              No recent contact submissions.
-            </p>
+          <div className="flex-grow">
+            <EmptyState
+              title="No recent contacts"
+              description="Contact form submissions will appear here"
+              illustration="inbox"
+              className="py-6"
+            />
           </div>
         )}
         {!isLoading && !error && contacts.length > 0 && (

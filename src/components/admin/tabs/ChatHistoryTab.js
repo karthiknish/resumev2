@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/accordion";
 import { motion } from "framer-motion";
 import { AccordionItemSkeleton } from "@/components/ui/loading-states";
+import { EmptyState } from "@/components/ui/empty-state";
 
 // Simple date formatter
 const formatDate = (dateString) => {
@@ -188,21 +189,19 @@ export default function ChatHistoryTab() {
           </motion.div>
         )}
         {!isLoading && !error && filteredHistories.length === 0 && (
-          <motion.div 
-            className="text-center py-12"
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="bg-muted/50 border border-border rounded-xl p-6 space-y-2">
-              <p className="text-sm font-medium text-foreground">
-                {searchTerm ? "No matching conversations" : "No conversations yet"}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {searchTerm 
-                  ? `No conversations found matching "${searchTerm}". Try a different search term.` 
-                  : "Chat conversations will appear here once users start chatting with the AI."}
-              </p>
-            </div>
+            <EmptyState
+              title={searchTerm ? "No matching conversations" : "No conversations yet"}
+              description={
+                searchTerm
+                  ? `No conversations found matching "${searchTerm}". Try a different search term.`
+                  : "Chat conversations will appear here once users start chatting with the AI."
+              }
+              illustration="inbox"
+            />
           </motion.div>
         )}
         {!isLoading && !error && filteredHistories.length > 0 && (

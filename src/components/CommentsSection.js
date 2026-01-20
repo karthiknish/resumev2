@@ -9,6 +9,7 @@ import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { CommentSkeleton } from "@/components/ui/loading-states";
+import { EmptyState } from "@/components/ui/empty-state";
 
 // Simple date formatter
 const formatDate = (dateString) => {
@@ -315,20 +316,15 @@ export default function CommentsSection({ blogPostId }) {
         )}
         {!isLoading && !error && comments.length === 0 && (
           <motion.div
-            className="text-center py-16 bg-slate-50 rounded-3xl border border-slate-200"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
           >
-            {/* No emoji for empty state */}
-            <h4
-              className="font-heading text-xl sm:text-2xl text-slate-900 mb-2"
-            >
-              Be the first to comment!
-            </h4>
-            <p className="text-slate-600 text-base sm:text-lg">
-              Share your thoughts and start the conversation
-            </p>
+            <EmptyState
+              title="Be the first to comment!"
+              description="Share your thoughts and start the conversation"
+              illustration="inbox"
+            />
           </motion.div>
         )}
         {!isLoading &&

@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TableRowSkeleton } from "@/components/ui/loading-states";
+import { EmptyTable } from "@/components/ui/empty-state";
 
 function UsersTab() {
   const [users, setUsers] = useState([]);
@@ -215,15 +216,37 @@ function UsersTab() {
               )}
             </>
           ) : (
-            <div className="text-center py-8 space-y-2">
-              <h3 className="text-base font-heading font-semibold text-slate-900">
-                No users found
-              </h3>
-              <p className="text-sm text-slate-600">
-                {searchTerm
-                  ? "No users match your search criteria."
-                  : "No users have been created yet."}
-              </p>
+            <div className="overflow-x-auto bg-white rounded-xl border border-slate-200">
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-slate-200">
+                    <TableHead className="text-xs font-semibold uppercase tracking-wide text-slate-500 px-4 py-3">
+                      Name
+                    </TableHead>
+                    <TableHead className="text-xs font-semibold uppercase tracking-wide text-slate-500 px-4 py-3">
+                      Email
+                    </TableHead>
+                    <TableHead className="text-xs font-semibold uppercase tracking-wide text-slate-500 px-4 py-3">
+                      Role
+                    </TableHead>
+                    <TableHead className="text-xs font-semibold uppercase tracking-wide text-slate-500 px-4 py-3 text-right">
+                      Joined
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <EmptyTable
+                    title="No users found"
+                    description={
+                      searchTerm
+                        ? "No users match your search criteria."
+                        : "No users have been created yet."
+                    }
+                    illustration="users"
+                    colSpan={4}
+                  />
+                </TableBody>
+              </Table>
             </div>
           )}
         </CardContent>

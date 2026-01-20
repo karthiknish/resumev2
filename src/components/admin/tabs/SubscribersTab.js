@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Loader2, Mail, CalendarDays } from "lucide-react";
+import { Loader2, CalendarDays } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TableRowSkeleton } from "@/components/ui/loading-states";
+import { EmptyTable } from "@/components/ui/empty-state";
 
 // Simple date formatter
 const formatDate = (dateString) => {
@@ -98,13 +99,27 @@ export default function SubscribersTab() {
           </div>
         )}
         {!isLoading && !error && subscribers.length === 0 && (
-          <div className="text-center py-8 space-y-2">
-            <h3 className="text-base font-heading font-semibold text-foreground">
-              No subscribers yet
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              Your newsletter is waiting for its first subscriber.
-            </p>
+          <div className="overflow-x-auto bg-card rounded-xl border border-border">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-border hover:bg-muted/50">
+                  <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Email
+                  </TableHead>
+                  <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Subscribed On
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <EmptyTable
+                  title="No subscribers yet"
+                  description="Your newsletter is waiting for its first subscriber."
+                  illustration="mail"
+                  colSpan={2}
+                />
+              </TableBody>
+            </Table>
           </div>
         )}
         {!isLoading && !error && subscribers.length > 0 && (

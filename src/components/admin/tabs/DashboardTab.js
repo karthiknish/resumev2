@@ -26,6 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { EmptyTable } from "@/components/ui/empty-state";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -359,16 +360,36 @@ export default function DashboardTab({ unreadCount }) {
                 </div>
               )}
               {!isLoading && !error && blogPosts.length === 0 && (
-                <div className="flex items-center justify-center py-10">
-                  <div className="rounded-2xl border border-border bg-muted/50 px-8 py-6 text-center shadow-md">
-                    <div className="mb-4 text-6xl">📝</div>
-                    <h3 className="mb-2 text-2xl font-heading font-semibold text-foreground">
-                      No Blog Posts Yet
-                    </h3>
-                    <p className="font-medium text-muted-foreground">
-                      Create your first blog post to get started!
-                    </p>
-                  </div>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="border-b border-border bg-muted/50">
+                        <TableHead className="text-left text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                          Title
+                        </TableHead>
+                        <TableHead className="text-left text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                          Status
+                        </TableHead>
+                        <TableHead className="text-left text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                          Created
+                        </TableHead>
+                        <TableHead className="text-left text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                          Views
+                        </TableHead>
+                        <TableHead className="text-right text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                          Actions
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <EmptyTable
+                        title="No Blog Posts Yet"
+                        description="Create your first blog post to get started!"
+                        illustration="files"
+                        colSpan={5}
+                      />
+                    </TableBody>
+                  </Table>
                 </div>
               )}
               {!isLoading && !error && blogPosts.length > 0 && (
