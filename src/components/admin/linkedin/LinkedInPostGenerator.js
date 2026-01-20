@@ -12,21 +12,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import {
-  Linkedin,
-  Loader2,
-  Copy,
-  Check,
-  Sparkles,
-  RefreshCw,
-  History,
-  Trash2,
-  Hash,
-  X,
-  FileText,
-  BookOpen,
-  Megaphone,
-} from "lucide-react";
+  import {
+    Linkedin,
+    Loader2,
+    Copy,
+    Check,
+    Sparkles,
+    RefreshCw,
+    History,
+    Trash2,
+    Hash,
+    X,
+    FileText,
+    BookOpen,
+    Megaphone,
+  } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import EmojiPicker from "./EmojiPicker";

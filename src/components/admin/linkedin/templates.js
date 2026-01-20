@@ -1,4 +1,4 @@
-import { FileText, BookOpen, Megaphone } from "lucide-react";
+import { FileText, BookOpen, Megaphone, Sparkles } from "lucide-react";
 
 export const POST_TEMPLATES = {
   hook: [
