@@ -170,7 +170,7 @@ function extractTextFromHtml(html) {
   const entities = {
     '&nbsp;': ' ', '&amp;': '&', '&lt;': '<', '&gt;': '>',
     '&quot;': '"', '&apos;': "'", '&mdash;': '—', '&ndash;': '–',
-    '&hellip;': '...', '&rsquo;': ''', '&lsquo;': ''',
+    '&hellip;': '...', '&rsquo;': "'", '&lsquo;': "'",
     '&rdquo;': '"', '&ldquo;': '"',
   };
   for (const [entity, char] of Object.entries(entities)) {
@@ -203,6 +203,11 @@ export default async function handler(req, res) {
     let context = '';
     let url = '';
     let fileContent = '';
+    let styleConfig = {
+      tone: 'professional',
+      audience: 'developers',
+      length: 'medium'
+    };
 
     const contentType = req.headers['content-type'];
 
@@ -217,9 +222,18 @@ export default async function handler(req, res) {
       context = fields.context?.[0] || '';
       url = fields.url?.[0] || '';
 
+      // Parse styleConfig from JSON string
+      if (fields.styleConfig && fields.styleConfig[0]) {
+        try {
+          styleConfig = JSON.parse(fields.styleConfig[0]);
+        } catch (e) {
+          console.error('[Agent Mode] Failed to parse styleConfig:', e);
+        }
+      }
+
       if (files.file && files.file.length > 0) {
         const uploadedFile = files.file[0];
-        
+
         const allowedTypes = [
           'application/pdf',
           'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -228,19 +242,26 @@ export default async function handler(req, res) {
 
         if (!allowedTypes.includes(uploadedFile.mimetype) && !uploadedFile.originalFilename?.toLowerCase().endsWith('.txt')) {
           await fs.unlink(uploadedFile.filepath).catch(() => {});
-          return res.status(400).json({ 
-            message: "Invalid file type. Only PDF, DOCX, and TXT files are supported." 
+          return res.status(400).json({
+            message: "Invalid file type. Only PDF, DOCX, and TXT files are supported."
           });
         }
 
         fileContent = await parseFileContent(uploadedFile);
-        
+
         await fs.unlink(uploadedFile.filepath).catch(() => {});
       }
     } else {
       const body = req.body;
       context = body?.context || '';
       url = body?.url || '';
+      if (body?.styleConfig) {
+        styleConfig = {
+          tone: body.styleConfig.tone || 'professional',
+          audience: body.styleConfig.audience || 'developers',
+          length: body.styleConfig.length || 'medium'
+        };
+      }
     }
 
     let enhancedContext = context || '';

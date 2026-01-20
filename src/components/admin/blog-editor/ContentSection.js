@@ -3,7 +3,7 @@ import React, { useState, useCallback } from "react";
 import TipTapEditor from "@/components/TipTapEditor"; // Import TipTapEditor
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Loader2, Sparkles, Wand2, ListChecks, Bot } from "lucide-react"; // Added Bot for Agent Mode
+import { Loader2, Sparkles, Wand2, ListChecks, Bot, Upload } from "lucide-react"; // Added Bot and Upload for Agent Mode
 import { AiOutlineEye } from "react-icons/ai"; // Keep AiOutlineEye
 import axios from "axios";
 import { toast } from "sonner"; // For displaying success/error messages
@@ -37,6 +37,7 @@ function ContentSection({
   // Agent Mode state
   const [isAgentModeOpen, setIsAgentModeOpen] = useState(false);
   const [agentContext, setAgentContext] = useState("");
+  const [agentFile, setAgentFile] = useState(null);
   const [isAgentGenerating, setIsAgentGenerating] = useState(false);
   const [agentError, setAgentError] = useState("");
 
@@ -169,9 +170,9 @@ function ContentSection({
 
   // Handler for Agent Mode blog generation
   const handleAgentGenerate = useCallback(async () => {
-    if (!agentContext?.trim()) {
-      setAgentError("Please provide context for generating the blog.");
-      toast.error("Please provide context for generating the blog.");
+    if (!agentContext?.trim() && !agentFile) {
+      setAgentError("Please provide context or upload a file for generating the blog.");
+      toast.error("Please provide context or upload a file.");
       return;
     }
 
@@ -182,19 +183,31 @@ function ContentSection({
     toast.loading("Agent is writing your blog...", { id: toastId });
 
     try {
-      const response = await axios.post("/api/ai/agent-generate-blog", {
-        context: agentContext,
-      });
+      let response;
+
+      if (agentFile) {
+        const formData = new FormData();
+        formData.append('context', agentContext || '');
+        formData.append('file', agentFile);
+
+        response = await axios.post("/api/ai/agent-generate-blog", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      } else {
+        response = await axios.post("/api/ai/agent-generate-blog", {
+          context: agentContext,
+        });
+      }
 
       if (response.data.success && response.data.data) {
         const { title, content: generatedContent } = response.data.data;
         
-        // Update title if provided
         if (title) {
           onTitleChange(title);
         }
         
-        // Update content
         if (generatedContent) {
           setContent(generatedContent);
         }
@@ -202,6 +215,7 @@ function ContentSection({
         toast.success("Blog generated successfully!", { id: toastId });
         setIsAgentModeOpen(false);
         setAgentContext("");
+        setAgentFile(null);
       } else {
         throw new Error(response.data.message || "Failed to generate blog.");
       }
@@ -216,12 +230,13 @@ function ContentSection({
     } finally {
       setIsAgentGenerating(false);
     }
-  }, [agentContext, onTitleChange, setContent]);
+  }, [agentContext, agentFile, onTitleChange, setContent]);
 
   const handleAgentModeOpenChange = useCallback((open) => {
     setIsAgentModeOpen(open);
     if (!open) {
       setAgentError("");
+      setAgentFile(null);
     }
   }, []);
 
@@ -481,7 +496,7 @@ function ContentSection({
               Agent Mode
             </DialogTitle>
             <DialogDescription>
-              Describe what you want to write about and the AI agent will generate
+              Describe what you want to write about or upload a file, and the AI agent will generate
               a complete blog post with title and content.
             </DialogDescription>
           </DialogHeader>
@@ -496,6 +511,59 @@ function ContentSection({
                 className="min-h-[150px] resize-y"
                 disabled={isAgentGenerating}
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="agent-file">Upload Reference File (Optional)</Label>
+              <div className="flex items-center gap-4">
+                <input
+                  id="agent-file"
+                  type="file"
+                  accept=".pdf,.docx,.txt"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      const maxSize = 10 * 1024 * 1024; // 10MB
+                      if (file.size > maxSize) {
+                        toast.error("File size must be less than 10MB");
+                        e.target.value = "";
+                        setAgentFile(null);
+                        return;
+                      }
+                      setAgentFile(file);
+                    } else {
+                      setAgentFile(null);
+                    }
+                  }}
+                  disabled={isAgentGenerating}
+                  className="flex-1 text-sm text-slate-500
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-full file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-violet-50 file:text-violet-700
+                    hover:file:bg-violet-100"
+                />
+              </div>
+              {agentFile && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span>Selected: {agentFile.name}</span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setAgentFile(null);
+                      document.getElementById('agent-file').value = "";
+                    }}
+                    disabled={isAgentGenerating}
+                    className="h-6 px-2 text-xs"
+                  >
+                    Remove
+                  </Button>
+                </div>
+              )}
+              <p className="text-xs text-muted-foreground">
+                Supported formats: PDF, DOCX, TXT (max 10MB)
+              </p>
             </div>
             {agentError && (
               <p className="text-sm text-destructive">{agentError}</p>
@@ -513,7 +581,7 @@ function ContentSection({
             <Button
               type="button"
               onClick={handleAgentGenerate}
-              disabled={isAgentGenerating || !agentContext?.trim()}
+              disabled={isAgentGenerating || (!agentContext?.trim() && !agentFile)}
               className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
             >
               {isAgentGenerating ? (
