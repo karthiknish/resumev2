@@ -1,6 +1,6 @@
 import { useEditor, EditorContent, BubbleMenu } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, useImperativeHandle, forwardRef } from "react";
 import TextStyle from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -440,7 +440,7 @@ const MenuBar = ({
   );
 };
 
-const TipTapEditor = ({ content, onUpdate, id, className }) => {
+const TipTapEditorWrapper = ({ content, onUpdate, id, className, insertLinkRef }, ref) => {
   const [isCompleting, setIsCompleting] = useState(false);
   const [activeAIActionKey, setActiveAIActionKey] = useState(null);
   const [isAiBusy, setIsAiBusy] = useState(false);
@@ -541,6 +541,75 @@ const TipTapEditor = ({ content, onUpdate, id, className }) => {
       }
     }
   }, [content, editor]);
+
+  // Expose editor methods via ref
+  useImperativeHandle(ref, () => ({
+    insertLink: ({ url, text }) => {
+      if (!editor) return;
+      // Insert link at cursor position or replace selected text
+      const { from, to } = editor.state.selection;
+      const hasSelection = from !== to;
+
+      if (hasSelection) {
+        // Replace selected text with link
+        editor
+          .chain()
+          .focus()
+          .setMark("link", { href: url })
+          .run();
+      } else {
+        // Insert new link with text at cursor position
+        editor
+          .chain()
+          .focus()
+          .insertContent({
+            type: "text",
+            text: text || "link",
+            marks: [{
+              type: "link",
+              attrs: { href: url }
+            }]
+          })
+          .run();
+      }
+    },
+    focus: () => {
+      editor?.chain().focus().run();
+    },
+  }), [editor]);
+
+  // Also support the old insertLinkRef prop pattern
+  useEffect(() => {
+    if (insertLinkRef && editor) {
+      insertLinkRef.current = {
+        insertLink: ({ url, text }) => {
+          const { from, to } = editor.state.selection;
+          const hasSelection = from !== to;
+
+          if (hasSelection) {
+            editor
+              .chain()
+              .focus()
+              .setMark("link", { href: url })
+              .run();
+          } else {
+            editor
+              .chain()
+              .focus()
+              .insertContent({
+                type: "text",
+                text: text || "link",
+                marks: [{
+                  type: "link",
+                  attrs: { href: url }
+                }]
+              })
+              .run();
+          }
+        },
+      };
+    }
+  }, [editor, insertLinkRef]);
 
   const runAiAction = useCallback(
     async (action) => {
@@ -844,5 +913,8 @@ const TipTapEditor = ({ content, onUpdate, id, className }) => {
     </div>
   );
 };
+
+const TipTapEditor = forwardRef(TipTapEditorWrapper);
+TipTapEditor.displayName = "TipTapEditor";
 
 export default TipTapEditor;

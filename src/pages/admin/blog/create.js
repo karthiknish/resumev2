@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
@@ -28,6 +28,7 @@ import { Textarea } from "@/components/ui/textarea";
 // Import the refactored components
 import BannerImageSection from "@/components/admin/blog-editor/BannerImageSection";
 import MetadataSection from "@/components/admin/blog-editor/MetadataSection";
+import InternalLinkSuggestions from "@/components/admin/blog-editor/InternalLinkSuggestions";
 
 import { AiOutlineClose } from "react-icons/ai";
 import TipTapEditor from "@/components/TipTapEditor";
@@ -56,6 +57,7 @@ function formatRelativeTime(date) {
 function CreateBlog() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const editorRef = useRef(null);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -598,6 +600,14 @@ function CreateBlog() {
                   >
                     SEO Score: {seoScore}/100
                   </Badge>
+                  <InternalLinkSuggestions
+                    title={formData.title}
+                    content={formData.content}
+                    currentSlug=""
+                    onInsertLink={({ url, text }) => {
+                      editorRef.current?.insertLink({ url, text });
+                    }}
+                  />
                   <Button
                     variant="ghost"
                     size="sm"
@@ -649,6 +659,7 @@ function CreateBlog() {
             {/* Main Editor Area (Bottom) - Full Width */}
             <div className="mt-8">
               <TipTapEditor
+                ref={editorRef}
                 id="blog-content-editor"
                 content={formData.content}
                 onUpdate={(html) => handleContentChange(html)}

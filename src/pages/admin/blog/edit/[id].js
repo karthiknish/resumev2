@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
@@ -20,6 +20,7 @@ import {
 import BannerImageSection from "@/components/admin/blog-editor/BannerImageSection";
 import MetadataSection from "@/components/admin/blog-editor/MetadataSection";
 import VersionHistory from "@/components/admin/blog-editor/VersionHistory";
+import InternalLinkSuggestions from "@/components/admin/blog-editor/InternalLinkSuggestions";
 
 import { AiOutlineClose } from "react-icons/ai";
 import TipTapEditor from "@/components/TipTapEditor";
@@ -49,6 +50,7 @@ function Edit() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { id: blogId } = router.query;
+  const editorRef = useRef(null);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -512,6 +514,14 @@ function Edit() {
                   >
                     SEO Score: {seoScore}/100
                   </Badge>
+                  <InternalLinkSuggestions
+                    title={formData.title}
+                    content={formData.content}
+                    currentSlug={formData.slug}
+                    onInsertLink={({ url, text }) => {
+                      editorRef.current?.insertLink({ url, text });
+                    }}
+                  />
                   <Button
                     variant="ghost"
                     size="sm"
@@ -549,6 +559,7 @@ function Edit() {
             {/* Main Editor Area (Bottom) - Full Width */}
             <div className="mt-8">
               <TipTapEditor
+                ref={editorRef}
                 id="blog-content-editor"
                 content={formData.content}
                 onUpdate={(html) => handleContentChange(html)}

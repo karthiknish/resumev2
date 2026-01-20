@@ -43,7 +43,7 @@ Centralize theme system with proper UI/UX updates. Fix social posting, LinkedIn 
 - [x] Add SEO score indicator component
 - [x] Implement scheduled publishing with date/time picker
 - [x] Add version history for blog posts
-- [ ] Create internal link suggestion feature
+- [x] Create internal link suggestion feature
 
 ### Phase 5: Agent Mode Enhancements
 - [ ] Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`

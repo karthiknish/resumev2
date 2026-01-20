@@ -1361,3 +1361,789 @@ Examples:
   - `prd.md` (marked task as complete)
   - `.ralphy/progress.txt` (updated)
 
+- [✗] 2026-01-20 18:21 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:21 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:21 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:21 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:21 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:21 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:21 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:21 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:21 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:25 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:25 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:25 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:26 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:26 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:26 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:26 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:26 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:26 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:33 - Create internal link suggestion feature
+- [✗] 2026-01-20 18:33 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:33 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:34 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:34 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:34 - Add file upload (PDF, DOCX, TXT) support for Agent Mode context
+- [✗] 2026-01-20 18:35 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:35 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:35 - Add file upload (PDF, DOCX, TXT) support for Agent Mode context
+- [✗] 2026-01-20 18:35 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:35 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:35 - Add file upload (PDF, DOCX, TXT) support for Agent Mode context
+- [✗] 2026-01-20 18:35 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:35 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:35 - Add file upload (PDF, DOCX, TXT) support for Agent Mode context
+- [✗] 2026-01-20 18:35 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:35 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:35 - Add file upload (PDF, DOCX, TXT) support for Agent Mode context
+- [✗] 2026-01-20 18:35 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:35 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:35 - Add file upload (PDF, DOCX, TXT) support for Agent Mode context
+- [✗] 2026-01-20 18:35 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:35 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:35 - Add file upload (PDF, DOCX, TXT) support for Agent Mode context
+- [✗] 2026-01-20 18:35 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:35 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:35 - Add file upload (PDF, DOCX, TXT) support for Agent Mode context
+- [✗] 2026-01-20 18:35 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:35 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:35 - Add file upload (PDF, DOCX, TXT) support for Agent Mode context
+- [✗] 2026-01-20 18:35 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:35 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:35 - Add file upload (PDF, DOCX, TXT) support for Agent Mode context
+- [✗] 2026-01-20 18:35 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:35 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:35 - Add file upload (PDF, DOCX, TXT) support for Agent Mode context
+- [✗] 2026-01-20 18:35 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [✗] 2026-01-20 18:35 - Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [✗] 2026-01-20 18:35 - Add file upload (PDF, DOCX, TXT) support for Agent Mode context
+
+### Phase 4: Blog System Improvements - Task 8 COMPLETED
+
+**Task**: Create internal link suggestion feature
+
+**Implementation**:
+- Created `/api/ai/suggest-internal-links` endpoint with AI-powered internal link suggestions:
+  - Fetches published blog posts from MongoDB (excludes current post when editing)
+  - Uses Gemini AI to analyze current content and suggest 3-6 most relevant internal links
+  - Returns enriched suggestions with title, slug, description, category, tags, and image URL
+  - Includes relevance reason and suggested anchor text for each suggestion
+  - Fallback to tag/category-based matching if AI parsing fails
+- Created `InternalLinkSuggestions` component in `src/components/admin/blog-editor/InternalLinkSuggestions.js`:
+  - Dialog-based UI for viewing and selecting internal link suggestions
+  - Displays suggestion count with refresh capability
+  - Shows post title, description snippet, category, date, and tags for each suggestion
+  - Badge indicating relevance reason for each suggestion
+  - "Insert" button to add link directly to editor at cursor position
+  - Preview link with external icon to view suggested post
+  - Loading states, empty states, and error handling
+  - Custom trigger support for flexible integration
+- Updated `TipTapEditor` component with programmatic link insertion:
+  - Added `forwardRef` wrapper to expose `insertLink` method via ref
+  - `insertLink` method accepts `{ url, text }` and inserts link at cursor
+  - Supports replacing selected text with link or inserting new link
+- Integrated into blog editor:
+  - Added "Internal Links" button in create.js badge section
+  - Added "Internal Links" button in edit/[id].js badge section
+  - Connected to editor ref for direct link insertion
+
+**Features**:
+- AI-powered relevance scoring based on content analysis
+- Respects current post slug (excludes self when editing)
+- Visual preview of suggested posts with meta information
+- One-click link insertion into editor
+- Responsive dialog design
+- Toast notifications for user feedback
+
+**Testing**:
+- ESLint passing with no errors
+- Build passes successfully
+
+**Results**:
+- ESLint passing with no errors
+- Files created:
+  - `src/pages/api/ai/suggest-internal-links.js`
+  - `src/components/admin/blog-editor/InternalLinkSuggestions.js`
+- Files modified:
+  - `src/components/TipTapEditor.js` (added forwardRef with insertLink method)
+  - `src/pages/admin/blog/create.js` (added InternalLinkSuggestions component and editorRef)
+  - `src/pages/admin/blog/edit/[id].js` (added InternalLinkSuggestions component and editorRef)
+  - `prd.md` (marked task as complete)
+  - `.ralphy/progress.txt` (updated)
+
