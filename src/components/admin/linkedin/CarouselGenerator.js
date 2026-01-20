@@ -17,9 +17,221 @@ import {
   Image as ImageIcon,
   Layers,
   X,
+  FileText,
+  BookOpen,
+  Lightbulb,
+  List,
+  TrendingUp,
 } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+
+/**
+ * LinkedIn Carousel Template Library
+ * Pre-built templates for different carousel formats
+ */
+const CAROUSEL_TEMPLATES = {
+  educational: [
+    {
+      id: "edu-tips",
+      name: "Quick Tips",
+      icon: Lightbulb,
+      description: "Share bite-sized tips on any topic",
+      template: "{number} Quick Tips for {topic}",
+      slideCount: 5,
+      placeholders: {
+        topic: "Better JavaScript",
+        number: "5",
+      },
+    },
+    {
+      id: "edu-mistakes",
+      name: "Common Mistakes",
+      icon: BookOpen,
+      description: "Highlight mistakes and how to avoid them",
+      template: "{number} Common {audience} Mistakes to Avoid",
+      slideCount: 6,
+      placeholders: {
+        audience: "New Developer",
+        number: "6",
+      },
+    },
+    {
+      id: "edu-steps",
+      name: "Step-by-Step Guide",
+      icon: List,
+      description: "Break down a process into actionable steps",
+      template: "How to {outcome}: A Step-by-Step Guide",
+      slideCount: 7,
+      placeholders: {
+        outcome: "Build a React App",
+      },
+    },
+    {
+      id: "edu-myths",
+      name: "Myth vs Reality",
+      icon: FileText,
+      description: "Debunk common myths in your industry",
+      template: "{number} Myths About {topic} (Debunked)",
+      slideCount: 5,
+      placeholders: {
+        topic: "Remote Work",
+        number: "5",
+      },
+    },
+    {
+      id: "edu-checklist",
+      name: "Actionable Checklist",
+      icon: List,
+      description: "Create a practical checklist for your audience",
+      template: "The Ultimate {topic} Checklist",
+      slideCount: 6,
+      placeholders: {
+        topic: "Code Review",
+      },
+    },
+  ],
+  professional: [
+    {
+      id: "prof-journey",
+      name: "Career Journey",
+      icon: TrendingUp,
+      description: "Share your professional growth story",
+      template: "My {timeframe} Career Journey in {industry}",
+      slideCount: 5,
+      placeholders: {
+        timeframe: "5-Year",
+        industry: "Tech",
+      },
+    },
+    {
+      id: "prof-lessons",
+      name: "Key Lessons Learned",
+      icon: BookOpen,
+      description: "Share wisdom from your experience",
+      template: "{number} Lessons I Learned from {experience}",
+      slideCount: 5,
+      placeholders: {
+        number: "5",
+        experience: "My First Job",
+      },
+    },
+    {
+      id: "prof-tools",
+      name: "Tools & Resources",
+      icon: FileText,
+      description: "Curate a list of valuable tools",
+      template: "{number} Essential Tools for {purpose}",
+      slideCount: 6,
+      placeholders: {
+        number: "7",
+        purpose: "Frontend Development",
+      },
+    },
+    {
+      id: "prof-trends",
+      name: "Industry Trends",
+      icon: TrendingUp,
+      description: "Highlight trending topics in your field",
+      template: "{number} {industry} Trends to Watch in {year}",
+      slideCount: 5,
+      placeholders: {
+        number: "5",
+        industry: "Tech",
+        year: "2024",
+      },
+    },
+    {
+      id: "prof-advice",
+      name: "Pro Tips",
+      icon: Lightbulb,
+      description: "Share professional advice",
+      template: "Pro Tips for {skill}: From {level} to {level}",
+      slideCount: 5,
+      placeholders: {
+        skill: "React",
+        level: "Beginner",
+        level2: "Advanced",
+      },
+    },
+  ],
+  engaging: [
+    {
+      id: "eng-quiz",
+      name: "Quiz Format",
+      icon: Lightbulb,
+      description: "Create an interactive quiz carousel",
+      template: "Quiz: How Much Do You Know About {topic}?",
+      slideCount: 6,
+      placeholders: {
+        topic: "Web Development",
+      },
+    },
+    {
+      id: "eng-before-after",
+      name: "Before & After",
+      icon: TrendingUp,
+      description: "Show transformation results",
+      template: "Before & After: Transforming {outcome}",
+      slideCount: 5,
+      placeholders: {
+        outcome: "Your Coding Skills",
+      },
+    },
+    {
+      id: "eng-comparison",
+      name: "This vs That",
+      icon: FileText,
+      description: "Compare two options or approaches",
+      template: "{option1} vs {option2}: Which is Better?",
+      slideCount: 5,
+      placeholders: {
+        option1: "React",
+        option2: "Vue",
+      },
+    },
+    {
+      id: "eng-story",
+      name: "Story Series",
+      icon: BookOpen,
+      description: "Tell a story across multiple slides",
+      template: "Story Time: {title}",
+      slideCount: 7,
+      placeholders: {
+        title: "How I Got My First Developer Job",
+      },
+    },
+    {
+      id: "eng-stats",
+      name: "Statistics Roundup",
+      icon: TrendingUp,
+      description: "Share compelling statistics",
+      template: "{number} Surprising Statistics About {topic}",
+      slideCount: 6,
+      placeholders: {
+        number: "7",
+        topic: "Remote Work",
+      },
+    },
+  ],
+};
+
+/**
+ * Get template by category and ID
+ */
+const getTemplate = (category, templateId) => {
+  return CAROUSEL_TEMPLATES[category]?.find(t => t.id === templateId);
+};
+
+/**
+ * Format template with placeholder values
+ */
+const formatTemplate = (template, values = {}) => {
+  return Object.entries(values).reduce(
+    (acc, [key, value]) => acc.replace(new RegExp(`\\{${key}\\}`, 'g'), value || `{${key}}`),
+    template
+  );
+};
 
 export default function CarouselGenerator() {
   const [topic, setTopic] = useState("");
@@ -32,6 +244,39 @@ export default function CarouselGenerator() {
   const [error, setError] = useState(null);
   const [progress, setProgress] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
+
+  // Template state
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [templateCategory, setTemplateCategory] = useState("educational");
+
+  const getTemplateCategoryLabel = (category) => {
+    const labels = {
+      educational: "Educational",
+      professional: "Professional",
+      engaging: "Engaging",
+    };
+    return labels[category] || category;
+  };
+
+  const getTemplateCategoryIcon = (category) => {
+    const icons = {
+      educational: BookOpen,
+      professional: TrendingUp,
+      engaging: Lightbulb,
+    };
+    return icons[category] || FileText;
+  };
+
+  const handleTemplateSelect = (category, template) => {
+    // Format the template with default placeholders
+    const formattedTopic = formatTemplate(template.template, template.placeholders);
+    setTopic(formattedTopic);
+    setSlideCount(String(template.slideCount));
+    setShowTemplates(false);
+
+    // Show toast with instructions
+    toast.success(`Loaded "${template.name}" template. Edit the topic to customize placeholders!`);
+  };
 
   const handleGenerate = async (e) => {
     e?.preventDefault();
@@ -129,20 +374,109 @@ export default function CarouselGenerator() {
         {/* Generator Form */}
         <Card className="bg-card border border-border shadow-sm rounded-2xl">
           <CardHeader className="pb-3 border-b border-border">
-            <CardTitle className="flex items-center gap-2 text-lg font-heading font-semibold text-foreground">
-              <div className="p-2 bg-primary/10 rounded-full">
-                <Layers className="w-4 h-4 text-primary" />
+            <CardTitle className="flex items-center justify-between text-lg font-heading font-semibold text-foreground">
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-primary/10 rounded-full">
+                  <Layers className="w-4 h-4 text-primary" />
+                </div>
+                Generate Carousel Images
               </div>
-              Generate Carousel Images
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowTemplates(!showTemplates)}
+                className="text-muted-foreground hover:text-foreground"
+                type="button"
+              >
+                <FileText className="w-4 h-4 mr-1" />
+                Templates
+              </Button>
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-4">
+            <AnimatePresence>
+              {showTemplates && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="mb-4 p-3 bg-muted/50 rounded-xl border border-border"
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <FileText className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium text-foreground">
+                      Carousel Templates
+                    </span>
+                  </div>
+
+                  {/* Category Tabs */}
+                  <div className="flex gap-1 mb-3 p-1 bg-background rounded-lg">
+                    {Object.keys(CAROUSEL_TEMPLATES).map((category) => {
+                      const CategoryIcon = getTemplateCategoryIcon(category);
+                      return (
+                        <button
+                          key={category}
+                          type="button"
+                          data-testid={`carousel-template-category-${category}`}
+                          onClick={() => setTemplateCategory(category)}
+                          className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium transition-all ${
+                            templateCategory === category
+                              ? "bg-primary text-primary-foreground shadow-sm"
+                              : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                          }`}
+                        >
+                          <CategoryIcon className="w-3.5 h-3.5" />
+                          <span className="capitalize">{getTemplateCategoryLabel(category)}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Template Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-64 overflow-y-auto">
+                    {CAROUSEL_TEMPLATES[templateCategory].map((template) => {
+                      const TemplateIcon = template.icon;
+                      return (
+                        <motion.button
+                          key={template.id}
+                          type="button"
+                          onClick={() => handleTemplateSelect(templateCategory, template)}
+                          className="text-left p-3 rounded-lg bg-background hover:bg-accent hover:border-primary/30 border border-border transition-all text-sm group"
+                          whileHover={{ scale: 1.01 }}
+                          whileTap={{ scale: 0.99 }}
+                          data-testid={`carousel-template-${template.id}`}
+                        >
+                          <div className="flex items-start gap-2">
+                            <div className="p-1.5 bg-primary/10 rounded-md group-hover:bg-primary/20 transition-colors">
+                              <TemplateIcon className="w-3.5 h-3.5 text-primary" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-foreground text-xs line-clamp-1">
+                                {template.name}
+                              </p>
+                              <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
+                                {template.description}
+                              </p>
+                              <Badge variant="secondary" className="mt-1.5 text-xs">
+                                {template.slideCount} slides
+                              </Badge>
+                            </div>
+                          </div>
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             <form onSubmit={handleGenerate} className="space-y-4">
               <div>
-                <Label className="text-sm font-medium text-foreground mb-1.5 block">
+                <Label htmlFor="carousel-topic" className="text-sm font-medium text-foreground mb-1.5 block">
                   Carousel Topic
                 </Label>
                 <Textarea
+                  id="carousel-topic"
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
                   placeholder="e.g., '5 Tips for Better Code Reviews' or '7 Mistakes New Developers Make'"
@@ -153,7 +487,7 @@ export default function CarouselGenerator() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label className="text-sm font-medium text-foreground mb-1.5 block">
+                  <Label htmlFor="slide-count" className="text-sm font-medium text-foreground mb-1.5 block">
                     Number of Slides
                   </Label>
                   <Select value={slideCount} onValueChange={setSlideCount} disabled={isGenerating}>

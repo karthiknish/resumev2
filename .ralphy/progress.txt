@@ -617,3 +617,73 @@ The emoji picker component was already fully implemented in the codebase. This t
   - `prd.md` (marked task as complete)
   - `.ralphy/progress.txt` (updated)
 
+
+### Phase 3: LinkedIn Features - Task 5 COMPLETED
+
+**Task**: Enhance `src/components/admin/linkedin/CarouselGenerator.js` with template library
+
+**Implementation**:
+- Created comprehensive carousel template library in `src/components/admin/linkedin/CarouselGenerator.js`:
+  - **CAROUSEL_TEMPLATES constant** with three categories:
+    - **Educational Templates** (5 templates):
+      - Quick Tips: Share bite-sized tips on any topic (5 slides)
+      - Common Mistakes: Highlight mistakes and how to avoid them (6 slides)
+      - Step-by-Step Guide: Break down a process into actionable steps (7 slides)
+      - Myth vs Reality: Debunk common myths in your industry (5 slides)
+      - Actionable Checklist: Create a practical checklist for your audience (6 slides)
+    - **Professional Templates** (5 templates):
+      - Career Journey: Share your professional growth story (5 slides)
+      - Key Lessons Learned: Share wisdom from your experience (5 slides)
+      - Tools & Resources: Curate a list of valuable tools (6 slides)
+      - Industry Trends: Highlight trending topics in your field (5 slides)
+      - Pro Tips: Share professional advice (5 slides)
+    - **Engaging Templates** (5 templates):
+      - Quiz Format: Create an interactive quiz carousel (6 slides)
+      - Before & After: Show transformation results (5 slides)
+      - This vs That: Compare two options or approaches (5 slides)
+      - Story Series: Tell a story across multiple slides (7 slides)
+      - Statistics Roundup: Share compelling statistics (6 slides)
+  - **Template structure**: Each template has id, name, icon, description, template string, slideCount, and placeholders
+  - **Helper functions**:
+    - `getTemplate(category, templateId)`: Get specific template by category and ID
+    - `formatTemplate(template, values)`: Format template with placeholder values
+    - `getTemplateCategoryLabel(category)`: Get display label for category
+    - `getTemplateCategoryIcon(category)`: Get icon component for category
+    - `handleTemplateSelect(category, template)`: Load template into form and close panel
+  - **Template UI components**:
+    - Templates button in card header
+    - Expandable templates panel with smooth animations using Framer Motion
+    - Category tabs (Educational, Professional, Engaging) with icons and active state
+    - Template grid with cards showing name, description, icon, and slide count badge
+    - Template selection handler that:
+      - Loads formatted template into topic textarea with default placeholders
+      - Sets slide count to match template
+      - Closes templates panel
+      - Shows toast notification with template name and customization instructions
+  - **Icons**: Added FileText, BookOpen, Lightbulb, List, TrendingUp icons from lucide-react
+  - **Accessibility**: Added htmlFor/id to labels and inputs, data-testid attributes for testing
+
+**Testing**:
+- Created `src/components/admin/linkedin/__tests__/CarouselGenerator.test.js` with 28 test cases:
+  - Basic Rendering (3 tests): component renders, topic input, templates button
+  - Template Library UI (3 tests): open/close panel, close on second click
+  - Template Categories (3 tests): all three category tabs, default selection, switching
+  - Educational Templates (3 tests): display all templates, load Quick Tips, load Common Mistakes
+  - Professional Templates (2 tests): display all templates, load Career Journey
+  - Engaging Templates (2 tests): display all templates, load Quiz Format
+  - Template Selection Behavior (3 tests): close panel after select, toast with name, toast with instructions
+  - Template Slide Count (2 tests): update slide count, display slide count badges
+  - Template Design (5 tests): descriptions, test-id on category tabs, test-id on each category's templates
+  - Accessibility (2 tests): proper labels on buttons, accessible category tabs
+
+**Results**:
+- 28/28 tests passing (new tests)
+- 419/419 total tests passing (28 new + 391 existing)
+- ESLint passing with no errors
+- Files created:
+  - `src/components/admin/linkedin/__tests__/CarouselGenerator.test.js`
+- Files modified:
+  - `src/components/admin/linkedin/CarouselGenerator.js`
+  - `prd.md` (marked task as complete)
+  - `.ralphy/progress.txt` (updated)
+
