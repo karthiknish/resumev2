@@ -1111,3 +1111,52 @@ The emoji picker component was already fully implemented in the codebase. This t
   - `prd.md` (marked task as complete)
   - `.ralphy/progress.txt` (updated)
 
+
+### Phase 4: Blog System Improvements - Task 3 COMPLETED
+
+**Task**: Add real-time word count and reading time display
+
+**Implementation**:
+- Enhanced word count and reading time display in `src/pages/admin/blog/create.js`:
+  - Added `FileText` and `Clock` icon imports from lucide-react
+  - Refactored word count calculation as a separate variable for better performance
+  - Changed reading time calculation from `Math.round` to `Math.ceil` for more accurate estimates
+  - Updated word count display badge to show:
+    - FileText icon for visual clarity
+    - Word count with `toLocaleString()` for proper formatting (e.g., "1,234 words")
+    - Singular/plural handling ("word" vs "words")
+  - Updated reading time display badge to show:
+    - Clock icon for visual clarity
+    - Reading time in minutes (e.g., "5 min read")
+  - Both badges now display side-by-side with proper spacing
+- Enhanced word count and reading time display in `src/pages/admin/blog/edit/[id].js`:
+  - Added `FileText` and `Clock` icon imports
+  - Same refactored word count calculation
+  - Same updated badge display with icons and formatting
+
+**Features**:
+- Real-time word count updates as user types in the TipTapEditor
+- Reading time automatically calculated based on 200 words per minute standard
+- Visual icons help users quickly identify the metrics
+- Proper number formatting with commas for large word counts
+- Consistent styling across create and edit pages
+- Both metrics displayed prominently below the post title
+
+**Technical Details**:
+- Word count calculation strips HTML tags using the existing `getPlainText` helper
+- Words are split by spaces and empty strings are filtered out
+- Reading time uses `Math.ceil` to ensure minimum 1 minute for any content
+- Badges use `variant="secondary"` for subtle, non-distracting appearance
+
+**Testing**:
+- ESLint passing with no errors
+- Visual updates will be visible when typing content in the editor
+
+**Results**:
+- ESLint passing with no errors
+- Files modified:
+  - `src/pages/admin/blog/create.js`
+  - `src/pages/admin/blog/edit/[id].js`
+  - `PRD.md` (marked task as complete)
+  - `.ralphy/progress.txt` (updated)
+

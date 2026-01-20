@@ -6,7 +6,7 @@ import PageContainer from "@/components/PageContainer";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Wand2, ArrowLeft, Eye, Save, LayoutPanelLeft, Check, CloudUpload, RefreshCw } from "lucide-react";
+import { Loader2, Wand2, ArrowLeft, Eye, Save, LayoutPanelLeft, Check, CloudUpload, RefreshCw, Clock, FileText } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -102,12 +102,11 @@ function Edit() {
       .trim();
   };
 
-  const readingTimeMinutes = (() => {
-    const words = getPlainText(formData.content)
-      .split(" ")
-      .filter(Boolean).length;
-    return Math.max(1, Math.round(words / 200));
-  })();
+  const wordCount = getPlainText(formData.content)
+    .split(" ")
+    .filter(Boolean).length;
+
+  const readingTimeMinutes = Math.max(1, Math.ceil(wordCount / 200));
 
   const seoScore = (() => {
     let score = 0;
@@ -486,7 +485,12 @@ function Edit() {
                 />
 
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Badge variant="secondary" className="font-normal">
+                  <Badge variant="secondary" className="font-normal flex items-center gap-1.5">
+                    <FileText className="h-3 w-3" />
+                    {wordCount.toLocaleString()} {wordCount === 1 ? 'word' : 'words'}
+                  </Badge>
+                  <Badge variant="secondary" className="font-normal flex items-center gap-1.5">
+                    <Clock className="h-3 w-3" />
                     {readingTimeMinutes} min read
                   </Badge>
                   <Badge

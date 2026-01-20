@@ -37,8 +37,8 @@ Centralize theme system with proper UI/UX updates. Fix social posting, LinkedIn 
 
 ### Phase 4: Blog System Improvements
 - [x] Add drag-drop image upload to TipTapEditor
-- [ ] Implement auto-save indicator with timestamp in blog editor
-- [ ] Add real-time word count and reading time display
+- [x] Implement auto-save indicator with timestamp in blog editor
+- [x] Add real-time word count and reading time display
 - [ ] Create AI keyword suggestion feature in `src/pages/admin/blog/create.js`
 - [ ] Add SEO score indicator component
 - [ ] Implement scheduled publishing with date/time picker
