@@ -19,6 +19,7 @@ import {
 // Import the refactored components
 import BannerImageSection from "@/components/admin/blog-editor/BannerImageSection";
 import MetadataSection from "@/components/admin/blog-editor/MetadataSection";
+import VersionHistory from "@/components/admin/blog-editor/VersionHistory";
 
 import { AiOutlineClose } from "react-icons/ai";
 import TipTapEditor from "@/components/TipTapEditor";
@@ -63,6 +64,7 @@ function Edit() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [currentVersion, setCurrentVersion] = useState(1);
   const [showPreview, setShowPreview] = useState(false);
   const [isFormatting, setIsFormatting] = useState(false);
   const [lastSavedSnapshot, setLastSavedSnapshot] = useState({ ...formData });
@@ -150,6 +152,7 @@ function Edit() {
         };
         setFormData(populated);
         setLastSavedSnapshot(populated);
+        setCurrentVersion(b.currentVersion || 1);
       } catch (e) {
         setError(e.message || "Failed to load blog post");
         toast.error(e.message || "Failed to load blog post");
@@ -458,6 +461,8 @@ function Edit() {
                   <Eye className="mr-2 h-4 w-4" />
                   Preview
                 </Button>
+
+                <VersionHistory blogId={blogId} currentVersion={currentVersion} />
                 <Button onClick={(e) => handleSubmit(e)} disabled={isLoading}>
                   {isLoading ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

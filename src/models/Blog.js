@@ -57,6 +57,52 @@ const BlogSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    versions: [
+      {
+        versionNumber: {
+          type: Number,
+          required: true,
+        },
+        title: {
+          type: String,
+          required: true,
+        },
+        content: {
+          type: String,
+          required: true,
+        },
+        description: {
+          type: String,
+          required: true,
+        },
+        imageUrl: {
+          type: String,
+        },
+        tags: [{
+          type: String,
+          trim: true,
+        }],
+        category: {
+          type: String,
+        },
+        author: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+        changeDescription: {
+          type: String,
+          default: "",
+        },
+      },
+    ],
+    currentVersion: {
+      type: Number,
+      default: 1,
+    },
   },
   { timestamps: true }
 );
@@ -80,6 +126,46 @@ BlogSchema.pre("save", function (next) {
       .trim()
       .replace(/[^a-zA-Z0-9\s]/g, "")
       .replace(/\s+/g, "-");
+  }
+  next();
+});
+
+// Create version snapshot on content changes (skip for new documents)
+BlogSchema.pre("save", function (next) {
+  // Only create version for existing documents (not new ones)
+  if (!this.isNew) {
+    const contentFields = ["title", "content", "description", "imageUrl", "tags", "category"];
+    const hasContentChanges = contentFields.some(field => this.isModified(field));
+
+    if (hasContentChanges) {
+      // Increment version number
+      this.currentVersion = (this.currentVersion || 1) + 1;
+
+      // Create version snapshot with the previous values
+      const previousVersion = {
+        versionNumber: this.currentVersion - 1,
+        title: this._doc.title,
+        content: this._doc.content,
+        description: this._doc.description,
+        imageUrl: this._doc.imageUrl,
+        tags: this._doc.tags ? [...this._doc.tags] : [],
+        category: this._doc.category,
+        author: this._doc.author,
+        createdAt: new Date(this._doc.updatedAt || Date.now()),
+        changeDescription: "",
+      };
+
+      // Add to versions array, keep only last 20 versions
+      this.versions = this.versions || [];
+      this.versions.push(previousVersion);
+      if (this.versions.length > 20) {
+        this.versions = this.versions.slice(-20);
+      }
+    }
+  } else {
+    // For new documents, set initial version
+    this.currentVersion = 1;
+    this.versions = [];
   }
   next();
 });

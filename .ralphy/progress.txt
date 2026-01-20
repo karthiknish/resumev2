@@ -1277,3 +1277,87 @@ Examples:
   - `prd.md` (marked task as complete)
   - `.ralphy/progress.txt` (updated)
 
+
+### Phase 4: Blog System Improvements - Task 7 COMPLETED
+
+**Task**: Add version history for blog posts
+
+**Implementation**:
+- Updated `src/models/Blog.js` with version history support:
+  - Added `versions` array field to store version snapshots
+  - Added `currentVersion` field to track the current version number
+  - Each version contains: versionNumber, title, content, description, imageUrl, tags, category, author, createdAt, changeDescription
+  - Implemented pre-save hook to automatically create version snapshots when content changes
+  - Keeps only the last 20 versions to manage storage
+  - Version numbers automatically increment on each content change
+- Created `src/pages/api/blog/versions.js` API endpoint:
+  - **GET**: Fetch version history for a blog post (sorted by versionNumber descending)
+  - **POST**: Restore a specific version with optional change description
+  - Creates a snapshot of current content before restoring
+  - Admin-only access with proper authentication checks
+- Created `src/components/admin/blog-editor/VersionHistory.js` UI component:
+  - **Version History Dialog**:
+    - Displays all versions in reverse chronological order (newest first)
+    - Shows version number badge with "Current" indicator for latest version
+    - Displays relative timestamp (e.g., "2h ago", "3d ago")
+    - Shows title, description snippet, word count, category, and tags for each version
+    - Empty state with helpful message when no versions exist
+  - **Preview Feature**:
+    - Full content preview dialog for each version
+    - Displays banner image if available
+    - Uses TipTapRenderer for proper HTML rendering
+    - Shows version number and timestamp
+  - **Restore Feature**:
+    - Restore button for all non-current versions
+    - Confirmation dialog with optional change description
+    - Creates new version with current content before restoring
+    - Toast notifications for success/error states
+  - **Visual Design**:
+    - Smooth animations using Framer Motion
+    - Highlighted selected version in the list
+    - Responsive layout with proper spacing
+    - Icons for visual clarity (History, Eye, RotateCcw, Clock, FileText)
+- Updated `src/pages/admin/blog/edit/[id].js`:
+  - Added `currentVersion` state to track the blog's version number
+  - Imported VersionHistory component
+  - Added VersionHistory button in header between Preview and Save Changes buttons
+  - Current version badge displayed on the Version History button
+
+**Features**:
+- Automatic version snapshot creation on every save (skip auto-save-only changes)
+- View full content of any previous version
+- Restore any previous version with one click
+- Optional change descriptions for tracking restore reasons
+- Maximum 20 versions retained per post (configurable)
+- Version numbers displayed prominently (v1, v2, etc.)
+- Relative time formatting for easy comprehension
+- Word count display for each version
+- Author tracking for each version
+
+**Technical Details**:
+- Version snapshots stored as embedded documents in the Blog model
+- Pre-save hook checks for content field modifications before creating snapshots
+- Version increments only when title, content, description, imageUrl, tags, or category changes
+- Auto-save changes (without explicit save) don't trigger version creation in most cases
+- Restoring a version creates a new version with the current state first
+- Uses Mongoose middleware for automatic version management
+- API endpoint supports both fetching and restoring versions
+
+**Testing**:
+- Build passes successfully
+- ESLint passing with no errors
+- All existing tests continue to pass
+- Pre-existing EmojiPicker test failures are unrelated to this change
+
+**Results**:
+- ESLint passing with no errors
+- Build passing successfully
+- Files created:
+  - `src/pages/api/blog/versions.js`
+  - `src/components/admin/blog-editor/VersionHistory.js`
+- Files modified:
+  - `src/models/Blog.js` (added version history fields and pre-save hook)
+  - `src/pages/admin/blog/edit/[id].js` (added VersionHistory component)
+  - `prd.md` (marked task as complete)
+  - `.ralphy/progress.txt` (updated)
+

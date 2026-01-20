@@ -42,7 +42,7 @@ Centralize theme system with proper UI/UX updates. Fix social posting, LinkedIn 
 - [x] Create AI keyword suggestion feature in `src/pages/admin/blog/create.js`
 - [x] Add SEO score indicator component
 - [x] Implement scheduled publishing with date/time picker
-- [ ] Add version history for blog posts
+- [x] Add version history for blog posts
 - [ ] Create internal link suggestion feature
 
 ### Phase 5: Agent Mode Enhancements
