@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { pricingData } from "./constants";
+import { pricingData } from "./_lib/constants";
 
 const PricingSection = () => (
   <section className="py-20 md:py-32 bg-white text-slate-900">

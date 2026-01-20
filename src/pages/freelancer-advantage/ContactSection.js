@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { FORM_ERRORS } from "@/lib/formErrors";
+import { FORM_ERRORS } from "./_lib/formErrors";
 
 export const useContactForm = () => {
   const [formStatus, setFormStatus] = useState({
