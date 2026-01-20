@@ -30,3 +30,35 @@
   - `src/styles/theme/tokens.css`
   - `src/styles/theme/__tests__/tokens.test.js`
 
+
+### Phase 1: Centralized Theme System - Task 2 COMPLETED
+
+**Task**: Update `src/styles/globals.css` to import theme files and remove commented theme classes
+
+**Implementation**:
+- Added `@import "./theme/tokens.css";` directive to globals.css (line 6)
+- Removed all commented theme class definitions:
+  - Removed `/* --- Theme Definitions --- */` block
+  - Removed comments for `.theme-dark-hacker`, `.theme-minimal`, `.theme-playful`, `.theme-neon-cyberpunk`, `.theme-studio-ghibli`
+  - Removed `/* REMOVE ALL THEME CLASS DEFINITIONS BELOW THIS LINE */` marker
+  - Removed `/* --- End Theme Definitions --- */` marker
+
+**Testing**:
+- Created `src/styles/__tests__/globals.test.js` with 27 test cases
+- Tests verify:
+  - Theme tokens are properly imported
+  - Commented theme class definitions are removed
+  - Required CSS imports (tailwindcss, plugins) are present
+  - CSS layers are defined (base, utilities, components)
+  - Base styles, utilities, and editor styles are present
+  - Accessibility features (reduced motion) are included
+  - Token integration is working
+
+**Results**:
+- 56/56 tests passing (27 new + 29 existing)
+- ESLint passing with no errors
+- Files modified:
+  - `src/styles/globals.css`
+- Files created:
+  - `src/styles/__tests__/globals.test.js`
+

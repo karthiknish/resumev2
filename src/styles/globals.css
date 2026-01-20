@@ -2,6 +2,9 @@
 @plugin "@tailwindcss/typography";
 @plugin "tailwindcss-animate";
 
+/* Import centralized design tokens */
+@import "./theme/tokens.css";
+
 @theme {
   /* Colors - using CSS variables for compatibility with existing components */
   --color-border: hsl(var(--border));
@@ -94,17 +97,6 @@
     --section-bg: 0 0% 100%;
     --section-foreground: 222.2 47.4% 11.2%;
   }
-
-  /* --- Theme Definitions --- */
-  /* Default theme is dark-hacker (matches :root for now) */
-  /* REMOVE ALL THEME CLASS DEFINITIONS BELOW THIS LINE */
-  /* .theme-dark-hacker { ... } */
-  /* .theme-minimal { ... } */
-  /* .theme-playful { ... } */
-  /* .theme-neon-cyberpunk { ... } */
-  /* .theme-studio-ghibli { ... } */
-  /* --- End Theme Definitions --- */
-
 
   /* Add other base styles if necessary */
   body {
