@@ -30,3 +30,6 @@ yarn-error.log*
 
 # vercel
 .vercel
+ralphy.sh
+.ralphy/progress.txt
+PRD.md

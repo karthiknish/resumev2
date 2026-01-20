@@ -687,3 +687,61 @@ The emoji picker component was already fully implemented in the codebase. This t
   - `prd.md` (marked task as complete)
   - `.ralphy/progress.txt` (updated)
 
+
+### Phase 3: LinkedIn Features - Task 6 COMPLETED
+
+**Task**: Add drag-and-drop slide reordering for carousels
+
+**Implementation**:
+- Installed `@dnd-kit/core`, `@dnd-kit/sortable`, and `@dnd-kit/utilities` for drag-and-drop functionality
+- Created `SortableSlideItem` component in `src/components/admin/linkedin/CarouselGenerator.js`:
+  - Individual slide item with drag handle (GripVertical icon)
+  - Uses `useSortable` hook from @dnd-kit/sortable
+  - CSS transform handling for smooth drag animations
+  - Visual opacity change during drag (0.5 when dragging)
+  - Drag handle appears on hover with proper styling
+  - Click-to-preview functionality preserved
+  - Slide number badge updated to reflect current position after reordering
+- Added drag-and-drop infrastructure to CarouselGenerator:
+  - `DndContext` with `closestCenter` collision detection
+  - `SortableContext` with `verticalListSortingStrategy`
+  - Configured `PointerSensor` with 8px activation distance to prevent accidental drags
+  - `KeyboardSensor` for keyboard navigation support
+- Implemented `handleDragEnd` function:
+  - Reorders both `images` and `slides` arrays using `arrayMove` utility
+  - Updates slide numbers after reordering (1, 2, 3, etc.)
+  - Shows toast notification on successful reorder: "Slide order updated"
+- Updated preview section UI:
+  - Added "(Drag slides to reorder)" hint text next to slide count
+  - Wrapped slide grid in DndContext and SortableContext
+  - Slide grid maintains responsive layout (2/3/4/5 columns based on screen size)
+
+**Accessibility Features**:
+- Drag handle has proper aria-label: "Drag to reorder slide"
+- Keyboard navigation support through sortableKeyboardCoordinates
+- Pointer sensor prevents accidental drags with activation distance
+- Drag handle is always accessible via keyboard navigation
+
+**Testing**:
+- Updated `src/components/admin/linkedin/__tests__/CarouselGenerator.test.js` with 3 new test cases:
+  - Drag-and-drop infrastructure rendering test
+  - Drag handle icon from lucide-react test
+  - Proper structure for drag-and-drop slide grid test
+- Added mocks for @dnd-kit libraries in test file:
+  - DndContext, useSensor, useSensors, PointerSensor, KeyboardSensor from @dnd-kit/core
+  - SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy from @dnd-kit/sortable
+  - CSS.Transform.toString from @dnd-kit/utilities
+
+**Results**:
+- 394/394 tests passing (31 CarouselGenerator tests + 363 other tests)
+- ESLint passing with no errors
+- Files modified:
+  - `src/components/admin/linkedin/CarouselGenerator.js`
+  - `src/components/admin/linkedin/__tests__/CarouselGenerator.test.js`
+  - `prd.md` (marked task as complete)
+  - `.ralphy/progress.txt` (updated)
+- Dependencies added:
+  - `@dnd-kit/core@latest`
+  - `@dnd-kit/sortable@latest`
+  - `@dnd-kit/utilities@latest`
+

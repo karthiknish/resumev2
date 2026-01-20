@@ -1,4 +1,21 @@
 import React, { useState } from "react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -22,9 +39,78 @@ import {
   Lightbulb,
   List,
   TrendingUp,
+  GripVertical,
 } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+
+/**
+ * Sortable Slide Item Component
+ * Individual slide item with drag handle for reordering
+ */
+function SortableSlideItem({ id, img, index, onPreview }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <motion.div
+      ref={setNodeRef}
+      style={style}
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: index * 0.05 }}
+      className="relative group"
+    >
+      <div className="relative aspect-[4/5] rounded-lg border border-border overflow-hidden bg-card">
+        {/* Drag Handle - Always visible on hover for desktop */}
+        <div
+          {...attributes}
+          {...listeners}
+          className="absolute top-2 left-2 z-10 p-1.5 bg-background/90 hover:bg-background rounded-md cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
+          aria-label="Drag to reorder slide"
+        >
+          <GripVertical className="w-4 h-4 text-muted-foreground" />
+        </div>
+
+        {/* Slide Image */}
+        {img.imageData ? (
+          <>
+            <img
+              src={`data:${img.mimeType || "image/png"};base64,${img.imageData}`}
+              alt={`Slide ${img.slideNumber}`}
+              className="w-full h-full object-cover cursor-pointer"
+              onClick={() => onPreview(img)}
+            />
+            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <span className="text-white text-sm font-medium">Click to preview</span>
+            </div>
+            <span className="absolute top-2 right-2 bg-primary text-primary-foreground text-xs font-bold px-2 py-0.5 rounded">
+              {index + 1}
+            </span>
+          </>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <span className="text-xs text-muted-foreground text-center p-2">
+              {img.error || "Failed"}
+            </span>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
 
 /**
  * LinkedIn Carousel Template Library
@@ -248,6 +334,57 @@ export default function CarouselGenerator() {
   // Template state
   const [showTemplates, setShowTemplates] = useState(false);
   const [templateCategory, setTemplateCategory] = useState("educational");
+
+  // Drag-and-drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Only start drag after moving 8px to prevent accidental drags
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      setImages((items) => {
+        const oldIndex = items.findIndex((item) => item.slideNumber === active.id);
+        const newIndex = items.findIndex((item) => item.slideNumber === over.id);
+
+        if (oldIndex === -1 || newIndex === -1) return items;
+
+        const reordered = arrayMove(items, oldIndex, newIndex);
+
+        // Update slide numbers after reordering
+        return reordered.map((img, idx) => ({
+          ...img,
+          slideNumber: idx + 1,
+        }));
+      });
+
+      // Also reorder slides content if available
+      setSlides((items) => {
+        const oldIndex = items.findIndex((item) => item.slideNumber === active.id);
+        const newIndex = items.findIndex((item) => item.slideNumber === over.id);
+
+        if (oldIndex === -1 || newIndex === -1) return items;
+
+        const reordered = arrayMove(items, oldIndex, newIndex);
+
+        // Update slide numbers after reordering
+        return reordered.map((slide, idx) => ({
+          ...slide,
+          slideNumber: idx + 1,
+        }));
+      });
+
+      toast.success("Slide order updated");
+    }
+  };
 
   const getTemplateCategoryLabel = (category) => {
     const labels = {
@@ -594,6 +731,9 @@ export default function CarouselGenerator() {
                     <div className="flex items-center gap-2">
                       <Badge variant="secondary">{images.length} slides</Badge>
                       Generated Carousel
+                      <span className="text-xs text-muted-foreground font-normal">
+                        (Drag slides to reorder)
+                      </span>
                     </div>
                     <Button onClick={downloadAll} variant="outline" size="sm">
                       <Download className="mr-2 h-4 w-4" />
@@ -602,40 +742,28 @@ export default function CarouselGenerator() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-4">
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                    {images.map((img, idx) => (
-                      <motion.div
-                        key={idx}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: idx * 0.1 }}
-                        className="relative group cursor-pointer"
-                        onClick={() => img.imageData && setSelectedImage(img)}
-                      >
-                        {img.imageData ? (
-                          <>
-                            <img
-                              src={`data:${img.mimeType || "image/png"};base64,${img.imageData}`}
-                              alt={`Slide ${img.slideNumber}`}
-                              className="w-full aspect-[4/5] object-cover rounded-lg border border-border"
-                            />
-                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                              <span className="text-white text-sm font-medium">Click to preview</span>
-                            </div>
-                            <span className="absolute top-2 left-2 bg-primary text-primary-foreground text-xs font-bold px-2 py-0.5 rounded">
-                              {img.slideNumber}
-                            </span>
-                          </>
-                        ) : (
-                          <div className="w-full aspect-[4/5] bg-muted rounded-lg flex items-center justify-center">
-                            <span className="text-xs text-muted-foreground text-center p-2">
-                              {img.error || "Failed"}
-                            </span>
-                          </div>
-                        )}
-                      </motion.div>
-                    ))}
-                  </div>
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <SortableContext
+                      items={images.map((img) => img.slideNumber)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                        {images.map((img, idx) => (
+                          <SortableSlideItem
+                            key={img.slideNumber}
+                            id={img.slideNumber}
+                            img={img}
+                            index={idx}
+                            onPreview={(image) => setSelectedImage(image)}
+                          />
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
 
                   {slides.length > 0 && (
                     <div className="mt-4 pt-4 border-t border-border">

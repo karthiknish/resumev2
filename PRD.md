@@ -29,7 +29,7 @@ Centralize theme system with proper UI/UX updates. Fix social posting, LinkedIn 
 - [x] Create emoji picker component for LinkedIn posts
 - [x] Add post template library (Hook, Story, CTA formats)
 - [x] Enhance `src/components/admin/linkedin/CarouselGenerator.js` with template library
-- [ ] Add drag-and-drop slide reordering for carousels
+- [x] Add drag-and-drop slide reordering for carousels
 - [ ] Create PDF export for carousel slides
 - [ ] Create `src/models/LinkedInContent.js` for content history persistence
 - [ ] Update `src/components/admin/tabs/LinkedInTab.js` to use persistent history
