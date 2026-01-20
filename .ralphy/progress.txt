@@ -138,3 +138,48 @@
   - `PRD.md` (marked task as complete)
 - Files created:
   - `src/components/ui/__tests__/card.test.js`
+
+
+### Phase 1: Centralized Theme System - Task 5 COMPLETED
+
+**Task**: Update `src/components/ui/input.jsx` with consistent focus ring styling
+
+**Implementation**:
+- Added `class-variance-authority` import for variant management
+- Added comprehensive JSDoc comment documenting design tokens from `src/styles/theme/tokens.css`:
+  - Focus Ring Tokens: `--color-ring`, `--shadow-ring-focus`
+  - Border & Input Tokens: `--color-input`, `--color-background`, `--color-foreground`, `--color-muted-foreground`
+  - Spacing Tokens: `--spacing-3`
+  - Border Radius Tokens: `--radius-md`
+- Created `inputVariants` utility using CVA with two variant dimensions:
+  - **Size variants**: `sm` (h-9, smaller padding), `default` (h-10, standard), `lg` (h-11, larger padding)
+  - **Input State variants**: `default` (standard border), `error` (destructive tokens), `success` (success tokens), `warning` (warning tokens)
+- All variants use consistent focus ring styling with `ring-ring` token
+- Ring offset uses `ring-offset-background` token
+- Exported `inputVariants` utility for programmatic use
+
+**Testing**:
+- Created `src/components/ui/__tests__/input.test.js` with 44 test cases
+- Tests verify:
+  - Basic rendering and functionality (9 tests)
+  - All size variants work correctly (3 tests)
+  - All input state variants are properly applied (4 tests)
+  - Design token integration is working (5 tests)
+  - Focus ring styling is consistent (3 tests)
+  - File input styling (2 tests)
+  - Disabled state (2 tests)
+  - Responsive typography (2 tests)
+  - inputVariants utility function works (8 tests)
+  - Accessibility features (4 tests)
+  - Border radius (2 tests)
+  - Flex layout (2 tests)
+
+**Results**:
+- 180/180 tests passing (44 new + 136 existing)
+- ESLint passing with no errors
+- Files modified:
+  - `src/components/ui/input.jsx`
+  - `prd.md` (marked task as complete)
+- Files created:
+  - `src/components/ui/__tests__/input.test.js`
+  - `.ralphy/progress.txt` (updated)
