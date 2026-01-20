@@ -6,7 +6,7 @@ import PageContainer from "@/components/PageContainer";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Wand2, ArrowLeft, Eye, Save, LayoutPanelLeft, Clock, Trash2, Bot, Sparkles, Check, CloudUpload, FileText, Upload, X, ChevronDown } from "lucide-react";
+import { Loader2, Wand2, ArrowLeft, Eye, Save, LayoutPanelLeft, Clock, Trash2, Bot, Sparkles, Check, CloudUpload, FileText, Upload, X, ChevronDown, List } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -36,6 +36,7 @@ import { Textarea } from "@/components/ui/textarea";
 import BannerImageSection from "@/components/admin/blog-editor/BannerImageSection";
 import MetadataSection from "@/components/admin/blog-editor/MetadataSection";
 import InternalLinkSuggestions from "@/components/admin/blog-editor/InternalLinkSuggestions";
+import SectionalAgent from "@/components/admin/SectionalAgent";
 
 import { AiOutlineClose } from "react-icons/ai";
 import TipTapEditor from "@/components/TipTapEditor";
@@ -99,6 +100,8 @@ function CreateBlog() {
   const [agentTone, setAgentTone] = useState("professional");
   const [agentAudience, setAgentAudience] = useState("developers");
   const [agentLength, setAgentLength] = useState("medium");
+  // Sectional Agent state
+  const [isSectionalAgentOpen, setIsSectionalAgentOpen] = useState(false);
 
   // Debounced form data for auto-save (save after 3 seconds of no changes)
   const debouncedFormData = useDebounce(formData, 3000);
@@ -411,6 +414,18 @@ function CreateBlog() {
     setAgentFile(null);
   };
 
+  // Handler for Sectional Agent content completion
+  const handleSectionalAgentComplete = (generatedContent) => {
+    const { title, content } = generatedContent;
+    setFormData((prev) => ({
+      ...prev,
+      title: title || prev.title,
+      content: content || prev.content,
+    }));
+    setIsSectionalAgentOpen(false);
+    toast.success("Blog content generated successfully!");
+  };
+
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
     setIsLoading(true);
@@ -704,7 +719,16 @@ function CreateBlog() {
                     ) : (
                       <Bot className="mr-1 h-3 w-3" />
                     )}
-                    Agent Mode
+                    Quick Generate
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsSectionalAgentOpen(true)}
+                    className="h-6 px-2 text-xs text-purple-600 hover:bg-purple-500/10 hover:text-purple-700"
+                  >
+                    <List className="mr-1 h-3 w-3" />
+                    Sectional Mode
                   </Button>
                 </div>
               </div>
@@ -937,6 +961,18 @@ function CreateBlog() {
               )}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Sectional Agent Dialog */}
+      <Dialog open={isSectionalAgentOpen} onOpenChange={setIsSectionalAgentOpen}>
+        <DialogContent className="max-w-4xl h-[80vh] p-0">
+          <SectionalAgent
+            onContentComplete={handleSectionalAgentComplete}
+            onCancel={() => setIsSectionalAgentOpen(false)}
+            initialContext={agentContext}
+            initialUrl={agentUrl}
+          />
         </DialogContent>
       </Dialog>
     </>

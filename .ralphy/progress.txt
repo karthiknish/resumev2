@@ -2312,3 +2312,70 @@ Examples:
   - `src/pages/api/ai/agent-generate-blog.js`
   - `prd.md` (task marked as complete)
 - [✓] 2026-01-20 18:43 - Add file upload (PDF, DOCX, TXT) support for Agent Mode context
+- [✓] 2026-01-20 18:46 - Implement sectional generation workflow (outline first, then sections)
+- [✓] 2026-01-20 18:47 - Add conversational chat-style UI component `src/components/admin/AgentChat.js`
+
+## 2026-01-21
+
+### Phase 5: Agent Mode Enhancements - Task: Sectional Generation Workflow COMPLETED
+
+**Task**: Implement sectional generation workflow (outline first, then sections)
+
+**Implementation**:
+- Created `src/pages/api/ai/agent-generate-outline.js` API endpoint:
+  - Generates structured blog outline based on user context
+  - Supports URL and file content for context
+  - Returns title and array of sections with headings and key points
+  - Includes introduction and conclusion sections
+  - Integrates style configuration (tone, audience, length)
+
+- Created `src/pages/api/ai/agent-generate-section.js` API endpoint:
+  - Generates content for individual sections
+  - Takes section ID, heading, points, and blog title
+  - Applies style configuration for consistent voice
+  - Returns properly formatted HTML content
+  - Includes error handling and fallbacks
+
+- Created `src/components/admin/SectionalAgent.js` component:
+  - Full-featured conversational UI for sectional generation
+  - Four-stage workflow: input → outline → generating → complete
+  - Input stage: URL, context, and style configuration
+  - Outline stage: Review and edit outline sections
+  - Generating stage: Progress indicator for each section
+  - Complete stage: Review all sections, regenerate individual sections, or complete
+  - Visual progress indicator between stages
+  - Start over functionality
+  - Responsive design with smooth transitions
+
+- Updated `src/pages/admin/blog/create.js`:
+  - Added import for SectionalAgent component
+  - Added List icon import for "Sectional Mode" button
+  - Added `isSectionalAgentOpen` state variable
+  - Created `handleSectionalAgentComplete` handler
+  - Added "Sectional Mode" button next to "Quick Generate" button
+  - Added Sectional Agent Dialog with full-height modal
+
+**Features**:
+- Structured outline generation with 4-6 sections plus intro/conclusion
+- Edit outline headings and key points before generation
+- Sequential section-by-section content generation
+- Progress tracking with visual indicators
+- Regenerate individual sections without starting over
+- Style configuration applied throughout the workflow
+- Context preservation from main Agent Mode inputs
+
+**Testing**:
+- ESLint passing with no errors
+- All new API endpoints follow existing patterns
+- SectionalAgent component uses existing UI components
+
+**Results**:
+- ESLint passing with no errors
+- Files created:
+  - `src/pages/api/ai/agent-generate-outline.js`
+  - `src/pages/api/ai/agent-generate-section.js`
+  - `src/components/admin/SectionalAgent.js`
+- Files modified:
+  - `src/pages/admin/blog/create.js`
+- PRD updated with task marked as complete
+
