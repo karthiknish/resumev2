@@ -8,6 +8,8 @@ import { motion } from "framer-motion";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
+import FormError from "@/components/ui/FormError";
+import { FORM_ERRORS } from "@/lib/formErrors";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -43,13 +45,13 @@ export default function SignIn() {
       });
 
       if (result?.error) {
-        setError(result.error || "Invalid email or password");
+        setError(result.error || FORM_ERRORS.INVALID_CREDENTIALS);
       } else if (result?.success) {
         // Redirect based on user role is handled by the auth utility
       }
     } catch (error) {
-      setError("An error occurred. Please try again.");
-      toast.error("Sign in failed. Please try again.");
+      setError(FORM_ERRORS.NETWORK_ERROR);
+      toast.error(FORM_ERRORS.SUBMISSION_FAILED);
     } finally {
       setIsLoading(false);
     }
@@ -61,7 +63,7 @@ export default function SignIn() {
       toast.success("Successfully signed out!");
       router.push("/");
     } catch (error) {
-      toast.error("Error signing out. Please try again.");
+      toast.error(FORM_ERRORS.NETWORK_ERROR);
     }
   };
 
@@ -123,16 +125,7 @@ export default function SignIn() {
                 Access your account to continue
               </p>
             </div>
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl text-sm font-medium flex items-center gap-3"
-              >
-                <span className="text-xl"></span>
-                {error}
-              </motion.div>
-            )}
+            <FormError message={error} />
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label

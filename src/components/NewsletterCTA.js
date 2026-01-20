@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Loader2, Mail, Sparkles } from "lucide-react";
+import { FORM_ERRORS } from "@/lib/formErrors";
 
 export default function NewsletterCTA() {
   const [email, setEmail] = useState("");
@@ -21,9 +22,9 @@ export default function NewsletterCTA() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!email || !email.includes("@")) {
-      toast.error("Please enter a valid email address");
+      toast.error(FORM_ERRORS.INVALID_EMAIL);
       return;
     }
 
@@ -47,10 +48,10 @@ export default function NewsletterCTA() {
         setEmail("");
         toast.success("You're on the list!");
       } else {
-        throw new Error(data.message || "Failed to subscribe");
+        throw new Error(data.message || FORM_ERRORS.SUBSCRIPTION_FAILED);
       }
     } catch (error) {
-      toast.error(error.message || "Something went wrong. Please try again.");
+      toast.error(error.message || FORM_ERRORS.NETWORK_ERROR);
     } finally {
       setIsLoading(false);
     }

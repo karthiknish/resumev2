@@ -5,6 +5,8 @@ import Head from "next/head";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import FormError from "@/components/ui/FormError";
+import { FORM_ERRORS } from "@/lib/formErrors";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
@@ -33,13 +35,13 @@ export default function SignUp() {
     setError("");
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+      setError(FORM_ERRORS.PASSWORD_MISMATCH);
       setIsLoading(false);
       return;
     }
 
     if (passwordStrength < 50) {
-      setError("Password is too weak. Please use a stronger password.");
+      setError(FORM_ERRORS.PASSWORD_WEAK);
       setIsLoading(false);
       return;
     }
@@ -60,14 +62,14 @@ export default function SignUp() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || "Something went wrong");
+        throw new Error(data.message || FORM_ERRORS.GENERIC_ERROR);
       }
 
       toast.success("Account created successfully! Please sign in.");
       router.push("/signin");
     } catch (error) {
       setError(error.message);
-      toast.error("Sign up failed. Please try again.");
+      toast.error(FORM_ERRORS.SUBMISSION_FAILED);
     } finally {
       setIsLoading(false);
     }
@@ -144,16 +146,7 @@ export default function SignUp() {
                 Get started with your new account
               </p>
             </div>
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl text-sm font-medium flex items-center gap-3"
-              >
-                <span className="text-xl"></span>
-                {error}
-              </motion.div>
-            )}
+            <FormError message={error} />
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label

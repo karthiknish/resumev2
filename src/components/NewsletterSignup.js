@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { toast } from "sonner"; // Using sonner for notifications
-import { Input } from "@/components/ui/input"; // Assuming shadcn/ui input
+import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/router"; // Import useRouter
+import { useRouter } from "next/router";
+import FormError from "@/components/ui/FormError";
+import { FORM_ERRORS } from "@/lib/formErrors";
 
 export default function NewsletterSignup() {
   const [email, setEmail] = useState("");
@@ -12,7 +14,7 @@ export default function NewsletterSignup() {
   const [formLoadTime, setFormLoadTime] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const router = useRouter(); // Initialize router
+  const router = useRouter();
 
   // Track form load time for spam detection
   useEffect(() => {
@@ -25,7 +27,7 @@ export default function NewsletterSignup() {
     setMessage(""); // Clear previous messages
 
     if (!email || !/\S+@\S+\.\S+/.test(email)) {
-      setMessage("Please enter a valid email address.");
+      setMessage(FORM_ERRORS.INVALID_EMAIL);
       setIsLoading(false);
       return;
     }
@@ -47,17 +49,15 @@ export default function NewsletterSignup() {
       const data = await response.json();
 
       if (response.ok) {
-        // Redirect on success
         router.push("/newsletter/thank-you");
       } else {
-        // Keep error handling
-        toast.error(data.message || "Subscription failed. Please try again.");
-        setMessage(data.message || "Subscription failed.");
+        toast.error(data.message || FORM_ERRORS.SUBSCRIPTION_FAILED);
+        setMessage(data.message || FORM_ERRORS.SUBSCRIPTION_FAILED);
       }
     } catch (error) {
       console.error("Subscription form error:", error);
-      toast.error("An error occurred. Please try again later.");
-      setMessage("An error occurred.");
+      toast.error(FORM_ERRORS.NETWORK_ERROR);
+      setMessage(FORM_ERRORS.NETWORK_ERROR);
     } finally {
       setIsLoading(false);
     }
@@ -143,7 +143,7 @@ export default function NewsletterSignup() {
           animate={{ opacity: 1, y: 0 }}
           className={`mt-4 text-sm text-center font-medium ${
             message.includes("failed") || message.includes("error")
-              ? "text-red-500"
+              ? "text-red-700"
               : "text-emerald-600"
           }`}
         >

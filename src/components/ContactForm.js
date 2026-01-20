@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import FormError from "@/components/ui/FormError";
+import { FORM_ERRORS } from "@/lib/formErrors";
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -48,7 +50,7 @@ export default function ContactForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Something went wrong");
+        throw new Error(data.message || FORM_ERRORS.CONTACT_FAILED);
       }
 
       // Clear form data
@@ -101,15 +103,7 @@ export default function ContactForm() {
         valuable and reliable together.
       </motion.p>
 
-      {error && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="p-3 sm:p-4 mb-4 sm:mb-6 bg-red-50 border-2 border-red-200 text-red-600 rounded-xl sm:rounded-2xl text-center font-medium text-sm sm:text-base"
-        >
-          {error}
-        </motion.div>
-      )}
+      <FormError message={error} />
 
       <form
         onSubmit={handleSubmit}

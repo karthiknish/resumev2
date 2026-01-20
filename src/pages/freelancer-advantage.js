@@ -9,6 +9,7 @@ import {
   FaComments,
   FaLightbulb,
 } from "react-icons/fa";
+import { FORM_ERRORS } from "@/lib/formErrors";
 
 // Animation variants
 const fadeInUp = {
@@ -156,14 +157,14 @@ export default function FreelancerAdvantage() {
         setFormStatus({
           submitted: true,
           success: false,
-          message: "Failed to send message. Please try again later.",
+          message: FORM_ERRORS.CONTACT_FAILED,
         });
       }
     } catch (error) {
       setFormStatus({
         submitted: true,
         success: false,
-        message: "An error occurred. Please try again later.",
+        message: FORM_ERRORS.NETWORK_ERROR,
       });
     } finally {
       setIsSubmitting(false);
@@ -1010,9 +1011,7 @@ export default function FreelancerAdvantage() {
                     animate={{ opacity: 1, y: 0 }}
                   >
                     <h4 className={`font-heading text-xl mb-2 ${formStatus.success ? "text-green-800" : "text-red-800"}`}>
-                      {formStatus.success
-                        ? "Message Sent!"
-                        : "Something went wrong"}
+                      {formStatus.success ? "Message Sent!" : "Error"}
                     </h4>
                     <p className="text-slate-600">{formStatus.message}</p>
 

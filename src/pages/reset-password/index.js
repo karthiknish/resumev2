@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import FormError from "@/components/ui/FormError";
+import { FORM_ERRORS } from "@/lib/formErrors";
 
 export default function ResetPassword() {
   const router = useRouter();
@@ -22,13 +24,13 @@ export default function ResetPassword() {
     setError("");
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError(FORM_ERRORS.PASSWORD_MISMATCH);
       setIsLoading(false);
       return;
     }
 
     if (password.length < 8) {
-      setError("Password must be at least 8 characters long");
+      setError(FORM_ERRORS.PASSWORD_TOO_SHORT);
       setIsLoading(false);
       return;
     }
@@ -45,7 +47,7 @@ export default function ResetPassword() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || "Something went wrong");
+        throw new Error(data.message || FORM_ERRORS.GENERIC_ERROR);
       }
 
       setSuccess(true);
@@ -128,15 +130,7 @@ export default function ResetPassword() {
               </motion.div>
             ) : (
               <>
-                {error && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl text-sm font-medium flex items-center gap-3"
-                  >
-                    {error}
-                  </motion.div>
-                )}
+                <FormError message={error} />
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
                     <label

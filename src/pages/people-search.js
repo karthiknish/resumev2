@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PeopleSearchResults from "@/components/PeopleSearchResults";
+import FormError from "@/components/ui/FormError";
+import { FORM_ERRORS } from "@/lib/formErrors";
 
 const suggestedSearches = [
   "Marketing managers in New York",
@@ -42,13 +44,13 @@ export default function PeopleSearch() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to search");
+        throw new Error(data.error || FORM_ERRORS.SUBMISSION_FAILED);
       }
 
       setResults(data.results || []);
     } catch (err) {
       console.error("Search error:", err);
-      setError(err.message || "Something went wrong. Please try again.");
+      setError(err.message || FORM_ERRORS.NETWORK_ERROR);
       setResults([]);
     } finally {
       setIsLoading(false);
@@ -195,9 +197,8 @@ export default function PeopleSearch() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="mb-8 p-4 rounded-xl bg-red-50 border border-red-200 text-red-600 text-center"
               >
-                {error}
+                <FormError message={error} />
               </motion.div>
             )}
           </AnimatePresence>
