@@ -557,3 +557,63 @@ The emoji picker component was already fully implemented in the codebase. This t
   - `PRD.md` (marked task as complete)
   - `.ralphy/progress.txt` (updated)
 
+
+### Phase 3: LinkedIn Features - Task 4 COMPLETED
+
+**Task**: Add post template library (Hook, Story, CTA formats)
+
+**Implementation**:
+- Created comprehensive post template library in `src/components/admin/linkedin/LinkedInPostGenerator.js`:
+  - **POST_TEMPLATES constant** with three categories:
+    - **Hook Templates** (5 templates):
+      - Controversial Take: Share counterintuitive opinions to spark engagement
+      - Biggest Mistake: Share mistakes and lessons learned
+      - Number Hook: Start with compelling statistics
+      - Provocative Question: Open with thought-provoking questions
+      - Secret Revealed: Share little-known insights
+    - **Story Templates** (5 templates):
+      - Transformation Story: Share before-and-after journeys
+      - Failure to Success: Stories of overcoming failure
+      - Aha Moment: Sudden realization or insight stories
+      - Mentorship Story: Advice received from mentors
+      - Candid Reflection: Vulnerable, honest reflections
+    - **CTA Templates** (5 templates):
+      - Newsletter Signup: Promote newsletter with value-first approach
+      - Consultation Booking: Offer 1:1 consultations or services
+      - Content Promotion: Drive traffic to latest content
+      - Community Invitation: Invite people to join communities
+      - Engagement Booster: Drive comments and discussion
+  - **Template placeholders**: All templates use {placeholder} syntax for easy customization
+  - **Helper functions**:
+    - `getTemplate(category, templateId)`: Get specific template by category and ID
+    - `formatTemplate(template, values)`: Format template with placeholder values
+  - **Template UI components**:
+    - Templates button in card header next to History button
+    - Expandable templates panel with smooth animations
+    - Category tabs (hook, story, cta) with icons and active state
+    - Template grid with cards showing name, description, and icon
+    - Template selection handler that loads template into topic textarea
+    - Toast notification on template selection with placeholder instructions
+  - **Icons**: Added FileText, BookOpen, Megaphone icons from lucide-react for template categories
+  - **Accessibility**: Added data-testid attributes for testing (template-category-hook, template-category-story, template-category-cta)
+
+**Testing**:
+- Updated `src/components/admin/linkedin/__tests__/LinkedInPostGenerator.test.js` with 18 new test cases:
+  - Template Library UI (3 tests): templates button, open/close panel
+  - Template Categories (3 tests): category tabs, default selection, switching
+  - Hook Templates (2 tests): display all hook templates, load hook template
+  - Story Templates (2 tests): display all story templates, load story template
+  - CTA Templates (2 tests): display all CTA templates, load CTA template
+  - Template Selection (3 tests): close panel, toast with name, toast with placeholders
+  - Template Design (2 tests): display descriptions, hover states
+  - Template Library with History (1 test): templates and history don't interfere
+
+**Results**:
+- 45/45 tests passing (18 new + 27 existing)
+- ESLint passing with no errors
+- Files modified:
+  - `src/components/admin/linkedin/LinkedInPostGenerator.js`
+  - `src/components/admin/linkedin/__tests__/LinkedInPostGenerator.test.js`
+  - `prd.md` (marked task as complete)
+  - `.ralphy/progress.txt` (updated)
+

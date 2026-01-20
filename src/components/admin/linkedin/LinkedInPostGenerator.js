@@ -23,6 +23,9 @@ import {
   Trash2,
   Hash,
   X,
+  FileText,
+  BookOpen,
+  Megaphone,
 } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -88,6 +91,343 @@ const HASHTAG_CATEGORIES = {
 
 // Flatten all hashtags for easy searching
 const ALL_HASHTAGS = Object.values(HASHTAG_CATEGORIES).flat();
+
+/**
+ * LinkedIn Post Template Library
+ * Pre-built templates for different post formats
+ */
+const POST_TEMPLATES = {
+  hook: [
+    {
+      id: "hook-controversial",
+      name: "Controversial Take",
+      icon: FileText,
+      description: "Share a counterintuitive opinion to spark engagement",
+      template: `Here's a controversial opinion:
+
+{main_point}
+
+Before you disagree, hear me out.
+
+{supporting_points}
+
+The reason I believe this is {reasoning}.
+
+What's your take? 👇`,
+    },
+    {
+      id: "hook-mistake",
+      name: "Biggest Mistake",
+      icon: BookOpen,
+      description: "Share a mistake and the lesson learned",
+      template: `The biggest mistake I made as a {role}:
+
+{mistake_description}
+
+This cost me {consequence}.
+
+Here's what I learned:
+• Lesson 1: {lesson_1}
+• Lesson 2: {lesson_2}
+• Lesson 3: {lesson_3}
+
+If I could go back, I'd {alternative_approach}.
+
+Share your biggest mistake below 👇`,
+    },
+    {
+      id: "hook-number",
+      name: "Number Hook",
+      icon: Megaphone,
+      description: "Start with a compelling number or statistic",
+      template: `{number}% of {group} don't know this about {topic}.
+
+After {time_period}, I discovered:
+
+{key_insight}
+
+This changed everything because {explanation}.
+
+Here's what you need to know:
+
+{actionable_tips}
+
+Curious to hear your thoughts on this.`,
+    },
+    {
+      id: "hook-question",
+      name: "Provocative Question",
+      icon: FileText,
+      description: "Open with a thought-provoking question",
+      template: `Why do so many {group} struggle with {problem}?
+
+After working with {number} {people_type}, I noticed a pattern:
+
+{pattern_observation}
+
+The solution isn't {wrong_approach}.
+
+It's {right_approach}.
+
+Here's how to implement it:
+
+{steps}
+
+Who else has dealt with this?`,
+    },
+    {
+      id: "hook-secret",
+      name: "Secret Revealed",
+      icon: Sparkles,
+      description: "Share a little-known insight or secret",
+      template: `Here's what nobody tells you about {topic}:
+
+{secret_revelation}
+
+Most people think {common_myth}.
+
+But actually, {reality}.
+
+This is important because {implication}.
+
+{call_to_action}`,
+    },
+  ],
+  story: [
+    {
+      id: "story-transformation",
+      name: "Transformation Story",
+      icon: BookOpen,
+      description: "Share a before-and-after personal journey",
+      template: `{time_period} ago, I was in a completely different place.
+
+I was {struggle_description}.
+
+Then something changed.
+
+{turning_point}
+
+Since then:
+✓ {achievement_1}
+✓ {achievement_2}
+✓ {achievement_3}
+
+The lesson?
+
+{key_lesson}
+
+If you're going through something similar, remember: {encouragement}.`,
+    },
+    {
+      id: "story-failure",
+      name: "Failure to Success",
+      icon: FileText,
+      description: "A story of overcoming failure",
+      template: `I failed {number} times before I succeeded.
+
+{failure_story}
+
+Each failure taught me something:
+1. {learning_1}
+2. {learning_2}
+3. {learning_3}
+
+Finally, on attempt {final_attempt}, it worked.
+
+{success_description}
+
+If you're feeling discouraged, remember: failure is just data.
+
+Keep going.`,
+    },
+    {
+      id: "story-aha",
+      name: "Aha Moment",
+      icon: Sparkles,
+      description: "Share a sudden realization or insight",
+      template: `I had an aha moment yesterday that changed my perspective on {topic}.
+
+I was reading/watching {source} when it hit me:
+
+{realization}
+
+This might seem obvious to some, but for me it was profound because {personal_context}.
+
+Since then, I've already started to:
+• {action_1}
+• {action_2}
+
+The impact so far: {early_results}.
+
+Sometimes the best insights come from unexpected places.`,
+    },
+    {
+      id: "story-mentor",
+      name: "Mentorship Story",
+      icon: BookOpen,
+      description: "Share advice received from a mentor",
+      template: `Best advice I ever received:
+
+"{advice_quote}"
+- {mentor_name}
+
+This changed my approach to {topic}.
+
+Before this advice, I was {previous_approach}.
+
+After:
+{new_approach_results}
+
+{years} later, this still guides my decisions when {applicable_situation}.
+
+What's the best advice you've received?`,
+    },
+    {
+      id: "story-candid",
+      name: "Candid Reflection",
+      icon: Megaphone,
+      description: "Share a vulnerable, honest reflection",
+      template: `Candid confession:
+
+{honest_statement}
+
+I'm sharing this because {reason_for_sharing}.
+
+I know many of you might relate to {shared_experience}.
+
+Here's what I'm doing about it:
+
+{action_plan}
+
+No perfect solutions, just progress.
+
+If you're going through something similar, you're not alone.`,
+    },
+  ],
+  cta: [
+    {
+      id: "cta-newsletter",
+      name: "Newsletter Signup",
+      icon: Megaphone,
+      description: "Promote your newsletter with value-first approach",
+      template: `{value_proposition}
+
+I share {content_type} every {frequency} in my newsletter.
+
+Recent topics include:
+• {example_1}
+• {example_2}
+• {example_3}
+
+{bonus_offer}
+
+Join {number}+ others who are subscribed.
+
+Link in comments 👇`,
+    },
+    {
+      id: "cta-consultation",
+      name: "Consultation Booking",
+      icon: FileText,
+      description: "Offer 1:1 consultations or services",
+      template: `I'm opening up {number} spots for {service_type}.
+
+Who this is for:
+• {ideal_client_1}
+• {ideal_client_2}
+• {ideal_client_3}
+
+What you'll get:
+{deliverables}
+
+Investment: {price}
+
+Results from recent clients:
+{testimonial_snippet}
+
+Interested? Comment "interested" below or DM me.`,
+    },
+    {
+      id: "cta-content",
+      name: "Content Promotion",
+      icon: BookOpen,
+      description: "Drive traffic to your latest content",
+      template: `I just published a {content_type} on {topic}:
+
+{headline}
+
+Here's what you'll learn:
+📌 {key_takeaway_1}
+📌 {key_takeaway_2}
+📌 {key_takeaway_3}
+
+{teaser_or_insight}
+
+Link in the comments below!
+
+P.S. {bonus_tip}`,
+    },
+    {
+      id: "cta-community",
+      name: "Community Invitation",
+      icon: Sparkles,
+      description: "Invite people to join your community",
+      template: `I'm building a community of {target_audience}.
+
+We're focused on {community_focus}.
+
+What you get as a member:
+✓ {benefit_1}
+✓ {benefit_2}
+✓ {benefit_3}
+
+{exclusive_offer}
+
+Currently at {number} members and growing.
+
+Want in? Comment "join" and I'll send you the link.
+
+Let's grow together.`,
+    },
+    {
+      id: "cta-engagement",
+      name: "Engagement Booster",
+      icon: Megaphone,
+      description: "Drive comments and discussion",
+      template: `{engaging_statement}
+
+Here's my take:
+{your_opinion}
+
+But I could be wrong.
+
+I've seen {alternative_viewpoint} work well for {context}.
+
+What's been your experience?
+
+{specific_question}
+
+Let's discuss in the comments. 🗣️`,
+    },
+  ],
+};
+
+/**
+ * Get template by category and ID
+ */
+const getTemplate = (category, templateId) => {
+  return POST_TEMPLATES[category]?.find(t => t.id === templateId);
+};
+
+/**
+ * Format template with placeholder values
+ */
+const formatTemplate = (template, values = {}) => {
+  return Object.entries(values).reduce(
+    (acc, [key, value]) => acc.replace(new RegExp(`\\{${key}\\}`, 'g'), value || `{${key}}`),
+    template
+  );
+};
 
 /**
  * Suggest hashtags based on topic text
@@ -177,6 +517,9 @@ export default function LinkedInPostGenerator({ initialTopic = "" }) {
   const [showHistory, setShowHistory] = useState(false);
   const [selectedHashtags, setSelectedHashtags] = useState([]);
   const [customHashtag, setCustomHashtag] = useState("");
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [templateCategory, setTemplateCategory] = useState("hook");
 
   // LinkedIn character limit
   const LINKEDIN_CHAR_LIMIT = 3000;
@@ -348,6 +691,32 @@ export default function LinkedInPostGenerator({ initialTopic = "" }) {
     return "bg-primary";
   };
 
+  const handleTemplateSelect = (category, template) => {
+    setSelectedTemplate(template);
+    setTemplateCategory(category);
+    setTopic(template.template);
+    setShowTemplates(false);
+    toast.success(`Template "${template.name}" loaded! Fill in the {placeholders} with your content.`);
+  };
+
+  const getTemplateCategoryLabel = (category) => {
+    const labels = {
+      hook: "Hook Templates",
+      story: "Story Templates",
+      cta: "CTA Templates",
+    };
+    return labels[category] || category;
+  };
+
+  const getTemplateCategoryIcon = (category) => {
+    const icons = {
+      hook: FileText,
+      story: BookOpen,
+      cta: Megaphone,
+    };
+    return icons[category] || FileText;
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -364,15 +733,26 @@ export default function LinkedInPostGenerator({ initialTopic = "" }) {
               </div>
               Generate LinkedIn Post
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowHistory(!showHistory)}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <History className="w-4 h-4 mr-1" />
-              History
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowTemplates(!showTemplates)}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <FileText className="w-4 h-4 mr-1" />
+                Templates
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowHistory(!showHistory)}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <History className="w-4 h-4 mr-1" />
+                History
+              </Button>
+            </div>
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-4">
@@ -418,6 +798,78 @@ export default function LinkedInPostGenerator({ initialTopic = "" }) {
                     ))}
                   </div>
                 )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {showTemplates && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mb-4 p-3 bg-muted/50 rounded-xl border border-border"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm font-medium text-foreground flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    Post Templates
+                  </span>
+                </div>
+
+                {/* Category Tabs */}
+                <div className="flex gap-1 mb-3 p-1 bg-background rounded-lg">
+                  {Object.keys(POST_TEMPLATES).map((category) => {
+                    const CategoryIcon = getTemplateCategoryIcon(category);
+                    return (
+                      <button
+                        key={category}
+                        type="button"
+                        data-testid={`template-category-${category}`}
+                        onClick={() => setTemplateCategory(category)}
+                        className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium transition-all ${
+                          templateCategory === category
+                            ? "bg-primary text-primary-foreground shadow-sm"
+                            : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                        }`}
+                      >
+                        <CategoryIcon className="w-3.5 h-3.5" />
+                        <span className="capitalize">{category}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Template Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-64 overflow-y-auto">
+                  {POST_TEMPLATES[templateCategory].map((template) => {
+                    const TemplateIcon = template.icon;
+                    return (
+                      <motion.button
+                        key={template.id}
+                        type="button"
+                        onClick={() => handleTemplateSelect(templateCategory, template)}
+                        className="text-left p-3 rounded-lg bg-background hover:bg-accent hover:border-primary/30 border border-border transition-all text-sm group"
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
+                      >
+                        <div className="flex items-start gap-2">
+                          <div className="p-1.5 bg-primary/10 rounded-md group-hover:bg-primary/20 transition-colors">
+                            <TemplateIcon className="w-3.5 h-3.5 text-primary" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-foreground text-xs line-clamp-1">
+                              {template.name}
+                            </p>
+                            <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
+                              {template.description}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.button>
+                    );
+                  })}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>

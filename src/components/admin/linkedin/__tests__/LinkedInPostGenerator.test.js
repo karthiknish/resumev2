@@ -631,3 +631,354 @@ describe("LinkedInPostGenerator - Hashtag Suggestions Feature", () => {
     });
   });
 });
+
+describe("LinkedInPostGenerator - Template Library Feature", () => {
+  beforeEach(() => {
+    localStorage.clear();
+    global.fetch.mockClear();
+    toast.error.mockClear();
+    toast.success.mockClear();
+    toast.info.mockClear();
+  });
+
+  describe("Template Library UI", () => {
+    test("should render templates button in header", () => {
+      render(<LinkedInPostGenerator />);
+
+      const templatesButton = screen.getByRole("button", { name: /Templates/i });
+      expect(templatesButton).toBeInTheDocument();
+      expect(templatesButton).toHaveTextContent("Templates");
+    });
+
+    test("should open templates panel when clicking templates button", async () => {
+      render(<LinkedInPostGenerator />);
+
+      const templatesButton = screen.getByRole("button", { name: /Templates/i });
+      await userEvent.click(templatesButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Post Templates/i)).toBeInTheDocument();
+      });
+    });
+
+    test("should close templates panel when clicking templates button again", async () => {
+      render(<LinkedInPostGenerator />);
+
+      const templatesButton = screen.getByRole("button", { name: /Templates/i });
+      await userEvent.click(templatesButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Post Templates/i)).toBeInTheDocument();
+      });
+
+      await userEvent.click(templatesButton);
+
+      await waitFor(() => {
+        expect(screen.queryByText(/Post Templates/i)).not.toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("Template Categories", () => {
+    test("should show three category tabs: hook, story, cta", async () => {
+      render(<LinkedInPostGenerator />);
+
+      const templatesButton = screen.getByRole("button", { name: /Templates/i });
+      await userEvent.click(templatesButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("template-category-hook")).toBeInTheDocument();
+        expect(screen.getByTestId("template-category-story")).toBeInTheDocument();
+        expect(screen.getByTestId("template-category-cta")).toBeInTheDocument();
+      });
+    });
+
+    test("should have hook category selected by default", async () => {
+      render(<LinkedInPostGenerator />);
+
+      const templatesButton = screen.getByRole("button", { name: /Templates/i });
+      await userEvent.click(templatesButton);
+
+      await waitFor(() => {
+        const hookTab = screen.getByTestId("template-category-hook");
+        expect(hookTab).toHaveClass("bg-primary");
+      });
+    });
+
+    test("should switch between template categories", async () => {
+      render(<LinkedInPostGenerator />);
+
+      const templatesButton = screen.getByRole("button", { name: /Templates/i });
+      await userEvent.click(templatesButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Post Templates/i)).toBeInTheDocument();
+      });
+
+      const storyTab = screen.getByTestId("template-category-story");
+      await userEvent.click(storyTab);
+
+      await waitFor(() => {
+        expect(storyTab).toHaveClass("bg-primary");
+      });
+    });
+  });
+
+  describe("Hook Templates", () => {
+    test("should display all hook templates", async () => {
+      render(<LinkedInPostGenerator />);
+
+      const templatesButton = screen.getByRole("button", { name: /Templates/i });
+      await userEvent.click(templatesButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Post Templates/i)).toBeInTheDocument();
+      });
+
+      // Check for hook template names
+      expect(screen.getByText(/Controversial Take/i)).toBeInTheDocument();
+      expect(screen.getByText(/Biggest Mistake/i)).toBeInTheDocument();
+      expect(screen.getByText(/Number Hook/i)).toBeInTheDocument();
+      expect(screen.getByText(/Provocative Question/i)).toBeInTheDocument();
+      expect(screen.getByText(/Secret Revealed/i)).toBeInTheDocument();
+    });
+
+    test("should load hook template into topic when selected", async () => {
+      render(<LinkedInPostGenerator />);
+
+      const templatesButton = screen.getByRole("button", { name: /Templates/i });
+      await userEvent.click(templatesButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Controversial Take/i)).toBeInTheDocument();
+      });
+
+      const controversialTemplate = screen.getByText(/Controversial Take/i).closest("button");
+      await userEvent.click(controversialTemplate);
+
+      await waitFor(() => {
+        expect(toast.success).toHaveBeenCalledWith(
+          expect.stringContaining("Controversial Take")
+        );
+      });
+    });
+  });
+
+  describe("Story Templates", () => {
+    test("should display all story templates when category is selected", async () => {
+      render(<LinkedInPostGenerator />);
+
+      const templatesButton = screen.getByRole("button", { name: /Templates/i });
+      await userEvent.click(templatesButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Post Templates/i)).toBeInTheDocument();
+      });
+
+      const storyTab = screen.getByTestId("template-category-story");
+      await userEvent.click(storyTab);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Transformation Story/i)).toBeInTheDocument();
+        expect(screen.getByText(/Failure to Success/i)).toBeInTheDocument();
+        expect(screen.getByText(/Aha Moment/i)).toBeInTheDocument();
+        expect(screen.getByText(/Mentorship Story/i)).toBeInTheDocument();
+        expect(screen.getByText(/Candid Reflection/i)).toBeInTheDocument();
+      });
+    });
+
+    test("should load story template into topic when selected", async () => {
+      render(<LinkedInPostGenerator />);
+
+      const templatesButton = screen.getByRole("button", { name: /Templates/i });
+      await userEvent.click(templatesButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Post Templates/i)).toBeInTheDocument();
+      });
+
+      const storyTab = screen.getByTestId("template-category-story");
+      await userEvent.click(storyTab);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Transformation Story/i)).toBeInTheDocument();
+      });
+
+      const transformationTemplate = screen.getByText(/Transformation Story/i).closest("button");
+      await userEvent.click(transformationTemplate);
+
+      await waitFor(() => {
+        expect(toast.success).toHaveBeenCalledWith(
+          expect.stringContaining("Transformation Story")
+        );
+      });
+    });
+  });
+
+  describe("CTA Templates", () => {
+    test("should display all CTA templates when category is selected", async () => {
+      render(<LinkedInPostGenerator />);
+
+      const templatesButton = screen.getByRole("button", { name: /Templates/i });
+      await userEvent.click(templatesButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Post Templates/i)).toBeInTheDocument();
+      });
+
+      const ctaTab = screen.getByTestId("template-category-cta");
+      await userEvent.click(ctaTab);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Newsletter Signup/i)).toBeInTheDocument();
+        expect(screen.getByText(/Consultation Booking/i)).toBeInTheDocument();
+        expect(screen.getByText(/Content Promotion/i)).toBeInTheDocument();
+        expect(screen.getByText(/Community Invitation/i)).toBeInTheDocument();
+        expect(screen.getByText(/Engagement Booster/i)).toBeInTheDocument();
+      });
+    });
+
+    test("should load CTA template into topic when selected", async () => {
+      render(<LinkedInPostGenerator />);
+
+      const templatesButton = screen.getByRole("button", { name: /Templates/i });
+      await userEvent.click(templatesButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Post Templates/i)).toBeInTheDocument();
+      });
+
+      const ctaTab = screen.getByTestId("template-category-cta");
+      await userEvent.click(ctaTab);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Newsletter Signup/i)).toBeInTheDocument();
+      });
+
+      const newsletterTemplate = screen.getByText(/Newsletter Signup/i).closest("button");
+      await userEvent.click(newsletterTemplate);
+
+      await waitFor(() => {
+        expect(toast.success).toHaveBeenCalledWith(
+          expect.stringContaining("Newsletter Signup")
+        );
+      });
+    });
+  });
+
+  describe("Template Selection", () => {
+    test("should close templates panel after selecting a template", async () => {
+      render(<LinkedInPostGenerator />);
+
+      const templatesButton = screen.getByRole("button", { name: /Templates/i });
+      await userEvent.click(templatesButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Post Templates/i)).toBeInTheDocument();
+      });
+
+      const template = screen.getByText(/Biggest Mistake/i).closest("button");
+      await userEvent.click(template);
+
+      await waitFor(() => {
+        expect(screen.queryByText(/Post Templates/i)).not.toBeInTheDocument();
+      });
+    });
+
+    test("should show success toast with template name after selection", async () => {
+      render(<LinkedInPostGenerator />);
+
+      const templatesButton = screen.getByRole("button", { name: /Templates/i });
+      await userEvent.click(templatesButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Controversial Take/i)).toBeInTheDocument();
+      });
+
+      const template = screen.getByText(/Controversial Take/i).closest("button");
+      await userEvent.click(template);
+
+      expect(toast.success).toHaveBeenCalledWith(
+        expect.stringContaining("Controversial Take")
+      );
+      expect(toast.success).toHaveBeenCalledWith(
+        expect.stringContaining("loaded!")
+      );
+    });
+
+    test("should show success toast mentioning placeholders after selection", async () => {
+      render(<LinkedInPostGenerator />);
+
+      const templatesButton = screen.getByRole("button", { name: /Templates/i });
+      await userEvent.click(templatesButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Biggest Mistake/i)).toBeInTheDocument();
+      });
+
+      const template = screen.getByText(/Biggest Mistake/i).closest("button");
+      await userEvent.click(template);
+
+      expect(toast.success).toHaveBeenCalledWith(
+        expect.stringContaining("{placeholders}")
+      );
+    });
+  });
+
+  describe("Template Design", () => {
+    test("should display template descriptions", async () => {
+      render(<LinkedInPostGenerator />);
+
+      const templatesButton = screen.getByRole("button", { name: /Templates/i });
+      await userEvent.click(templatesButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Share a counterintuitive opinion to spark engagement/i)).toBeInTheDocument();
+      });
+    });
+
+    test("should have proper hover states for template buttons", async () => {
+      render(<LinkedInPostGenerator />);
+
+      const templatesButton = screen.getByRole("button", { name: /Templates/i });
+      await userEvent.click(templatesButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Post Templates/i)).toBeInTheDocument();
+      });
+
+      const templateButtons = screen.getAllByText(/Controversial Take|Biggest Mistake|Number Hook/i);
+      templateButtons.forEach((button) => {
+        const buttonElement = button.closest("button");
+        expect(buttonElement).toHaveClass("hover:bg-accent");
+      });
+    });
+  });
+
+  describe("Template Library with History", () => {
+    test("should not interfere with history feature", async () => {
+      render(<LinkedInPostGenerator />);
+
+      const historyButton = screen.getByRole("button", { name: /History/i });
+      const templatesButton = screen.getByRole("button", { name: /Templates/i });
+
+      expect(historyButton).toBeInTheDocument();
+      expect(templatesButton).toBeInTheDocument();
+
+      // Open templates
+      await userEvent.click(templatesButton);
+      await waitFor(() => {
+        expect(screen.getByText(/Post Templates/i)).toBeInTheDocument();
+      });
+
+      // Close templates first
+      await userEvent.click(templatesButton);
+
+      // Then open history
+      await userEvent.click(historyButton);
+      await waitFor(() => {
+        expect(screen.getByText(/Recent Posts/i)).toBeInTheDocument();
+      });
+    });
+  });
+});
