@@ -183,3 +183,41 @@
 - Files created:
   - `src/components/ui/__tests__/input.test.js`
   - `.ralphy/progress.txt` (updated)
+
+
+### Phase 1: Centralized Theme System - Task 6 COMPLETED
+
+**Task**: Update `src/components/ui/badge.jsx` with status color variants
+
+**Implementation**:
+- Added comprehensive JSDoc comment documenting status color design tokens from `src/styles/theme/tokens.css`:
+  - Status Color Tokens: `--color-success`, `--color-success-foreground`, `--color-warning`, `--color-warning-foreground`, `--color-info`, `--color-info-foreground`, `--color-destructive`, `--color-destructive-foreground`, `--color-ring`
+- Updated existing status variants to use semantic color tokens:
+  - `success`: Now uses `bg-success` and `text-success-foreground` tokens instead of hardcoded `bg-green-500`
+  - `warning`: Now uses `bg-warning` and `text-warning-foreground` tokens instead of hardcoded `bg-yellow-500`
+  - `info`: Now uses `bg-info` and `text-info-foreground` tokens instead of hardcoded `bg-blue-500`
+  - `error`: Now uses `bg-destructive` and `text-destructive-foreground` tokens instead of hardcoded `bg-red-500`
+- Added `React.forwardRef` support for consistency with other UI components
+- Added `Badge.displayName` for better debugging
+- All hover states now use token-based opacity (e.g., `hover:bg-success/80`)
+
+**Testing**:
+- Created `src/components/ui/__tests__/badge.test.js` with 41 test cases
+- Tests verify:
+  - Basic rendering and functionality (5 tests)
+  - All variant classes are properly applied (8 tests)
+  - Design token integration is working (7 tests)
+  - Styling classes (layout, spacing, typography) (7 tests)
+  - badgeVariants utility function works (7 tests)
+  - Accessibility features (3 tests)
+  - Hover states (3 tests)
+
+**Results**:
+- 221/221 tests passing (41 new + 180 existing)
+- ESLint passing with no errors
+- Files modified:
+  - `src/components/ui/badge.jsx`
+  - `prd.md` (marked task as complete)
+- Files created:
+  - `src/components/ui/__tests__/badge.test.js`
+  - `.ralphy/progress.txt` (updated)

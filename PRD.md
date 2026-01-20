@@ -12,8 +12,8 @@ Centralize theme system with proper UI/UX updates. Fix social posting, LinkedIn 
 - [x] Update `src/styles/globals.css` to import theme files and remove commented theme classes
 - [x] Update `src/components/ui/button.jsx` to use semantic color tokens
 - [x] Update `src/components/ui/card.jsx` with elevation variants
-- [ ] Update `src/components/ui/input.jsx` with consistent focus ring styling
-- [ ] Update `src/components/ui/badge.jsx` with status color variants
+- [x] Update `src/components/ui/input.jsx` with consistent focus ring styling
+- [x] Update `src/components/ui/badge.jsx` with status color variants
 
 ### Phase 2: Social Posting Fixes
 - [ ] Create unified `src/components/SocialShare.js` component with copy-to-clipboard
