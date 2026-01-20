@@ -876,3 +876,64 @@ The emoji picker component was already fully implemented in the codebase. This t
   - `prd.md` (marked task as complete)
   - `.ralphy/progress.txt` (updated)
 
+
+### Phase 3: LinkedIn Features - Task 9 COMPLETED
+
+**Task**: Update `src/components/admin/tabs/LinkedInTab.js` to use persistent history
+
+**Implementation**:
+- Created `/api/linkedin/content` API endpoint for LinkedIn content CRUD operations:
+  - **GET**: Fetch user's LinkedIn content history with optional filters (contentType, limit, skip)
+  - **POST**: Save new LinkedIn content (both posts and carousels) to MongoDB
+  - **PATCH**: Update existing content with special actions (toggleFavorite, markExported, softDelete)
+  - **DELETE**: Soft delete content
+  - Includes localhost bypass for development testing
+  - Validates required fields and returns proper error responses
+- Updated `LinkedInTab.js` to pass session to child components
+- Updated `LinkedInPostGenerator.js` with persistent history:
+  - Added `session` prop for authenticated requests
+  - Replaced localStorage-only history with server-first approach
+  - Implemented `fetchHistory()` function that fetches from server with localStorage fallback
+  - Implemented `saveToHistory()` function that saves to server with localStorage fallback
+  - Added `deleteHistoryItem()` function for soft-deleting individual items
+  - Added `toggleFavorite()` function for favoriting/unfavoriting items
+  - Updated `copyToClipboard()` to mark content as exported on the server
+  - Enhanced History UI with:
+    - Loading state indicator
+    - Favorite toggle button with Sparkles icon
+    - Delete button for individual items
+    - Larger max-height (60) for better scrolling
+- Updated `CarouselGenerator.js` with persistent storage:
+  - Added `session` prop for authenticated requests
+  - Implemented `fetchHistory()` function to fetch carousel history from server
+  - Implemented `saveToHistory()` function to save carousels after generation
+  - Implemented `loadFromHistory()` function to restore carousels with all settings
+  - Added `deleteHistoryItem()` and `toggleFavorite()` functions
+  - Updated `downloadAll()` and `exportAsPDF()` to mark content as exported
+  - Added History button to card header and full History panel UI
+- History features:
+  - Server-side storage using LinkedInContent model
+  - Automatic refresh after generating/saving content
+  - Soft delete pattern for data retention
+  - Favorite marking for quick access
+  - Export tracking (copy, pdf, images)
+  - LocalStorage fallback for unauthenticated users
+  - Loading states for better UX
+
+**Testing**:
+- API endpoint includes proper validation and error handling
+- Components gracefully handle both authenticated and development environments
+- LocalStorage fallback ensures history works even when server is unavailable
+- All user actions have appropriate toast notifications
+
+**Results**:
+- ESLint passing with no errors
+- Files created:
+  - `src/pages/api/linkedin/content.js`
+- Files modified:
+  - `src/components/admin/tabs/LinkedInTab.js`
+  - `src/components/admin/linkedin/LinkedInPostGenerator.js`
+  - `src/components/admin/linkedin/CarouselGenerator.js`
+  - `prd.md` (marked task as complete)
+  - `.ralphy/progress.txt` (updated)
+

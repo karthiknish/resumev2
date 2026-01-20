@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSession } from "next-auth/react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +11,7 @@ import LinkedInPostGenerator from "@/components/admin/linkedin/LinkedInPostGener
 import CarouselGenerator from "@/components/admin/linkedin/CarouselGenerator";
 
 export default function LinkedInTab() {
+  const { data: session } = useSession();
   const [topicFromNews, setTopicFromNews] = useState("");
   const [activeMode, setActiveMode] = useState("post");
 
@@ -82,7 +84,7 @@ export default function LinkedInTab() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
                   >
-                    <LinkedInPostGenerator initialTopic={topicFromNews} />
+                    <LinkedInPostGenerator initialTopic={topicFromNews} session={session} />
                   </motion.div>
                 ) : (
                   <motion.div
@@ -91,7 +93,7 @@ export default function LinkedInTab() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
                   >
-                    <CarouselGenerator />
+                    <CarouselGenerator session={session} />
                   </motion.div>
                 )}
               </AnimatePresence>

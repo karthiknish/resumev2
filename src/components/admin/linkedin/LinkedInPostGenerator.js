@@ -31,8 +31,9 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import EmojiPicker from "./EmojiPicker";
 
-const HISTORY_KEY = "linkedin-post-history";
-const MAX_HISTORY = 10;
+const LOCAL_STORAGE_HISTORY_KEY = "linkedin-post-history";
+const MAX_LOCAL_HISTORY = 5; // Reduced limit for local fallback
+const API_HISTORY_LIMIT = 20; // Server-side history is larger
 
 const POST_TYPES = [
   { value: "insight", label: "Insight", description: "Share a professional observation" },
@@ -502,7 +503,7 @@ const suggestHashtags = (text, limit = 8) => {
     .map(([hashtag]) => hashtag);
 };
 
-export default function LinkedInPostGenerator({ initialTopic = "" }) {
+export default function LinkedInPostGenerator({ initialTopic = "", session }) {
   const [topic, setTopic] = useState(initialTopic);
   const [postType, setPostType] = useState("insight");
   const [tone, setTone] = useState("professional");
@@ -520,6 +521,7 @@ export default function LinkedInPostGenerator({ initialTopic = "" }) {
   const [showTemplates, setShowTemplates] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [templateCategory, setTemplateCategory] = useState("hook");
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   // LinkedIn character limit
   const LINKEDIN_CHAR_LIMIT = 3000;
@@ -539,14 +541,103 @@ export default function LinkedInPostGenerator({ initialTopic = "" }) {
     (tag) => !selectedHashtags.includes(tag)
   );
 
-  useEffect(() => {
+  /**
+   * Fetch content history from server or localStorage as fallback
+   */
+  const fetchHistory = async () => {
+    setIsLoadingHistory(true);
     try {
-      const saved = localStorage.getItem(HISTORY_KEY);
-      if (saved) setHistory(JSON.parse(saved));
-    } catch (e) {
-      console.error("Failed to load history:", e);
+      // Try fetching from server first (for authenticated users)
+      const response = await fetch("/api/linkedin/content?contentType=post&limit=20");
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.content) {
+          // Transform server data to match history item structure
+          const transformedHistory = data.content.map((item) => ({
+            _id: item._id,
+            id: item._id, // For backward compatibility
+            topic: item.topic,
+            post: item.postContent,
+            postType: item.postType,
+            tone: item.tone,
+            createdAt: item.createdAt,
+            isFavorite: item.isFavorite,
+            hashtags: item.hashtags,
+          }));
+          setHistory(transformedHistory);
+          return;
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch history from server:", error);
+    } finally {
+      setIsLoadingHistory(false);
     }
-  }, []);
+
+    // Fallback to localStorage
+    try {
+      const saved = localStorage.getItem(LOCAL_STORAGE_HISTORY_KEY);
+      if (saved) {
+        const localHistory = JSON.parse(saved);
+        setHistory(localHistory.slice(0, MAX_LOCAL_HISTORY));
+      }
+    } catch (e) {
+      console.error("Failed to load history from localStorage:", e);
+    }
+    setIsLoadingHistory(false);
+  };
+
+  useEffect(() => {
+    fetchHistory();
+  }, [session]);
+
+  /**
+   * Save content to server with localStorage fallback
+   */
+  const saveToHistory = async (historyItem) => {
+    // Try to save to server first
+    try {
+      const response = await fetch("/api/linkedin/content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contentType: "post",
+          topic: historyItem.topic,
+          postContent: historyItem.post,
+          postType: historyItem.postType,
+          tone: historyItem.tone,
+          length: historyItem.length,
+          hashtags: historyItem.hashtags || selectedHashtags,
+          metrics: {
+            characterCount: historyItem.post?.length || 0,
+            wordCount: historyItem.post?.split(/\s+/).length || 0,
+          },
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          // Refresh history after successful save
+          fetchHistory();
+          return true;
+        }
+      }
+    } catch (error) {
+      console.error("Failed to save to server:", error);
+    }
+
+    // Fallback to localStorage
+    try {
+      const updatedHistory = [historyItem, ...history].slice(0, MAX_LOCAL_HISTORY);
+      setHistory(updatedHistory);
+      localStorage.setItem(LOCAL_STORAGE_HISTORY_KEY, JSON.stringify(updatedHistory));
+      return true;
+    } catch (e) {
+      console.error("Failed to save to localStorage:", e);
+      return false;
+    }
+  };
 
   useEffect(() => {
     if (initialTopic) setTopic(initialTopic);
@@ -596,18 +687,19 @@ export default function LinkedInPostGenerator({ initialTopic = "" }) {
 
       setGeneratedPost(data.post);
 
+      const lengthLabel = getLengthLabel(length[0]);
       const newHistoryItem = {
         id: Date.now(),
         topic: topic.trim(),
         post: data.post,
         postType,
         tone,
+        length: lengthLabel,
         createdAt: new Date().toISOString(),
+        hashtags: selectedHashtags.length > 0 ? selectedHashtags : undefined,
       };
 
-      const updatedHistory = [newHistoryItem, ...history].slice(0, MAX_HISTORY);
-      setHistory(updatedHistory);
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(updatedHistory));
+      await saveToHistory(newHistoryItem);
       toast.success("Post generated successfully!");
     } catch (err) {
       setError(err.message);
@@ -617,33 +709,147 @@ export default function LinkedInPostGenerator({ initialTopic = "" }) {
     }
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(generatedPost).then(
-      () => {
-        setCopied(true);
-        toast.success("Copied to clipboard!");
-        setTimeout(() => setCopied(false), 2000);
-      },
-      (err) => {
-        toast.error("Failed to copy");
-        console.error("Copy failed:", err);
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(generatedPost);
+      setCopied(true);
+      toast.success("Copied to clipboard!");
+
+      // Mark the most recent history item as exported
+      if (history.length > 0) {
+        const mostRecentItem = history[0];
+        if (mostRecentItem._id) {
+          // Mark as exported on server
+          fetch("/api/linkedin/content", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contentId: mostRecentItem._id,
+              action: "markExported",
+              exportType: "copy",
+            }),
+          }).catch((err) => console.error("Failed to mark as exported:", err));
+        }
       }
-    );
+
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast.error("Failed to copy");
+      console.error("Copy failed:", err);
+    }
   };
 
   const loadFromHistory = (item) => {
     setTopic(item.topic);
     setGeneratedPost(item.post);
-    setPostType(item.postType);
-    setTone(item.tone);
+    setPostType(item.postType || "insight");
+    setTone(item.tone || "professional");
+    if (item.hashtags) {
+      setSelectedHashtags(item.hashtags);
+    }
     setShowHistory(false);
     toast.info("Loaded from history");
   };
 
-  const clearHistory = () => {
+  const deleteHistoryItem = async (item, e) => {
+    e.stopPropagation();
+
+    if (item._id) {
+      // Soft delete on server
+      try {
+        const response = await fetch("/api/linkedin/content", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contentId: item._id,
+            action: "softDelete",
+          }),
+        });
+        if (response.ok) {
+          setHistory(history.filter((h) => h._id !== item._id));
+          toast.success("Deleted from history");
+          return;
+        }
+      } catch (err) {
+        console.error("Failed to delete from server:", err);
+      }
+    }
+
+    // Fallback to local removal
+    setHistory(history.filter((h) => h.id !== item.id));
+    toast.success("Deleted from history");
+  };
+
+  const clearHistory = async () => {
+    // Try to soft delete all items from server
+    if (history.length > 0 && history[0]._id) {
+      try {
+        await Promise.all(
+          history
+            .filter((item) => item._id)
+            .map((item) =>
+              fetch("/api/linkedin/content", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  contentId: item._id,
+                  action: "softDelete",
+                }),
+              })
+            )
+        );
+      } catch (err) {
+        console.error("Failed to clear history on server:", err);
+      }
+    }
+
+    // Clear local state and localStorage
     setHistory([]);
-    localStorage.removeItem(HISTORY_KEY);
+    localStorage.removeItem(LOCAL_STORAGE_HISTORY_KEY);
     toast.success("History cleared");
+  };
+
+  const toggleFavorite = async (item, e) => {
+    e.stopPropagation();
+
+    if (item._id) {
+      try {
+        const response = await fetch("/api/linkedin/content", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contentId: item._id,
+            action: "toggleFavorite",
+          }),
+        });
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            setHistory(
+              history.map((h) =>
+                h._id === item._id
+                  ? { ...h, isFavorite: data.content.isFavorite }
+                  : h
+              )
+            );
+            toast.success(
+              data.content.isFavorite ? "Added to favorites" : "Removed from favorites"
+            );
+            return;
+          }
+        }
+      } catch (err) {
+        console.error("Failed to toggle favorite:", err);
+      }
+    }
+
+    // Fallback to local toggle
+    setHistory(
+      history.map((h) =>
+        h.id === item.id ? { ...h, isFavorite: !h.isFavorite } : h
+      )
+    );
+    toast.info("Favorite status updated");
   };
 
   const addHashtag = (tag) => {
@@ -765,7 +971,12 @@ export default function LinkedInPostGenerator({ initialTopic = "" }) {
                 className="mb-4 p-3 bg-muted/50 rounded-xl border border-border"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-foreground">Recent Posts</span>
+                  <span className="text-sm font-medium text-foreground">
+                    Recent Posts
+                    {isLoadingHistory && (
+                      <span className="ml-2 text-xs text-muted-foreground">Loading...</span>
+                    )}
+                  </span>
                   {history.length > 0 && (
                     <Button
                       variant="ghost"
@@ -779,22 +990,50 @@ export default function LinkedInPostGenerator({ initialTopic = "" }) {
                   )}
                 </div>
                 {history.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">No posts yet</p>
+                  <p className="text-sm text-muted-foreground">
+                    {isLoadingHistory ? "Loading..." : "No posts yet"}
+                  </p>
                 ) : (
-                  <div className="space-y-2 max-h-40 overflow-y-auto">
+                  <div className="space-y-2 max-h-60 overflow-y-auto">
                     {history.map((item) => (
-                      <button
-                        key={item.id}
-                        onClick={() => loadFromHistory(item)}
-                        className="w-full text-left p-2 rounded-lg bg-background hover:bg-accent transition-colors text-sm"
+                      <div
+                        key={item.id || item._id}
+                        className="flex items-center gap-2 group"
                       >
-                        <span className="font-medium text-foreground line-clamp-1">
-                          {item.topic}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(item.createdAt).toLocaleDateString()}
-                        </span>
-                      </button>
+                        <button
+                          onClick={() => loadFromHistory(item)}
+                          className="flex-1 text-left p-2 rounded-lg bg-background hover:bg-accent transition-colors text-sm"
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="min-w-0 flex-1">
+                              <span className="font-medium text-foreground line-clamp-1 block">
+                                {item.topic}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {new Date(item.createdAt).toLocaleDateString()}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button
+                                onClick={(e) => toggleFavorite(item, e)}
+                                className={`p-1 rounded hover:bg-accent ${
+                                  item.isFavorite ? "text-yellow-500" : "text-muted-foreground"
+                                }`}
+                                title={item.isFavorite ? "Remove from favorites" : "Add to favorites"}
+                              >
+                                <Sparkles className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={(e) => deleteHistoryItem(item, e)}
+                                className="p-1 rounded hover:bg-destructive/20 text-muted-foreground hover:text-destructive"
+                                title="Delete"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                        </button>
+                      </div>
                     ))}
                   </div>
                 )}

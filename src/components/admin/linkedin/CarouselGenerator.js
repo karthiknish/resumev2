@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   DndContext,
   closestCenter,
@@ -41,6 +41,9 @@ import {
   TrendingUp,
   GripVertical,
   FileDown,
+  History,
+  Trash2,
+  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -321,7 +324,7 @@ const formatTemplate = (template, values = {}) => {
   );
 };
 
-export default function CarouselGenerator() {
+export default function CarouselGenerator({ session }) {
   const [topic, setTopic] = useState("");
   const [slideCount, setSlideCount] = useState("5");
   const [style, setStyle] = useState("dark_pro");
@@ -332,6 +335,11 @@ export default function CarouselGenerator() {
   const [error, setError] = useState(null);
   const [progress, setProgress] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
+
+  // History state
+  const [history, setHistory] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   // Template state
   const [showTemplates, setShowTemplates] = useState(false);
@@ -348,6 +356,163 @@ export default function CarouselGenerator() {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+  /**
+   * Fetch carousel history from server
+   */
+  const fetchHistory = async () => {
+    setIsLoadingHistory(true);
+    try {
+      const response = await fetch("/api/linkedin/content?contentType=carousel&limit=20");
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.content) {
+          const transformedHistory = data.content.map((item) => ({
+            _id: item._id,
+            id: item._id,
+            topic: item.topic,
+            slides: item.slides,
+            slideImages: item.slideImages,
+            carouselStyle: item.carouselStyle,
+            aspectRatio: item.aspectRatio,
+            slideCount: item.slideImages?.length || item.slides?.length || 0,
+            createdAt: item.createdAt,
+            isFavorite: item.isFavorite,
+          }));
+          setHistory(transformedHistory);
+          setIsLoadingHistory(false);
+          return;
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch carousel history:", error);
+    }
+    setIsLoadingHistory(false);
+  };
+
+  useEffect(() => {
+    fetchHistory();
+  }, [session]);
+
+  /**
+   * Save carousel to server
+   */
+  const saveToHistory = async (slidesData, imagesData) => {
+    try {
+      const response = await fetch("/api/linkedin/content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contentType: "carousel",
+          topic: topic.trim(),
+          slides: slidesData,
+          slideImages: imagesData,
+          carouselStyle: style,
+          aspectRatio: aspectRatio,
+          metrics: {
+            slideCount: imagesData.length,
+          },
+        }),
+      });
+
+      if (response.ok) {
+        fetchHistory(); // Refresh history after save
+        return true;
+      }
+    } catch (error) {
+      console.error("Failed to save carousel to server:", error);
+    }
+    return false;
+  };
+
+  /**
+   * Load carousel from history
+   */
+  const loadFromHistory = (item) => {
+    setTopic(item.topic);
+    setSlides(item.slides || []);
+    setImages(item.slideImages || []);
+    setSlideCount(String(item.slideCount || 5));
+    if (item.carouselStyle) setStyle(item.carouselStyle);
+    if (item.aspectRatio) setAspectRatio(item.aspectRatio);
+    setShowHistory(false);
+    toast.info("Loaded from history");
+  };
+
+  /**
+   * Delete carousel from history
+   */
+  const deleteHistoryItem = async (item, e) => {
+    e.stopPropagation();
+
+    if (item._id) {
+      try {
+        const response = await fetch("/api/linkedin/content", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contentId: item._id,
+            action: "softDelete",
+          }),
+        });
+        if (response.ok) {
+          setHistory(history.filter((h) => h._id !== item._id));
+          toast.success("Deleted from history");
+          return;
+        }
+      } catch (err) {
+        console.error("Failed to delete from server:", err);
+      }
+    }
+
+    setHistory(history.filter((h) => h.id !== item.id));
+    toast.success("Deleted from history");
+  };
+
+  /**
+   * Toggle favorite status
+   */
+  const toggleFavorite = async (item, e) => {
+    e.stopPropagation();
+
+    if (item._id) {
+      try {
+        const response = await fetch("/api/linkedin/content", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contentId: item._id,
+            action: "toggleFavorite",
+          }),
+        });
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            setHistory(
+              history.map((h) =>
+                h._id === item._id
+                  ? { ...h, isFavorite: data.content.isFavorite }
+                  : h
+              )
+            );
+            toast.success(
+              data.content.isFavorite ? "Added to favorites" : "Removed from favorites"
+            );
+            return;
+          }
+        }
+      } catch (err) {
+        console.error("Failed to toggle favorite:", err);
+      }
+    }
+
+    setHistory(
+      history.map((h) =>
+        h.id === item.id ? { ...h, isFavorite: !h.isFavorite } : h
+      )
+    );
+    toast.info("Favorite status updated");
+  };
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -455,6 +620,9 @@ export default function CarouselGenerator() {
       setImages(data.images || []);
       setProgress(100);
       toast.success(`Generated ${data.slides?.length || 0} slides!`);
+
+      // Save to history
+      saveToHistory(data.slides || [], data.images || []);
     } catch (err) {
       setError(err.message);
       toast.error(err.message || "Failed to generate carousel");
@@ -493,6 +661,22 @@ export default function CarouselGenerator() {
   };
 
   const downloadAll = () => {
+    // Mark the most recent history item as exported
+    if (history.length > 0) {
+      const mostRecentItem = history[0];
+      if (mostRecentItem._id) {
+        fetch("/api/linkedin/content", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contentId: mostRecentItem._id,
+            action: "markExported",
+            exportType: "images",
+          }),
+        }).catch((err) => console.error("Failed to mark as exported:", err));
+      }
+    }
+
     images.forEach((img, idx) => {
       if (img.imageData) {
         setTimeout(() => {
@@ -609,6 +793,22 @@ export default function CarouselGenerator() {
       // Save the PDF
       pdf.save(filename);
       toast.success(`PDF exported: ${filename}`);
+
+      // Mark the most recent history item as exported
+      if (history.length > 0) {
+        const mostRecentItem = history[0];
+        if (mostRecentItem._id) {
+          fetch("/api/linkedin/content", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contentId: mostRecentItem._id,
+              action: "markExported",
+              exportType: "pdf",
+            }),
+          }).catch((err) => console.error("Failed to mark as exported:", err));
+        }
+      }
     } catch (err) {
       console.error("PDF export error:", err);
       toast.error("Failed to export PDF: " + err.message);
@@ -633,16 +833,28 @@ export default function CarouselGenerator() {
                 </div>
                 Generate Carousel Images
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowTemplates(!showTemplates)}
-                className="text-muted-foreground hover:text-foreground"
-                type="button"
-              >
-                <FileText className="w-4 h-4 mr-1" />
-                Templates
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowTemplates(!showTemplates)}
+                  className="text-muted-foreground hover:text-foreground"
+                  type="button"
+                >
+                  <FileText className="w-4 h-4 mr-1" />
+                  Templates
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowHistory(!showHistory)}
+                  className="text-muted-foreground hover:text-foreground"
+                  type="button"
+                >
+                  <History className="w-4 h-4 mr-1" />
+                  History
+                </Button>
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-4">
@@ -718,6 +930,94 @@ export default function CarouselGenerator() {
                       );
                     })}
                   </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* History Panel */}
+            <AnimatePresence>
+              {showHistory && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="mb-4 p-3 bg-muted/50 rounded-xl border border-border"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-foreground">
+                      Recent Carousels
+                      {isLoadingHistory && (
+                        <span className="ml-2 text-xs text-muted-foreground">Loading...</span>
+                      )}
+                    </span>
+                    {history.length > 0 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setHistory([]);
+                          toast.success("History cleared");
+                        }}
+                        className="text-destructive hover:text-destructive h-7"
+                      >
+                        <Trash2 className="w-3 h-3 mr-1" />
+                        Clear
+                      </Button>
+                    )}
+                  </div>
+                  {history.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">
+                      {isLoadingHistory ? "Loading..." : "No carousels yet"}
+                    </p>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-60 overflow-y-auto">
+                      {history.map((item) => (
+                        <div
+                          key={item.id || item._id}
+                          className="relative group"
+                        >
+                          <button
+                            onClick={() => loadFromHistory(item)}
+                            className="w-full text-left p-2 rounded-lg bg-background hover:bg-accent transition-colors text-sm"
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="min-w-0 flex-1">
+                                <p className="font-medium text-foreground text-xs line-clamp-1">
+                                  {item.topic}
+                                </p>
+                                <div className="flex items-center gap-2 mt-1">
+                                  <Badge variant="secondary" className="text-xs">
+                                    {item.slideCount} slides
+                                  </Badge>
+                                  <span className="text-xs text-muted-foreground">
+                                    {new Date(item.createdAt).toLocaleDateString()}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </button>
+                          <div className="absolute top-1 right-1 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button
+                              onClick={(e) => toggleFavorite(item, e)}
+                              className={`p-1 rounded hover:bg-accent ${
+                                item.isFavorite ? "text-yellow-500" : "text-muted-foreground"
+                              }`}
+                              title={item.isFavorite ? "Remove from favorites" : "Add to favorites"}
+                            >
+                              <Sparkles className="w-3 h-3" />
+                            </button>
+                            <button
+                              onClick={(e) => deleteHistoryItem(item, e)}
+                              className="p-1 rounded hover:bg-destructive/20 text-muted-foreground hover:text-destructive"
+                              title="Delete"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
