@@ -30,7 +30,7 @@ Centralize theme system with proper UI/UX updates. Fix social posting, LinkedIn 
 - [x] Add post template library (Hook, Story, CTA formats)
 - [x] Enhance `src/components/admin/linkedin/CarouselGenerator.js` with template library
 - [x] Add drag-and-drop slide reordering for carousels
-- [ ] Create PDF export for carousel slides
+- [x] Create PDF export for carousel slides
 - [ ] Create `src/models/LinkedInContent.js` for content history persistence
 - [ ] Update `src/components/admin/tabs/LinkedInTab.js` to use persistent history
 - [ ] Add mobile swipe preview for carousels

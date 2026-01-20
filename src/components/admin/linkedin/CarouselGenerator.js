@@ -40,9 +40,11 @@ import {
   List,
   TrendingUp,
   GripVertical,
+  FileDown,
 } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { jsPDF } from "jspdf";
 
 /**
  * Sortable Slide Item Component
@@ -500,6 +502,119 @@ export default function CarouselGenerator() {
     });
   };
 
+  /**
+   * Export all slides as a single PDF document
+   * Creates a multi-page PDF with one slide per page
+   */
+  const exportAsPDF = async () => {
+    if (images.length === 0) {
+      toast.error("No slides to export");
+      return;
+    }
+
+    try {
+      toast.info("Generating PDF...");
+
+      // Get the first image to determine dimensions
+      const firstImage = images.find((img) => img.imageData);
+      if (!firstImage) {
+        throw new Error("No valid images to export");
+      }
+
+      // Create an image to get dimensions
+      const img = new Image();
+      const firstImageSrc = `data:${firstImage.mimeType || "image/png"};base64,${
+        firstImage.imageData
+      }`;
+
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+        img.src = firstImageSrc;
+      });
+
+      // Determine PDF dimensions based on aspect ratio setting
+      // LinkedIn carousel slides are typically 1080x1350 (4:5 portrait) or 1080x1080 (1:1 square)
+      const isPortrait = aspectRatio === "portrait" || img.height > img.width;
+      const pageWidth = isPortrait ? 210 : 210; // A4 width in mm
+      const pageHeight = isPortrait ? 297 : 210; // A4 height in mm (use A4 portrait for portrait slides, A4 landscape/square for square)
+
+      // Create PDF with appropriate orientation
+      const pdf = new jsPDF({
+        orientation: isPortrait ? "portrait" : "landscape",
+        unit: "mm",
+        format: "a4",
+      });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+
+      // Process each image and add to PDF
+      for (let i = 0; i < images.length; i++) {
+        const imageData = images[i];
+        if (!imageData.imageData) continue;
+
+        // Add new page for slides after the first one
+        if (i > 0) {
+          pdf.addPage();
+        }
+
+        // Load the image
+        await new Promise((resolve, reject) => {
+          const slideImg = new Image();
+          slideImg.onload = resolve;
+          slideImg.onerror = reject;
+          slideImg.src = `data:${imageData.mimeType || "image/png"};base64,${
+            imageData.imageData
+          }`;
+        });
+
+        // Calculate dimensions to fit the PDF page while maintaining aspect ratio
+        const imgRatio = img.width / img.height;
+        const pageRatio = pdfWidth / pdfHeight;
+
+        let renderWidth, renderHeight, x, y;
+
+        if (imgRatio > pageRatio) {
+          // Image is wider than page - fit to width
+          renderWidth = pdfWidth;
+          renderHeight = pdfWidth / imgRatio;
+          x = 0;
+          y = (pdfHeight - renderHeight) / 2; // Center vertically
+        } else {
+          // Image is taller than page - fit to height
+          renderHeight = pdfHeight;
+          renderWidth = pdfHeight * imgRatio;
+          x = (pdfWidth - renderWidth) / 2; // Center horizontally
+          y = 0;
+        }
+
+        // Add image to PDF
+        const imgData = `data:${imageData.mimeType || "image/png"};base64,${
+          imageData.imageData
+        }`;
+        pdf.addImage(imgData, imageData.mimeType || "PNG", x, y, renderWidth, renderHeight);
+      }
+
+      // Generate filename from topic (sanitize for filename)
+      const sanitizedTopic = topic
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .substring(0, 50);
+      const filename = sanitizedTopic
+        ? `linkedin-carousel-${sanitizedTopic}.pdf`
+        : "linkedin-carousel.pdf";
+
+      // Save the PDF
+      pdf.save(filename);
+      toast.success(`PDF exported: ${filename}`);
+    } catch (err) {
+      console.error("PDF export error:", err);
+      toast.error("Failed to export PDF: " + err.message);
+    }
+  };
+
   return (
     <>
       <motion.div
@@ -735,10 +850,16 @@ export default function CarouselGenerator() {
                         (Drag slides to reorder)
                       </span>
                     </div>
-                    <Button onClick={downloadAll} variant="outline" size="sm">
-                      <Download className="mr-2 h-4 w-4" />
-                      Download All
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <Button onClick={exportAsPDF} variant="outline" size="sm">
+                        <FileDown className="mr-2 h-4 w-4" />
+                        Export PDF
+                      </Button>
+                      <Button onClick={downloadAll} variant="outline" size="sm">
+                        <Download className="mr-2 h-4 w-4" />
+                        Download All
+                      </Button>
+                    </div>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-4">

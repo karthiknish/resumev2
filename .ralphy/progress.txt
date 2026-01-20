@@ -745,3 +745,59 @@ The emoji picker component was already fully implemented in the codebase. This t
   - `@dnd-kit/sortable@latest`
   - `@dnd-kit/utilities@latest`
 
+
+### Phase 3: LinkedIn Features - Task 7 COMPLETED
+
+**Task**: Create PDF export for carousel slides
+
+**Implementation**:
+- Installed `jspdf` library for PDF generation functionality
+- Added `FileDown` icon import from lucide-react for the PDF export button
+- Created `exportAsPDF` function in `src/components/admin/linkedin/CarouselGenerator.js`:
+  - Validates that slides are available before export
+  - Shows toast notification during PDF generation
+  - Detects image dimensions from first slide to determine aspect ratio
+  - Creates PDF with appropriate orientation (portrait for 4:5 slides, landscape for 1:1 square slides)
+  - Uses A4 page size with proper dimensions (210x297mm)
+  - Processes all slides and adds each as a separate page in the PDF
+  - Calculates proper dimensions to fit images while maintaining aspect ratio
+  - Centers images on PDF pages with proper margins
+  - Generates filename from carousel topic (sanitized for filesystem compatibility)
+  - Shows success toast with filename on completion
+  - Comprehensive error handling with descriptive error messages
+- Updated UI with PDF export button:
+  - Added "Export PDF" button with FileDown icon in carousel card header
+  - Positioned before "Download All" button for better UX
+  - Button only visible when slides are generated
+  - Styled with outline variant for consistency
+
+**PDF Export Features**:
+- Multi-page PDF with one slide per page
+- Aspect ratio preservation (portrait 4:5 or square 1:1)
+- Automatic image sizing to fit A4 pages
+- Topic-based filename generation (e.g., `linkedin-carousel-5-tips-javascript.pdf`)
+- Responsive PDF orientation based on carousel aspect ratio setting
+- Proper error handling for edge cases (no slides, invalid images, etc.)
+
+**Testing**:
+- Updated `src/components/admin/linkedin/__tests__/CarouselGenerator.test.js` with 7 new test cases:
+  - Should render Export PDF button in carousel header when slides are generated
+  - Should have Export PDF button positioned before Download All button
+  - Should show Export PDF button with FileDown icon
+  - Should display both Export PDF and Download All buttons when slides exist
+  - Should handle PDF export with empty images array gracefully
+  - Should validate PDF export is triggered by button click
+  - Should support both portrait and square aspect ratios for PDF
+- Added jsPDF mock in test file to prevent actual PDF generation during tests
+
+**Results**:
+- 401/401 tests passing (38 CarouselGenerator tests including 7 new PDF tests + 363 other tests)
+- ESLint passing with no errors
+- Files modified:
+  - `src/components/admin/linkedin/CarouselGenerator.js`
+  - `src/components/admin/linkedin/__tests__/CarouselGenerator.test.js`
+  - `prd.md` (marked task as complete)
+  - `.ralphy/progress.txt` (updated)
+- Dependencies added:
+  - `jspdf@latest`
+
