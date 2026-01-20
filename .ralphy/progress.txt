@@ -98,3 +98,43 @@
   - `src/components/ui/button.jsx`
 - Files created:
   - `src/components/ui/__tests__/button.test.js`
+
+
+### Phase 1: Centralized Theme System - Task 4 COMPLETED
+
+**Task**: Update `src/components/ui/card.jsx` with elevation variants
+
+**Implementation**:
+- Added `class-variance-authority` import for variant management
+- Added comprehensive JSDoc comment documenting elevation design tokens from `src/styles/theme/tokens.css`
+- Created `cardVariants` utility using CVA with elevation variants:
+  - `flat`: Uses `--shadow-card-flat` token (no shadow)
+  - `raised`: Uses `--shadow-card-raised` token (small elevation) - **default**
+  - `elevated`: Uses `--shadow-card-elevated` token (medium elevation)
+  - `floating`: Uses `--shadow-card-floating` token (large elevation)
+  - `overlay`: Uses `--shadow-card-overlay` token (extra large elevation)
+- Updated Card component to accept `elevation` prop
+- Exported `cardVariants` utility for programmatic use
+- All subcomponents (CardHeader, CardTitle, CardDescription, CardContent, CardFooter) remain unchanged
+
+**Testing**:
+- Created `src/components/ui/__tests__/card.test.js` with 42 test cases
+- Tests verify:
+  - Basic rendering and functionality (5 tests)
+  - All elevation variants are properly applied (6 tests)
+  - Design token integration is working (7 tests)
+  - All card subcomponents render correctly (5 tests)
+  - Custom className merging for all subcomponents (5 tests)
+  - Ref forwarding for all subcomponents (5 tests)
+  - Complete card structure renders (1 test)
+  - cardVariants utility function works (7 tests)
+  - Accessibility features (1 test)
+
+**Results**:
+- 136/136 tests passing (42 new + 94 existing)
+- ESLint passing with no errors
+- Files modified:
+  - `src/components/ui/card.jsx`
+  - `PRD.md` (marked task as complete)
+- Files created:
+  - `src/components/ui/__tests__/card.test.js`
