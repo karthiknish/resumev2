@@ -1001,3 +1001,62 @@ The emoji picker component was already fully implemented in the codebase. This t
 - Dependencies already present:
   - `swiper@11.2.6`
 
+
+### Phase 4: Blog System Improvements - Task 1 COMPLETED
+
+**Task**: Add drag-drop image upload to TipTapEditor
+
+**Implementation**:
+- Created `/api/upload` endpoint for image uploads:
+  - Accepts multipart/form-data with "file" field
+  - Saves images to `public/uploads/blog/` directory
+  - Generates unique filenames with timestamp and random string
+  - 10MB file size limit
+  - Only allows image files (validates mimetype)
+  - Returns public URL of uploaded image
+- Updated `src/components/TipTapEditor.js` with comprehensive drag-and-drop image upload:
+  - **Click-to-upload**: Image button in toolbar opens file picker
+  - **Drag-and-drop**: Drop images directly into editor content area
+  - **Visual feedback**:
+    - Editor background changes when dragging over
+    - "Drop image to upload" overlay with dashed border and upload icon
+    - Loading spinner on image button during upload
+    - Toast notifications for upload progress, success, and errors
+  - **Image validation**:
+    - File type validation (images only)
+    - File size validation (10MB max)
+  - **Automatic insertion**: Uploaded images are inserted at cursor position
+  - **Accessibility**:
+    - Proper aria-labels on file input
+    - Keyboard accessible file input via hidden input triggered by button
+    - Toast messages provide screen reader feedback
+
+**Features**:
+- Hidden file input with `accept="image/*"` for native file picker
+- Drag and drop event listeners (dragover, dragleave, drop) on editor content
+- Upload state management with `isUploadingImage` and `isDraggingOver` states
+- Uses `formidable` library for multipart form data parsing
+- Generates unique filenames: `{timestamp}-{randomString}.{ext}`
+- Returns relative URL (`/uploads/blog/filename.jpg`) for public access
+- Error handling for invalid files, size limits, and network failures
+
+**Removed**:
+- Moved `src/pages/blog/__tests__/slug.test.js` to fix Next.js build error (test files shouldn't be in pages directory)
+
+**Testing**:
+- Build passes successfully
+- ESLint passes with no errors
+- Manual testing required for drag-and-drop functionality (not easily testable in Jest/jsdom)
+
+**Results**:
+- ESLint passing with no errors
+- Build passing successfully
+- Files created:
+  - `src/pages/api/upload.js`
+- Files modified:
+  - `src/components/TipTapEditor.js`
+  - `prd.md` (marked task as complete)
+  - `.ralphy/progress.txt` (updated)
+- Dependencies added:
+  - `formidable@v3` (for file upload handling)
+

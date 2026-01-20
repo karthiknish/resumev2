@@ -1,6 +1,6 @@
 import { useEditor, EditorContent, BubbleMenu } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import TextStyle from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -44,6 +44,7 @@ import {
   Wand2,
   Check,
   X,
+  Upload,
 } from "lucide-react";
 import UnderlineExtension from "@tiptap/extension-underline";
 import Highlight from "@tiptap/extension-highlight";
@@ -150,7 +151,11 @@ const MenuBar = ({
   onAiAction,
   activeAiAction,
   isAiBusy,
+  onImageUpload,
+  isUploadingImage,
 }) => {
+  const fileInputRef = useRef(null);
+
   if (!editor) {
     return null;
   }
@@ -171,9 +176,18 @@ const MenuBar = ({
   };
 
   const addImage = () => {
-    const url = window.prompt("Image URL");
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run();
+    // Trigger file input click for upload
+    fileInputRef.current?.click();
+  };
+
+  const handleFileSelect = async (e) => {
+    const file = e.target.files?.[0];
+    if (file && onImageUpload) {
+      await onImageUpload(file);
+    }
+    // Reset the input so the same file can be selected again if needed
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -324,12 +338,28 @@ const MenuBar = ({
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8"
+          className={cn(
+            "h-8 w-8",
+            isUploadingImage && "animate-pulse bg-primary/10 text-primary"
+          )}
           onClick={addImage}
-          title="Image"
+          title="Upload Image"
+          disabled={isUploadingImage}
         >
-          <ImageIcon className="h-4 w-4" />
+          {isUploadingImage ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <ImageIcon className="h-4 w-4" />
+          )}
         </Button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleFileSelect}
+          className="hidden"
+          aria-label="Upload image"
+        />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="h-8 w-8" title="Table">
@@ -414,6 +444,9 @@ const TipTapEditor = ({ content, onUpdate, id, className }) => {
   const [isCompleting, setIsCompleting] = useState(false);
   const [activeAIActionKey, setActiveAIActionKey] = useState(null);
   const [isAiBusy, setIsAiBusy] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const dropZoneRef = useRef(null);
 
   const editor = useEditor({
     extensions: [
@@ -616,6 +649,103 @@ const TipTapEditor = ({ content, onUpdate, id, className }) => {
     }
   };
 
+  const handleImageUpload = async (file) => {
+    if (!file || !file.type.startsWith("image/")) {
+      toast.error("Please select a valid image file.");
+      return;
+    }
+
+    // Check file size (10MB limit)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("Image size must be less than 10MB.");
+      return;
+    }
+
+    setIsUploadingImage(true);
+    const toastId = toast.loading("Uploading image...");
+
+    try {
+      // Create FormData for the file upload
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success && data.url) {
+        // Insert the image into the editor at the current cursor position
+        const imageUrl = data.url.startsWith("/")
+          ? `${window.location.origin}${data.url}`
+          : data.url;
+
+        editor?.chain().focus().setImage({ src: imageUrl }).run();
+        toast.success("Image uploaded successfully!", { id: toastId });
+      } else {
+        throw new Error(data.message || "Failed to upload image.");
+      }
+    } catch (error) {
+      console.error("Image upload error:", error);
+      toast.error(`Upload failed: ${error.message}`, { id: toastId });
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
+
+  const handleDragOver = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Only indicate drag if we have image files
+    if (e.dataTransfer?.types?.includes("Files")) {
+      setIsDraggingOver(true);
+    }
+  }, []);
+
+  const handleDragLeave = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingOver(false);
+  }, []);
+
+  const handleDrop = useCallback(
+    async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDraggingOver(false);
+
+      const files = e.dataTransfer?.files;
+      if (!files || files.length === 0) return;
+
+      // Handle the first file if it's an image
+      const file = files[0];
+      if (file.type.startsWith("image/")) {
+        await handleImageUpload(file);
+      } else {
+        toast.error("Please drop an image file.");
+      }
+    },
+    [editor]
+  );
+
+  // Add drag and drop event listeners
+  useEffect(() => {
+    const dropZone = dropZoneRef.current;
+    if (!dropZone) return;
+
+    dropZone.addEventListener("dragover", handleDragOver);
+    dropZone.addEventListener("dragleave", handleDragLeave);
+    dropZone.addEventListener("drop", handleDrop);
+
+    return () => {
+      dropZone.removeEventListener("dragover", handleDragOver);
+      dropZone.removeEventListener("dragleave", handleDragLeave);
+      dropZone.removeEventListener("drop", handleDrop);
+    };
+  }, [handleDragOver, handleDragLeave, handleDrop]);
+
   return (
     <div className={cn("flex min-h-[500px] w-full flex-col rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden", className)}>
       <MenuBar
@@ -624,8 +754,24 @@ const TipTapEditor = ({ content, onUpdate, id, className }) => {
         onAiAction={runAiAction}
         activeAiAction={activeAIActionKey}
         isAiBusy={isAiBusy}
+        onImageUpload={handleImageUpload}
+        isUploadingImage={isUploadingImage}
       />
-      <div className="relative flex-grow bg-white">
+      <div
+        ref={dropZoneRef}
+        className={cn(
+          "relative flex-grow bg-white transition-colors",
+          isDraggingOver && "bg-primary/5"
+        )}
+      >
+        {isDraggingOver && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-primary/10 border-2 border-dashed border-primary rounded-lg m-4">
+            <div className="flex flex-col items-center gap-2 text-primary">
+              <Upload className="h-12 w-12" />
+              <p className="text-lg font-medium">Drop image to upload</p>
+            </div>
+          </div>
+        )}
         {isCompleting && (
           <div className="absolute top-4 right-4 z-10 flex items-center gap-2 rounded-full bg-primary/5 px-3 py-1.5 text-sm font-medium text-primary shadow-sm border border-primary/20">
             <Loader2 className="h-3 w-3 animate-spin" />
