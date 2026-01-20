@@ -1,0 +1,43 @@
+# Ralphy Configuration
+# https://github.com/michaelshimeles/ralphy
+
+# Project info
+project:
+  name: "resumev2"
+  language: "TypeScript"
+  framework: "Next.js"
+  description: "Portfolio & Blog Platform with AI-powered content generation"
+
+# Commands
+commands:
+  test: "npm test"
+  lint: "npm run lint"
+  build: "npm run build"
+
+# AI Configuration
+ai:
+  engine: "opencode"
+  model: "opencode/glm-4.7-free"
+
+# Rules - instructions the AI MUST follow
+rules:
+  - "Always use TypeScript for new files"
+  - "Use semantic color tokens from src/styles/theme/tokens.css"
+  - "Follow existing component patterns in src/components"
+  - "Add proper error handling for all API endpoints"
+  - "Commit changes with descriptive messages"
+
+# Boundaries - files/folders the AI should not modify
+boundaries:
+  never_touch:
+    - "node_modules/**"
+    - ".next/**"
+    - "*.lock"
+    - ".env"
+    - ".git/**"
+
+# Capabilities - optional tool integrations
+capabilities:
+  # Browser automation via agent-browser (https://agent-browser.dev)
+  # Values: "auto" (detect), "true" (force enable), "false" (disable)
+  browser: "true"

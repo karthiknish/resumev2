@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, Mail, User, Clock } from "lucide-react";
 import { toast } from "sonner";
+import { ContactListItemSkeleton } from "@/components/ui/loading-states";
 
 // Helper to format date relative to now
 const formatRelativeDate = (dateString) => {
@@ -60,11 +61,7 @@ export default function RecentContactsWidget() {
         <Mail className="h-5 w-5 text-gray-400" />
       </CardHeader>
       <CardContent className="flex-grow flex flex-col justify-between pt-4">
-        {isLoading && (
-          <div className="flex justify-center items-center flex-grow">
-            <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
-          </div>
-        )}
+        {isLoading && <ContactListItemSkeleton />}
         {error && !isLoading && (
           <div className="flex justify-center items-center flex-grow">
             <p className="text-red-400 text-center">Error: {error}</p>

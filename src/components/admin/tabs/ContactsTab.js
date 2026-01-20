@@ -10,7 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button"; // For potential delete action
+import { Button } from "@/components/ui/button";
+import { TableRowSkeleton } from "@/components/ui/loading-states";
 
 // Simple date formatter
 const formatDate = (dateString) => {
@@ -158,13 +159,55 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
       </CardHeader>
       <CardContent>
         {isLoading && (
-          <div className="flex items-center justify-center py-10">
-            <div className="flex items-center gap-4 rounded-xl border border-border bg-card px-6 py-5 shadow-sm">
-              <Loader2 className="w-6 h-6 animate-spin text-primary" />
-              <span className="text-base font-semibold text-foreground">
-                Loading contacts...
-              </span>
-            </div>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-b border-border bg-muted/50">
+                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Name
+                  </TableHead>
+                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Email
+                  </TableHead>
+                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Message
+                  </TableHead>
+                  <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Received On
+                  </TableHead>
+                  <TableHead className="text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Actions
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {[...Array(5)].map((_, i) => (
+                  <TableRow key={i} className="border-b border-border">
+                    <TableCell className="py-3">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 bg-slate-200 rounded-lg animate-pulse" />
+                        <div className="h-5 w-24 bg-slate-200 rounded animate-pulse" />
+                      </div>
+                    </TableCell>
+                    <TableCell className="py-3">
+                      <div className="h-5 w-32 bg-slate-200 rounded animate-pulse" />
+                    </TableCell>
+                    <TableCell className="py-3">
+                      <div className="h-4 w-full bg-slate-100 rounded animate-pulse" />
+                    </TableCell>
+                    <TableCell className="py-3">
+                      <div className="h-5 w-32 bg-slate-200 rounded animate-pulse" />
+                    </TableCell>
+                    <TableCell className="py-3 text-right">
+                      <div className="flex justify-end gap-2">
+                        <div className="h-8 w-8 bg-slate-200 rounded-lg animate-pulse" />
+                        <div className="h-8 w-16 bg-slate-200 rounded-lg animate-pulse" />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         )}
         {error && !isLoading && (

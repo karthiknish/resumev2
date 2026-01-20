@@ -12,7 +12,8 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { FadeIn } from "@/components/animations/MotionComponents";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge"; // To display roles/status
+import { Badge } from "@/components/ui/badge";
+import { TableRowSkeleton } from "@/components/ui/loading-states";
 
 function UsersTab() {
   const [users, setUsers] = useState([]);
@@ -83,11 +84,43 @@ function UsersTab() {
         </CardHeader>
         <CardContent className="pt-0">
           {isLoading ? (
-            <div className="flex justify-center items-center py-8">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-              <span className="ml-2 text-sm text-slate-500">
-                Loading users...
-              </span>
+            <div className="overflow-x-auto bg-white rounded-xl border border-slate-200">
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-slate-200">
+                    <TableHead className="text-xs font-semibold uppercase tracking-wide text-slate-500 px-4 py-3">
+                      Name
+                    </TableHead>
+                    <TableHead className="text-xs font-semibold uppercase tracking-wide text-slate-500 px-4 py-3">
+                      Email
+                    </TableHead>
+                    <TableHead className="text-xs font-semibold uppercase tracking-wide text-slate-500 px-4 py-3">
+                      Role
+                    </TableHead>
+                    <TableHead className="text-xs font-semibold uppercase tracking-wide text-slate-500 px-4 py-3 text-right">
+                      Joined
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {[...Array(5)].map((_, i) => (
+                    <TableRow key={i} className="border-slate-100">
+                      <TableCell className="py-3 px-4">
+                        <div className="h-5 w-24 bg-slate-200 rounded animate-pulse" />
+                      </TableCell>
+                      <TableCell className="py-3 px-4">
+                        <div className="h-5 w-40 bg-slate-200 rounded animate-pulse" />
+                      </TableCell>
+                      <TableCell className="py-3 px-4">
+                        <div className="h-6 w-20 bg-slate-200 rounded animate-pulse" />
+                      </TableCell>
+                      <TableCell className="py-3 px-4 text-right">
+                        <div className="h-5 w-24 bg-slate-200 rounded animate-pulse ml-auto" />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           ) : error ? (
             <div className="text-center py-8">

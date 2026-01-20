@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import Link from "next/link"; // Import Link
+import Link from "next/link";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input"; // Import Input for anonymous name
+import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { CommentSkeleton } from "@/components/ui/loading-states";
 
 // Simple date formatter
 const formatDate = (dateString) => {
@@ -285,18 +286,7 @@ export default function CommentsSection({ blogPostId }) {
         transition={{ duration: 0.6, delay: 0.3 }}
         viewport={{ once: true }}
       >
-        {isLoading && (
-          <motion.div
-            className="flex justify-center items-center py-12"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <Loader2 className="h-8 w-8 animate-spin text-slate-500" />
-            <span className="ml-3 text-base sm:text-lg font-medium text-slate-600">
-              Loading comments...
-            </span>
-          </motion.div>
-        )}
+        {isLoading && <CommentSkeleton />}
         {error && !isLoading && (
           <motion.div
             className="bg-red-50 border border-red-200 rounded-2xl p-6"

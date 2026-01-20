@@ -2379,3 +2379,5 @@ Examples:
   - `src/pages/admin/blog/create.js`
 - PRD updated with task marked as complete
 
+- [✓] 2026-01-20 18:52 - Add web search integration using Exa API for topic research
+- [✓] 2026-01-20 19:00 - Add keyboard shortcuts (⌘K command palette)

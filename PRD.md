@@ -50,12 +50,12 @@ Centralize theme system with proper UI/UX updates. Fix social posting, LinkedIn 
 - [x] Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
 - [x] Add file upload (PDF, DOCX, TXT) support for Agent Mode context
 - [x] Create style/voice configuration panel (tone, audience, length)
-- [ ] Implement sectional generation workflow (outline first, then sections)
-- [ ] Add conversational chat-style UI component `src/components/admin/AgentChat.js`
-- [ ] Add web search integration using Exa API for topic research
+- [x] Implement sectional generation workflow (outline first, then sections)
+- [x] Add conversational chat-style UI component `src/components/admin/AgentChat.js`
+- [x] Add web search integration using Exa API for topic research
 
 ### Phase 6: UI/UX Polish
-- [ ] Add keyboard shortcuts (⌘K command palette)
+- [x] Add keyboard shortcuts (⌘K command palette)
 - [ ] Implement skeleton loading states for all async components
 - [ ] Add empty state illustrations for lists and tables
 - [ ] Standardize error messaging across all forms

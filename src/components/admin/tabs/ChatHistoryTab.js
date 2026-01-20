@@ -11,6 +11,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { motion } from "framer-motion";
+import { AccordionItemSkeleton } from "@/components/ui/loading-states";
 
 // Simple date formatter
 const formatDate = (dateString) => {
@@ -174,19 +175,7 @@ export default function ChatHistoryTab() {
           </div>
         </div>
         
-        {isLoading && (
-          <motion.div 
-            className="flex flex-col justify-center items-center py-12"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <div className="relative">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <Sparkles className="h-4 w-4 text-primary/50 absolute -top-1.5 -right-1.5 animate-pulse" />
-            </div>
-            <p className="text-sm text-muted-foreground mt-3">Loading chat conversations...</p>
-          </motion.div>
-        )}
+        {isLoading && <AccordionItemSkeleton count={5} />}
         {error && !isLoading && (
           <motion.div 
             className="text-center py-12"

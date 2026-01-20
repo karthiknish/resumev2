@@ -42,6 +42,7 @@ import {
   StaggerItem,
 } from "@/components/animations/MotionComponents";
 import RecentContactsWidget from "@/components/admin/widgets/RecentContactsWidget"; // Import the new widget
+import { TableRowSkeleton } from "@/components/ui/loading-states";
 
 // Simple date formatter
 const formatDate = (dateString) => {
@@ -304,13 +305,49 @@ export default function DashboardTab({ unreadCount }) {
               </div>
             </CardHeader>
             <CardContent>
-              {isLoading && (
-                <div className="flex items-center justify-center py-10">
-                  <div className="flex items-center gap-4 rounded-2xl border border-border bg-card px-8 py-6 shadow-md">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                  </div>
-                </div>
-              )}
+               {isLoading && (
+                 <div className="overflow-x-auto">
+                   <Table>
+                     <TableHeader>
+                       <TableRow className="border-b border-border bg-muted/50">
+                         <TableHead className="text-left text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                           Title
+                         </TableHead>
+                         <TableHead className="text-left text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                           Status
+                         </TableHead>
+                         <TableHead className="text-left text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                           Created At
+                         </TableHead>
+                         <TableHead className="text-right text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                           Actions
+                         </TableHead>
+                       </TableRow>
+                     </TableHeader>
+                     <TableBody>
+                       {[...Array(5)].map((_, i) => (
+                         <TableRow key={i} className="border-b border-border">
+                           <TableCell className="py-4">
+                             <div className="h-5 w-48 bg-slate-200 rounded animate-pulse" />
+                           </TableCell>
+                           <TableCell className="py-4">
+                             <div className="h-6 w-20 bg-slate-200 rounded-full animate-pulse" />
+                           </TableCell>
+                           <TableCell className="py-4">
+                             <div className="h-5 w-28 bg-slate-200 rounded animate-pulse" />
+                           </TableCell>
+                           <TableCell className="py-4 text-right">
+                             <div className="flex justify-end gap-2">
+                               <div className="h-8 w-8 bg-slate-200 rounded-lg animate-pulse" />
+                               <div className="h-8 w-8 bg-slate-200 rounded-lg animate-pulse" />
+                             </div>
+                           </TableCell>
+                         </TableRow>
+                       ))}
+                     </TableBody>
+                   </Table>
+                 </div>
+               )}
               {error && !isLoading && (
                 <div className="flex items-center justify-center py-10">
                   <div className="rounded-2xl border border-destructive/20 bg-destructive/10 px-8 py-6 text-center shadow-md">

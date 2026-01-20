@@ -9,7 +9,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"; // Assuming shadcn/ui table
+} from "@/components/ui/table";
+import { TableRowSkeleton } from "@/components/ui/loading-states";
 
 // Simple date formatter
 const formatDate = (dateString) => {
@@ -61,8 +62,34 @@ export default function SubscribersTab() {
       </CardHeader>
       <CardContent className="pt-0">
         {isLoading && (
-          <div className="flex justify-center items-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <div className="overflow-x-auto bg-card rounded-xl border border-border">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-border hover:bg-muted/50">
+                  <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Email
+                  </TableHead>
+                  <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Subscribed On
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {[...Array(5)].map((_, i) => (
+                  <TableRow key={i} className="border-border">
+                    <TableCell className="py-3">
+                      <div className="h-5 w-48 bg-slate-200 rounded animate-pulse" />
+                    </TableCell>
+                    <TableCell className="py-3">
+                      <div className="flex items-center gap-2">
+                        <div className="h-4 w-4 bg-slate-200 rounded animate-pulse" />
+                        <div className="h-5 w-32 bg-slate-200 rounded animate-pulse" />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         )}
         {error && !isLoading && (
