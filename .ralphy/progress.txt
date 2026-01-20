@@ -2147,3 +2147,50 @@ Examples:
   - `prd.md` (marked task as complete)
   - `.ralphy/progress.txt` (updated)
 
+
+### Phase 5: Agent Mode Enhancements - Task 1 COMPLETED
+
+**Task**: Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js` (Already had UI, implemented backend)
+
+**Task**: Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+
+**Implementation**:
+- Added `fetchUrlContent()` function in `src/pages/api/ai/agent-generate-blog.js`:
+  - Validates URL format and protocol (HTTP/HTTPS only)
+  - 15-second timeout for requests to prevent hanging
+  - Custom User-Agent header for better compatibility
+  - Handles multiple content types (HTML, JSON, plain text)
+  - Proper error handling with descriptive messages
+- Added `extractTextFromHtml()` helper function:
+  - Removes script tags, style tags, and HTML comments
+  - Extracts content from common HTML elements (article, main, div, p, headings, etc.)
+  - Prefers larger content blocks (likely to contain meaningful content)
+  - Strips remaining HTML tags
+  - Decodes HTML entities (&nbsp;, &amp;, etc.)
+- Updated main handler to process URL input:
+  - Accepts both `context` and `url` parameters
+  - Fetches URL content when provided
+  - Merges URL content with user context
+  - Falls back gracefully if URL fetching fails
+  - Limits content length to 10,000 characters to avoid token limits
+  - Logs progress for debugging
+
+**Features**:
+- URL validation with protocol checking
+- Request timeout to prevent hanging
+- Multiple content type support (HTML, JSON, text)
+- Smart HTML text extraction (removes scripts/styles, keeps meaningful content)
+- Graceful fallback on URL fetch errors
+- Content length limiting for token management
+- Proper logging for debugging
+
+**Testing**:
+- ESLint passing with no errors
+
+**Results**:
+- ESLint passing with no errors
+- Files modified:
+  - `src/pages/api/ai/agent-generate-blog.js` (added URL fetching functionality)
+  - `prd.md` (marked tasks as complete)
+  - `.ralphy/progress.txt` (updated)
+- [✓] 2026-01-20 18:38 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`

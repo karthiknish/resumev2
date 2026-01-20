@@ -46,8 +46,8 @@ Centralize theme system with proper UI/UX updates. Fix social posting, LinkedIn 
 - [x] Create internal link suggestion feature
 
 ### Phase 5: Agent Mode Enhancements
-- [ ] Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
-- [ ] Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
+- [x] Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+- [x] Implement URL content fetching in `src/pages/api/ai/agent-generate-blog.js`
 - [ ] Add file upload (PDF, DOCX, TXT) support for Agent Mode context
 - [ ] Create style/voice configuration panel (tone, audience, length)
 - [ ] Implement sectional generation workflow (outline first, then sections)
