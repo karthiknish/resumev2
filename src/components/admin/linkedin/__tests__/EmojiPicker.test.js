@@ -6,8 +6,8 @@ import EmojiPicker, { EmojiPickerButton } from "../EmojiPicker";
 // Mock framer-motion to avoid animation issues in tests
 jest.mock("framer-motion", () => ({
   motion: {
-    div: ({ children, ...props }) => React.createElement("div", { ...props }, children),
-    button: ({ children, ...props }) => React.createElement("button", { ...props }, children),
+    div: (props) => <div {...props}>{props.children}</div>,
+    button: (props) => <button {...props}>{props.children}</button>,
   },
   AnimatePresence: ({ children }) => children,
 }));
@@ -93,9 +93,9 @@ jest.mock("@radix-ui/react-scroll-area", () => {
 
 // Mock lucide-react icons
 jest.mock("lucide-react", () => ({
-  Smile: () => React.createElement("svg", { "data-testid": "smile-icon" }),
-  X: () => React.createElement("svg", { "data-testid": "x-icon" }),
-  Search: () => React.createElement("svg", { "data-testid": "search-icon" }),
+  Smile: (props) => <svg data-testid="smile-icon" {...props} />,
+  X: (props) => <svg data-testid="x-icon" {...props} />,
+  Search: (props) => <svg data-testid="search-icon" {...props} />,
 }));
 
 describe("EmojiPicker Component", () => {

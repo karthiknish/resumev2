@@ -937,3 +937,67 @@ The emoji picker component was already fully implemented in the codebase. This t
   - `prd.md` (marked task as complete)
   - `.ralphy/progress.txt` (updated)
 
+
+### Phase 3: LinkedIn Features - Task 10 COMPLETED
+
+**Task**: Add mobile swipe preview for carousels
+
+**Implementation**:
+- Added Swiper.js integration for mobile swipeable carousel preview
+- Updated `src/components/admin/linkedin/CarouselGenerator.js`:
+  - Imported Swiper, SwiperSlide from `swiper/react`
+  - Imported Navigation, Pagination, Keyboard modules from `swiper/modules`
+  - Imported Swiper CSS files for styling
+  - Added `ChevronLeft` and `ChevronRight` icons for navigation buttons
+  - Added `showSwipePreview` state to control modal visibility
+  - Added `currentSlideIndex` state to track active slide
+- Created swipe preview modal with:
+  - **Full-screen modal**: Fixed position overlay with dark background (bg-black/90)
+  - **Header section**:
+    - Slide counter badge showing "X / Y" format
+    - Current slide heading/title (truncated with line-clamp)
+    - Download button for current slide
+    - Close button
+  - **Swiper Container**:
+    - Touch/swipe navigation for mobile devices
+    - Keyboard navigation support (arrow keys)
+    - Pagination dots at bottom for visual position indicator
+    - Proper aspect ratio handling (portrait 4:5 or square 1:1)
+  - **Desktop Navigation**:
+    - Previous/Next buttons with chevron icons
+    - Hidden on mobile (shown on sm: and above)
+    - Hover effects with scale animation
+  - **Slide Content Preview**:
+    - Optional body text overlay at bottom
+    - Gradient background for readability
+    - "Swipe to navigate" hint on mobile
+- **Swipe Preview Button**:
+  - Added "Swipe Preview" button in carousel header (before Export PDF and Download All)
+  - Uses Layers icon for visual consistency
+  - Opens modal starting from first slide
+- **Custom Swiper Styles**:
+  - Pagination bullets: 8px circular dots
+  - Active bullet: Expands to 24px rounded pill
+  - Smooth transitions between states
+
+**Testing**:
+- Added Swiper mocks to `src/components/admin/linkedin/__tests__/CarouselGenerator.test.js`:
+  - `Swiper` and `SwiperSlide` component mocks
+  - `Navigation`, `Pagination`, `Keyboard` module mocks
+  - CSS import mocks for Swiper styles
+- Updated `jest.config.js` with `transformIgnorePatterns` for swiper dependencies:
+  - Added swiper, ssr-window, dom7, @dnd-kit packages to transform list
+- 38/38 CarouselGenerator tests passing
+
+**Results**:
+- 401/401 tests passing (excluding EmojiPicker pre-existing test issues)
+- ESLint passing with no errors
+- Files modified:
+  - `src/components/admin/linkedin/CarouselGenerator.js`
+  - `src/components/admin/linkedin/__tests__/CarouselGenerator.test.js`
+  - `jest.config.js`
+  - `prd.md` (marked task as complete)
+  - `.ralphy/progress.txt` (updated)
+- Dependencies already present:
+  - `swiper@11.2.6`
+

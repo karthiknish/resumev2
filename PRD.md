@@ -33,7 +33,7 @@ Centralize theme system with proper UI/UX updates. Fix social posting, LinkedIn 
 - [x] Create PDF export for carousel slides
 - [x] Create `src/models/LinkedInContent.js` for content history persistence
 - [x] Update `src/components/admin/tabs/LinkedInTab.js` to use persistent history
-- [ ] Add mobile swipe preview for carousels
+- [x] Add mobile swipe preview for carousels
 
 ### Phase 4: Blog System Improvements
 - [ ] Add drag-drop image upload to TipTapEditor

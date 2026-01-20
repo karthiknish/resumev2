@@ -8,6 +8,12 @@ import {
   useSensors,
   DragEndEvent,
 } from "@dnd-kit/core";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Keyboard } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/keyboard";
 import {
   arrayMove,
   SortableContext,
@@ -44,6 +50,8 @@ import {
   History,
   Trash2,
   Sparkles,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -344,6 +352,10 @@ export default function CarouselGenerator({ session }) {
   // Template state
   const [showTemplates, setShowTemplates] = useState(false);
   const [templateCategory, setTemplateCategory] = useState("educational");
+
+  // Swipe preview state
+  const [showSwipePreview, setShowSwipePreview] = useState(false);
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
   // Drag-and-drop sensors
   const sensors = useSensors(
@@ -1151,6 +1163,10 @@ export default function CarouselGenerator({ session }) {
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
+                      <Button onClick={() => { setShowSwipePreview(true); setCurrentSlideIndex(0); }} variant="outline" size="sm">
+                        <Layers className="mr-2 h-4 w-4" />
+                        Swipe Preview
+                      </Button>
                       <Button onClick={exportAsPDF} variant="outline" size="sm">
                         <FileDown className="mr-2 h-4 w-4" />
                         Export PDF
@@ -1259,6 +1275,148 @@ export default function CarouselGenerator({ session }) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Swipe Preview Modal */}
+      <AnimatePresence>
+        {showSwipePreview && images.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
+            onClick={() => setShowSwipePreview(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="relative w-full h-full max-w-2xl max-h-screen flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between p-4 bg-card/95 backdrop-blur border-b border-border">
+                <div className="flex items-center gap-3">
+                  <Badge variant="secondary" className="text-sm">
+                    {currentSlideIndex + 1} / {images.length}
+                  </Badge>
+                  <h3 className="text-sm font-medium text-foreground truncate max-w-[200px] sm:max-w-xs">
+                    {slides[currentSlideIndex]?.heading || `Slide ${currentSlideIndex + 1}`}
+                  </h3>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      const currentImage = images[currentSlideIndex];
+                      if (currentImage?.imageData) {
+                        downloadImage(currentImage.imageData, currentSlideIndex + 1, currentImage.mimeType);
+                      }
+                    }}
+                    className="text-foreground hover:bg-accent"
+                  >
+                    <Download className="w-4 h-4" />
+                  </Button>
+                  <button
+                    onClick={() => setShowSwipePreview(false)}
+                    className="p-2 hover:bg-accent rounded-full transition-colors"
+                  >
+                    <X className="w-5 h-5 text-foreground" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Swiper Container */}
+              <div className="flex-1 flex items-center justify-center p-4">
+                <Swiper
+                  modules={[Navigation, Pagination, Keyboard]}
+                  navigation={{
+                    nextEl: ".swiper-button-next-custom",
+                    prevEl: ".swiper-button-prev-custom",
+                  }}
+                  pagination={{
+                    clickable: true,
+                    el: ".swiper-pagination-custom",
+                    bulletClass: "swiper-pagination-bullet-custom",
+                    bulletActiveClass: "swiper-pagination-bullet-active-custom",
+                  }}
+                  keyboard={{
+                    enabled: true,
+                    onlyInViewport: true,
+                  }}
+                  initialSlide={currentSlideIndex}
+                  onSlideChange={(swiper) => setCurrentSlideIndex(swiper.activeIndex)}
+                  className="w-full h-full flex items-center justify-center"
+                  style={{
+                    "--swiper-navigation-color": "#ffffff",
+                    "--swiper-pagination-color": "#ffffff",
+                  }}
+                >
+                  {images.map((img, idx) => (
+                    <SwiperSlide key={img.slideNumber}>
+                      <div className="flex items-center justify-center h-full px-8">
+                        <img
+                          src={`data:${img.mimeType || "image/png"};base64,${img.imageData}`}
+                          alt={`Slide ${img.slideNumber}`}
+                          className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                          style={{ aspectRatio: aspectRatio === "square" ? "1/1" : "4/5" }}
+                        />
+                      </div>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </div>
+
+              {/* Custom Navigation Buttons */}
+              <button
+                className="swiper-button-prev-custom absolute left-2 top-1/2 -translate-y-1/2 z-10 p-3 bg-card/80 hover:bg-card backdrop-blur rounded-full shadow-lg transition-all hover:scale-110 hidden sm:flex"
+                aria-label="Previous slide"
+              >
+                <ChevronLeft className="w-6 h-6 text-foreground" />
+              </button>
+              <button
+                className="swiper-button-next-custom absolute right-2 top-1/2 -translate-y-1/2 z-10 p-3 bg-card/80 hover:bg-card backdrop-blur rounded-full shadow-lg transition-all hover:scale-110 hidden sm:flex"
+                aria-label="Next slide"
+              >
+                <ChevronRight className="w-6 h-6 text-foreground" />
+              </button>
+
+              {/* Custom Pagination */}
+              <div className="swiper-pagination-custom absolute bottom-20 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2"></div>
+
+              {/* Slide Content Preview (Optional) */}
+              {slides[currentSlideIndex]?.body && (
+                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+                  <p className="text-white/90 text-sm text-center line-clamp-2">
+                    {slides[currentSlideIndex].body}
+                  </p>
+                </div>
+              )}
+
+              {/* Swipe Hint */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 text-white/60 text-xs sm:hidden">
+                <span>Swipe to navigate</span>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Custom Swiper Styles */}
+      <style jsx global>{`
+        .swiper-pagination-bullet-custom {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background-color: rgba(255, 255, 255, 0.4);
+          transition: all 0.2s;
+        }
+        .swiper-pagination-bullet-active-custom {
+          width: 24px;
+          border-radius: 4px;
+          background-color: rgba(255, 255, 255, 0.9);
+        }
+      `}</style>
     </>
   );
 }

@@ -44,6 +44,24 @@ jest.mock("@dnd-kit/utilities", () => ({
   },
 }));
 
+// Mock Swiper
+jest.mock("swiper/react", () => ({
+  Swiper: ({ children, className, ...props }) => <div className={className}>{children}</div>,
+  SwiperSlide: ({ children }) => <div>{children}</div>,
+}));
+
+jest.mock("swiper/modules", () => ({
+  Navigation: {},
+  Pagination: {},
+  Keyboard: {},
+}));
+
+// Mock Swiper CSS imports
+jest.mock("swiper/css", () => ({}));
+jest.mock("swiper/css/navigation", () => ({}));
+jest.mock("swiper/css/pagination", () => ({}));
+jest.mock("swiper/css/keyboard", () => ({}));
+
 // Mock toast
 jest.mock("sonner", () => ({
   toast: {

@@ -11,6 +11,9 @@ module.exports = {
     "<rootDir>/out/",
     "<rootDir>/e2e/",
   ],
+  transformIgnorePatterns: [
+    "node_modules/(?!(swiper|ssr-window|dom7|@dnd-kit)/)",
+  ],
   transform: {
     "^.+\\.(js|jsx|ts|tsx)$": [
       "babel-jest",
