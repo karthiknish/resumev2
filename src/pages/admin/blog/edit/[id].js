@@ -58,6 +58,7 @@ function Edit() {
     category: "",
     tags: [],
     isPublished: false,
+    scheduledPublishAt: null,
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -145,6 +146,7 @@ function Edit() {
           category: b.category || "",
           tags: Array.isArray(b.tags) ? b.tags : [],
           isPublished: !!b.isPublished,
+          scheduledPublishAt: b.scheduledPublishAt || null,
         };
         setFormData(populated);
         setLastSavedSnapshot(populated);

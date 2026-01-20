@@ -39,9 +39,9 @@ Centralize theme system with proper UI/UX updates. Fix social posting, LinkedIn 
 - [x] Add drag-drop image upload to TipTapEditor
 - [x] Implement auto-save indicator with timestamp in blog editor
 - [x] Add real-time word count and reading time display
-- [ ] Create AI keyword suggestion feature in `src/pages/admin/blog/create.js`
-- [ ] Add SEO score indicator component
-- [ ] Implement scheduled publishing with date/time picker
+- [x] Create AI keyword suggestion feature in `src/pages/admin/blog/create.js`
+- [x] Add SEO score indicator component
+- [x] Implement scheduled publishing with date/time picker
 - [ ] Add version history for blog posts
 - [ ] Create internal link suggestion feature
 

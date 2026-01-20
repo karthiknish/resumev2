@@ -66,6 +66,7 @@ function CreateBlog() {
     category: "",
     tags: [],
     isPublished: false,
+    scheduledPublishAt: null,
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -205,6 +206,7 @@ function CreateBlog() {
         category: "",
         tags: [],
         isPublished: false,
+        scheduledPublishAt: null,
       });
       toast.success("Draft cleared!");
     } catch (e) {
@@ -366,6 +368,7 @@ function CreateBlog() {
       category: formData.category,
       tags: formData.tags.filter((tag) => tag),
       isPublished: formData.isPublished,
+      scheduledPublishAt: formData.scheduledPublishAt,
     };
 
     try {

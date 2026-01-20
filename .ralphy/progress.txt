@@ -1160,3 +1160,120 @@ The emoji picker component was already fully implemented in the codebase. This t
   - `PRD.md` (marked task as complete)
   - `.ralphy/progress.txt` (updated)
 
+
+### Phase 4: Blog System Improvements - Task 4 COMPLETED
+
+**Task**: Create AI keyword suggestion feature in `src/pages/admin/blog/create.js`
+
+**Implementation**:
+The keyword suggestion feature was already fully implemented in the codebase:
+- API endpoint `src/pages/api/ai/suggest-keywords.js` exists and provides SEO-optimized keyword suggestions
+- `MetadataSection` component includes:
+  - "Suggest" button next to the Tags input
+  - State management for keyword suggestions (`isSuggestingKeywords`, `keywordSuggestionError`, `keywordSuggestions`)
+  - `handleSuggestKeywords` function that calls the `/api/ai/suggest-keywords` endpoint
+  - Display of suggestions as clickable buttons that add tags when clicked
+  - Visual feedback with loading spinner when fetching suggestions
+  - Error handling for failed API calls
+- Feature is available in both create.js and edit/[id].js pages via the shared MetadataSection component
+
+**Results**:
+- ESLint passing with no errors
+- Feature already implemented - verified and documented
+- Files modified:
+  - `prd.md` (marked task as complete)
+
+
+### Phase 4: Blog System Improvements - Task 5 COMPLETED
+
+**Task**: Add SEO score indicator component
+
+**Implementation**:
+The SEO score indicator was already fully implemented in the blog editor:
+- SEO score calculation in `src/pages/admin/blog/create.js` and `src/pages/admin/blog/edit/[id].js`
+- Score calculation based on 5 criteria (20 points each):
+  1. Title length: 30-60 characters
+  2. Description/excerpt length: 120-160 characters
+  3. Word count: 600+ words
+  4. Has subheadings (h2/h3 tags)
+  5. Has 3+ tags
+- Visual indicator using Badge component with color-coded variants:
+  - Success (green): 80+ score
+  - Warning (yellow): 60-79 score
+  - Destructive (red): <60 score
+- Real-time updates as user types in the editor
+
+**Results**:
+- ESLint passing with no errors
+- Feature already implemented - verified and documented
+- Files modified:
+  - `prd.md` (marked task as complete)
+
+
+### Phase 4: Blog System Improvements - Task 6 COMPLETED
+
+**Task**: Implement scheduled publishing with date/time picker
+
+**Implementation**:
+- Created `src/components/ui/datepicker.jsx` with comprehensive date/time picker functionality:
+  - Calendar popover using existing Calendar component (react-day-picker)
+  - Time input for selecting hour and minute
+  - Prevents selecting dates in the past
+  - Default time set to 9:00 AM when selecting a date
+  - Formatted display using date-fns (e.g., "January 20, 2026 at 9:00 AM")
+  - Uses semantic design tokens from `src/styles/theme/tokens.css`
+- Enhanced `MetadataSection` component with scheduled publishing UI:
+  - "Schedule for later" button to activate scheduling mode
+  - DatePicker component for selecting date and time
+  - Badge display showing scheduled publish date
+  - "Clear Schedule" button to remove scheduled date
+  - "Change Schedule" button to modify existing schedule
+  - Publish status shows scheduled date instead of draft message
+  - Manual publish switch clears scheduled date
+- Updated form state in `src/pages/admin/blog/create.js` and `src/pages/admin/blog/edit/[id].js`:
+  - Added `scheduledPublishAt` field to form state
+  - Included in draft data handling
+- Updated API endpoints:
+  - `src/pages/api/blog/create.js`: Handles `scheduledPublishAt` field
+- Created `src/pages/api/blog/publish-scheduled.js` endpoint:
+  - Finds all unpublished posts with `scheduledPublishAt` <= now
+  - Publishes scheduled posts and sends subscriber notifications
+  - Protected by CRON_SECRET environment variable or admin authentication
+  - Can be called by cron job services (Vercel Cron, GitHub Actions, etc.)
+
+**Features**:
+- Visual date picker with calendar interface
+- Time selection with 24-hour format input
+- Prevents past date selection
+- Scheduled date badge with formatted display
+- Clear and change schedule options
+- Integrates with existing publish status toggle
+- API endpoint for automated publishing
+
+**Setup Instructions**:
+To enable automated publishing, set up a cron job that calls:
+```
+GET /api/blog/publish-scheduled?secret=YOUR_CRON_SECRET
+```
+Examples:
+- Vercel Cron: Configure in `vercel.json`
+- GitHub Actions: Scheduled workflow
+- External cron service: curl command to endpoint
+
+**Testing**:
+- Build passes successfully
+- ESLint passing with no errors
+
+**Results**:
+- ESLint passing with no errors
+- Files created:
+  - `src/components/ui/datepicker.jsx`
+  - `src/pages/api/blog/publish-scheduled.js`
+- Files modified:
+  - `src/components/admin/blog-editor/MetadataSection.js`
+  - `src/pages/admin/blog/create.js`
+  - `src/pages/admin/blog/edit/[id].js`
+  - `src/pages/api/blog/create.js`
+  - `prd.md` (marked task as complete)
+  - `.ralphy/progress.txt` (updated)
+

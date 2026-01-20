@@ -5,8 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2, Sparkles, Calendar, Clock, X } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import { DatePicker } from "@/components/ui/datepicker";
+import { Badge } from "@/components/ui/badge";
+import { format } from "date-fns";
 
 function MetadataSection({
   formData,
@@ -28,6 +31,29 @@ function MetadataSection({
   const [isSuggestingKeywords, setIsSuggestingKeywords] = useState(false);
   const [keywordSuggestionError, setKeywordSuggestionError] = useState("");
   const [keywordSuggestions, setKeywordSuggestions] = useState([]);
+
+  // Scheduled Publishing state
+  const [isScheduleMode, setIsScheduleMode] = useState(false);
+
+  // Check if the post has a scheduled publish date
+  const hasScheduledDate = formData.scheduledPublishAt &&
+    new Date(formData.scheduledPublishAt) > new Date();
+
+  // Format scheduled date for display
+  const formattedScheduledDate = hasScheduledDate
+    ? format(new Date(formData.scheduledPublishAt), "PPP 'at' p")
+    : null;
+
+  // Handle scheduled date change
+  const handleScheduledDateChange = (date) => {
+    onFormChange({ ...formData, scheduledPublishAt: date ? date.toISOString() : null });
+  };
+
+  // Clear scheduled date
+  const clearScheduledDate = () => {
+    onFormChange({ ...formData, scheduledPublishAt: null });
+    setIsScheduleMode(false);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -329,17 +355,114 @@ function MetadataSection({
           )}
         </div>
 
-        {/* Publish Status */}
-        <div className="flex items-center justify-between space-x-2 rounded-lg border p-4 md:col-span-2 bg-background">
-          <div className="space-y-0.5">
-            <Label className="text-base text-foreground">Publish Status</Label>
-            <p className="text-sm text-muted-foreground">
-              {isPublished
-                ? "Post is live and visible to the public."
-                : "Post is currently a draft and hidden."}
-            </p>
+        {/* Publish Status & Scheduled Publishing */}
+        <div className="rounded-lg border p-4 md:col-span-2 bg-background space-y-4">
+          {/* Publish Status Toggle */}
+          <div className="flex items-center justify-between space-x-2">
+            <div className="space-y-0.5">
+              <Label className="text-base text-foreground">Publish Status</Label>
+              <p className="text-sm text-muted-foreground">
+                {isPublished
+                  ? "Post is live and visible to the public."
+                  : hasScheduledDate
+                  ? `Scheduled to publish on ${formattedScheduledDate}`
+                  : "Post is currently a draft and hidden."}
+              </p>
+            </div>
+            <Switch
+              checked={isPublished}
+              onCheckedChange={(checked) => {
+                onPublishChange(checked);
+                if (checked) {
+                  // Clear scheduled date if manually publishing
+                  clearScheduledDate();
+                }
+              }}
+              disabled={hasScheduledDate}
+            />
           </div>
-          <Switch checked={isPublished} onCheckedChange={onPublishChange} />
+
+          {/* Scheduled Publishing Section */}
+          {!isPublished && (
+            <div className="pt-2 border-t border-border">
+              {isScheduleMode || hasScheduledDate ? (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-medium text-foreground flex items-center gap-2">
+                      <Clock className="h-4 w-4" />
+                      Schedule Publish Date
+                    </Label>
+                    {hasScheduledDate && !isScheduleMode && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={clearScheduledDate}
+                        className="h-7 px-2 text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
+                      >
+                        <X className="h-3 w-3 mr-1" />
+                        Clear Schedule
+                      </Button>
+                    )}
+                  </div>
+
+                  <DatePicker
+                    value={formData.scheduledPublishAt}
+                    onChange={handleScheduledDateChange}
+                    placeholder="Select date and time to publish"
+                    disabled={hasScheduledDate && !isScheduleMode}
+                    label={hasScheduledDate && !isScheduleMode ? "" : undefined}
+                    className={hasScheduledDate && !isScheduleMode ? "hidden" : ""}
+                  />
+
+                  {hasScheduledDate && (
+                    <div className="flex items-center gap-2">
+                      <Badge variant="info" className="gap-1.5">
+                        <Calendar className="h-3 w-3" />
+                        {formattedScheduledDate}
+                      </Badge>
+                      {isScheduleMode && (
+                        <>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setIsScheduleMode(false)}
+                            className="h-7 px-2 text-xs"
+                          >
+                            Done
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  )}
+
+                  {hasScheduledDate && !isScheduleMode && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsScheduleMode(true)}
+                      className="h-7 px-2 text-xs text-primary hover:text-primary"
+                    >
+                      Change Schedule
+                    </Button>
+                  )}
+                </div>
+              ) : (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsScheduleMode(true)}
+                  className="w-full justify-start text-muted-foreground hover:text-foreground"
+                >
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Schedule for later
+                </Button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { title, content, excerpt, imageUrl, tags, isPublished, category } = req.body;
+    const { title, content, excerpt, imageUrl, tags, isPublished, category, scheduledPublishAt } = req.body;
 
     if (!title || !content || !excerpt || !imageUrl) {
       return res.status(400).json({ message: "Missing required fields" });
@@ -50,6 +50,7 @@ export default async function handler(req, res) {
       category: category ? category.trim() : "Uncategorized",
       viewCount: 0,
       likes: [],
+      scheduledPublishAt: scheduledPublishAt ? new Date(scheduledPublishAt) : null,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
