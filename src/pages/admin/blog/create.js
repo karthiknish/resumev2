@@ -6,7 +6,7 @@ import PageContainer from "@/components/PageContainer";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Wand2, ArrowLeft, Eye, Save, LayoutPanelLeft, Clock, Trash2, Bot, Sparkles } from "lucide-react";
+import { Loader2, Wand2, ArrowLeft, Eye, Save, LayoutPanelLeft, Clock, Trash2, Bot, Sparkles, Check, CloudUpload } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -37,6 +37,22 @@ import { toast } from "sonner";
 
 const DRAFT_STORAGE_KEY = "blog_draft_create";
 
+// Helper function to format relative time
+function formatRelativeTime(date) {
+  if (!date) return "";
+  const now = new Date();
+  const diffMs = now - date;
+  const diffSecs = Math.floor(diffMs / 1000);
+  const diffMins = Math.floor(diffSecs / 60);
+  const diffHours = Math.floor(diffMins / 60);
+
+  if (diffSecs < 10) return "Just now";
+  if (diffSecs < 60) return `${diffSecs}s ago`;
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  return date.toLocaleDateString();
+}
+
 function CreateBlog() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -58,6 +74,8 @@ function CreateBlog() {
   const [isFormatting, setIsFormatting] = useState(false);
   const [lastSaved, setLastSaved] = useState(null);
   const [hasDraft, setHasDraft] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState("idle"); // idle, saving, saved, error
 
   // Agent Mode state
   const [isAgentModeOpen, setIsAgentModeOpen] = useState(false);
@@ -120,19 +138,54 @@ function CreateBlog() {
   useEffect(() => {
     // Only save if there's meaningful content
     if (debouncedFormData.title || debouncedFormData.content) {
-      try {
-        const draftData = {
-          formData: debouncedFormData,
-          savedAt: new Date().toISOString(),
-        };
-        localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draftData));
-        setLastSaved(new Date());
-        setHasDraft(true);
-      } catch (e) {
-        console.error("Error saving draft:", e);
-      }
+      // Show saving state with a slight delay for better UX
+      const saveTimer = setTimeout(() => {
+        setIsSaving(true);
+        setSaveStatus("saving");
+      }, 500);
+
+      // Perform save operation
+      const performSave = () => {
+        try {
+          const draftData = {
+            formData: debouncedFormData,
+            savedAt: new Date().toISOString(),
+          };
+          localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draftData));
+          setLastSaved(new Date());
+          setHasDraft(true);
+          setSaveStatus("saved");
+        } catch (e) {
+          console.error("Error saving draft:", e);
+          setSaveStatus("error");
+        } finally {
+          setIsSaving(false);
+          // Reset to "saved" state after 2 seconds
+          setTimeout(() => {
+            setSaveStatus("idle");
+          }, 2000);
+        }
+      };
+
+      // Save after the "saving" state is shown
+      const saveCompleteTimer = setTimeout(performSave, 800);
+
+      return () => {
+        clearTimeout(saveTimer);
+        clearTimeout(saveCompleteTimer);
+      };
     }
   }, [debouncedFormData]);
+
+  // Update relative time display every minute
+  useEffect(() => {
+    if (!lastSaved) return;
+    const interval = setInterval(() => {
+      // Force re-render to update relative time
+      setLastSaved((prev) => new Date(prev));
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [lastSaved]);
 
   // Clear draft from localStorage
   const clearDraft = useCallback(() => {
@@ -421,19 +474,43 @@ function CreateBlog() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                {/* Auto-save indicator */}
+                {/* Auto-save indicator with timestamp */}
                 {hasDraft && lastSaved && (
-                  <div className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground">
-                    <Clock className="h-3 w-3" />
-                    <span>Draft saved {lastSaved.toLocaleTimeString()}</span>
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-all duration-300 ${
+                        saveStatus === "saving"
+                          ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                          : saveStatus === "error"
+                          ? "bg-destructive/10 text-destructive"
+                          : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                      }`}
+                    >
+                      {saveStatus === "saving" ? (
+                        <>
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                          <span>Saving...</span>
+                        </>
+                      ) : saveStatus === "error" ? (
+                        <>
+                          <CloudUpload className="h-3 w-3" />
+                          <span>Save failed</span>
+                        </>
+                      ) : (
+                        <>
+                          <Check className="h-3 w-3" />
+                          <span>Saved {formatRelativeTime(lastSaved)}</span>
+                        </>
+                      )}
+                    </div>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={clearDraft}
-                      className="h-6 px-2 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
+                      className="h-7 px-2 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                      title="Clear draft"
                     >
-                      <Trash2 className="h-3 w-3 mr-1" />
-                      Clear
+                      <Trash2 className="h-3 w-3" />
                     </Button>
                   </div>
                 )}

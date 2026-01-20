@@ -6,7 +6,7 @@ import PageContainer from "@/components/PageContainer";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Wand2, ArrowLeft, Eye, Save, LayoutPanelLeft } from "lucide-react";
+import { Loader2, Wand2, ArrowLeft, Eye, Save, LayoutPanelLeft, Check, CloudUpload, RefreshCw } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -27,6 +27,22 @@ import useDebounce from "@/hooks/useDebounce";
 import { toast } from "sonner";
 
 import { checkAdminStatus } from "@/lib/authUtils";
+
+// Helper function to format relative time
+function formatRelativeTime(date) {
+  if (!date) return "";
+  const now = new Date();
+  const diffMs = now - date;
+  const diffSecs = Math.floor(diffMs / 1000);
+  const diffMins = Math.floor(diffSecs / 60);
+  const diffHours = Math.floor(diffMins / 60);
+
+  if (diffSecs < 10) return "Just now";
+  if (diffSecs < 60) return `${diffSecs}s ago`;
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  return date.toLocaleDateString();
+}
 
 function Edit() {
   const { data: session, status } = useSession();
@@ -51,6 +67,8 @@ function Edit() {
   const [lastSavedSnapshot, setLastSavedSnapshot] = useState({ ...formData });
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [autoSaveMessage, setAutoSaveMessage] = useState("");
+  const [lastSavedTime, setLastSavedTime] = useState(null);
+  const [saveStatus, setSaveStatus] = useState("idle"); // idle, saving, saved, error
 
   const debouncedFormData = useDebounce(formData, 1500);
 
@@ -222,7 +240,7 @@ function Edit() {
     const save = async () => {
       try {
         setIsAutoSaving(true);
-        setAutoSaveMessage("Saving...");
+        setSaveStatus("saving");
         const res = await fetch("/api/blog/edit", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -232,15 +250,32 @@ function Edit() {
         if (!res.ok || data.success === false)
           throw new Error(data.message || "Autosave failed");
         setLastSavedSnapshot((prev) => ({ ...prev, ...patch }));
-        setAutoSaveMessage("Saved just now");
+        setLastSavedTime(new Date());
+        setSaveStatus("saved");
+        // Reset to idle after 3 seconds
+        setTimeout(() => {
+          setSaveStatus("idle");
+        }, 3000);
       } catch (e) {
-        setAutoSaveMessage("Autosave failed");
+        setSaveStatus("error");
+        setTimeout(() => {
+          setSaveStatus("idle");
+        }, 3000);
       } finally {
         setIsAutoSaving(false);
       }
     };
     save();
   }, [debouncedFormData, blogId, lastSavedSnapshot]);
+
+  // Update relative time display every minute
+  useEffect(() => {
+    if (!lastSavedTime) return;
+    const interval = setInterval(() => {
+      setLastSavedTime((prev) => new Date(prev));
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [lastSavedTime]);
 
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
@@ -355,9 +390,37 @@ function Edit() {
                   <h1 className="text-2xl font-heading font-bold text-foreground">
                     Edit Post
                   </h1>
-                  <p className="text-sm text-muted-foreground">
-                    {isAutoSaving ? "Saving..." : autoSaveMessage || "All changes saved"}
-                  </p>
+                  {/* Auto-save indicator with timestamp */}
+                  {lastSavedTime || saveStatus !== "idle" ? (
+                    <div
+                      className={`flex items-center gap-1.5 mt-1 px-2.5 py-1 rounded-md text-xs font-medium transition-all duration-300 w-fit ${
+                        saveStatus === "saving"
+                          ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                          : saveStatus === "error"
+                          ? "bg-destructive/10 text-destructive"
+                          : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                      }`}
+                    >
+                      {saveStatus === "saving" ? (
+                        <>
+                          <RefreshCw className="h-3 w-3 animate-spin" />
+                          <span>Saving...</span>
+                        </>
+                      ) : saveStatus === "error" ? (
+                        <>
+                          <CloudUpload className="h-3 w-3" />
+                          <span>Save failed</span>
+                        </>
+                      ) : (
+                        <>
+                          <Check className="h-3 w-3" />
+                          <span>Saved {formatRelativeTime(lastSavedTime)}</span>
+                        </>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground mt-1">All changes saved</p>
+                  )}
                 </div>
               </div>
               <div className="flex items-center gap-2">

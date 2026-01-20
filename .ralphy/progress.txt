@@ -1060,3 +1060,54 @@ The emoji picker component was already fully implemented in the codebase. This t
 - Dependencies added:
   - `formidable@v3` (for file upload handling)
 
+
+### Phase 4: Blog System Improvements - Task 2 COMPLETED
+
+**Task**: Implement auto-save indicator with timestamp in blog editor
+
+**Implementation**:
+- Enhanced auto-save indicator in `src/pages/admin/blog/create.js`:
+  - Added `formatRelativeTime()` helper function for human-readable timestamps:
+    - "Just now" for saves within 10 seconds
+    - "30s ago" for saves within a minute
+    - "5m ago" for saves within an hour
+    - "2h ago" for saves within 24 hours
+    - Date string for older saves
+  - Added `saveStatus` state with three states: "idle", "saving", "saved", "error"
+  - Visual indicator with color-coded states:
+    - **Saving**: Amber/yellow with spinning Loader2 icon and "Saving..." text
+    - **Saved**: Emerald/green with Check icon and relative timestamp
+    - **Error**: Destructive/red with CloudUpload icon and "Save failed" text
+  - Smooth transitions (300ms duration) between states
+  - Auto-resets to "idle" state after 2-3 seconds
+  - Minute-by-minute timestamp updates via interval
+  - Mobile-friendly display (no longer hidden on small screens)
+  - Compact trash button for clearing drafts with tooltip
+- Enhanced auto-save indicator in `src/pages/admin/blog/edit/[id].js`:
+  - Same `formatRelativeTime()` helper for consistency
+  - Server-side auto-save with visual status indicator
+  - Same color-coded states and icons
+  - Relative timestamp display that updates every minute
+  - Added `RefreshCw` icon for saving animation
+- Icons added: `Check`, `CloudUpload`, `RefreshCw` from lucide-react
+
+**Features**:
+- Relative timestamp formatting that updates in real-time
+- Visual feedback for all save states (saving, saved, error)
+- Consistent styling across create and edit pages
+- Smooth animations and transitions
+- Mobile-responsive design
+- Accessible with proper ARIA labels
+
+**Testing**:
+- ESLint passing with no errors
+- Manual testing required for visual verification of auto-save states
+
+**Results**:
+- ESLint passing with no errors
+- Files modified:
+  - `src/pages/admin/blog/create.js`
+  - `src/pages/admin/blog/edit/[id].js`
+  - `prd.md` (marked task as complete)
+  - `.ralphy/progress.txt` (updated)
+
