@@ -62,3 +62,39 @@
 - Files created:
   - `src/styles/__tests__/globals.test.js`
 
+
+### Phase 1: Centralized Theme System - Task 3 COMPLETED
+
+**Task**: Update `src/components/ui/button.jsx` to use semantic color tokens
+
+**Implementation**:
+- Added comprehensive JSDoc comment documenting semantic color tokens from `src/styles/theme/tokens.css`
+- Added new button variants using status color tokens:
+  - `success`: Uses `--color-success` and `--color-success-foreground` tokens
+  - `warning`: Uses `--color-warning` and `--color-warning-foreground` tokens
+  - `info`: Uses `--color-info` and `--color-info-foreground` tokens
+  - `ghost-destructive`: Subtle destructive hover state using `hover:bg-destructive/10`
+  - `outline-success`: Outline variant with success border and hover state
+  - `outline-warning`: Outline variant with warning border and hover state
+  - `outline-info`: Outline variant with info border and hover state
+- All variants use semantic color tokens defined in the centralized theme system
+- Focus ring styles use `ring-ring` token which maps to `--color-ring`
+- Ring offset uses `ring-offset-background` token which maps to `--color-background`
+
+**Testing**:
+- Created `src/components/ui/__tests__/button.test.js` with 38 test cases
+- Tests verify:
+  - Basic rendering and functionality (5 tests)
+  - All variant classes are properly applied (14 tests)
+  - All size variants work correctly (4 tests)
+  - Semantic color tokens are used correctly (7 tests)
+  - buttonVariants utility function works (5 tests)
+  - Accessibility features (4 tests)
+
+**Results**:
+- 94/94 tests passing (38 new + 56 existing)
+- ESLint passing with no errors
+- Files modified:
+  - `src/components/ui/button.jsx`
+- Files created:
+  - `src/components/ui/__tests__/button.test.js`
