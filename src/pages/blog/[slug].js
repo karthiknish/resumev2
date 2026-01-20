@@ -3,7 +3,6 @@ import Link from "next/link";
 import Head from "next/head";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
-import rehypeHighlight from "rehype-highlight"; // Import the plugin
 import PageContainer from "@/components/PageContainer";
 import {
   fadeInUpVariants,
@@ -167,26 +166,71 @@ function SlugPage({ data, relatedPosts }) {
           }`}
         />
         <meta name="author" content="Karthik Nishanth" />
+
+        {/* Open Graph Meta Tags */}
         <meta property="og:title" content={data.title} />
         <meta
           property="og:description"
           content={data.description || data.title}
         />
-        <meta property="og:image" content={data.imageUrl} />
+        {/* Ensure absolute URL for og:image with fallback */}
+        <meta
+          property="og:image"
+          content={data.imageUrl?.startsWith("http")
+            ? data.imageUrl
+            : data.imageUrl
+            ? `https://www.karthiknish.com${data.imageUrl}`
+            : "https://www.karthiknish.com/og-default.jpg"}
+        />
         <meta property="og:image:alt" content={data.title} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:type" content="image/jpeg" />
         <meta
           property="og:url"
           content={`https://www.karthiknish.com/blog/${data.slug || data._id}`}
         />
         <meta property="og:type" content="article" />
         <meta property="og:site_name" content="Karthiknish" />
+
+        {/* Article-specific Open Graph Tags */}
+        {data.createdAt && (
+          <meta
+            property="article:published_time"
+            content={new Date(data.createdAt).toISOString()}
+          />
+        )}
+        {data.updatedAt && (
+          <meta
+            property="article:modified_time"
+            content={new Date(data.updatedAt).toISOString()}
+          />
+        )}
+        <meta property="article:author" content="https://www.karthiknish.com" />
+        {data.category && (
+          <meta property="article:section" content={data.category} />
+        )}
+        {data.tags?.map((tag) => (
+          <meta key={tag} property="article:tag" content={tag} />
+        ))}
+
+        {/* Twitter Card Meta Tags */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={data.title} />
         <meta
           name="twitter:description"
           content={data.description || data.title}
         />
-        <meta name="twitter:image" content={data.imageUrl} />
+        {/* Ensure absolute URL for twitter:image with fallback */}
+        <meta
+          name="twitter:image"
+          content={data.imageUrl?.startsWith("http")
+            ? data.imageUrl
+            : data.imageUrl
+            ? `https://www.karthiknish.com${data.imageUrl}`
+            : "https://www.karthiknish.com/og-default.jpg"}
+        />
+        <meta name="twitter:image:alt" content={data.title} />
         <meta name="twitter:site" content="@karthiknish" />
         <meta name="twitter:creator" content="@karthiknish" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />

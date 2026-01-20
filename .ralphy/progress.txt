@@ -272,3 +272,49 @@
   - `src/components/__tests__/SocialShare.test.js`
 - Files modified:
   - `prd.md` (marked task as complete)
+
+
+### Phase 2: Social Posting Fixes - Task 2 COMPLETED
+
+**Task**: Fix Open Graph meta tags in `src/pages/blog/[slug].js` (og:image, og:description) and Add Twitter card meta tags (twitter:card, twitter:creator)
+
+**Implementation**:
+- Removed unused `rehype-highlight` import from `src/pages/blog/[slug].js`
+- Enhanced Open Graph meta tags with:
+  - **Absolute URL handling for og:image**: Converts relative URLs to absolute URLs by prepending the domain
+  - **Fallback URL for og:image**: Uses `https://www.karthiknish.com/og-default.jpg` when imageUrl is missing
+  - **og:image dimensions**: Added `og:image:width` (1200) and `og:image:height` (630) for optimal sharing
+  - **og:image:type**: Added `image/jpeg` specification
+  - **Article-specific Open Graph tags**:
+    - `article:published_time` - ISO 8601 formatted publish date
+    - `article:modified_time` - ISO 8601 formatted update date
+    - `article:author` - Author profile URL
+    - `article:section` - Blog post category
+    - `article:tag` - Individual blog post tags (multiple tags supported)
+- Enhanced Twitter Card meta tags with:
+  - **Absolute URL handling for twitter:image**: Same logic as og:image
+  - **Fallback URL for twitter:image**: Same default as og:image
+  - **twitter:image:alt**: Alt text for the image
+  - **twitter:site**: @karthiknish
+  - **twitter:creator**: @karthiknish
+  - **twitter:card**: summary_large_image for rich media previews
+
+**Testing**:
+- Created `src/pages/blog/__tests__/slug.test.js` with 24 test cases
+- Tests verify:
+  - Component rendering (10 tests)
+  - Open Graph Image URL generation logic (6 tests)
+  - Meta tag data attributes handling (8 tests)
+  - Edge cases: relative URLs, absolute URLs, missing images, missing descriptions, etc.
+- Note: Testing Next.js Head meta tags in Jest is complex; tests focus on component rendering and data handling
+
+**Results**:
+- 285/285 tests passing (24 new + 261 existing)
+- ESLint passing with no errors
+- Files modified:
+  - `src/pages/blog/[slug].js`
+  - `prd.md` (marked tasks as complete)
+- Files created:
+  - `src/pages/blog/__tests__/slug.test.js`
+  - `src/__mocks__/rehype-highlight.js`
+

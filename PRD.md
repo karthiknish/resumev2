@@ -17,8 +17,8 @@ Centralize theme system with proper UI/UX updates. Fix social posting, LinkedIn 
 
 ### Phase 2: Social Posting Fixes
 - [x] Create unified `src/components/SocialShare.js` component with copy-to-clipboard
-- [ ] Fix Open Graph meta tags in `src/pages/blog/[slug].js` (og:image, og:description)
-- [ ] Add Twitter card meta tags (twitter:card, twitter:creator)
+- [x] Fix Open Graph meta tags in `src/pages/blog/[slug].js` (og:image, og:description)
+- [x] Add Twitter card meta tags (twitter:card, twitter:creator)
 - [ ] Create `src/pages/api/analytics/share.js` endpoint for tracking share events
 - [ ] Add native Web Share API support for mobile devices
 - [ ] Implement share preview modal component
