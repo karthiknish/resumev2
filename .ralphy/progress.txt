@@ -2258,3 +2258,57 @@ Examples:
   - `src/pages/admin/blog/create.js`
   - `prd.md` (task marked as complete)
 
+
+## 2026-01-21
+
+### Phase 5: Agent Mode Enhancements - Task: Style/Voice Configuration Panel COMPLETED
+
+**Task**: Create style/voice configuration panel (tone, audience, length)
+
+**Implementation**:
+- Updated `src/pages/admin/blog/create.js` frontend:
+  - Added state variables for style configuration:
+    - `agentTone` - default: "professional"
+    - `agentAudience` - default: "developers"  
+    - `agentLength` - default: "medium"
+  - Added Select component imports from `@/components/ui/select`
+  - Updated `handleAgentGenerate()` to include `styleConfig` object with tone, audience, and length
+  - Added Style/Voice configuration panel to Agent Mode Dialog:
+    - Visual panel with rounded border and subtle background
+    - Sparkles icon for visual consistency
+    - Three dropdown selectors in a grid layout:
+      - **Tone**: professional, casual, friendly, authoritative, humorous, technical
+      - **Audience**: developers, beginners, executives, general, students
+      - **Length**: short (~500 words), medium (~1000 words), long (~2000 words)
+    - Each selector has descriptive labels and is disabled during generation
+
+- Updated `src/pages/api/ai/agent-generate-blog.js` API endpoint:
+  - Added `styleConfig` parsing from both multipart/form-data and JSON request bodies
+  - Created tone instructions map with 6 tone variations
+  - Created audience instructions map with 5 audience types
+  - Created length instructions map with 3 word count targets
+  - Updated AI prompt to include style configuration section
+  - Enhanced prompt with explicit style guidelines based on user selections
+  - Style configuration is passed through to Gemini for context-aware generation
+
+**Features**:
+- Visual style/voice panel in Agent Mode dialog
+- Tone selection: professional, casual, friendly, authoritative, humorous, technical
+- Audience targeting: developers, beginners, executives, general, students
+- Length control: short (~500 words), medium (~1000 words), long (~2000 words)
+- Context-aware AI prompts that adapt to selected style preferences
+- Consistent UI with existing shadcn/select components
+- Disabled state handling during generation
+
+**Testing**:
+- ESLint passing with no errors
+- All style options properly integrated into AI generation prompt
+- FormData and JSON request handling both support styleConfig
+
+**Results**:
+- ESLint passing with no errors
+- Files modified:
+  - `src/pages/admin/blog/create.js`
+  - `src/pages/api/ai/agent-generate-blog.js`
+  - `prd.md` (task marked as complete)
+- [✓] 2026-01-20 18:43 - Add file upload (PDF, DOCX, TXT) support for Agent Mode context

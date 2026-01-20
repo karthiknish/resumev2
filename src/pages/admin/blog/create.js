@@ -6,7 +6,7 @@ import PageContainer from "@/components/PageContainer";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Wand2, ArrowLeft, Eye, Save, LayoutPanelLeft, Clock, Trash2, Bot, Sparkles, Check, CloudUpload, FileText, Upload, X } from "lucide-react";
+import { Loader2, Wand2, ArrowLeft, Eye, Save, LayoutPanelLeft, Clock, Trash2, Bot, Sparkles, Check, CloudUpload, FileText, Upload, X, ChevronDown } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -23,6 +23,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
 // Import the refactored components
@@ -88,6 +95,10 @@ function CreateBlog() {
   const [agentError, setAgentError] = useState("");
   const [agentFile, setAgentFile] = useState(null);
   const [isFileUploading, setIsFileUploading] = useState(false);
+  // Style/Voice configuration state
+  const [agentTone, setAgentTone] = useState("professional");
+  const [agentAudience, setAgentAudience] = useState("developers");
+  const [agentLength, setAgentLength] = useState("medium");
 
   // Debounced form data for auto-save (save after 3 seconds of no changes)
   const debouncedFormData = useDebounce(formData, 3000);
@@ -313,11 +324,14 @@ function CreateBlog() {
     try {
       // Use FormData if we have a file, otherwise use JSON
       let response;
+      const styleConfig = { tone: agentTone, audience: agentAudience, length: agentLength };
+
       if (agentFile) {
         const formData = new FormData();
         formData.append('file', agentFile);
         if (agentContext) formData.append('context', agentContext);
         if (agentUrl) formData.append('url', agentUrl);
+        formData.append('styleConfig', JSON.stringify(styleConfig));
 
         response = await fetch("/api/ai/agent-generate-blog", {
           method: "POST",
@@ -328,7 +342,7 @@ function CreateBlog() {
         response = await fetch("/api/ai/agent-generate-blog", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ context: agentContext, url: agentUrl }),
+          body: JSON.stringify({ context: agentContext, url: agentUrl, styleConfig }),
         });
       }
 
@@ -826,6 +840,65 @@ function CreateBlog() {
                 className="min-h-[120px] resize-y"
                 disabled={isAgentGenerating}
               />
+            </div>
+
+            {/* Style/Voice Configuration Panel */}
+            <div className="rounded-lg border border-border bg-muted/30 p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <Sparkles className="h-4 w-4 text-violet-500" />
+                <Label className="text-sm font-medium">Writing Style & Voice</Label>
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                {/* Tone Selection */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="agent-tone" className="text-xs text-muted-foreground">Tone</Label>
+                  <Select value={agentTone} onValueChange={setAgentTone} disabled={isAgentGenerating}>
+                    <SelectTrigger id="agent-tone" className="h-8 text-sm">
+                      <SelectValue placeholder="Select tone" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="professional">Professional</SelectItem>
+                      <SelectItem value="casual">Casual</SelectItem>
+                      <SelectItem value="friendly">Friendly</SelectItem>
+                      <SelectItem value="authoritative">Authoritative</SelectItem>
+                      <SelectItem value="humorous">Humorous</SelectItem>
+                      <SelectItem value="technical">Technical</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Audience Selection */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="agent-audience" className="text-xs text-muted-foreground">Audience</Label>
+                  <Select value={agentAudience} onValueChange={setAgentAudience} disabled={isAgentGenerating}>
+                    <SelectTrigger id="agent-audience" className="h-8 text-sm">
+                      <SelectValue placeholder="Select audience" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="developers">Developers</SelectItem>
+                      <SelectItem value="beginners">Beginners</SelectItem>
+                      <SelectItem value="executives">Executives</SelectItem>
+                      <SelectItem value="general">General</SelectItem>
+                      <SelectItem value="students">Students</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Length Selection */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="agent-length" className="text-xs text-muted-foreground">Length</Label>
+                  <Select value={agentLength} onValueChange={setAgentLength} disabled={isAgentGenerating}>
+                    <SelectTrigger id="agent-length" className="h-8 text-sm">
+                      <SelectValue placeholder="Select length" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="short">Short (~500 words)</SelectItem>
+                      <SelectItem value="medium">Medium (~1000 words)</SelectItem>
+                      <SelectItem value="long">Long (~2000 words)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
             </div>
 
             {agentError && (

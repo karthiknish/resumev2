@@ -289,6 +289,30 @@ export default async function handler(req, res) {
       return res.status(400).json({ message: "Unable to generate content from the provided input" });
     }
 
+    // Style configuration helpers
+    const toneInstructions = {
+      professional: "Use a professional, polished tone with industry-standard terminology.",
+      casual: "Use a relaxed, conversational tone with informal language and expressions.",
+      friendly: "Use a warm, approachable tone that feels like a helpful friend giving advice.",
+      authoritative: "Use an authoritative, expert tone that demonstrates deep knowledge and confidence.",
+      humorous: "Use a playful tone with appropriate humor, wit, and light-hearted observations.",
+      technical: "Use a highly technical tone with precise terminology and deep technical details."
+    };
+
+    const audienceInstructions = {
+      developers: "Write for experienced developers who understand technical concepts and jargon.",
+      beginners: "Write for beginners who are new to the topic. Explain concepts clearly without assuming prior knowledge.",
+      executives: "Write for business executives and decision-makers. Focus on business value, ROI, and strategic implications.",
+      general: "Write for a general audience. Avoid jargon and explain technical concepts in simple terms.",
+      students: "Write for students who are learning. Include educational explanations and learning-friendly examples."
+    };
+
+    const lengthInstructions = {
+      short: "Aim for approximately 500 words. Be concise and focus on the most important points.",
+      medium: "Aim for approximately 1000 words. Provide a balanced, comprehensive coverage of the topic.",
+      long: "Aim for approximately 2000 words. Go deep into the topic with extensive examples, details, and nuances."
+    };
+
     const generationConfig = {
       temperature: 0.8,
       topK: 40,
@@ -304,15 +328,24 @@ export default async function handler(req, res) {
       **User Context:**
       ${enhancedContext}
 
+      **Style Configuration:**
+      - **Tone:** ${styleConfig.tone}
+      - **Audience:** ${styleConfig.audience}
+      - **Length:** ${styleConfig.length}
+
+      **Style Guidelines:**
+      - Tone: ${toneInstructions[styleConfig.tone] || toneInstructions.professional}
+      - Audience: ${audienceInstructions[styleConfig.audience] || audienceInstructions.developers}
+      - Length: ${lengthInstructions[styleConfig.length] || lengthInstructions.medium}
+
       **Your Task:**
       1. First, create an engaging, SEO-friendly title based on the context
       2. Then write a comprehensive blog post that:
          - Starts with an engaging introduction that hooks the reader
          - Has clear sections with H2 headings
          - Includes practical examples, code snippets, or case studies where relevant
-         - Uses a conversational yet professional tone
          - Provides actionable takeaways
-         - Is approximately 800-1200 words
+         - Follows the specified tone, audience, and length guidelines
 
       **Writing Style:**
       - Use contractions (don't, can't, it's) to sound conversational
