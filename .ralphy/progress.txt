@@ -801,3 +801,78 @@ The emoji picker component was already fully implemented in the codebase. This t
 - Dependencies added:
   - `jspdf@latest`
 
+
+### Phase 3: LinkedIn Features - Task 8 COMPLETED
+
+**Task**: Create `src/models/LinkedInContent.js` for content history persistence
+
+**Implementation**:
+- Created `src/models/LinkedInContent.js` with comprehensive schema for LinkedIn content persistence:
+  - **User Reference**: Links to User model via `author` field (required)
+  - **Content Types**: Supports both "post" and "carousel" content types
+  - **Post-specific Fields**:
+    - `postContent`: Generated post content (required for post type)
+    - `postType`: insight, story, tutorial, opinion, celebration
+    - `tone`: professional, casual, thoughtful, inspiring, educational
+    - `length`: short, medium, long
+    - `hashtags`: Array of hashtag strings
+  - **Carousel-specific Fields**:
+    - `slides`: Array of slide content objects (slideNumber, heading, body, hasNumber)
+    - `slideImages`: Array of generated images (slideNumber, imageData/base64, mimeType, error)
+    - `carouselStyle`: dark_pro, light_pro, gradient
+    - `aspectRatio`: portrait, square
+  - **Common Fields**:
+    - `topic`: Original user-provided topic (required)
+    - `status`: draft, generated, failed
+    - `errorMessage`: Error message if generation failed
+    - `model`: AI model used for generation
+    - `templateUsed`: Template category and ID if template was used
+    - `metrics`: characterCount, wordCount, slideCount
+    - `isExported`: Whether content has been copied/downloaded
+    - `exportType`: copy, pdf, images, none
+    - `exportedAt`: Export timestamp
+    - `notes`: User notes for organizing content
+    - `tags`: User-defined categorization tags
+    - `isFavorite`: Flag to mark favorite content
+    - `isDeleted`: Soft delete flag
+  - **Indexes** (8 indexes for efficient querying):
+    - `author, contentType, createdAt`: Common query pattern
+    - `contentType, createdAt`: Filter by content type and date
+    - `author, isFavorite, createdAt`: Query favorites
+    - `isDeleted, createdAt`: Query non-deleted content
+    - `status, createdAt`: Query by status
+    - `tags`: Query by tags
+    - Full-text search index on topic, postContent, notes
+    - `author, isDeleted, createdAt`: Compound filter for user's active content
+  - **Virtuals**:
+    - `isPost`: Returns true if contentType is "post"
+    - `isCarousel`: Returns true if contentType is "carousel"
+    - `totalSlides`: Returns count of slideImages
+  - **Instance Methods**:
+    - `markAsExported(exportType)`: Mark content as exported with timestamp
+    - `softDelete()`: Soft delete content
+    - `restore()`: Restore soft deleted content
+    - `toggleFavorite()`: Toggle favorite status
+  - **Static Methods**:
+    - `findByUser(userId, options)`: Find all content for a user with filters
+    - `findFavorites(userId)`: Find all favorited content for a user
+    - `searchContent(userId, searchTerm)`: Full-text search on content
+    - `getUserStats(userId)`: Aggregated statistics (total, posts, carousels, exported, favorites)
+
+**Testing**:
+- Model follows the established schema patterns from Blog.js, User.js, and Comment.js
+- All fields have proper validation with custom error messages
+- Indexes are properly defined for common query patterns
+- Virtuals are properly configured for JSON serialization
+- Instance and static methods provide convenient API for content management
+- Supports soft delete pattern for data retention
+- Export tracking for analytics on content usage
+
+**Results**:
+- ESLint passing with no errors
+- Files created:
+  - `src/models/LinkedInContent.js`
+- Files modified:
+  - `prd.md` (marked task as complete)
+  - `.ralphy/progress.txt` (updated)
+
