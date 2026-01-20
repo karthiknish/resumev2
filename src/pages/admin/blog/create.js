@@ -6,7 +6,7 @@ import PageContainer from "@/components/PageContainer";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Wand2, ArrowLeft, Eye, Save, LayoutPanelLeft, Clock, Trash2, Bot, Sparkles, Check, CloudUpload, FileText } from "lucide-react";
+import { Loader2, Wand2, ArrowLeft, Eye, Save, LayoutPanelLeft, Clock, Trash2, Bot, Sparkles, Check, CloudUpload, FileText, Upload, X } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -86,6 +86,8 @@ function CreateBlog() {
   const [agentUrl, setAgentUrl] = useState("");
   const [isAgentGenerating, setIsAgentGenerating] = useState(false);
   const [agentError, setAgentError] = useState("");
+  const [agentFile, setAgentFile] = useState(null);
+  const [isFileUploading, setIsFileUploading] = useState(false);
 
   // Debounced form data for auto-save (save after 3 seconds of no changes)
   const debouncedFormData = useDebounce(formData, 3000);
@@ -296,9 +298,9 @@ function CreateBlog() {
 
   // Handler for Agent Mode blog generation
   const handleAgentGenerate = async () => {
-    if (!agentContext?.trim() && !agentUrl?.trim()) {
-      setAgentError("Please provide context or a URL for generating the blog.");
-      toast.error("Please provide context or a URL for generating the blog.");
+    if (!agentContext?.trim() && !agentUrl?.trim() && !agentFile) {
+      setAgentError("Please provide context, a URL, or upload a file for generating the blog.");
+      toast.error("Please provide context, a URL, or upload a file for generating the blog.");
       return;
     }
 
@@ -309,11 +311,27 @@ function CreateBlog() {
     toast.loading("Agent is writing your blog...", { id: toastId });
 
     try {
-      const response = await fetch("/api/ai/agent-generate-blog", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ context: agentContext, url: agentUrl }),
-      });
+      // Use FormData if we have a file, otherwise use JSON
+      let response;
+      if (agentFile) {
+        const formData = new FormData();
+        formData.append('file', agentFile);
+        if (agentContext) formData.append('context', agentContext);
+        if (agentUrl) formData.append('url', agentUrl);
+
+        response = await fetch("/api/ai/agent-generate-blog", {
+          method: "POST",
+          // Don't set Content-Type header for FormData, let the browser set it with boundary
+          body: formData,
+        });
+      } else {
+        response = await fetch("/api/ai/agent-generate-blog", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ context: agentContext, url: agentUrl }),
+        });
+      }
+
       const data = await response.json();
 
       if (response.ok && data.success && data.data) {
@@ -330,6 +348,7 @@ function CreateBlog() {
         setIsAgentModeOpen(false);
         setAgentContext("");
         setAgentUrl("");
+        setAgentFile(null);
       } else {
         throw new Error(data.message || "Failed to generate blog.");
       }
@@ -341,6 +360,41 @@ function CreateBlog() {
     } finally {
       setIsAgentGenerating(false);
     }
+  };
+
+  // Handle file selection for Agent Mode
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check file type
+    const allowedTypes = [
+      'application/pdf',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'text/plain'
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      setAgentError("Invalid file type. Please upload PDF, DOCX, or TXT files.");
+      toast.error("Invalid file type. Please upload PDF, DOCX, or TXT files.");
+      return;
+    }
+
+    // Check file size (10MB limit)
+    const maxSize = 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      setAgentError("File size exceeds 10MB limit.");
+      toast.error("File size exceeds 10MB limit.");
+      return;
+    }
+
+    setAgentFile(file);
+    setAgentError("");
+  };
+
+  // Handle removing the selected file
+  const handleRemoveFile = () => {
+    setAgentFile(null);
   };
 
   const handleSubmit = async (e) => {
@@ -676,7 +730,10 @@ function CreateBlog() {
       {/* Agent Mode Dialog */}
       <Dialog open={isAgentModeOpen} onOpenChange={(open) => {
         setIsAgentModeOpen(open);
-        if (!open) setAgentError("");
+        if (!open) {
+          setAgentError("");
+          setAgentFile(null);
+        }
       }}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
@@ -685,11 +742,67 @@ function CreateBlog() {
               Agent Mode
             </DialogTitle>
             <DialogDescription>
-              Describe what you want to write about and the AI agent will generate
+              Provide context, a URL, or upload a file (PDF, DOCX, TXT) to generate
               a complete blog post with title and content.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
+            {/* File Upload Section */}
+            <div className="space-y-2">
+              <Label htmlFor="agent-file">Upload File (Optional)</Label>
+              <div className="flex items-center gap-3">
+                <label
+                  htmlFor="agent-file"
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-md border-2 border-dashed px-4 py-6 text-center transition-colors ${
+                    agentFile
+                      ? "border-violet-500 bg-violet-500/5"
+                      : "border-input hover:border-muted-foreground/50 hover:bg-muted/30"
+                  }`}
+                >
+                  <input
+                    id="agent-file"
+                    type="file"
+                    accept=".pdf,.docx,.doc,.txt"
+                    onChange={handleFileChange}
+                    className="hidden"
+                    disabled={isAgentGenerating}
+                  />
+                  {agentFile ? (
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-5 w-5 text-violet-500" />
+                      <div className="text-left">
+                        <p className="text-sm font-medium text-foreground">{agentFile.name}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {(agentFile.size / 1024).toFixed(1)} KB
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleRemoveFile();
+                        }}
+                        className="ml-2 rounded-full p-1 hover:bg-muted-foreground/20"
+                        disabled={isAgentGenerating}
+                      >
+                        <X className="h-4 w-4 text-muted-foreground" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-1">
+                      <Upload className="h-5 w-5 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">
+                        Drop file or click to upload
+                      </span>
+                      <span className="text-xs text-muted-foreground/70">
+                        PDF, DOCX, TXT (max 10MB)
+                      </span>
+                    </div>
+                  )}
+                </label>
+              </div>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="agent-url">URL (Optional)</Label>
               <input
@@ -702,6 +815,7 @@ function CreateBlog() {
                 disabled={isAgentGenerating}
               />
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="agent-context">Context / Instructions</Label>
               <Textarea
@@ -709,10 +823,11 @@ function CreateBlog() {
                 placeholder="E.g., Write a blog about React Server Components, explaining what they are, their benefits over client components, and how to migrate existing components. Include code examples and best practices."
                 value={agentContext}
                 onChange={(e) => setAgentContext(e.target.value)}
-                className="min-h-[150px] resize-y"
+                className="min-h-[120px] resize-y"
                 disabled={isAgentGenerating}
               />
             </div>
+
             {agentError && (
               <p className="text-sm text-destructive">{agentError}</p>
             )}
@@ -724,6 +839,7 @@ function CreateBlog() {
               onClick={() => {
                 setIsAgentModeOpen(false);
                 setAgentError("");
+                setAgentFile(null);
               }}
               disabled={isAgentGenerating}
             >
@@ -732,7 +848,7 @@ function CreateBlog() {
             <Button
               type="button"
               onClick={handleAgentGenerate}
-              disabled={isAgentGenerating || (!agentContext?.trim() && !agentUrl?.trim())}
+              disabled={isAgentGenerating || (!agentContext?.trim() && !agentUrl?.trim() && !agentFile)}
               className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
             >
               {isAgentGenerating ? (

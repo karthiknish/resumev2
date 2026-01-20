@@ -2194,3 +2194,67 @@ Examples:
   - `prd.md` (marked tasks as complete)
   - `.ralphy/progress.txt` (updated)
 - [✓] 2026-01-20 18:38 - Add URL input support for Agent Mode context in `src/pages/admin/blog/create.js`
+
+## 2026-01-21
+
+### Phase 5: Agent Mode Enhancements - Task: File Upload Support COMPLETED
+
+**Task**: Add file upload (PDF, DOCX, TXT) support for Agent Mode context
+
+**Implementation**:
+- Created `src/lib/fileParser.js` utility library for file parsing:
+  - PDF parsing using pdf-parse library
+  - DOCX parsing using mammoth library
+  - TXT file parsing with utf-8 encoding
+  - File validation (size, type checks)
+  - Content cleanup and truncation utilities
+  - MAX_FILE_SIZE: 10MB limit
+  - Helper functions: isSupportedFileType, getFileType, validateFileSize, parseFile, parseFileFromBase64, truncateContent, getFileInfo
+
+- Updated `src/pages/api/ai/agent-generate-blog.js` API endpoint:
+  - Added formidable integration for multipart/form-data handling
+  - Disabled Next.js body parser for file upload support
+  - Added parseFileContent() function to extract text from uploaded files
+  - Updated handler to process both JSON and multipart form data
+  - Enhanced context building to include file content alongside URL and manual context
+  - Added file type validation for PDF, DOCX, and TXT
+  - Implemented proper cleanup of temporary files after processing
+
+- Updated `src/pages/admin/blog/create.js` frontend:
+  - Added Upload and X icons from lucide-react for file upload UI
+  - Added agentFile and isFileUploading state variables
+  - Created handleFileChange() function for file selection with validation
+  - Created handleRemoveFile() function to clear selected file
+  - Updated handleAgentGenerate() to use FormData when file is present
+  - Enhanced Agent Mode Dialog with file upload section:
+    - Drag-and-drop style upload area
+    - File preview with name and size display
+    - Remove file button
+    - Visual feedback for selected files
+    - Updated dialog description to mention file upload
+    - Support for .pdf, .docx, .doc, and .txt file types
+
+**Features**:
+- File type validation (only PDF, DOCX, TXT allowed)
+- File size validation (10MB limit)
+- User-friendly file upload UI with drag-and-drop appearance
+- File preview with name and size before submission
+- Error handling and toast notifications for invalid files
+- Seamless integration with existing URL and context inputs
+
+**Testing**:
+- File upload works alongside URL and context inputs
+- File content is properly extracted and sent to AI for blog generation
+- Error handling for unsupported file types
+- Error handling for files exceeding size limit
+- Proper cleanup of temporary files
+
+**Results**:
+- ESLint passing with no errors
+- Files created:
+  - `src/lib/fileParser.js`
+- Files modified:
+  - `src/pages/api/ai/agent-generate-blog.js`
+  - `src/pages/admin/blog/create.js`
+  - `prd.md` (task marked as complete)
+

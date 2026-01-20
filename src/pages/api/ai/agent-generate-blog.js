@@ -2,6 +2,73 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { callGemini } from "@/lib/gemini";
+import formidable from "formidable";
+import fs from "fs/promises";
+import pdfParse from "pdf-parse";
+import mammoth from "mammoth";
+
+// Disable Next.js body parser for this route to handle file uploads
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+/**
+ * Parse uploaded file and extract text content
+ * @param {Object} file - The uploaded file object from formidable
+ * @returns {Promise<string>} - The extracted text content
+ */
+async function parseFileContent(file) {
+  try {
+    const fileBuffer = await fs.readFile(file.filepath);
+    const fileType = file.mimetype;
+    let content = '';
+
+    console.log(`[Agent Mode] Parsing file: ${file.originalFilename}, type: ${fileType}`);
+
+    switch (true) {
+      case fileType === 'application/pdf':
+        const pdfData = await pdfParse(fileBuffer);
+        content = pdfData.text;
+        console.log(`[Agent Mode] Extracted ${content.length} characters from PDF`);
+        break;
+
+      case fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+        const docxResult = await mammoth.extractRawText({ buffer: fileBuffer });
+        content = docxResult.value;
+        console.log(`[Agent Mode] Extracted ${content.length} characters from DOCX`);
+        break;
+
+      case fileType === 'text/plain':
+      case file.originalFilename?.toLowerCase().endsWith('.txt'):
+        content = fileBuffer.toString('utf-8');
+        console.log(`[Agent Mode] Extracted ${content.length} characters from TXT`);
+        break;
+
+      default:
+        throw new Error(`Unsupported file type: ${fileType}`);
+    }
+
+    // Clean up the content
+    content = content
+      .replace(/\s+/g, ' ')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+
+    // Limit content length
+    const maxContentLength = 15000;
+    if (content.length > maxContentLength) {
+      content = content.substring(0, maxContentLength) + '\n\n[File content truncated...]';
+      console.log(`[Agent Mode] File content truncated to ${maxContentLength} characters`);
+    }
+
+    return content;
+  } catch (error) {
+    console.error('[Agent Mode] Error parsing file:', error);
+    throw new Error(`Failed to parse file: ${error.message}`);
+  }
+}
 
 /**
  * Fetches and extracts content from a URL
@@ -11,7 +78,6 @@ import { callGemini } from "@/lib/gemini";
  */
 async function fetchUrlContent(url) {
   try {
-    // Validate URL format
     let validUrl;
     try {
       validUrl = new URL(url);
@@ -19,16 +85,14 @@ async function fetchUrlContent(url) {
       throw new Error(`Invalid URL format: ${url}`);
     }
 
-    // Only allow HTTP/HTTPS protocols
     if (!['http:', 'https:'].includes(validUrl.protocol)) {
       throw new Error('Only HTTP and HTTPS URLs are supported');
     }
 
     console.log(`[Agent Mode] Fetching URL: ${validUrl.href}`);
 
-    // Configure fetch with timeout and user agent
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     const response = await fetch(validUrl.href, {
       signal: controller.signal,
@@ -45,30 +109,25 @@ async function fetchUrlContent(url) {
     const contentType = response.headers.get('content-type') || '';
     let content = '';
 
-    // Handle different content types
     if (contentType.includes('application/json')) {
       const json = await response.json();
       content = JSON.stringify(json, null, 2);
     } else if (contentType.includes('text/')) {
       content = await response.text();
     } else {
-      // For other types, try to get text anyway
       content = await response.text();
     }
 
-    // Extract meaningful text from HTML
     if (contentType.includes('text/html')) {
       content = extractTextFromHtml(content);
     }
 
-    // Clean up the content
     content = content
-      .replace(/\s+/g, ' ')  // Normalize whitespace
-      .replace(/\n{3,}/g, '\n\n')  // Remove excessive line breaks
+      .replace(/\s+/g, ' ')
+      .replace(/\n{3,}/g, '\n\n')
       .trim();
 
-    // Limit content length to avoid token limits
-    const maxContentLength = 10000; // Approx 2500-3000 tokens
+    const maxContentLength = 10000;
     if (content.length > maxContentLength) {
       content = content.substring(0, maxContentLength) + '\n\n[Content truncated...]';
     }
@@ -89,30 +148,25 @@ async function fetchUrlContent(url) {
  * @returns {string} - The extracted text content
  */
 function extractTextFromHtml(html) {
-  // Remove script tags, style tags, and comments
   let text = html
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ')
     .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, ' ')
     .replace(/<!--[\s\S]*?-->/g, ' ');
 
-  // Extract text from common content elements
   const contentTags = ['article', 'main', 'div', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'span'];
   const tagPattern = new RegExp(`<(${contentTags.join('|')})\\b[^>]*>([\\s\\S]*?)<\\/\\1>`, 'gi');
   const matches = [...text.matchAll(tagPattern)];
 
   if (matches.length > 0) {
-    // Use matched content, preferring longer elements (likely to contain more content)
     text = matches
       .sort((a, b) => b[0].length - a[0].length)
-      .slice(0, 20) // Take top 20 largest elements
+      .slice(0, 20)
       .map(m => m[2])
       .join(' ');
   }
 
-  // Remove all remaining HTML tags
   text = text.replace(/<[^>]+>/g, ' ');
 
-  // Decode HTML entities
   const entities = {
     '&nbsp;': ' ', '&amp;': '&', '&lt;': '<', '&gt;': '>',
     '&quot;': '"', '&apos;': "'", '&mdash;': '—', '&ndash;': '–',
@@ -127,13 +181,11 @@ function extractTextFromHtml(html) {
 }
 
 export default async function handler(req, res) {
-  // Check for authenticated session
   const session = await getServerSession(req, res, authOptions);
   if (!session) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
-  // Basic admin check
   const isAdmin =
     session?.user?.role === "admin" ||
     session?.user?.isAdmin === true ||
@@ -148,15 +200,57 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { context, url } = req.body;
+    let context = '';
+    let url = '';
+    let fileContent = '';
 
-    if (!context?.trim() && !url?.trim()) {
-      return res.status(400).json({ message: "Context or URL is required" });
+    const contentType = req.headers['content-type'];
+
+    if (contentType && contentType.includes('multipart/form-data')) {
+      const form = formidable({
+        maxFileSize: 10 * 1024 * 1024,
+        keepExtensions: true,
+      });
+
+      const [fields, files] = await form.parse(req);
+
+      context = fields.context?.[0] || '';
+      url = fields.url?.[0] || '';
+
+      if (files.file && files.file.length > 0) {
+        const uploadedFile = files.file[0];
+        
+        const allowedTypes = [
+          'application/pdf',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'text/plain'
+        ];
+
+        if (!allowedTypes.includes(uploadedFile.mimetype) && !uploadedFile.originalFilename?.toLowerCase().endsWith('.txt')) {
+          await fs.unlink(uploadedFile.filepath).catch(() => {});
+          return res.status(400).json({ 
+            message: "Invalid file type. Only PDF, DOCX, and TXT files are supported." 
+          });
+        }
+
+        fileContent = await parseFileContent(uploadedFile);
+        
+        await fs.unlink(uploadedFile.filepath).catch(() => {});
+      }
+    } else {
+      const body = req.body;
+      context = body?.context || '';
+      url = body?.url || '';
     }
 
     let enhancedContext = context || '';
 
-    // If URL is provided, fetch its content and enhance the context
+    if (fileContent) {
+      enhancedContext = enhancedContext.trim()
+        ? `${enhancedContext.trim()}\n\n**Uploaded File Content:**\n${fileContent}`
+        : `**Uploaded File Content:**\n${fileContent}`;
+    }
+
     if (url?.trim()) {
       try {
         const urlContent = await fetchUrlContent(url.trim());
@@ -167,8 +261,6 @@ export default async function handler(req, res) {
         }
       } catch (urlError) {
         console.error('[Agent Mode] URL fetch failed, proceeding with context only:', urlError.message);
-        // Continue with just the context if URL fetch fails
-        enhancedContext = enhancedContext.trim() || '';
       }
     }
 
@@ -231,10 +323,8 @@ export default async function handler(req, res) {
     const rawResponse = await callGemini(prompt, generationConfig);
     console.log("[Agent Mode] Raw response received");
 
-    // Parse the JSON response
     let parsedResponse;
     try {
-      // Clean potential markdown fences
       const cleanedResponse = rawResponse
         .replace(/^```(?:json)?\s*\n?/i, "")
         .replace(/\n?```\s*$/i, "")
@@ -245,7 +335,6 @@ export default async function handler(req, res) {
       console.error("[Agent Mode] Failed to parse response as JSON:", parseError);
       console.error("[Agent Mode] Raw response:", rawResponse.substring(0, 500));
       
-      // Fallback: try to extract title and content manually
       const titleMatch = rawResponse.match(/"title"\s*:\s*"([^"]+)"/);
       const contentMatch = rawResponse.match(/"content"\s*:\s*"(.+)"\s*\}$/s);
       
