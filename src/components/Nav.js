@@ -16,7 +16,7 @@ import {
   HoverCard,
   // MotionDiv, // Not used directly here anymore
 } from "./animations/MotionComponents";
-import { Loader2 } from "lucide-react";
+import { Loader2, Command } from "lucide-react";
 
 // Dynamically import the SearchOverlay component
 const SearchOverlay = dynamic(() => import("./SearchOverlay"), {
@@ -284,12 +284,15 @@ export default function Nav() {
               {/* Search Icon */}
               <motion.button
                 onClick={toggleSearch}
-                className={`${iconButtonClass} transition-colors duration-200 p-2 lg:p-3 rounded-xl`}
+                className={`${iconButtonClass} transition-colors duration-200 p-2 lg:p-3 rounded-xl group relative`}
                 aria-label="Open Search"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
               >
                 <FaSearch className="w-5 h-5 lg:w-6 lg:h-6" />
+                <kbd className="hidden lg:inline-flex absolute -top-1 -right-1 items-center justify-center w-5 h-5 text-[10px] font-mono rounded-full bg-[hsl(var(--color-primary))] text-[hsl(var(--color-primary-foreground))] opacity-0 group-hover:opacity-100 transition-opacity">
+                  ⌘K
+                </kbd>
               </motion.button>
             </div>
 

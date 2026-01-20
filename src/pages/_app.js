@@ -27,6 +27,9 @@ const PageTransitionWrapper = dynamic(
   { ssr: false }
 );
 
+// Dynamically import CommandPalette with no SSR
+const CommandPalette = dynamic(() => import("@/components/CommandPalette"), { ssr: false });
+
 // Configure the Inter and Space Grotesk fonts with display: swap for better performance
 const inter = Inter({
   subsets: ["latin"],
@@ -283,6 +286,7 @@ export default function App({
           <Footer />
           {/* ChatBot only on non-admin pages */}
           {showChatbot && <ChatBot />}
+          <CommandPalette />
           <Toaster richColors closeButton position="top-right" />
           {/* Show cookie consent banner if no consent has been given */}
 
