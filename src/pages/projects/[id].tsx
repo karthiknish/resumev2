@@ -12,10 +12,37 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MessageSquareQuote } from "lucide-react";
 
+interface TechStackItem {
+  icon: React.ComponentType<{ className?: string }>;
+  name: string;
+}
+
+interface Testimonial {
+  quote: string;
+  author: string;
+}
+
+interface Project {
+  id: string;
+  title: string;
+  shortdescription: string;
+  description: string;
+  meta?: string;
+  image: string;
+  extlink?: string;
+  link: string;
+  challenges?: string[];
+  solutions?: string[];
+  results?: string[];
+  testimonial?: Testimonial;
+  category?: string;
+  techStack?: TechStackItem[];
+}
+
 function Id() {
   const router = useRouter();
   const { id } = router.query;
-  const [project, setProject] = useState(null);
+  const [project, setProject] = useState<Project | null>(null);
 
   const techStackVariants = {
     hidden: { opacity: 0, scale: 0.8 },
@@ -24,8 +51,8 @@ function Id() {
 
   useEffect(() => {
     if (id) {
-      const project = projectsData.find((p) => p.id === id);
-      setProject(project);
+      const foundProject = projectsData.find((p) => p.id === id);
+      setProject(foundProject ?? null);
     }
   }, [id]);
 
