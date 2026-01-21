@@ -17,7 +17,34 @@ import {
   SiStyledcomponents,
 } from "react-icons/si";
 
-export const projectsData = [
+interface TechStackItem {
+  icon: React.ComponentType<{ className?: string }>;
+  name: string;
+}
+
+interface Testimonial {
+  quote: string;
+  author: string;
+}
+
+interface Project {
+  id: string;
+  title: string;
+  shortdescription: string;
+  description: string;
+  meta?: string;
+  image: string;
+  extlink?: string;
+  link: string;
+  challenges?: string[];
+  solutions?: string[];
+  results?: string[];
+  testimonial?: Testimonial;
+  category?: string;
+  techStack?: TechStackItem[];
+}
+
+export const projectsData: Project[] = [
   {
     id: "medblocks",
     title: "Medblocks",
