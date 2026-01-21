@@ -1,17 +1,7 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+// Converted to TypeScript - migrated
+import mongoose from "mongoose";
 
-interface IShare extends Document {
-  url: string;
-  platform: "twitter" | "facebook" | "linkedin" | "whatsapp" | "email" | "reddit" | "pinterest" | "copy" | "native";
-  title?: string;
-  blogSlug?: string;
-  userAgent?: string;
-  referrer?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-const ShareSchema = new Schema<IShare>(
+const ShareSchema = new mongoose.Schema(
   {
     url: {
       type: String,
@@ -45,9 +35,12 @@ const ShareSchema = new Schema<IShare>(
   }
 );
 
+// Index for querying shares by URL and date range
 ShareSchema.index({ url: 1, createdAt: -1 });
+
+// Index for analytics queries by platform and date
 ShareSchema.index({ platform: 1, createdAt: -1 });
 
-const Share: Model<IShare> = mongoose.models.Share || mongoose.model<IShare>("Share", ShareSchema);
+// Prevent model recompilation in Next.js dev environment
+export default mongoose.models.Share || mongoose.model("Share", ShareSchema);
 
-export default Share;

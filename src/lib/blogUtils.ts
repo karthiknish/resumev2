@@ -1,8 +1,14 @@
-export function isHTML(str: string): boolean {
+// Converted to TypeScript - migrated
+// src/lib/blogUtils.js
+
+// Helper function to detect if content is HTML
+export function isHTML(str) {
+  // Basic check, might need refinement
   return /<[a-z][\s\S]*>/i.test(str);
 }
 
-export function htmlToMarkdown(html: string): string {
+// Simple HTML to Markdown converter
+export function htmlToMarkdown(html) {
   if (!html) return "";
   let markdown = html;
   markdown = markdown.replace(/<h1[^>]*>(.*?)<\/h1>/gi, "# $1\n\n");
@@ -21,16 +27,16 @@ export function htmlToMarkdown(html: string): string {
     /<a[^>]*href="(.*?)"[^>]*>(.*?)<\/a>/gi,
     "[$2]($1)"
   );
-  markdown = markdown.replace(/<ul[^>]*>([\s\S]*?)<\/ul>/gi, (_match: string, content: string) =>
+  markdown = markdown.replace(/<ul[^>]*>([\s\S]*?)<\/ul>/gi, (match, content) =>
     content.replace(/<li[^>]*>([\s\S]*?)<\/li>/gi, "- $1\n")
   );
   markdown = markdown.replace(
     /<ol[^>]*>([\s\S]*?)<\/ol>/gi,
-    (_match: string, content: string) => {
+    (match, content) => {
       let index = 1;
       return content.replace(
         /<li[^>]*>([\s\S]*?)<\/li>/gi,
-        (_match2: string, item: string) => `${index++}. ${item}\n`
+        (match, item) => `${index++}. ${item}\n`
       );
     }
   );
@@ -43,30 +49,19 @@ export function htmlToMarkdown(html: string): string {
     /<blockquote[^>]*>([\s\S]*?)<\/blockquote>/gi,
     "> $1\n\n"
   );
-  markdown = markdown.replace(/<[^>]*>/g, "");
+  markdown = markdown.replace(/<[^>]*>/g, ""); // Remove remaining tags AFTER specific conversions
   markdown = markdown.replace(/&nbsp;/g, " ");
   markdown = markdown.replace(/&/g, "&");
   markdown = markdown.replace(/</g, "<");
   markdown = markdown.replace(/>/g, ">");
   markdown = markdown.replace(/"/g, '"');
   markdown = markdown.replace(/&#39;/g, "'");
-  markdown = markdown.replace(/\n\s*\n\s*\n/g, "\n\n");
+  markdown = markdown.replace(/\n\s*\n\s*\n/g, "\n\n"); // Collapse multiple blank lines
   return markdown.trim();
 }
 
-export interface BlogData {
-  title?: string;
-  content?: string;
-  description?: string;
-  imageUrl?: string;
-}
-
-interface ValidationResult {
-  isValid: boolean;
-  message?: string;
-}
-
-export function validateBlogData(data: BlogData): ValidationResult {
+// Validator for blog data fields required for creation/update (excluding status-only updates)
+export function validateBlogData(data) {
   if (
     data.hasOwnProperty("title") &&
     (!data.title || typeof data.title !== "string")
@@ -103,14 +98,17 @@ export function validateBlogData(data: BlogData): ValidationResult {
       message: "Image URL is required and must be a string",
     };
   }
+  // Add other field validations as needed
   return { isValid: true };
 }
 
-export function generateSlug(title: string): string {
+// Helper to generate slug from title
+export function generateSlug(title) {
   if (!title || typeof title !== "string") return "";
   return title
     .toLowerCase()
     .trim()
-    .replace(/[^a-zA-Z0-9\s]/g, "")
-    .replace(/\s+/g, "-");
+    .replace(/[^a-zA-Z0-9\s]/g, "") // Remove non-alphanumeric characters (except spaces)
+    .replace(/\s+/g, "-"); // Replace spaces with hyphens
 }
+

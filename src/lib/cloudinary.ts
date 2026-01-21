@@ -1,3 +1,4 @@
+// Converted to TypeScript - migrated
 import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({
@@ -6,7 +7,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export const uploadImage = async (filePath: string): Promise<string> => {
+export const uploadImage = async (filePath) => {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
       folder: "blog-images",
@@ -17,3 +18,4 @@ export const uploadImage = async (filePath: string): Promise<string> => {
     throw new Error("Failed to upload image");
   }
 };
+

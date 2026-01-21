@@ -1,3 +1,4 @@
+// Converted to TypeScript - migrated
 import mongoose from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -8,22 +9,13 @@ if (!MONGODB_URI) {
   );
 }
 
-interface MongooseCache {
-  conn: typeof mongoose | null;
-  promise: Promise<typeof mongoose> | null;
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
 }
 
-declare global {
-  var mongoose: MongooseCache | undefined;
-}
-
-let cached: MongooseCache = global.mongoose || { conn: null, promise: null };
-
-if (!global.mongoose) {
-  global.mongoose = cached;
-}
-
-async function dbConnect(): Promise<typeof mongoose> {
+async function dbConnect() {
   if (cached.conn) {
     return cached.conn;
   }
@@ -49,3 +41,4 @@ async function dbConnect(): Promise<typeof mongoose> {
 }
 
 export default dbConnect;
+

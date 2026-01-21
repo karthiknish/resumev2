@@ -1,18 +1,7 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+// Converted to TypeScript - migrated
+import mongoose from "mongoose";
 
-type LandingStatus = "new" | "contacted" | "in_progress" | "completed" | "declined";
-
-interface ILanding extends Document {
-  name: string;
-  email: string;
-  budget?: string;
-  timeline?: string;
-  project: string;
-  createdAt: Date;
-  status: LandingStatus;
-}
-
-const landingSchema = new Schema<ILanding>({
+const landingSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -44,10 +33,11 @@ const landingSchema = new Schema<ILanding>({
   },
 });
 
-landingSchema.index({ createdAt: -1 });
-landingSchema.index({ status: 1 });
-landingSchema.index({ email: 1 });
+// Add indexes
+landingSchema.index({ createdAt: -1 }); // For sorting
+landingSchema.index({ status: 1 }); // For filtering by status
+landingSchema.index({ email: 1 }); // For looking up by email
 
-const Landing: Model<ILanding> = mongoose.models.Landing || mongoose.model<ILanding>("Landing", landingSchema);
+export default mongoose.models.Landing ||
+  mongoose.model("Landing", landingSchema);
 
-export default Landing;

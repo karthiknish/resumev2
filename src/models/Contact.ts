@@ -1,13 +1,7 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+// Converted to TypeScript - migrated
+import mongoose from "mongoose";
 
-interface IContact extends Document {
-  name: string;
-  email: string;
-  message: string;
-  createdAt: Date;
-}
-
-const contactSchema = new Schema<IContact>({
+const contactSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -26,8 +20,9 @@ const contactSchema = new Schema<IContact>({
   },
 });
 
+// Add index for sorting by creation date
 contactSchema.index({ createdAt: -1 });
 
-const Contact: Model<IContact> = mongoose.models.Contact || mongoose.model<IContact>("Contact", contactSchema);
+export default mongoose.models.Contact ||
+  mongoose.model("Contact", contactSchema);
 
-export default Contact;

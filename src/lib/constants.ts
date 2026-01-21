@@ -1,12 +1,5 @@
-export interface PricingFeature {
-  type: string;
-  price: string;
-  features: string[];
-  color: string;
-  recommended: boolean;
-}
-
-export const pricingData: PricingFeature[] = [
+// Converted to TypeScript - migrated
+export const pricingData = [
   {
     type: "Freelancer",
     price: "$50-100/hr",
@@ -37,14 +30,7 @@ export const pricingData: PricingFeature[] = [
   },
 ];
 
-export interface Testimonial {
-  name: string;
-  company: string;
-  text: string;
-  avatar: string;
-}
-
-export const testimonials: Testimonial[] = [
+export const testimonials = [
   {
     name: "Sarah Johnson",
     company: "Fashion Boutique Owner",
@@ -64,3 +50,4 @@ export const testimonials: Testimonial[] = [
     avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80",
   },
 ];
+

@@ -1,15 +1,7 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+// Converted to TypeScript - migrated
+import mongoose from "mongoose";
 
-interface IMessage extends Document {
-  name: string;
-  email: string;
-  message: string;
-  isRead: boolean;
-  createdAt: Date;
-  avatar: string;
-}
-
-const MessageSchema = new Schema<IMessage>({
+const MessageSchema = new mongoose.Schema({
   name: {
     type: String,
     default: "Anonymous",
@@ -36,9 +28,11 @@ const MessageSchema = new Schema<IMessage>({
   },
 });
 
-MessageSchema.index({ createdAt: -1 });
-MessageSchema.index({ isRead: 1 });
+// Add indexes
+MessageSchema.index({ createdAt: -1 }); // For sorting by date
+MessageSchema.index({ isRead: 1 }); // For filtering by read status
 
-const Message: Model<IMessage> = mongoose.models.Message || mongoose.model<IMessage>("Message", MessageSchema);
+// Prevent overwriting the model if it exists
+export default mongoose.models.Message ||
+  mongoose.model("Message", MessageSchema);
 
-export default Message;

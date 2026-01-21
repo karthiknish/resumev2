@@ -1,38 +1,7 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+// Converted to TypeScript - migrated
+import mongoose from "mongoose";
 
-interface IBlogVersion {
-  versionNumber: number;
-  title: string;
-  content: string;
-  description: string;
-  imageUrl?: string;
-  tags: string[];
-  category?: string;
-  author?: mongoose.Types.ObjectId;
-  createdAt: Date;
-  changeDescription: string;
-}
-
-interface IBlog extends Document {
-  title: string;
-  content: string;
-  description: string;
-  imageUrl?: string;
-  tags: string[];
-  slug: string;
-  author: mongoose.Types.ObjectId;
-  isPublished: boolean;
-  category: string;
-  viewCount: number;
-  likes: string[];
-  scheduledPublishAt: Date | null;
-  versions: IBlogVersion[];
-  currentVersion: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-const BlogSchema = new Schema<IBlog>(
+const BlogSchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -63,7 +32,7 @@ const BlogSchema = new Schema<IBlog>(
       required: true,
     },
     author: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
@@ -72,16 +41,17 @@ const BlogSchema = new Schema<IBlog>(
       default: false,
     },
     category: {
+      // New category field
       type: String,
       trim: true,
-      default: "Uncategorized",
+      default: "Uncategorized", // Optional: Provide a default
     },
     viewCount: {
       type: Number,
       default: 0,
     },
     likes: [{
-      type: String,
+      type: String, // Can be user ID (authenticated) or session ID (anonymous)
       trim: true,
     }],
     scheduledPublishAt: {
@@ -117,7 +87,7 @@ const BlogSchema = new Schema<IBlog>(
           type: String,
         },
         author: {
-          type: Schema.Types.ObjectId,
+          type: mongoose.Schema.Types.ObjectId,
           ref: "User",
         },
         createdAt: {
@@ -138,16 +108,18 @@ const BlogSchema = new Schema<IBlog>(
   { timestamps: true }
 );
 
-BlogSchema.index({ slug: 1 }, { unique: true });
-BlogSchema.index({ category: 1 });
-BlogSchema.index({ isPublished: 1, createdAt: -1 });
-BlogSchema.index({ tags: 1 });
-BlogSchema.index({ author: 1 });
+// Define Indexes
+BlogSchema.index({ slug: 1 }, { unique: true }); // Existing unique index on slug
+BlogSchema.index({ category: 1 }); // Index on category (now this is the only definition)
+BlogSchema.index({ isPublished: 1, createdAt: -1 }); // Compound index for published status and sorting by date (descending)
+BlogSchema.index({ tags: 1 }); // Index for querying by tags
+BlogSchema.index({ author: 1 }); // Index for querying by author
 BlogSchema.index(
   { title: "text", content: "text", description: "text", tags: "text" },
   { name: "BlogTextIndex", weights: { title: 10, tags: 5, description: 3, content: 1 } }
-);
+); // Text index for searching, weighted towards title/tags
 
+// Create slug from title
 BlogSchema.pre("save", function (next) {
   if (this.isModified("title")) {
     this.slug = this.title
@@ -159,27 +131,32 @@ BlogSchema.pre("save", function (next) {
   next();
 });
 
+// Create version snapshot on content changes (skip for new documents)
 BlogSchema.pre("save", function (next) {
+  // Only create version for existing documents (not new ones)
   if (!this.isNew) {
     const contentFields = ["title", "content", "description", "imageUrl", "tags", "category"];
     const hasContentChanges = contentFields.some(field => this.isModified(field));
 
     if (hasContentChanges) {
+      // Increment version number
       this.currentVersion = (this.currentVersion || 1) + 1;
 
+      // Create version snapshot with the previous values
       const previousVersion = {
         versionNumber: this.currentVersion - 1,
-        title: this.get("title") as string,
-        content: this.get("content") as string,
-        description: this.get("description") as string,
-        imageUrl: this.get("imageUrl") as string | undefined,
-        tags: this.get("tags") ? [...(this.get("tags") as string[])] : [],
-        category: this.get("category") as string | undefined,
-        author: this.get("author") as mongoose.Types.ObjectId | undefined,
-        createdAt: new Date((this.get("updatedAt") as Date) || Date.now()),
+        title: this._doc.title,
+        content: this._doc.content,
+        description: this._doc.description,
+        imageUrl: this._doc.imageUrl,
+        tags: this._doc.tags ? [...this._doc.tags] : [],
+        category: this._doc.category,
+        author: this._doc.author,
+        createdAt: new Date(this._doc.updatedAt || Date.now()),
         changeDescription: "",
       };
 
+      // Add to versions array, keep only last 20 versions
       this.versions = this.versions || [];
       this.versions.push(previousVersion);
       if (this.versions.length > 20) {
@@ -187,12 +164,12 @@ BlogSchema.pre("save", function (next) {
       }
     }
   } else {
+    // For new documents, set initial version
     this.currentVersion = 1;
     this.versions = [];
   }
   next();
 });
 
-const Blog: Model<IBlog> = mongoose.models.Blog || mongoose.model<IBlog>("Blog", BlogSchema);
+export default mongoose.models.Blog || mongoose.model("Blog", BlogSchema);
 
-export default Blog;

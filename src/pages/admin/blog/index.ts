@@ -1,0 +1,17 @@
+// Converted to TypeScript - migrated
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+
+function Index() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/admin");
+  }, [router]);
+
+  return null;
+}
+
+export default Index;
+
+

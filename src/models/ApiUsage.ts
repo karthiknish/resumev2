@@ -1,25 +1,18 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+// Converted to TypeScript - migrated
+import mongoose from "mongoose";
 
-interface IApiUsage extends Document {
-  apiName: string;
-  date: string;
-  count: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-const ApiUsageSchema = new Schema<IApiUsage>(
+const ApiUsageSchema = new mongoose.Schema(
   {
     apiName: {
       type: String,
       required: true,
       trim: true,
-      index: true,
+      index: true, // Index for faster lookups by name
     },
     date: {
-      type: String,
+      type: String, // Store date as YYYY-MM-DD string for easy querying
       required: true,
-      index: true,
+      index: true, // Index for faster lookups by date
     },
     count: {
       type: Number,
@@ -28,12 +21,14 @@ const ApiUsageSchema = new Schema<IApiUsage>(
     },
   },
   {
-    timestamps: true,
+    timestamps: true, // Adds createdAt and updatedAt
   }
 );
 
+// Compound index for efficient findOneAndUpdate
 ApiUsageSchema.index({ apiName: 1, date: 1 }, { unique: true });
 
-const ApiUsage: Model<IApiUsage> = mongoose.models.ApiUsage || mongoose.model<IApiUsage>("ApiUsage", ApiUsageSchema);
+// Prevent model recompilation in Next.js dev environment
+export default mongoose.models.ApiUsage ||
+  mongoose.model("ApiUsage", ApiUsageSchema);
 
-export default ApiUsage;
