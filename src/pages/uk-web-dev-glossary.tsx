@@ -4,13 +4,18 @@ import { Card } from "@/components/ui/card";
 import UkSeo from "@/components/UkSeo";
 import JsonLd, { createWebsiteSchema } from "@/components/JsonLd";
 
-export default function UkWebDevGlossary() {
+interface GlossaryTerm {
+  term: string;
+  definition: string;
+  category: "general" | "technical" | "uk-specific";
+}
+
+export default function UkWebDevGlossary(): React.ReactElement {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeLetter, setActiveLetter] = useState("All");
-  const [filteredTerms, setFilteredTerms] = useState([]);
+  const [filteredTerms, setFilteredTerms] = useState<GlossaryTerm[]>([]);
 
-  // Glossary terms data with UK-specific content
-  const glossaryTerms = [
+  const glossaryTerms: GlossaryTerm[] = [
     {
       term: "Accessibility",
       definition:
@@ -68,13 +73,13 @@ export default function UkWebDevGlossary() {
     {
       term: "Digital Service Standard",
       definition:
-        "A set of criteria to help UK government create and run good digital services. All public-facing transactional services must meet this standard.",
+        "A set of criteria to help the UK government create and run good digital services. All public-facing transactional services must meet this standard.",
       category: "uk-specific",
     },
     {
       term: "E-commerce",
       definition:
-        "The buying and selling of goods and services online. UK e-commerce is regulated by the Consumer Rights Act 2015 and the Electronic Commerce Regulations 2002.",
+        "The buying and selling of goods and services online. UK e-commerce is regulated by the Consumer Rights Act 2015 and Electronic Commerce Regulations 2002.",
       category: "general",
     },
     {
@@ -205,7 +210,6 @@ export default function UkWebDevGlossary() {
     },
   ];
 
-  // Alphabet array for navigation
   const alphabet = [
     "All",
     "A",
@@ -236,7 +240,6 @@ export default function UkWebDevGlossary() {
     "Z",
   ];
 
-  // Filter terms based on search and active letter
   useEffect(() => {
     const filtered = glossaryTerms.filter((item) => {
       const matchesSearch = item.term
@@ -247,18 +250,15 @@ export default function UkWebDevGlossary() {
       return matchesSearch && matchesLetter;
     });
 
-    // Sort alphabetically
     filtered.sort((a, b) => a.term.localeCompare(b.term));
 
     setFilteredTerms(filtered);
   }, [searchTerm, activeLetter]);
 
-  // Get terms by category
   const ukSpecificTerms = glossaryTerms.filter(
     (term) => term.category === "uk-specific"
   );
 
-  // Create a glossary schema for SEO
   const websiteSchema = createWebsiteSchema();
   const glossarySchema = {
     "@context": "https://schema.org",
@@ -303,14 +303,13 @@ export default function UkWebDevGlossary() {
                 working in the United Kingdom.
               </p>
 
-              {/* UK-specific terms highlight */}
               <div className="mb-12 bg-blue-50 border border-blue-200 rounded-lg p-6">
                 <h2 className="text-2xl font-bold text-slate-900 mb-4">
                   UK-Specific Terms
                 </h2>
                 <p className="text-slate-600 mb-6">
                   These terms have particular relevance to web development in
-                  the United Kingdom, covering UK regulations, standards, and
+                  United Kingdom, covering UK regulations, standards, and
                   practices.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -333,7 +332,6 @@ export default function UkWebDevGlossary() {
                 </div>
               </div>
 
-              {/* Search and alphabet navigation */}
               <div className="mb-8">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
                   <div className="flex items-center bg-white border border-slate-200 rounded-lg px-4 py-2 w-full md:w-auto">
@@ -361,7 +359,6 @@ export default function UkWebDevGlossary() {
                   </div>
                 </div>
 
-                {/* Alphabet navigation */}
                 <div className="flex flex-wrap gap-2 mb-8">
                   {alphabet.map((letter) => (
                     <button
@@ -379,7 +376,6 @@ export default function UkWebDevGlossary() {
                 </div>
               </div>
 
-              {/* Glossary terms */}
               <div>
                 {filteredTerms.length > 0 ? (
                   <div className="space-y-8">

@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import PageContainer from "@/components/PageContainer";
 import { CheckCircle, Home, BookOpen, Clock, Mail, Calendar } from "lucide-react";
 
-export default function Success() {
+export default function Success(): React.ReactElement {
   return (
     <>
       <Head>
@@ -19,7 +19,6 @@ export default function Success() {
         <div
           className="min-h-screen mt-24 relative flex items-center justify-center font-sans"
         >
-          {/* Subtle Background */}
           <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-slate-100"></div>
 
           <motion.div
@@ -28,9 +27,7 @@ export default function Success() {
             transition={{ duration: 0.6 }}
             className="relative z-10 w-full max-w-2xl mx-auto px-6"
           >
-            {/* Success Card */}
             <div className="bg-white border border-slate-200 p-8 md:p-12 rounded-2xl shadow-xl text-center">
-              {/* Success Icon */}
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -53,7 +50,6 @@ export default function Success() {
                 </div>
               </motion.div>
 
-              {/* Heading */}
               <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-3">
                 Message Sent Successfully
               </h1>
@@ -62,7 +58,6 @@ export default function Success() {
                 Thank you for reaching out. Your message has been received and I'll get back to you soon.
               </p>
 
-              {/* What's Next Section */}
               <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8 text-left">
                 <h2 className="font-semibold text-slate-900 mb-4 text-sm uppercase tracking-wide">
                   What happens next
@@ -83,7 +78,6 @@ export default function Success() {
                 </ul>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link href="/">
                   <motion.button
@@ -114,4 +108,3 @@ export default function Success() {
     </>
   );
 }
-

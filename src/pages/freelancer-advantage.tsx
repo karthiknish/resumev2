@@ -6,7 +6,7 @@ import PricingSection from "./freelancer-advantage/PricingSection";
 import FAQSection from "./freelancer-advantage/FAQSection";
 import ContactSection from "./freelancer-advantage/ContactSection";
 
-export default function FreelancerAdvantage() {
+export default function FreelancerAdvantage(): React.ReactElement {
   const [isClient, setIsClient] = useState(false);
   const [ctaVisible, setCtaVisible] = useState(false);
 
@@ -25,10 +25,13 @@ export default function FreelancerAdvantage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleContactClick = () => {
-    document.getElementById("contact-section").scrollIntoView({
-      behavior: "smooth",
-    });
+  const handleContactClick = (): void => {
+    const element = document.getElementById("contact-section");
+    if (element) {
+      element.scrollIntoView({
+        behavior: "smooth",
+      });
+    }
   };
 
   return (

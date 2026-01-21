@@ -1,89 +1,85 @@
 import { useRouter } from "next/router";
-import { AnimatePresence, motion } from "framer-motion";
-import { useState, useEffect, useCallback, memo } from "react";
+import { AnimatePresence, motion, Variants } from "framer-motion";
+import { useState, useEffect, useCallback, ReactNode } from "react";
+
+interface PageTransitionWrapperProps {
+  children: ReactNode;
+  transitionType?: "fade" | "slide" | "default";
+  enableScrollRestoration?: boolean;
+}
 
 // Default page transition variants - optimized for speed
-const pageVariants = {
+const pageVariants: Variants = {
   initial: {
     opacity: 0,
-    y: 10, // Reduced distance for faster animation
+    y: 10,
   },
   animate: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.2, // Faster animation
-      ease: "easeOut", // Simpler easing function
+      duration: 0.2,
+      ease: "easeOut",
     },
   },
   exit: {
     opacity: 0,
     transition: {
-      duration: 0.1, // Very quick exit
+      duration: 0.1,
     },
   },
 };
 
 // Slide transition variants - optimized for speed
-const slideVariants = {
+const slideVariants: Variants = {
   initial: {
     opacity: 0,
-    x: 20, // Reduced distance for faster animation
+    x: 20,
   },
   animate: {
     opacity: 1,
     x: 0,
     transition: {
-      duration: 0.2, // Faster animation
-      ease: "easeOut", // Simpler easing function
+      duration: 0.2,
+      ease: "easeOut",
     },
   },
   exit: {
     opacity: 0,
     transition: {
-      duration: 0.1, // Very quick exit
+      duration: 0.1,
     },
   },
 };
 
 // Fade transition variants - optimized for speed
-const fadeVariants = {
+const fadeVariants: Variants = {
   initial: {
     opacity: 0,
   },
   animate: {
     opacity: 1,
     transition: {
-      duration: 0.15, // Very fast fade in
+      duration: 0.15,
     },
   },
   exit: {
     opacity: 0,
     transition: {
-      duration: 0.1, // Very quick exit
+      duration: 0.1,
     },
   },
 };
 
-/**
- * A wrapper component that adds page transition animations
- *
- * @param {Object} props
- * @param {React.ReactNode} props.children - The page content to animate
- * @param {string} props.transitionType - The type of transition to use ('fade', 'slide', or 'default')
- * @param {boolean} props.enableScrollRestoration - Whether to restore scroll position on navigation
- */
 function PageTransitionWrapper({
   children,
   transitionType = "default",
   enableScrollRestoration = true,
-}) {
+}: PageTransitionWrapperProps) {
   const router = useRouter();
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
 
-  // Define callbacks at the top level of the component
   const handleRouteChangeStart = useCallback(() => {
-    // Store scroll position - simplified for performance
     if (typeof window !== "undefined") {
       sessionStorage.setItem(
         `scrollPos-${router.asPath}`,
@@ -92,11 +88,10 @@ function PageTransitionWrapper({
     }
   }, [router.asPath]);
 
-  const handleRouteChangeComplete = useCallback((url) => {
+  const handleRouteChangeComplete = useCallback((url: string) => {
     if (typeof window !== "undefined") {
       const scrollPos = sessionStorage.getItem(`scrollPos-${url}`);
 
-      // Simplified scroll restoration
       if (scrollPos) {
         window.scrollTo(0, parseInt(scrollPos));
       } else {
@@ -105,8 +100,7 @@ function PageTransitionWrapper({
     }
   }, []);
 
-  // Get variants based on transition type and motion preference
-  const getVariants = useCallback(() => {
+  const getVariants = useCallback((): Variants => {
     if (shouldReduceMotion) return fadeVariants;
 
     switch (transitionType) {
@@ -119,13 +113,12 @@ function PageTransitionWrapper({
     }
   }, [transitionType, shouldReduceMotion]);
 
-  // Check for user's motion preference
   useEffect(() => {
     if (typeof window !== "undefined") {
       const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
       setShouldReduceMotion(mediaQuery.matches);
 
-      const handleChange = (e) => setShouldReduceMotion(e.matches);
+      const handleChange = (e: MediaQueryListEvent) => setShouldReduceMotion(e.matches);
 
       if (mediaQuery.addEventListener) {
         mediaQuery.addEventListener("change", handleChange);
@@ -137,7 +130,6 @@ function PageTransitionWrapper({
     }
   }, []);
 
-  // Handle scroll restoration
   useEffect(() => {
     if (!enableScrollRestoration) return;
 
@@ -155,7 +147,6 @@ function PageTransitionWrapper({
     handleRouteChangeComplete,
   ]);
 
-  // Simplified AnimatePresence for better performance
   return (
     <AnimatePresence mode="wait" initial={false}>
       <motion.div
@@ -165,11 +156,9 @@ function PageTransitionWrapper({
         exit="exit"
         variants={getVariants()}
         className="page-transition-wrapper"
-        // Removed layout prop for better performance
-        // Simplified style properties
         style={{
           willChange: "opacity, transform",
-          overflow: "visible", // Ensure overflow doesn't clip animation
+          overflow: "visible",
         }}
       >
         {children}
@@ -178,43 +167,41 @@ function PageTransitionWrapper({
   );
 }
 
-// Export without memo for better performance in some cases
 export default PageTransitionWrapper;
 
-// Simplified animation variants for components
-export const fadeInUpVariants = {
+export const fadeInUpVariants: Variants = {
   initial: { opacity: 0, y: 10 },
   animate: { opacity: 1, y: 0, transition: { duration: 0.2 } },
   exit: { opacity: 0, transition: { duration: 0.1 } },
 };
 
-export const fadeInLeftVariants = {
+export const fadeInLeftVariants: Variants = {
   initial: { opacity: 0, x: -10 },
   animate: { opacity: 1, x: 0, transition: { duration: 0.2 } },
   exit: { opacity: 0, transition: { duration: 0.1 } },
 };
 
-export const fadeInRightVariants = {
+export const fadeInRightVariants: Variants = {
   initial: { opacity: 0, x: 10 },
   animate: { opacity: 1, x: 0, transition: { duration: 0.2 } },
   exit: { opacity: 0, transition: { duration: 0.1 } },
 };
 
-export const zoomInVariants = {
+export const zoomInVariants: Variants = {
   initial: { opacity: 0, scale: 0.98 },
   animate: { opacity: 1, scale: 1, transition: { duration: 0.2 } },
   exit: { opacity: 0, transition: { duration: 0.1 } },
 };
 
-export const staggerContainerVariants = {
+export const staggerContainerVariants: Variants = {
   animate: {
     transition: {
-      staggerChildren: 0.03, // Faster stagger
+      staggerChildren: 0.03,
     },
   },
 };
 
-export const staggerItemVariants = {
+export const staggerItemVariants: Variants = {
   initial: { opacity: 0, y: 5 },
   animate: { opacity: 1, y: 0, transition: { duration: 0.15 } },
 };

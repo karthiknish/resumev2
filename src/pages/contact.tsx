@@ -10,7 +10,7 @@ import ContactForm from "@/components/ContactForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Mail, Calendar } from "lucide-react";
 
-export default function Contact() {
+export default function Contact(): React.ReactElement {
   useEffect(() => {
     (async function () {
       try {
@@ -38,7 +38,6 @@ export default function Contact() {
         />
         <link rel="canonical" href="https://karthiknish.com/contact" />
 
-        {/* Open Graph */}
         <meta property="og:title" content="Contact - Karthik Nishanth | Cross Platform Developer" />
         <meta property="og:description" content="Get in touch for project inquiries, collaborations, or discussions about web and mobile development." />
         <meta property="og:type" content="website" />
@@ -46,17 +45,14 @@ export default function Contact() {
         <meta property="og:image" content="https://karthiknish.com/Logo.png" />
         <meta property="og:site_name" content="Karthik Nishanth" />
 
-        {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Contact - Karthik Nishanth" />
         <meta name="twitter:description" content="Get in touch for project inquiries, collaborations, or discussions." />
         <meta name="twitter:image" content="https://karthiknish.com/Logo.png" />
         <meta name="twitter:site" content="@karthiknish" />
-
       </Head>
       <PageContainer>
         <div className="min-h-screen overflow-hidden">
-          {/* Hero */}
           <section className="relative overflow-hidden">
             <div className="absolute inset-0 -z-30">
               <Image
@@ -79,7 +75,7 @@ export default function Contact() {
                 transition={{ duration: 0.6 }}
                 className="inline-flex items-center gap-3 px-5 py-2.5 bg-white border border-slate-200 rounded-full text-slate-600 text-sm font-semibold mb-6 shadow-sm"
               >
-                <span>Let’s collaborate</span>
+                <span>Let's collaborate</span>
               </motion.div>
 
               <motion.h1
@@ -88,7 +84,7 @@ export default function Contact() {
                 transition={{ duration: 0.7, delay: 0.1 }}
                 className="font-heading text-4xl sm:text-5xl md:text-6xl leading-tight text-slate-900 mb-6"
               >
-                Tell me about the product you’re building
+                Tell me about the product you're building
               </motion.h1>
 
               <motion.p
@@ -97,12 +93,11 @@ export default function Contact() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-3xl mx-auto"
               >
-                Share the context, constraints, or ambition behind your idea. I’ll help map the next steps and assemble the right delivery plan.
+                Share the context, constraints, or ambition behind your idea. I'll help map the next steps and assemble the right delivery plan.
               </motion.p>
             </div>
           </section>
 
-          {/* Services */}
           <section className="bg-background">
             <div className="max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
               <FadeIn>
@@ -111,7 +106,6 @@ export default function Contact() {
             </div>
           </section>
 
-          {/* Unified Contact Tabs */}
           <section className="py-16 md:py-24 bg-white relative">
             <div className="max-w-5xl mx-auto px-6 sm:px-10 md:px-12">
               <FadeIn delay={0.1}>
@@ -155,7 +149,7 @@ export default function Contact() {
                       <TabsContent value="meeting" className="mt-0 outline-none">
                         <div className="text-center mb-8">
                           <h3 className="font-heading text-2xl text-slate-900 mb-2">Book a 15-minute consultation</h3>
-                          <p className="text-slate-600">Pick a time that works for you. We’ll talk through your goals and timelines.</p>
+                          <p className="text-slate-600">Pick a time that works for you. We'll talk through your goals and timelines.</p>
                         </div>
                         <div className="min-h-[500px] bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-center overflow-hidden">
                           <Cal
@@ -173,7 +167,6 @@ export default function Contact() {
             </div>
           </section>
 
-          {/* Final CTA */}
           <section className="relative overflow-hidden py-20 md:py-24 bg-gradient-to-br from-[#36C5F0] via-[#1DA1F2] to-[#2563EB]">
             <div className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.28),_transparent_55%)]" />
             <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom,_rgba(59,130,246,0.35),_transparent_70%)]" />
@@ -186,7 +179,7 @@ export default function Contact() {
                 transition={{ duration: 0.6 }}
                 className="font-heading text-3xl sm:text-4xl leading-snug"
               >
-                Let’s outline your next release
+                Let's outline your next release
               </motion.h2>
               <motion.p
                 initial={{ opacity: 0, y: 16 }}
@@ -195,7 +188,7 @@ export default function Contact() {
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className="mt-6 text-base text-white/90 leading-relaxed max-w-2xl mx-auto"
               >
-                Tell me about the audience, tech stack, and constraints. I’ll put together a clear plan covering scope, timelines, and collaboration cadence.
+                Tell me about the audience, tech stack, and constraints. I'll put together a clear plan covering scope, timelines, and collaboration cadence.
               </motion.p>
 
               <motion.div

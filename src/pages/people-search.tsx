@@ -1,4 +1,4 @@
-// src/pages/people-search.js
+// src/pages/people-search.tsx
 import Head from "next/head";
 import React, { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,6 +7,15 @@ import { Button } from "@/components/ui/button";
 import PeopleSearchResults from "@/components/PeopleSearchResults";
 import FormError from "@/components/ui/FormError";
 import { FORM_ERRORS } from "@/lib/formErrors";
+
+interface SearchResult {
+  _id: string;
+  name: string;
+  title: string;
+  company: string;
+  profileUrl: string;
+  [key: string]: any;
+}
 
 const suggestedSearches = [
   "Marketing managers in New York",
@@ -17,14 +26,14 @@ const suggestedSearches = [
   "Consultants at Big 4 firms",
 ];
 
-export default function PeopleSearch() {
+export default function PeopleSearch(): React.ReactElement {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSearch = useCallback(async (searchQuery) => {
+  const handleSearch = useCallback(async (searchQuery?: string) => {
     const q = searchQuery || query;
     if (!q.trim()) return;
 
@@ -50,19 +59,19 @@ export default function PeopleSearch() {
       setResults(data.results || []);
     } catch (err) {
       console.error("Search error:", err);
-      setError(err.message || FORM_ERRORS.NETWORK_ERROR);
+      setError((err as Error).message || FORM_ERRORS.NETWORK_ERROR);
       setResults([]);
     } finally {
       setIsLoading(false);
     }
   }, [query]);
 
-  const handleSuggestionClick = (suggestion) => {
+  const handleSuggestionClick = (suggestion: string): void => {
     setQuery(suggestion);
     handleSearch(suggestion);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     handleSearch();
   };
@@ -79,9 +88,7 @@ export default function PeopleSearch() {
       </Head>
 
       <div className="min-h-screen bg-white text-slate-900">
-        {/* Main Content */}
         <main className="relative max-w-5xl mx-auto px-6 py-20 md:py-28">
-          {/* Header Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -106,7 +113,6 @@ export default function PeopleSearch() {
             </p>
           </motion.div>
 
-          {/* Search Agent Box */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -114,14 +120,12 @@ export default function PeopleSearch() {
             className="relative mb-12"
           >
             <div className="relative rounded-3xl border border-slate-200 bg-slate-50 p-8 shadow-xl">
-              {/* Agent Header */}
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
                   <span className="text-white font-bold text-sm">AI</span>
                 </div>
                 <div>
                   <h2 className="font-semibold text-slate-900">People Search Agent</h2>
-      
                 </div>
                 <div className="ml-auto flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
@@ -129,7 +133,6 @@ export default function PeopleSearch() {
                 </div>
               </div>
 
-              {/* Search Form */}
               <form onSubmit={handleSubmit} className="relative">
                 <div className="relative flex items-center">
                   <input
@@ -153,7 +156,6 @@ export default function PeopleSearch() {
                 </div>
               </form>
 
-              {/* Suggested Searches */}
               {!hasSearched && (
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -176,7 +178,6 @@ export default function PeopleSearch() {
                 </motion.div>
               )}
 
-              {/* Features */}
               <div className="mt-8 pt-6 border-t border-slate-200 grid grid-cols-3 gap-4">
                 {["Neural Search", "Multi-Platform", "AI-Enhanced"].map((label) => (
                   <div
@@ -190,7 +191,6 @@ export default function PeopleSearch() {
             </div>
           </motion.div>
 
-          {/* Error Message */}
           <AnimatePresence>
             {error && (
               <motion.div
@@ -203,7 +203,6 @@ export default function PeopleSearch() {
             )}
           </AnimatePresence>
 
-          {/* Results Section */}
           <AnimatePresence mode="wait">
             {hasSearched && (
               <motion.div

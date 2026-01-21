@@ -1,16 +1,30 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import { motion } from "framer-motion";
-import { FaQuoteLeft, FaStar, FaGithub } from "react-icons/fa";
+import { FaQuoteLeft, FaStar } from "react-icons/fa";
 import Link from "next/link";
 import { FadeIn, HoverCard } from "@/components/animations/MotionComponents";
 import PageContainer from "@/components/PageContainer";
 import { RxAvatar } from "react-icons/rx";
 import { Users, Star } from "lucide-react";
+import { GetStaticProps } from "next";
 
-export default function Testimonials({ testimonials }) {
-  const [filteredTestimonials, setFilteredTestimonials] = useState([]);
-  const [filter, setFilter] = useState("all");
+interface Testimonial {
+  name: string;
+  title: string;
+  company: string;
+  text: string;
+  rating: number;
+  category: "client" | "colleague";
+}
+
+interface TestimonialsPageProps {
+  testimonials: Testimonial[];
+}
+
+export default function Testimonials({ testimonials }: TestimonialsPageProps): React.ReactElement {
+  const [filteredTestimonials, setFilteredTestimonials] = useState<Testimonial[]>([]);
+  const [filter, setFilter] = useState<"all" | "client" | "colleague">("all");
 
   useEffect(() => {
     if (filter === "all") {
@@ -34,15 +48,11 @@ export default function Testimonials({ testimonials }) {
           name="keywords"
           content="testimonials, reviews, client feedback, web development, full stack developer"
         />
-        
       </Head>
       <PageContainer>
         <div className="min-h-screen relative bg-slate-50">
-          {/* Modern Gradient Background */}
           <div className="absolute inset-0 bg-slate-50"></div>
-          
-          {/* Decorative Color Splashes - Removed for cleaner look */}
-          
+
           <div className="relative z-10 p-8 md:p-16 max-w-6xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -183,7 +193,7 @@ export default function Testimonials({ testimonials }) {
                         "{testimonial.text}"
                       </p>
                     </div>
-                    
+
                     <div className="mt-6 pt-4 border-t border-slate-100">
                       <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold ${
                         testimonial.category === "client" 
@@ -207,7 +217,7 @@ export default function Testimonials({ testimonials }) {
               <div className="mt-20 text-center">
                 <div className="bg-slate-900 rounded-3xl p-12 shadow-xl relative overflow-hidden">
                   <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-400 via-slate-900 to-slate-900"></div>
-                  
+
                   <div className="relative z-10">
                     <motion.div
                       initial={{ scale: 0 }}
@@ -254,14 +264,12 @@ export default function Testimonials({ testimonials }) {
   );
 }
 
-export async function getStaticProps() {
-  // In a real application, you would fetch this data from an API or database
-  const testimonials = [
+export const getStaticProps: GetStaticProps<TestimonialsPageProps> = async () => {
+  const testimonials: Testimonial[] = [
     {
       name: "Sarah Johnson",
       title: "CEO",
       company: "TechInnovate",
-      // Remove React component that can't be serialized
       text: "Karthik delivered our project ahead of schedule and exceeded our expectations. His technical expertise and attention to detail made our website not only visually stunning but also highly functional. We've seen a 40% increase in user engagement since launch.",
       rating: 5,
       category: "client",
@@ -270,7 +278,6 @@ export async function getStaticProps() {
       name: "Michael Chen",
       title: "CTO",
       company: "DataFlow Systems",
-      // Remove React component that can't be serialized
       text: "Working with Karthik was a pleasure. He quickly understood our complex requirements and implemented elegant solutions. His knowledge of both frontend and backend technologies is impressive, and he communicates clearly throughout the development process.",
       rating: 5,
       category: "client",
@@ -279,7 +286,6 @@ export async function getStaticProps() {
       name: "Priya Patel",
       title: "Senior Developer",
       company: "WebSolutions Inc",
-      // Remove React component that can't be serialized
       text: "As a colleague, I've had the opportunity to collaborate with Karthik on several projects. His code is clean, well-documented, and follows best practices. He's always willing to share knowledge and help team members, making him an invaluable asset to any development team.",
       rating: 5,
       category: "colleague",
@@ -288,7 +294,6 @@ export async function getStaticProps() {
       name: "David Wilson",
       title: "Marketing Director",
       company: "GrowthBrand",
-      // Remove React component that can't be serialized
       text: "Karthik helped us revamp our entire digital presence. He not only built a beautiful website but also integrated it with our marketing tools, resulting in a seamless workflow. His understanding of both technical and business aspects made the collaboration extremely productive.",
       rating: 4,
       category: "client",
@@ -297,7 +302,6 @@ export async function getStaticProps() {
       name: "Emma Rodriguez",
       title: "Project Manager",
       company: "AgileTeam",
-      // Remove React component that can't be serialized
       text: "I've managed several projects where Karthik was the lead developer. His ability to adapt to changing requirements, solve complex problems, and maintain a positive attitude even under pressure is remarkable. He consistently delivers high-quality work on time.",
       rating: 5,
       category: "colleague",
@@ -306,7 +310,6 @@ export async function getStaticProps() {
       name: "James Taylor",
       title: "Founder",
       company: "EcoStart",
-      // Remove React component that can't be serialized
       text: "As a startup founder with limited technical knowledge, I was worried about communicating my vision effectively. Karthik made the process incredibly smooth, explaining technical concepts in simple terms and providing valuable suggestions to improve our product.",
       rating: 5,
       category: "client",
@@ -317,7 +320,6 @@ export async function getStaticProps() {
     props: {
       testimonials,
     },
-    // Revalidate every day
     revalidate: 86400,
   };
-}
+};

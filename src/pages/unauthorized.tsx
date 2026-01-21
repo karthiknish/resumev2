@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import PageContainer from "@/components/PageContainer";
 import { Lock } from "lucide-react";
 
-export default function Unauthorized() {
+export default function Unauthorized(): React.ReactElement {
   return (
     <>
       <Head>
@@ -55,7 +55,7 @@ export default function Unauthorized() {
                       <div className="w-2 h-2 rounded-full bg-slate-400"></div>
                     </div>
                     <p className="text-slate-600 font-medium">
-                      Please ensure you are logged in with the correct account.
+                      Please ensure you are logged in with correct account.
                     </p>
                   </div>
                   <div className="flex items-start gap-3">

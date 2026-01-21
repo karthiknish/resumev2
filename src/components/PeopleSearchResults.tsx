@@ -1,17 +1,32 @@
-// src/components/PeopleSearchResults.js
-import React from "react";
+import React, { ReactNode } from "react";
 import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
-const sourceColors = {
+interface Person {
+  id: string;
+  name?: string;
+  role?: string;
+  company?: string;
+  source: "LinkedIn" | "GitHub" | "Twitter" | "Web";
+  text?: string;
+  url: string;
+  highlights?: string[];
+}
+
+interface PersonCardProps {
+  person: Person;
+  index: number;
+}
+
+const sourceColors: Record<string, string> = {
   LinkedIn: "bg-blue-100 text-blue-600 border-blue-200",
   GitHub: "bg-gray-100 text-gray-600 border-gray-200",
   Twitter: "bg-sky-100 text-sky-600 border-sky-200",
   Web: "bg-purple-100 text-purple-600 border-purple-200",
 };
 
-const PersonCard = ({ person, index }) => {
+const PersonCard: React.FC<PersonCardProps> = ({ person, index }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -21,14 +36,12 @@ const PersonCard = ({ person, index }) => {
       <Card className="group h-full border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
         <CardContent className="p-6">
           <div className="flex items-start gap-4">
-            {/* Avatar */}
             <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center border border-slate-200 group-hover:scale-110 transition-transform duration-300">
               <span className="text-lg font-bold text-purple-600">
                 {person.name?.charAt(0) || "?"}
               </span>
             </div>
 
-            {/* Content */}
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between gap-3">
                 <div>
@@ -62,8 +75,7 @@ const PersonCard = ({ person, index }) => {
                 </p>
               )}
 
-              {/* Highlights */}
-              {person.highlights?.length > 0 && (
+              {person.highlights && person.highlights.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-2">
                   {person.highlights.slice(0, 2).map((highlight, i) => (
                     <span
@@ -76,7 +88,6 @@ const PersonCard = ({ person, index }) => {
                 </div>
               )}
 
-              {/* View Profile Link */}
               <a
                 href={person.url}
                 target="_blank"
@@ -94,10 +105,10 @@ const PersonCard = ({ person, index }) => {
   );
 };
 
-const LoadingSkeleton = () => {
+const LoadingSkeleton: React.FC = () => {
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      {[...Array(4)].map((_, i) => (
+      {Array.from({ length: 4 }).map((_, i) => (
         <div
           key={i}
           className="rounded-xl border border-slate-200 bg-white p-6 animate-pulse"
@@ -117,7 +128,11 @@ const LoadingSkeleton = () => {
   );
 };
 
-const EmptyState = ({ query }) => {
+interface EmptyStateProps {
+  query: string;
+}
+
+const EmptyState: React.FC<EmptyStateProps> = ({ query }) => {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -138,7 +153,17 @@ const EmptyState = ({ query }) => {
   );
 };
 
-export default function PeopleSearchResults({ results, isLoading, query }) {
+interface PeopleSearchResultsProps {
+  results?: Person[];
+  isLoading?: boolean;
+  query: string;
+}
+
+export default function PeopleSearchResults({
+  results,
+  isLoading = false,
+  query,
+}: PeopleSearchResultsProps) {
   if (isLoading) {
     return <LoadingSkeleton />;
   }
@@ -149,7 +174,6 @@ export default function PeopleSearchResults({ results, isLoading, query }) {
 
   return (
     <div className="space-y-6">
-      {/* Results Header */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -161,7 +185,6 @@ export default function PeopleSearchResults({ results, isLoading, query }) {
         </p>
       </motion.div>
 
-      {/* Results Grid */}
       <div className="grid gap-4 md:grid-cols-2">
         {results.map((person, index) => (
           <PersonCard key={person.id} person={person} index={index} />

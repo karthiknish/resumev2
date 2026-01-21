@@ -2,7 +2,7 @@ import Head from "next/head";
 import PageContainer from "@/components/PageContainer";
 import { motion } from "framer-motion";
 
-export default function PrivacyPolicy() {
+export default function PrivacyPolicy(): React.ReactElement {
   return (
     <>
       <Head>
@@ -10,7 +10,6 @@ export default function PrivacyPolicy() {
         <meta name="description" content="Website Privacy Policy - Learn how we protect and handle your personal information." />
         <link rel="canonical" href="https://karthiknish.com/privacy-policy" />
 
-        {/* Open Graph */}
         <meta property="og:title" content="Privacy Policy - Karthik Nishanth | Cross-Platform Developer" />
         <meta property="og:description" content="Learn how we protect and handle your personal information." />
         <meta property="og:type" content="website" />
@@ -18,7 +17,6 @@ export default function PrivacyPolicy() {
         <meta property="og:image" content="https://karthiknish.com/Logo.png" />
         <meta property="og:site_name" content="Karthik Nishanth" />
 
-        {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Privacy Policy - Karthik Nishanth" />
         <meta name="twitter:description" content="Learn how we protect and handle your personal information." />
@@ -30,7 +28,6 @@ export default function PrivacyPolicy() {
         className="mt-20 md:mt-24"
       >
         <div className="max-w-4xl mx-auto px-4 py-12 space-y-8 text-slate-900">
-          {/* Hero Section */}
           <motion.div
             className="text-center mb-12"
             initial={{ opacity: 0, y: 20 }}
@@ -50,7 +47,6 @@ export default function PrivacyPolicy() {
             </p>
           </motion.div>
 
-          {/* Content Container */}
           <motion.div
             className="rounded-3xl border border-slate-200 bg-white/80 backdrop-blur-sm p-8 md:p-12 shadow-sm"
             initial={{ opacity: 0, y: 40 }}
@@ -62,7 +58,7 @@ export default function PrivacyPolicy() {
               style={{
                 "--tw-prose-headings": "#000000 !important",
                 "--tw-prose-bold": "#000000 !important",
-              }}
+              } as React.CSSProperties}
             >
                 <p>
                   <strong>Last updated: November 2025</strong>
