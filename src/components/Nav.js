@@ -46,8 +46,8 @@ export default function Nav() {
   const navLinkActiveClass = `${"text-foreground"} ${navFontClass}`;
   const iconButtonClass = "text-muted-foreground hover:text-foreground hover:bg-secondary/60";
   const navShellClasses = hasScrolled
-    ? "bg-background/95 text-foreground shadow-sm border-border"
-    : "bg-background/70 text-foreground border-transparent";
+    ? "bg-[#ffffff] text-foreground shadow-sm border-border"
+    : "bg-[#ffffff] text-foreground border-transparent";
   const mobileContainerClasses = "bg-background/70 backdrop-blur-lg text-foreground border-border";
   const mobileLinkBaseClass = "text-muted-foreground hover:bg-secondary/60 hover:text-foreground";
   const mobileLinkActiveClass = "text-primary bg-secondary/60";
@@ -198,7 +198,7 @@ export default function Nav() {
   return (
     <>
       <motion.nav
-        className={`fixed top-0 left-0 right-0 w-full z-[100] border-b backdrop-blur-md transition-all duration-300 ${navShellClasses}`}
+        className={`fixed top-0 left-0 right-0 w-full z-[100] border-b transition-all duration-300 ${navShellClasses}`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}

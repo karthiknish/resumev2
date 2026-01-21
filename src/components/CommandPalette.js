@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -25,11 +25,7 @@ export default function CommandPalette() {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return null;
-  }
-
-  const commandGroups = [
+  const commandGroups = useMemo(() => [
     {
       title: "Navigation",
       items: [
@@ -59,9 +55,9 @@ export default function CommandPalette() {
           },
         ]
       : []),
-  ];
+  ], [session]);
 
-  const allItems = commandGroups.flatMap((group) => group.items);
+  const allItems = useMemo(() => commandGroups.flatMap((group) => group.items), [commandGroups]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -139,6 +135,10 @@ export default function CommandPalette() {
       </button>
     );
   };
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>

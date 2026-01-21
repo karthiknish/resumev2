@@ -5,8 +5,8 @@
 /* Import centralized design tokens */
 @import "./theme/tokens.css";
 
-@theme {
-  /* Colors - using CSS variables for compatibility with existing components */
+@theme inline {
+  /* Custom semantic colors - using CSS variables for compatibility */
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
@@ -28,6 +28,12 @@
   --color-muted-foreground: hsl(var(--muted-foreground));
   --color-accent: hsl(var(--accent));
   --color-accent-foreground: hsl(var(--accent-foreground));
+}
+
+@theme {
+  /* Explicit white/black for utility classes */
+  --color-white: #ffffff;
+  --color-black: #000000;
 
   /* Border Radius */
   --radius: 0.75rem;
@@ -168,7 +174,7 @@
 
   /* Subtle dot pattern for mobile hero background */
   .bg-dot-pattern-mobile {
-    background-image: radial-gradient(theme('colors.gray.700') 1px, transparent 1px);
+    background-image: radial-gradient(#374151 1px, transparent 1px);
     background-size: 12px 12px; /* Adjust size for desired density */
   }
 
@@ -193,11 +199,11 @@
     border-radius: 3px;
   }
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: theme('colors.gray.600');
+    background-color: #4b5563;
     border-radius: 3px;
   }
    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-     background-color: theme('colors.gray.500');
+     background-color: #6b7280;
    }
 
 }
