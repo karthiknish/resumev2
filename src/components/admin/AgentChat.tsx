@@ -26,11 +26,11 @@ const AgentChat: React.FC<AgentChatProps> = ({
   showTimestamp = true,
   showCopyButton = true,
   maxHeight = "600px"
-}) {
+}) => {
   const [inputValue, setInputValue] = useState("");
-  const [copiedMessageId, setCopiedMessageId] = useState(null);
-  const messagesEndRef = useRef(null);
-  const inputRef = useRef(null);
+  const [copiedMessageId, setCopiedMessageId] = useState<string | number | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -50,19 +50,19 @@ const AgentChat: React.FC<AgentChatProps> = ({
       try {
         await onSendMessage(messageContent);
       } catch (error) {
-        toast.error(error.message || "Failed to send message");
+        toast.error((error as Error).message || "Failed to send message");
       }
     }
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
   };
 
-  const handleCopyMessage = (content, messageId) => {
+  const handleCopyMessage = (content: string, messageId: string | number) => {
     navigator.clipboard.writeText(content).then(() => {
       setCopiedMessageId(messageId);
       toast.success("Message copied to clipboard");
@@ -70,7 +70,7 @@ const AgentChat: React.FC<AgentChatProps> = ({
     });
   };
 
-  const formatDate = (timestamp) => {
+  const formatDate = (timestamp: string | number) => {
     if (!timestamp) return "";
     return new Date(timestamp).toLocaleTimeString("en-US", {
       hour: "2-digit",
@@ -224,7 +224,7 @@ const AgentChat: React.FC<AgentChatProps> = ({
             <Input
               ref={inputRef}
               value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder={placeholder}
               disabled={isLoading || disabled}

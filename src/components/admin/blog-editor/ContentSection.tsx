@@ -76,8 +76,8 @@ function ContentSection({
     } catch (err) {
       console.error("[ContentSection] Error generating content:", err);
       setContentGenError(
-        err.response?.data?.message ||
-          err.message ||
+        (err as any).response?.data?.message ||
+          (err as any).message ||
           "Error generating content."
       );
       toast.error("Error generating content. Please try again.");

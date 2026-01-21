@@ -62,8 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const audienceInstructions: Record<string, string> = {
       developers: "Write for experienced developers who understand technical concepts and jargon.",
-      beginners: "Write for beginners who are new to
-      topic. Explain concepts clearly without assuming prior knowledge.",
+      beginners: "Write for beginners who are new to the topic. Explain concepts clearly without assuming prior knowledge.",
       executives: "Write for business executives and decision-makers. Focus on business value, ROI, and strategic implications.",
       general: "Write for a general audience. Avoid jargon and explain technical concepts in simple terms.",
       students: "Write for students who are learning. Include educational explanations and learning-friendly examples."

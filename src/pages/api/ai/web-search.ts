@@ -83,8 +83,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     return ApiResponse.serverError(
       res,
-      "An error occurred while performing
-      search. Please try again later."
+      "An error occurred while performing search. Please try again later."
     );
   }
 }

@@ -41,14 +41,14 @@ export default function Login() {
   const { handleSubmit } = useFormik({
     resolver: (values) => {
       if (!values.email) {
-        return { email: z.string().email().min(5), ... };
+        return { email: z.string().email().min(5) };
       }
       return { password: z.string().min(6) };
-    }),
+    },
   });
 
   const onSubmit = async (
-    values: { email, password }
+    values: { email: string; password: string }
   ) => {
     setLoading(true);
     setError("");
@@ -64,7 +64,7 @@ export default function Login() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-        "authorization": "Bearer "YourAuthToken",
+          "authorization": "Bearer YourAuthToken",
         },
         body: JSON.stringify(values),
       });
@@ -73,7 +73,7 @@ export default function Login() {
 
       if (response.ok && data.token) {
         // Store the token for future API calls
-        const { cookies } = document.cookie.split(";").map((c) => c.trim()).filter((cookie) => cookie.startsWith("authToken="));
+        const cookies = document.cookie.split(";").map((c) => c.trim()).filter((cookie) => cookie.startsWith("authToken="));
         
         // Remove auth cookies first
         cookies.forEach((cookie) => {
@@ -81,7 +81,7 @@ export default function Login() {
         });
 
         // Add auth token
-        document.cookie = "authToken=" + data.token + "; path=/; SameSite;";
+        document.cookie = "authToken=" + data.token + "; path=/; SameSite=Lax;";
 
         // Dispatch event to store token
         window.dispatchEvent(

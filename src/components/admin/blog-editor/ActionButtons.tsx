@@ -47,7 +47,7 @@ function ActionButtons({
           disabled={isLoading || isSaveDisabled}
           onClick={onSubmit}
         >
-          {isLoading ? <ButtonLoader size="sm" className="mr-2" /> : null}
+          {isLoading ? <ButtonLoader size="sm" /> : null}
           {isLoading ? "Saving..." : saveButtonText}
         </Button>
 
