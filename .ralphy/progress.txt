@@ -2388,3 +2388,4 @@ Examples:
 - [✓] 2026-01-20 19:30 - Optimize admin dashboard for mobile responsiveness
 - [✓] 2026-01-20 19:56 - split large files
 - [✓] 2026-01-21 13:29 - check vercel-react-best-practices skill and update the project with it
+- [✓] 2026-01-21 13:54 - check web-design-guidelines and update the project
