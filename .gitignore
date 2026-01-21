@@ -34,3 +34,8 @@ ralphy.sh
 .ralphy/progress.txt
 PRD.md
 .ralphy/progress.txt
+
+# local tooling
+.agents/
+.claude/
+.opencode/

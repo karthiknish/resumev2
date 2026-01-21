@@ -173,8 +173,14 @@ function extractTextFromHtml(html) {
     '&hellip;': '...', '&rsquo;': "'", '&lsquo;': "'",
     '&rdquo;': '"', '&ldquo;': '"',
   };
-  for (const [entity, char] of Object.entries(entities)) {
-    text = text.replace(new RegExp(entity, 'g'), char);
+
+  const entityPatterns = Object.entries(entities).map(([entity, char]) => ({
+    pattern: new RegExp(entity, 'g'),
+    char
+  }));
+
+  for (const { pattern, char } of entityPatterns) {
+    text = text.replace(pattern, char);
   }
 
   return text;

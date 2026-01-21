@@ -123,9 +123,9 @@ export default async function handler(req, res) {
     });
     console.log(`Contact saved to Firebase: ${docId}`);
 
-    // Send notification email to admin
-    try {
-      await sendEmail({
+    // Send notification email to admin and thank you email to sender in parallel
+    const [adminEmailResult, thankYouEmailResult] = await Promise.allSettled([
+      sendEmail({
         to: process.env.EMAIL_TO,
         toName: "Karthik Nishanth",
         subject: `New Contact Form Message from ${name}`,
@@ -135,23 +135,25 @@ export default async function handler(req, res) {
           message: message.replace(/\n/g, "<br>"),
         }),
         replyTo: email,
-      });
-      console.log("Admin notification email sent successfully");
-    } catch (emailError) {
-      console.error("Failed to send admin notification email:", emailError);
-    }
-
-    // Send thank you email to sender
-    try {
-      await sendEmail({
+      }),
+      sendEmail({
         to: email,
         toName: name,
         subject: "Thank you for contacting Karthik Nishanth!",
         htmlContent: generateThankYouEmail({ name }),
-      });
+      })
+    ]);
+
+    if (adminEmailResult.status === 'fulfilled') {
+      console.log("Admin notification email sent successfully");
+    } else {
+      console.error("Failed to send admin notification email:", adminEmailResult.reason);
+    }
+
+    if (thankYouEmailResult.status === 'fulfilled') {
       console.log(`Thank you email sent to ${email}`);
-    } catch (emailError) {
-      console.error(`Failed to send thank you email to ${email}:`, emailError);
+    } else {
+      console.error(`Failed to send thank you email to ${email}:`, thankYouEmailResult.reason);
     }
 
     return res.status(200).json({

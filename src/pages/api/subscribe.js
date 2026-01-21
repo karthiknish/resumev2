@@ -237,17 +237,14 @@ export default async function handler(req, res) {
     await createSubscriber(email);
     console.log(`New subscriber added to Firebase: ${email}`);
 
-    // Send welcome email via Brevo
-    try {
-      await sendEmail({
-        to: email.toLowerCase(),
-        subject: "Welcome to the Newsletter!",
-        htmlContent: generateWelcomeEmail(email.toLowerCase()),
-      });
-      console.log(`Welcome email sent to ${email}`);
-    } catch (emailError) {
-      console.error(`Failed to send welcome email to ${email}:`, emailError);
-    }
+    // Send welcome email via Brevo (fire and forget for faster response)
+    sendEmail({
+      to: email.toLowerCase(),
+      subject: "Welcome to Newsletter!",
+      htmlContent: generateWelcomeEmail(email.toLowerCase()),
+    })
+      .then(() => console.log(`Welcome email sent to ${email}`))
+      .catch((emailError) => console.error(`Failed to send welcome email to ${email}:`, emailError));
 
     return res
       .status(201)

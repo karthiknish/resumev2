@@ -141,8 +141,11 @@ function Chatbot() {
       content: `Great, thanks ${email}! How can I assist you today? Feel free to ask about Karthik's services, projects, or blog posts.`,
       timestamp: new Date().toISOString(),
     };
-    const updatedMessages = [...messages, userMsg, botWelcome];
-    setMessages(updatedMessages);
+    setMessages(prev => {
+      const updated = [...prev, userMsg, botWelcome];
+      storeChatHistory(updated, email);
+      return updated;
+    });
     setMessage("");
     storeChatHistory(updatedMessages, email); // Store history with the provided email
   };
@@ -177,8 +180,7 @@ function Chatbot() {
       content,
       timestamp: new Date().toISOString(),
     };
-    const newMessages = [...messages, userMessage];
-    setMessages(newMessages);
+    setMessages(prev => [...prev, userMessage]);
     setMessage("");
     setIsLoading(true);
 
@@ -194,7 +196,7 @@ function Chatbot() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             prompt: content,
-            chatHistory: messages.map((msg) => ({
+            chatHistory: [...messages, userMessage].map((msg) => ({
               role: msg.role === "user" ? "user" : "model",
               parts: [{ text: msg.content || "" }],
             })),
@@ -212,9 +214,11 @@ function Chatbot() {
         content: botResponseContent,
         timestamp: new Date().toISOString(),
       };
-      const updatedMessages = [...newMessages, botMessage];
-      setMessages(updatedMessages);
-      storeChatHistory(updatedMessages); // Uses userEmail state set previously
+      setMessages(prev => {
+        const updated = [...prev, botMessage];
+        storeChatHistory(updated);
+        return updated;
+      });
     } catch (error) {
       console.error("Error communicating with Gemini API:", error);
       const errorMsg = {
@@ -222,8 +226,11 @@ function Chatbot() {
         content: "Sorry, I encountered an error. Please try again later.",
         timestamp: new Date().toISOString(),
       };
-      setMessages((prev) => [...prev, errorMsg]);
-      storeChatHistory([...newMessages, errorMsg]);
+      setMessages(prev => {
+        const updated = [...prev, errorMsg];
+        storeChatHistory(updated);
+        return updated;
+      });
     } finally {
       setIsLoading(false);
     }
