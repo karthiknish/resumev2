@@ -1,7 +1,7 @@
 import React from "react";
 import { ContentLoader } from "./ui/app-loader";
 
-const Loader = () => {
+const Loader: React.FC = () => {
   return <ContentLoader />;
 };
 

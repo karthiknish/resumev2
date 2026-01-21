@@ -1,26 +1,48 @@
 import { signIn as nextAuthSignIn, signOut as nextAuthSignOut } from "next-auth/react";
 import { toast } from "sonner";
 
+export interface SignInOptions {
+  redirect?: boolean;
+  callbackUrl?: string;
+  [key: string]: any;
+}
+
+interface SignUpData {
+  name: string;
+  email: string;
+  password: string;
+}
+
+interface ForgotPasswordData {
+  email: string;
+}
+
+interface ResetPasswordData {
+  token: string;
+  email: string;
+  password: string;
+}
+
+export interface ApiResponse<T = any> {
+  success: boolean;
+  data?: T;
+  message?: string;
+  error?: string;
+}
+
 class AuthService {
-  /**
-   * Sign in with credentials or redirect to sign in page
-   * @param {string} provider - Authentication provider (default: 'credentials')
-   * @param {Object} options - Sign in options
-   * @returns {Promise<Object>} Sign in result
-   */
-  static async signIn(providerOrOptions = "credentials", maybeOptions = {}) {
+  static async signIn(
+    providerOrOptions: string | SignInOptions = "credentials",
+    maybeOptions?: SignInOptions
+  ): Promise<ApiResponse> {
     try {
-      // Normalize arguments: allow calling with just an options object
       let provider = "credentials";
-      let options = {};
+      let options: SignInOptions = {};
 
       if (typeof providerOrOptions === "string") {
         provider = providerOrOptions || "credentials";
         options = maybeOptions || {};
-      } else if (
-        typeof providerOrOptions === "object" &&
-        providerOrOptions !== null
-      ) {
+      } else if (typeof providerOrOptions === "object" && providerOrOptions !== null) {
         provider = "credentials";
         options = providerOrOptions;
       }
@@ -30,7 +52,6 @@ class AuthService {
         ...options,
       });
 
-      // NextAuth returns an object with ok/error when redirect: false
       if (!result || result.ok !== true) {
         const message = result?.error || "Invalid email or password";
         throw new Error(message);
@@ -38,22 +59,14 @@ class AuthService {
 
       toast.success("Successfully signed in!");
       return { success: true, data: result };
-    } catch (error) {
+    } catch (error: any) {
       console.error("Sign in error:", error);
       toast.error(error.message || "Sign in failed. Please try again.");
       return { success: false, error: error.message };
     }
   }
 
-  /**
-   * Sign up a new user
-   * @param {Object} userData - User registration data
-   * @param {string} userData.name - User name
-   * @param {string} userData.email - User email
-   * @param {string} userData.password - User password
-   * @returns {Promise<Object>} Sign up result
-   */
-  static async signUp({ name, email, password }) {
+  static async signUp({ name, email, password }: SignUpData): Promise<ApiResponse> {
     try {
       const response = await fetch("/api/auth/signup", {
         method: "POST",
@@ -71,22 +84,15 @@ class AuthService {
 
       toast.success("Account created successfully! Please sign in.");
       return { success: true, data };
-    } catch (error) {
+    } catch (error: any) {
       console.error("Sign up error:", error);
       toast.error(error.message || "Sign up failed. Please try again.");
       return { success: false, error: error.message };
     }
   }
 
-  /**
-   * Sign out the user
-   * @param {Object} options - Sign out options
-   * @param {string} options.callbackUrl - URL to redirect to after sign out
-   * @returns {Promise<void>}
-   */
-  static async signOut({ callbackUrl = "/" } = {}) {
+  static async signOut({ callbackUrl = "/" } = {}): Promise<void> {
     try {
-      // Call the signout API endpoint for additional cleanup
       const response = await fetch("/api/auth/signout", {
         method: "POST",
         headers: {
@@ -98,23 +104,16 @@ class AuthService {
         throw new Error("Failed to sign out from server");
       }
 
-      // Sign out from NextAuth
       await nextAuthSignOut({ callbackUrl });
       toast.success("Successfully signed out!");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Sign out error:", error);
       toast.error("Error signing out. Please try again.");
-      // Even if server signout fails, still sign out locally
       await nextAuthSignOut({ callbackUrl });
     }
   }
 
-  /**
-   * Request password reset
-   * @param {string} email - User email
-   * @returns {Promise<Object>} Password reset result
-   */
-  static async forgotPassword(email) {
+  static async forgotPassword(email: string): Promise<ApiResponse> {
     try {
       const response = await fetch("/api/auth/forgot-password", {
         method: "POST",
@@ -132,7 +131,7 @@ class AuthService {
 
       toast.success("Password reset email sent! Check your inbox.");
       return { success: true, data };
-    } catch (error) {
+    } catch (error: any) {
       console.error("Forgot password error:", error);
       toast.error(
         error.message ||
@@ -142,15 +141,7 @@ class AuthService {
     }
   }
 
-  /**
-   * Reset password
-   * @param {Object} resetData - Password reset data
-   * @param {string} resetData.token - Reset token
-   * @param {string} resetData.email - User email
-   * @param {string} resetData.password - New password
-   * @returns {Promise<Object>} Password reset result
-   */
-  static async resetPassword({ token, email, password }) {
+  static async resetPassword({ token, email, password }: ResetPasswordData): Promise<ApiResponse> {
     try {
       const response = await fetch("/api/auth/reset-password", {
         method: "POST",
@@ -168,7 +159,7 @@ class AuthService {
 
       toast.success("Password reset successfully!");
       return { success: true, data };
-    } catch (error) {
+    } catch (error: any) {
       console.error("Reset password error:", error);
       toast.error(
         error.message || "Failed to reset password. Please try again."
@@ -177,40 +168,19 @@ class AuthService {
     }
   }
 
-  /**
-   * Check if user has admin role
-   * @param {Object} session - NextAuth session object
-   * @returns {boolean}
-   */
-  static isAdmin(session) {
+  static isAdmin(session: any): boolean {
     return session?.user?.role === "admin";
   }
 
-  /**
-   * Check if user is authenticated
-   * @param {Object} session - NextAuth session object
-   * @returns {boolean}
-   */
-  static isAuthenticated(session) {
+  static isAuthenticated(session: any): boolean {
     return !!session?.user;
   }
 
-  /**
-   * Get user role from session
-   * @param {Object} session - NextAuth session object
-   * @returns {string|null}
-   */
-  static getUserRole(session) {
+  static getUserRole(session: any): string | null {
     return session?.user?.role || null;
   }
 
-  /**
-   * Check if user has specific role
-   * @param {Object} session - NextAuth session object
-   * @param {string} role - Role to check
-   * @returns {boolean}
-   */
-  static hasRole(session, role) {
+  static hasRole(session: any, role: string): boolean {
     return session?.user?.role === role;
   }
 }

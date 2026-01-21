@@ -1,10 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, MouseEvent, KeyboardEvent, ChangeEvent } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaTimesCircle } from "react-icons/fa";
 import { Loader2 } from "lucide-react";
+import { SearchResult } from "@/types";
 
-// Define the component as a const
+interface SearchOverlayProps {
+  toggleSearch: () => void;
+  searchInputRef: React.RefObject<HTMLInputElement>;
+  searchQuery: string;
+  handleSearchChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  isSearching: boolean;
+  searchResults: SearchResult[];
+  handleResultClick: () => void;
+  debouncedSearchQuery: string;
+}
+
 const SearchOverlay = ({
   toggleSearch,
   searchInputRef,
@@ -14,16 +25,15 @@ const SearchOverlay = ({
   searchResults,
   handleResultClick,
   debouncedSearchQuery,
-}) => {
-  // Handle Escape key to close overlay
+}: SearchOverlayProps) => {
   useEffect(() => {
-    const handleKeyDown = (e) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         toggleSearch();
       }
     };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown as any);
+    return () => document.removeEventListener('keydown', handleKeyDown as any);
   }, [toggleSearch]);
 
   return (
@@ -36,7 +46,6 @@ const SearchOverlay = ({
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.18),_transparent_60%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(30,41,59,0.6),_transparent_70%)]" />
-      {/* Close Button */}
       <motion.button
         onClick={toggleSearch}
         className="absolute top-6 right-6 text-slate-600 hover:text-slate-900 transition-colors z-[111] p-2 rounded-full bg-slate-100/80 backdrop-blur-sm hover:bg-slate-200"
@@ -47,7 +56,6 @@ const SearchOverlay = ({
         <FaTimesCircle size={30} />
       </motion.button>
 
-      {/* Search Input */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -65,7 +73,6 @@ const SearchOverlay = ({
         />
       </motion.div>
 
-      {/* Search Results Area */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -87,26 +94,21 @@ const SearchOverlay = ({
                     href={
                       result.type === "blog"
                         ? `/blog/${result.slug}`
-                        : `/bytes#${result._id}`
+                        : `/bytes#${result.id}`
                     }
-                    key={result._id}
+                    key={result.id}
                     onClick={handleResultClick}
                     className="block p-6 bg-white rounded-2xl border border-slate-200 hover:border-slate-400 hover:shadow-lg transition-all duration-300 group"
                   >
                     <p className="font-heading text-lg text-slate-900 truncate group-hover:text-slate-700 transition-colors duration-300">
-                      {result.type === "blog" ? result.title : result.headline}
+                      {result.title}
                       <span className="ml-2 text-xs uppercase font-semibold text-slate-600 bg-slate-100 px-2 py-1 rounded-full border border-slate-200">
                         {result.type}
                       </span>
                     </p>
-                    {result.type === "blog" && result.description && (
+                    {result.description && (
                       <p className="text-sm text-slate-600 truncate mt-2 leading-relaxed">
                         {result.description}
-                      </p>
-                    )}
-                    {result.type === "byte" && result.body && (
-                      <p className="text-sm text-slate-600 truncate mt-2 leading-relaxed">
-                        {result.body}
                       </p>
                     )}
                   </Link>
@@ -125,7 +127,6 @@ const SearchOverlay = ({
                 )}
             </div>
           )}
-        {/* Prompt to search if input is short */}
         {!isSearching &&
           debouncedSearchQuery.trim().length > 0 &&
           debouncedSearchQuery.trim().length < 2 && (
@@ -136,10 +137,8 @@ const SearchOverlay = ({
               </p>
             </div>
           )}
-        {/* Initial state prompt */}
         {!isSearching && debouncedSearchQuery.trim().length === 0 && (
           <div className="p-8 text-center bg-white rounded-2xl border border-slate-200 shadow-sm">
-            
             <h3 className="font-heading text-xl text-slate-900 mb-2">
               Start your search
             </h3>
@@ -153,5 +152,4 @@ const SearchOverlay = ({
   );
 };
 
-// Wrap the component with React.memo for performance optimization and export as default
 export default React.memo(SearchOverlay);

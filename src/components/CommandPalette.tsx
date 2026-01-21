@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { LucideProps } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -14,8 +15,27 @@ import {
   X,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { CommandItem as CommandType } from "@/types";
 
-export default function CommandPalette() {
+interface CommandGroup {
+  title: string;
+  items: any[];
+}
+
+interface CommandPaletteProps {}
+
+const iconMap: Record<string, React.FC<LucideProps>> = {
+  Home,
+  User,
+  Briefcase,
+  FileText,
+  Coffee,
+  MessageSquare,
+  BookOpen,
+  LogOut,
+};
+
+export default function CommandPalette({}: CommandPaletteProps) {
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -25,17 +45,17 @@ export default function CommandPalette() {
     setMounted(true);
   }, []);
 
-  const commandGroups = useMemo(() => [
+  const commandGroups = useMemo((): CommandGroup[] => [
     {
       title: "Navigation",
       items: [
-        { icon: Home, label: "Go to Home", href: "/", shortcut: "⌘H" },
-        { icon: User, label: "Go to About", href: "/about", shortcut: "⌘A" },
-        { icon: Briefcase, label: "Go to Services", href: "/services", shortcut: "⌘S" },
-        { icon: FileText, label: "Go to Blog", href: "/blog", shortcut: "⌘B" },
-        { icon: Coffee, label: "Go to Bytes", href: "/bytes", shortcut: "⌘Y" },
-        { icon: BookOpen, label: "Go to Resources", href: "/resources", shortcut: "⌘R" },
-        { icon: MessageSquare, label: "Go to Contact", href: "/contact", shortcut: "⌘C" },
+        { icon: "Home", label: "Go to Home", href: "/", shortcut: "⌘H" },
+        { icon: "User", label: "Go to About", href: "/about", shortcut: "⌘A" },
+        { icon: "Briefcase", label: "Go to Services", href: "/services", shortcut: "⌘S" },
+        { icon: "FileText", label: "Go to Blog", href: "/blog", shortcut: "⌘B" },
+        { icon: "Coffee", label: "Go to Bytes", href: "/bytes", shortcut: "⌘Y" },
+        { icon: "BookOpen", label: "Go to Resources", href: "/resources", shortcut: "⌘R" },
+        { icon: "MessageSquare", label: "Go to Contact", href: "/contact", shortcut: "⌘C" },
       ],
     },
     ...(session
@@ -44,7 +64,7 @@ export default function CommandPalette() {
             title: "Account",
             items: [
               {
-                icon: LogOut,
+                icon: "LogOut",
                 label: "Sign Out",
                 action: async () => {
                   const { signOut } = await import("@/lib/authUtils");
@@ -60,7 +80,7 @@ export default function CommandPalette() {
   const allItems = useMemo(() => commandGroups.flatMap((group) => group.items), [commandGroups]);
 
   useEffect(() => {
-    const handleKeyDown = (e) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
         setIsOpen((prev) => !prev);
@@ -88,8 +108,8 @@ export default function CommandPalette() {
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown as any);
+    return () => document.removeEventListener("keydown", handleKeyDown as any);
   }, [isOpen, activeIndex, allItems]);
 
   const handleClose = useCallback(() => {
@@ -97,7 +117,7 @@ export default function CommandPalette() {
     setActiveIndex(0);
   }, []);
 
-  const handleItemClick = useCallback((item) => {
+  const handleItemClick = useCallback((item: CommandType) => {
     if (item?.href) {
       window.location.href = item.href;
     } else if (item?.action) {
@@ -106,7 +126,14 @@ export default function CommandPalette() {
     handleClose();
   }, [handleClose]);
 
-  const CommandItem = ({ icon: Icon, label, shortcut, item, active, setActive }) => {
+  const CommandItem = ({ icon, label, shortcut, item, active, setActive }: {
+    icon?: string;
+    label: string;
+    shortcut?: string;
+    item: CommandType;
+    active: boolean;
+    setActive?: () => void;
+  }) => {
     const handleClick = useCallback(() => {
       handleItemClick(item);
     }, [item, handleItemClick]);
@@ -114,6 +141,8 @@ export default function CommandPalette() {
     const handleMouseEnter = useCallback(() => {
       setActive?.();
     }, [setActive]);
+
+    const Icon = icon && iconMap[icon];
 
     return (
       <button

@@ -1,7 +1,14 @@
-import { motion } from "framer-motion";
+import { motion, HTMLMotionProps } from "framer-motion";
+import { ReactNode } from "react";
 
 // Fade-in animation for components
-export const FadeIn = ({ children, delay = 0, duration = 0.5, ...props }) => {
+interface FadeInProps extends HTMLMotionProps<"div"> {
+  children: ReactNode;
+  delay?: number;
+  duration?: number;
+}
+
+export const FadeIn = ({ children, delay = 0, duration = 0.5, ...props }: FadeInProps) => {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -16,13 +23,20 @@ export const FadeIn = ({ children, delay = 0, duration = 0.5, ...props }) => {
 };
 
 // Slide-in animation from bottom
+interface SlideUpProps extends HTMLMotionProps<"div"> {
+  children: ReactNode;
+  delay?: number;
+  duration?: number;
+  distance?: number;
+}
+
 export const SlideUp = ({
   children,
   delay = 0,
   duration = 0.5,
   distance = 50,
   ...props
-}) => {
+}: SlideUpProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: distance }}
@@ -43,7 +57,7 @@ export const SlideInLeft = ({
   duration = 0.5,
   distance = 50,
   ...props
-}) => {
+}: SlideUpProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, x: -distance }}
@@ -64,7 +78,7 @@ export const SlideInRight = ({
   duration = 0.5,
   distance = 50,
   ...props
-}) => {
+}: SlideUpProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, x: distance }}
@@ -79,7 +93,7 @@ export const SlideInRight = ({
 };
 
 // Scale animation
-export const ScaleIn = ({ children, delay = 0, duration = 0.5, ...props }) => {
+export const ScaleIn = ({ children, delay = 0, duration = 0.5, ...props }: FadeInProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
@@ -94,11 +108,16 @@ export const ScaleIn = ({ children, delay = 0, duration = 0.5, ...props }) => {
 };
 
 // Staggered animation for lists
+interface StaggerContainerProps extends HTMLMotionProps<"div"> {
+  children: ReactNode;
+  staggerDelay?: number;
+}
+
 export const StaggerContainer = ({
   children,
   staggerDelay = 0.1,
   ...props
-}) => {
+}: StaggerContainerProps) => {
   return (
     <motion.div initial="hidden" animate="visible" exit="exit" {...props}>
       {children}
@@ -107,10 +126,15 @@ export const StaggerContainer = ({
 };
 
 // Staggered item to be used with StaggerContainer
-export const StaggerItem = ({ children, index = 0, ...props }) => {
+interface StaggerItemProps extends HTMLMotionProps<"div"> {
+  children: ReactNode;
+  index?: number;
+}
+
+export const StaggerItem = ({ children, index = 0, ...props }: StaggerItemProps) => {
   const variants = {
     hidden: { opacity: 0, y: 20 },
-    visible: (i) => ({
+    visible: (i: number) => ({
       opacity: 1,
       y: 0,
       transition: {
@@ -129,7 +153,12 @@ export const StaggerItem = ({ children, index = 0, ...props }) => {
 };
 
 // Hover animation for cards and buttons
-export const HoverCard = ({ children, scale = 1.03, ...props }) => {
+interface HoverCardProps extends HTMLMotionProps<"div"> {
+  children: ReactNode;
+  scale?: number;
+}
+
+export const HoverCard = ({ children, scale = 1.03, ...props }: HoverCardProps) => {
   return (
     <motion.div
       whileHover={{ scale, boxShadow: "0 10px 25px rgba(0,0,0,0.1)" }}
@@ -142,7 +171,7 @@ export const HoverCard = ({ children, scale = 1.03, ...props }) => {
 };
 
 // Pulse animation for notifications or highlights
-export const PulseAnimation = ({ children, ...props }) => {
+export const PulseAnimation = ({ children, ...props }: FadeInProps) => {
   return (
     <motion.div
       animate={{
@@ -166,7 +195,7 @@ export const PulseAnimation = ({ children, ...props }) => {
 };
 
 // Page transitions
-export const PageTransition = ({ children, ...props }) => {
+export const PageTransition = ({ children, ...props }: FadeInProps) => {
   return (
     <motion.div
       initial={{ opacity: 0 }}

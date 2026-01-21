@@ -1,28 +1,32 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, RefObject } from "react";
 import { motion } from "framer-motion";
 import { Heart, Eye } from "lucide-react";
 import { toast } from "sonner";
 
-export default function LikeButton({ blogId, initialLikeCount = 0, initialViewCount = 0 }) {
+interface LikeButtonProps {
+  blogId: string;
+  initialLikeCount?: number;
+  initialViewCount?: number;
+}
+
+export default function LikeButton({ blogId, initialLikeCount = 0, initialViewCount = 0 }: LikeButtonProps) {
   const [likeCount, setLikeCount] = useState(initialLikeCount);
   const [viewCount, setViewCount] = useState(initialViewCount);
   const [isLiked, setIsLiked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Check if user has already liked (from localStorage)
   useEffect(() => {
     const likedPosts = JSON.parse(localStorage.getItem("likedPosts") || "[]");
     setIsLiked(likedPosts.includes(blogId));
   }, [blogId]);
 
-  // Record view on mount
   useEffect(() => {
     const recordView = async () => {
       try {
         const viewedPosts = JSON.parse(sessionStorage.getItem("viewedPosts") || "[]");
-        if (viewedPosts.includes(blogId)) return; // Already viewed in this session
+        if (viewedPosts.includes(blogId)) return;
 
         const response = await fetch("/api/blog/view", {
           method: "POST",
@@ -61,8 +65,7 @@ export default function LikeButton({ blogId, initialLikeCount = 0, initialViewCo
       if (response.ok) {
         setLikeCount(data.data?.likeCount || (isLiked ? likeCount - 1 : likeCount + 1));
         setIsLiked(data.data?.isLiked);
-        
-        // Update localStorage
+
         const likedPosts = JSON.parse(localStorage.getItem("likedPosts") || "[]");
         if (data.data?.isLiked) {
           localStorage.setItem("likedPosts", JSON.stringify([...likedPosts, blogId]));
