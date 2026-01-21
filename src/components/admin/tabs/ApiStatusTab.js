@@ -137,7 +137,7 @@ export default function ApiStatusTab() {
   const apiEndpoints = [
     {
       title: "Gemini Flash",
-      testEndpoint: "/api/admin/test-gemini-models?model=gemini-2.0-flash",
+      testEndpoint: "/api/admin/test-gemini-models?model=gemini-3-flash-preview",
       method: "POST",
     },
     {
@@ -150,11 +150,6 @@ export default function ApiStatusTab() {
       testEndpoint: "/api/ai/get-trending-news",
       usageEndpoint: "/api/admin/api-usage?apiName=gnews",
       method: "GET",
-    },
-    {
-      title: "MongoDB Connection",
-      testEndpoint: "/api/admin/test-mongodb",
-      method: "POST",
     },
   ];
 

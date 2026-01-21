@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
-import { callGemini } from "@/lib/gemini"; // Assuming this handles model selection or uses a default
+// Direct Gemini API ping for status checks
 
 // Helper function to check admin status
 async function isAdminUser(req, res) {
@@ -43,27 +43,38 @@ export default async function handler(req, res) {
     : "Gemini (Default)";
 
   try {
-    // Simple test prompt
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error("GEMINI_API_KEY environment variable is not set.");
+    }
+
     const testPrompt =
       "Briefly explain what a large language model is in one sentence.";
-    const generationConfig = { temperature: 0.5, maxOutputTokens: 50 };
+    const generationConfig = { temperature: 0.2, maxOutputTokens: 64 };
+    const apiVersion = "v1beta";
+    const geminiUrl = `https://generativelanguage.googleapis.com/${apiVersion}/models/${modelToTest}:generateContent`;
 
-    // Assuming callGemini can handle different models or uses a configured default
-    // If callGemini needs the model name passed explicitly, adjust here.
-    const result = await callGemini(testPrompt, generationConfig);
+    const response = await fetch(geminiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": process.env.GEMINI_API_KEY,
+      },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: testPrompt }] }],
+        generationConfig,
+      }),
+    });
 
-    if (result && typeof result === "string" && result.length > 0) {
-      console.log(`Gemini Test (${modelDisplayName}) successful:`, result);
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: `${modelDisplayName} Operational`,
-          response: result,
-        });
-    } else {
-      throw new Error("Received empty or invalid response from Gemini.");
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(data?.error?.message || "Gemini API request failed");
     }
+
+    res.status(200).json({
+      success: true,
+      message: `${modelDisplayName} Operational`,
+      model: modelToTest,
+    });
   } catch (error) {
     console.error(`Error testing Gemini model (${modelDisplayName}):`, error);
     res.status(500).json({

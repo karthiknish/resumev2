@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Loader2, CalendarDays } from "lucide-react";
+import { Loader2, CalendarDays,Mail } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -8,7 +8,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow, 
 } from "@/components/ui/table";
 import { TableRowSkeleton } from "@/components/ui/loading-states";
 import { EmptyTable } from "@/components/ui/empty-state";
