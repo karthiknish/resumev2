@@ -1,51 +1,18 @@
-// Converted to TypeScript - migrated
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { sendEmail } from "@/lib/brevoClient";
+import { getCollection } from "@/lib/firebase";
+import { NextApiRequest, NextApiResponse } from "next";
+import logger from "@/utils/logger";
 
-// Firebase REST API configuration
-const FIREBASE_PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
-const FIREBASE_API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
-const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents`;
-
-// Parse Firestore value to JS value
-function parseFirestoreValue(value) {
-  if (value.stringValue !== undefined) return value.stringValue;
-  if (value.integerValue !== undefined) return parseInt(value.integerValue);
-  if (value.booleanValue !== undefined) return value.booleanValue;
-  if (value.timestampValue !== undefined) return new Date(value.timestampValue);
-  if (value.nullValue !== undefined) return null;
-  if (value.mapValue !== undefined) {
-    const result = {};
-    for (const [k, v] of Object.entries(value.mapValue.fields || {})) {
-      result[k] = parseFirestoreValue(v);
-    }
-    return result;
-  }
-  return null;
-}
-
-// Fetch all subscribers from Firebase
-async function getSubscribers() {
-  const url = `${FIRESTORE_URL}/subscribers?key=${FIREBASE_API_KEY}`;
-  const response = await fetch(url);
-  
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error?.message || "Failed to fetch subscribers");
-  }
-  
-  const data = await response.json();
-  const documents = data.documents || [];
-  
-  return documents.map(doc => {
-    const email = doc.fields?.email?.stringValue;
-    return email;
-  }).filter(Boolean);
+interface NewsletterParams {
+  subject: string;
+  content: string;
+  previewText?: string;
 }
 
 // Generate newsletter email HTML
-function generateNewsletterEmail({ subject, content, previewText }) {
+function generateNewsletterEmail({ subject, content, previewText }: NewsletterParams) {
   return `
 <!DOCTYPE html>
 <html>
@@ -105,7 +72,7 @@ function generateNewsletterEmail({ subject, content, previewText }) {
   `.trim();
 }
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
     return res.status(405).json({ success: false, message: "Method Not Allowed" });
@@ -113,7 +80,12 @@ export default async function handler(req, res) {
 
   // Check authentication
   const session = await getServerSession(req, res, authOptions);
-  if (!session?.user?.isAdmin) {
+  const isAdmin =
+    (session?.user as { role?: string; isAdmin?: boolean })?.role === "admin" ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.isAdmin === true ||
+    session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+
+  if (!isAdmin) {
     // Localhost bypass for testing
     const isLocalhost = req.headers.host?.includes("localhost");
     if (!isLocalhost) {
@@ -121,7 +93,12 @@ export default async function handler(req, res) {
     }
   }
 
-  const { subject, content, previewText, testEmail } = req.body;
+  const { subject, content, previewText, testEmail } = req.body as {
+    subject?: string;
+    content?: string;
+    previewText?: string;
+    testEmail?: string;
+  };
 
   if (!subject || !content) {
     return res.status(400).json({ 
@@ -134,7 +111,8 @@ export default async function handler(req, res) {
     const htmlContent = generateNewsletterEmail({ subject, content, previewText });
 
     // Test email mode
-    if (testEmail) {
+    if (typeof testEmail === "string" && testEmail) {
+      logger.info("Newsletter", `Sending test email to ${testEmail}`, { subject });
       await sendEmail({
         to: testEmail,
         subject: `[TEST] ${subject}`,
@@ -150,19 +128,26 @@ export default async function handler(req, res) {
     }
 
     // Get all subscribers from Firebase
-    const subscribers = await getSubscribers();
+    logger.info("Newsletter", "Fetching subscribers...");
+    const { documents } = await getCollection("subscribers");
+    const subscribers = documents
+      .map((doc) => (doc as { email?: unknown }).email)
+      .filter((email): email is string => typeof email === "string" && email.length > 0);
 
     if (subscribers.length === 0) {
+      logger.warn("Newsletter", "No subscribers found");
       return res.status(400).json({
         success: false,
         message: "No subscribers found",
       });
     }
 
+    logger.info("Newsletter", `Sending newsletter to ${subscribers.length} subscribers`, { subject });
+
     // Send to all subscribers
     let successCount = 0;
     let failCount = 0;
-    const errors = [];
+    const errors: Array<{ email: string; error: string }> = [];
 
     for (const email of subscribers) {
       try {
@@ -175,14 +160,15 @@ export default async function handler(req, res) {
         
         // Small delay to avoid rate limiting
         await new Promise(resolve => setTimeout(resolve, 100));
-      } catch (error) {
-        console.error(`Failed to send to ${email}:`, error.message);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : "Unknown error";
+        logger.error("Newsletter", `Failed to send to ${email}`, { error: message });
         failCount++;
-        errors.push({ email, error: error.message });
+        errors.push({ email, error: message });
       }
     }
 
-    console.log(`Newsletter sent: ${successCount} success, ${failCount} failed`);
+    logger.info("Newsletter", `Mass send complete`, { successCount, failCount });
 
     return res.status(200).json({
       success: true,
@@ -191,13 +177,13 @@ export default async function handler(req, res) {
       failedCount: failCount,
       errors: errors.length > 0 ? errors : undefined,
     });
-  } catch (error) {
-    console.error("Newsletter API Error:", error);
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
+    logger.error("Newsletter", "Critical API Error", { error: errorMsg });
     return res.status(500).json({
       success: false,
       message: "Failed to send newsletter",
-      error: error.message,
+      error: errorMsg,
     });
   }
 }
-

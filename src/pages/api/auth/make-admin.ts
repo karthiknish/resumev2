@@ -1,6 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getCollection, updateDocument } from "@/lib/firebase";
 
+interface User {
+  _id: string;
+  email: string;
+  name?: string;
+  role?: string;
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
@@ -19,9 +26,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const emailLower = email.toLowerCase();
 
-    const result = await getCollection("users");
+    const result = await getCollection<User>("users");
     const users = result.documents || [];
-    const user = users.find((u: any) => u.email === emailLower);
+    const user = users.find((u) => u.email === emailLower);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });

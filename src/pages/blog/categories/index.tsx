@@ -4,37 +4,35 @@ import Head from "next/head";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { FaFolder, FaArrowRight } from "react-icons/fa";
-
+import { runQuery, fieldFilter } from "@/lib/firebase";
 
 import Loader from "../../../components/Loader";
 
-export default function CategoriesPage() {
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+interface Category {
+  name: string;
+  count: number;
+}
 
+interface BlogPost {
+  category?: string;
+  isPublished?: boolean;
+}
+
+interface CategoriesPageProps {
+  initialCategories: Category[];
+}
+
+export default function CategoriesPage({ initialCategories = [] }: CategoriesPageProps) {
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Still keep sync if props change (unlikely with getStaticProps but good practice if using both)
   useEffect(() => {
-    async function fetchCategories() {
-      try {
-        setLoading(true);
-        const res = await fetch("/api/blog/categories");
-
-        if (!res.ok) {
-          throw new Error("Failed to fetch categories");
-        }
-
-        const data = await res.json();
-        setCategories(data.categories);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching categories:", err);
-        setError("Failed to load categories. Please try again later.");
-        setLoading(false);
-      }
+    if (initialCategories.length > 0) {
+      setCategories(initialCategories);
     }
-
-    fetchCategories();
-  }, []);
+  }, [initialCategories]);
 
   return (
     <>
@@ -105,5 +103,47 @@ export default function CategoriesPage() {
       </main>
     </>
   );
+}
+
+export async function getStaticProps() {
+  console.log("[getStaticProps /blog/categories] Running...");
+  try {
+    const blogs = await runQuery<BlogPost>(
+      "blogs",
+      [fieldFilter("isPublished", "EQUAL", true)]
+    );
+
+    const categoryMap: Record<string, number> = {};
+    blogs.forEach((blog) => {
+      if (
+        blog.category &&
+        blog.category !== "" &&
+        blog.category !== "Uncategorized"
+      ) {
+        categoryMap[blog.category] = (categoryMap[blog.category] || 0) + 1;
+      }
+    });
+
+    const categories = Object.entries(categoryMap)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    console.log(`[getStaticProps /blog/categories] Found ${categories.length} categories.`);
+
+    return {
+      props: {
+        initialCategories: JSON.parse(JSON.stringify(categories)),
+      },
+      revalidate: 3600,
+    };
+  } catch (error) {
+    console.error("[getStaticProps /blog/categories] Error fetching data:", error);
+    return {
+      props: {
+        initialCategories: [],
+      },
+      revalidate: 60,
+    };
+  }
 }
 

@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getDocument, createDocument } from "@/lib/firebase";
 import bcrypt from "bcryptjs";
+import { IUser } from "@/models/User";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   if (req.method !== "POST") {
@@ -30,12 +31,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       password: hashedPassword,
       role: "user",
       createdAt: new Date(),
-    });
+    }) as any as IUser;
+
+    if (!user) {
+      throw new Error("Failed to create user document");
+    }
 
     return res.status(201).json({
       message: "User created successfully",
       user: {
-        _id: user._id,
+        id: user.id || user._id,
         name: user.name,
         email: user.email,
         role: user.role,

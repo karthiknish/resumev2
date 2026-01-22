@@ -17,20 +17,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   }
 
-  logger.info(`AI Search initiated for query: "${query}"`);
+  logger.info("AI Search", `Initiated for query: "${query}"`, { query });
 
   try {
-    const posts = await runQuery(
+    interface BlogPreview {
+      slug: string;
+      title: string;
+      description?: string;
+      id?: string;
+      _id?: string;
+    }
+
+    const posts = await runQuery<BlogPreview>(
       "blogs",
       [fieldFilter("isPublished", "EQUAL", true)]
     );
 
     if (!posts || posts.length === 0) {
-      logger.warn("No blog posts found for AI search context.");
+      logger.warn("AI Search", "No blog posts found for context.", { postsLength: 0 });
       return res.status(200).json({ results: [] });
     }
 
-    const contentForPrompt = posts.map((post: any) => ({
+    const contentForPrompt = posts.map((post) => ({
       id: post.slug,
       title: post.title,
       description: post.description,
@@ -48,14 +56,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       If no posts are relevant, return an empty array [].
     `;
 
-    logger.info("Sending request to Gemini for AI search ranking...");
+    logger.info("AI Search", "Sending request to Gemini for ranking...", { promptLength: prompt.length });
 
     const geminiResponse = await callGemini(prompt, {
       temperature: 0.4,
       maxOutputTokens: 1024,
     });
 
-    logger.info("Received response from Gemini.");
+    logger.info("AI Search", "Received response from Gemini.", { responseLength: geminiResponse?.length });
 
     let rankedSlugs: string[] = [];
     try {
@@ -64,41 +72,41 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (!Array.isArray(rankedSlugs)) {
         throw new Error("Gemini response was not a valid JSON array.");
       }
-      logger.info(`Gemini ranked slugs: ${JSON.stringify(rankedSlugs)}`);
-    } catch (parseError) {
-      logger.error(`Error parsing Gemini response: ${parseError.message}. Raw response: ${geminiResponse.substring(0, 500)}`);
+      logger.info("AI Search", `Gemini ranked slugs: ${JSON.stringify(rankedSlugs)}`, { count: rankedSlugs.length });
+    } catch (parseError: unknown) {
+      logger.error("AI Search", `Error parsing Gemini response: ${parseError instanceof Error ? parseError.message : String(parseError)}`, { rawResponse: geminiResponse.substring(0, 500) });
       return res.status(500).json({
         message: "Failed to parse AI ranking response.",
-        details: parseError.message,
+        details: parseError instanceof Error ? parseError.message : String(parseError),
       });
     }
 
-    const rankedPosts = [];
+    const rankedPosts: { id: string; title: string; slug: string; description?: string }[] = [];
     if (rankedSlugs.length > 0) {
-      const postsMap = new Map(posts.map((p: any) => [p.slug, p]));
+      const postsMap = new Map(posts.map((p) => [p.slug, p]));
       for (const slug of rankedSlugs) {
         const post = postsMap.get(slug);
         if (post) {
           rankedPosts.push({
-            _id: post._id,
+            id: post.id ?? post._id ?? post.slug,
             title: post.title,
             slug: post.slug,
             description: post.description,
           });
         } else {
-          logger.warn(`Gemini returned slug "${slug}" which was not found in the initial fetch.`);
+          logger.warn("AI Search", `Gemini returned slug "${slug}" which was not found.`, { slug });
         }
       }
     }
 
-    logger.info(`Returning ${rankedPosts.length} ranked results for query "${query}"`);
+    logger.info("AI Search", `Returning ${rankedPosts.length} ranked results for query "${query}"`, { count: rankedPosts.length });
 
     return res.status(200).json({ results: rankedPosts });
-  } catch (error) {
-    logger.error(`Error in AI search API: ${error.message}`, { stack: (error as Error).stack });
+  } catch (error: unknown) {
+    logger.error("AI Search", `Error in AI search API: ${error instanceof Error ? error.message : String(error)}`, { stack: error instanceof Error ? error.stack : undefined });
     return res.status(500).json({
       message: "Internal Server Error during AI search.",
-      details: (error as Error).message,
+      details: error instanceof Error ? error.message : String(error),
     });
   }
 }

@@ -19,7 +19,7 @@ import { CommandItem as CommandType } from "@/types";
 
 interface CommandGroup {
   title: string;
-  items: any[];
+  items: CommandType[];
 }
 
 interface CommandPaletteProps {}
@@ -108,8 +108,8 @@ export default function CommandPalette({}: CommandPaletteProps) {
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown as any);
-    return () => document.removeEventListener("keydown", handleKeyDown as any);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, activeIndex, allItems]);
 
   const handleClose = useCallback(() => {
@@ -127,8 +127,8 @@ export default function CommandPalette({}: CommandPaletteProps) {
   }, [handleClose]);
 
   const CommandItem = ({ icon, label, shortcut, item, active, setActive }: {
-    icon?: string;
-    label: string;
+    icon?: string | React.ReactNode;
+    label?: string;
     shortcut?: string;
     item: CommandType;
     active: boolean;
@@ -142,7 +142,14 @@ export default function CommandPalette({}: CommandPaletteProps) {
       setActive?.();
     }, [setActive]);
 
-    const Icon = icon && iconMap[icon];
+    const renderIcon = () => {
+      if (!icon) return null;
+      if (typeof icon === "string") {
+        const Icon = iconMap[icon];
+        return Icon ? <Icon className="w-5 h-5" /> : null;
+      }
+      return icon;
+    };
 
     return (
       <button
@@ -154,7 +161,7 @@ export default function CommandPalette({}: CommandPaletteProps) {
             : "hover:bg-[hsl(var(--color-accent))]/50 text-[hsl(var(--color-foreground))]"
         }`}
       >
-        {Icon && <Icon className="w-5 h-5" />}
+        {renderIcon()}
         <span className="flex-1 text-left font-medium">{label}</span>
         {shortcut && (
           <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 text-xs font-mono rounded bg-[hsl(var(--color-muted))] text-[hsl(var(--color-muted-foreground))]">

@@ -2,12 +2,22 @@
 // src/pages/api/ai/blog-from-link.js
 
 import axios from "axios";
+// @ts-ignore - unfluff doesn't have types
 import unfluff from "unfluff";
 import { callGemini } from "@/lib/gemini";
+import { NextApiRequest, NextApiResponse } from "next";
+
+interface ParsedAIResponse {
+  title: string;
+  keywords: string[];
+  descriptions: string[];
+  categories: string[];
+  body: string;
+}
 
 // Helper to parse structured AI response
-const parseStructuredResponse = (responseText) => {
-  const output = {
+const parseStructuredResponse = (responseText: string): ParsedAIResponse => {
+  const output: ParsedAIResponse = {
     title: "AI Generated Post", // Default title
     keywords: [],
     descriptions: [],
@@ -15,7 +25,7 @@ const parseStructuredResponse = (responseText) => {
     body: "",
   };
 
-  const sections = {
+  const sections: Record<string, keyof ParsedAIResponse> = {
     KEYWORDS: "keywords",
     DESCRIPTIONS: "descriptions",
     CATEGORIES: "categories",
@@ -35,9 +45,10 @@ const parseStructuredResponse = (responseText) => {
         if (value) {
           // For list sections, split by comma or add directly if single item
           if (['keywords', 'categories'].includes(currentSection)) {
-            output[currentSection].push(...value.split(',').map(s => s.trim()).filter(Boolean));
+            const arr = output[currentSection as 'keywords' | 'categories'];
+            arr.push(...value.split(',').map(s => s.trim()).filter(Boolean));
           } else if (currentSection === 'descriptions') {
-            output[currentSection].push(value); // Each description on its own line
+            output.descriptions.push(value); // Each description on its own line
           } else if (currentSection === 'body') {
              // This case shouldn't happen if BODY is handled below, but as fallback
              output.body += value + '\n'; 
@@ -76,7 +87,7 @@ const parseStructuredResponse = (responseText) => {
   return output;
 };
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -215,19 +226,24 @@ BODY:
       descriptions: parsedData.descriptions,
       categories: parsedData.categories,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error in blog-from-link:", error);
+    const message = error instanceof Error ? error.message : "Failed to process the article URL.";
     // Check if the error is the specific "Prompt cannot be empty" from callGemini
-    if (error.message === "Prompt cannot be empty.") {
+    if (message === "Prompt cannot be empty.") {
       return res.status(422).json({
         error: "Failed to generate a valid prompt from the article content.",
       });
     }
+
+    if (axios.isAxiosError(error)) {
+      return res.status(500).json({
+        error: error.response?.data?.error || error.message || "Failed to process the article URL.",
+      });
+    }
+
     return res.status(500).json({
-      error:
-        error.response?.data?.error ||
-        error.message ||
-        "Failed to process the article URL.",
+      error: message,
     });
   }
 }

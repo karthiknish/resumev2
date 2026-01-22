@@ -5,14 +5,40 @@ import {
   useImperativeHandle,
   useMemo,
   useState,
-  memo,
   useRef,
 } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, Transition, TargetAndTransition, VariantLabels } from "framer-motion";
 
 import { cn } from "@/lib/utils";
 
-const TextRotate = forwardRef(
+interface TextRotateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "initial" | "animate" | "exit"> {
+  texts: string[];
+  transition?: Transition;
+  initial?: TargetAndTransition | VariantLabels;
+  animate?: TargetAndTransition | VariantLabels;
+  exit?: TargetAndTransition | VariantLabels;
+  animatePresenceMode?: "wait" | "popLayout" | "sync";
+  animatePresenceInitial?: boolean;
+  rotationInterval?: number;
+  staggerDuration?: number;
+  staggerFrom?: "first" | "last" | "center" | "random" | number;
+  loop?: boolean;
+  auto?: boolean;
+  splitBy?: "characters" | "words" | "lines" | string;
+  onNext?: (index: number) => void;
+  mainClassName?: string;
+  splitLevelClassName?: string;
+  elementLevelClassName?: string;
+}
+
+export interface TextRotateRef {
+  next: () => void;
+  previous: () => void;
+  jumpTo: (index: number) => void;
+  reset: () => void;
+}
+
+const TextRotate = forwardRef<TextRotateRef, TextRotateProps>(
   (
     {
       texts,
@@ -38,7 +64,7 @@ const TextRotate = forwardRef(
   ) => {
     const [currentTextIndex, setCurrentTextIndex] = useState(0);
     const [isInView, setIsInView] = useState(false);
-    const elementRef = useRef(null);
+    const elementRef = useRef<HTMLDivElement>(null);
 
     // Defer animation initialization until component is in view
     useEffect(() => {
@@ -63,9 +89,10 @@ const TextRotate = forwardRef(
     }, []);
 
     // handy function to split text into characters with support for unicode and emojis
-    const splitIntoCharacters = useCallback((text) => {
+    const splitIntoCharacters = useCallback((text: string) => {
       if (typeof Intl !== "undefined" && "Segmenter" in Intl) {
-        const segmenter = new Intl.Segmenter("en", { granularity: "grapheme" });
+        const Segmenter = (Intl as unknown as { Segmenter: new (lang: string, options: { granularity: string }) => { segment: (text: string) => Iterable<{ segment: string }> } }).Segmenter;
+        const segmenter = new Segmenter("en", { granularity: "grapheme" });
         return Array.from(segmenter.segment(text), ({ segment }) => segment);
       }
       // Fallback for browsers that don't support Intl.Segmenter
@@ -89,7 +116,7 @@ const TextRotate = forwardRef(
     }, [texts, currentTextIndex, splitBy, splitIntoCharacters]);
 
     const getStaggerDelay = useCallback(
-      (index, totalChars) => {
+      (index: number, totalChars: number) => {
         const total = totalChars;
         if (staggerFrom === "first") return index * staggerDuration;
         if (staggerFrom === "last")
@@ -102,14 +129,14 @@ const TextRotate = forwardRef(
           const randomIndex = Math.floor(Math.random() * total);
           return Math.abs(randomIndex - index) * staggerDuration;
         }
-        return Math.abs(staggerFrom - index) * staggerDuration;
+        return Math.abs((staggerFrom as number) - index) * staggerDuration;
       },
       [staggerFrom, staggerDuration]
     );
 
     // Helper function to handle index changes and trigger callback
     const handleIndexChange = useCallback(
-      (newIndex) => {
+      (newIndex: number) => {
         setCurrentTextIndex(newIndex);
         onNext?.(newIndex);
       },
@@ -143,7 +170,7 @@ const TextRotate = forwardRef(
     }, [currentTextIndex, texts.length, loop, handleIndexChange]);
 
     const jumpTo = useCallback(
-      (index) => {
+      (index: number) => {
         const validIndex = Math.max(0, Math.min(index, texts.length - 1));
         if (validIndex !== currentTextIndex) {
           handleIndexChange(validIndex);
@@ -170,17 +197,6 @@ const TextRotate = forwardRef(
       [next, previous, jumpTo, reset]
     );
 
-    // Memoize the split text calculation to avoid recalculating on every render
-    const splitTexts = useMemo(() => {
-      if (!texts || !texts.length) return [];
-      return texts.map((text) => {
-        if (splitBy === "characters") {
-          return splitIntoCharacters(text);
-        }
-        // ... existing code for other split methods ...
-      });
-    }, [texts, splitBy, splitIntoCharacters]);
-
     // Only start the rotation interval when in view
     useEffect(() => {
       if (!auto || !isInView) return;
@@ -190,18 +206,11 @@ const TextRotate = forwardRef(
       }, rotationInterval);
 
       return () => clearInterval(intervalId);
-    }, [currentTextIndex, rotationInterval, auto, isInView, texts?.length]);
+    }, [currentTextIndex, rotationInterval, auto, isInView, next]);
 
     return (
       <div
-        ref={(el) => {
-          elementRef.current = el;
-          if (typeof ref === "function") {
-            ref(el);
-          } else if (ref) {
-            ref.current = el;
-          }
-        }}
+        ref={elementRef}
         className={cn(mainClassName)}
         {...props}
       >
@@ -212,6 +221,7 @@ const TextRotate = forwardRef(
             initial={animatePresenceInitial}
           >
             <motion.div
+              key={currentTextIndex}
               className={cn(
                 "flex flex-wrap",
                 splitBy === "lines" && "flex-col w-full"
@@ -220,8 +230,8 @@ const TextRotate = forwardRef(
               aria-hidden="true"
             >
               {(splitBy === "characters"
-                ? elements
-                : elements.map((el, i) => ({
+                ? (elements as { characters: string[]; needsSpace: boolean }[])
+                : (elements as string[]).map((el, i) => ({
                     characters: [el],
                     needsSpace: i !== elements.length - 1,
                   }))
@@ -235,7 +245,7 @@ const TextRotate = forwardRef(
                     key={wordIndex}
                     className={cn("inline-flex", splitLevelClassName)}
                   >
-                    {wordObj.characters.map((char, charIndex) => (
+                    {wordObj.characters.map((char: string, charIndex: number) => (
                       <motion.span
                         initial={initial}
                         animate={animate}
@@ -272,5 +282,5 @@ const TextRotate = forwardRef(
 
 TextRotate.displayName = "TextRotate";
 
-// Export a memoized version to prevent unnecessary re-renders
 export { TextRotate };
+

@@ -15,9 +15,9 @@ import { useAnimationFrame } from "framer-motion"; // Changed from motion/react
 import { cn } from "@/lib/utils";
 
 // Throttle function for performance
-const throttle = (callback: Function, delay: number) => {
+const throttle = <T extends unknown[]>(callback: (...args: T) => void, delay: number) => {
   let lastCall = 0;
-  return function (...args: any[]) {
+  return function (...args: T) {
     const now = Date.now();
     if (now - lastCall < delay) return;
     lastCall = now;
@@ -26,7 +26,7 @@ const throttle = (callback: Function, delay: number) => {
 };
 
 // Custom hook to track mouse position
-const useMousePositionRef = (containerRef: React.RefObject<HTMLDivElement>) => {
+const useMousePositionRef = (containerRef: React.RefObject<HTMLDivElement | null>) => {
   const mousePositionRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {

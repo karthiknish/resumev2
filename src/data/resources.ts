@@ -1,6 +1,16 @@
 // Converted to TypeScript - migrated
 // Resource data for the resources page
-const resources = [
+
+export interface Resource {
+  title: string;
+  description: string;
+  link: string;
+  category: string;
+  tags: string[];
+  featured: boolean;
+}
+
+const resources: Resource[] = [
   {
     title: "React Performance Optimization Techniques",
     description:
@@ -407,7 +417,13 @@ const resources = [
   },
 ];
 
-export const categories = [
+export interface Category {
+  id: string;
+  name: string;
+  icon?: string;
+}
+
+export const categories: Category[] = [
   { id: "all", name: "All Resources" },
   { id: "uk", name: "UK Resources", icon: "FaFlag" },
   { id: "tools", name: "Development Tools", icon: "FaTools" },

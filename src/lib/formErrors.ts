@@ -14,5 +14,7 @@ export const FORM_ERRORS = {
   SUBMISSION_FAILED: "Failed to submit. Please try again.",
   SUBSCRIPTION_FAILED: "Subscription failed. Please try again.",
   CONTACT_FAILED: "Failed to send message. Please try again.",
+  VALIDATION_REQUIRED: "All fields are required",
+  LOGIN_FAILED: "Login failed. Please check your credentials.",
 };
 

@@ -1,7 +1,7 @@
 // Converted to TypeScript - migrated
 // src/components/admin/blog-editor/MetadataSection.js
 import React, { useState, useCallback } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -11,63 +11,74 @@ import { Switch } from "@/components/ui/switch";
 import { DatePicker } from "@/components/ui/datepicker";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
+import { BlogFormData } from "@/types";
+
+interface MetadataSectionProps {
+  formData: BlogFormData;
+  onFormChange: (
+    fieldOrPatch: keyof BlogFormData | Partial<BlogFormData>,
+    maybeValue?: BlogFormData[keyof BlogFormData]
+  ) => void;
+  isPublished: boolean;
+  onPublishChange: (checked: boolean) => void;
+}
 
 function MetadataSection({
   formData,
   onFormChange,
   isPublished,
   onPublishChange,
-}) {
+}: MetadataSectionProps) {
   // State for Description Suggestions
   const [isSuggestingDesc, setIsSuggestingDesc] = useState(false);
   const [descSuggestionError, setDescSuggestionError] = useState("");
-  const [descSuggestions, setDescSuggestions] = useState([]);
+  const [descSuggestions, setDescSuggestions] = useState<string[]>([]);
 
   // State for Category Suggestions
   const [isSuggestingCat, setIsSuggestingCat] = useState(false);
   const [catSuggestionError, setCatSuggestionError] = useState("");
-  const [catSuggestions, setCatSuggestions] = useState([]);
+  const [catSuggestions, setCatSuggestions] = useState<string[]>([]);
 
   // State for Keyword/Tag Suggestions
   const [isSuggestingKeywords, setIsSuggestingKeywords] = useState(false);
   const [keywordSuggestionError, setKeywordSuggestionError] = useState("");
-  const [keywordSuggestions, setKeywordSuggestions] = useState([]);
+  const [keywordSuggestions, setKeywordSuggestions] = useState<string[]>([]);
 
   // Scheduled Publishing state
   const [isScheduleMode, setIsScheduleMode] = useState(false);
 
   // Check if the post has a scheduled publish date
-  const hasScheduledDate = formData.scheduledPublishAt &&
-    new Date(formData.scheduledPublishAt) > new Date();
+  const hasScheduledDate = !!(formData.scheduledPublishAt &&
+    new Date(formData.scheduledPublishAt) > new Date());
 
   // Format scheduled date for display
-  const formattedScheduledDate = hasScheduledDate
+  const formattedScheduledDate = hasScheduledDate && formData.scheduledPublishAt
     ? format(new Date(formData.scheduledPublishAt), "PPP 'at' p")
     : null;
 
   // Handle scheduled date change
-  const handleScheduledDateChange = (date) => {
-    onFormChange({ ...formData, scheduledPublishAt: date ? date.toISOString() : null });
+  const handleScheduledDateChange = (date: Date | null) => {
+    onFormChange({ scheduledPublishAt: date ? date.toISOString() : null });
   };
 
   // Clear scheduled date
   const clearScheduledDate = () => {
-    onFormChange({ ...formData, scheduledPublishAt: null });
+    onFormChange({ scheduledPublishAt: null });
     setIsScheduleMode(false);
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    const fieldName = name === "description" ? "excerpt" : name;
-    onFormChange({ ...formData, [fieldName]: value });
+    const fieldName = (name === "description" ? "excerpt" : name) as keyof BlogFormData;
+    onFormChange(fieldName, value);
   };
 
-  const handleTagsChange = (e) => {
+  const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const tags = e.target.value
       .split(",")
       .map((tag) => tag.trim())
       .filter(Boolean);
-    onFormChange({ ...formData, tags });
+    onFormChange({ tags });
   };
 
   // --- AI Suggestion Handlers ---
@@ -90,15 +101,16 @@ function MetadataSection({
       } else {
         setDescSuggestionError("Could not fetch description suggestions.");
       }
-    } catch (err) {
-      console.error("Description suggestion error:", err);
+    } catch (err: unknown) {
+      const error = err as AxiosError<{ error?: string }>;
+      console.error("Description suggestion error:", error);
       setDescSuggestionError(
-        err.response?.data?.error || err.message || "Failed to get suggestions."
+        error.response?.data?.error || error.message || "Failed to get suggestions."
       );
     } finally {
       setIsSuggestingDesc(false);
     }
-  }, [formData.title, formData.content]);
+  }, [formData.title, formData.content, onFormChange]);
 
   const handleSuggestCategories = useCallback(async () => {
     if (!formData.title && !formData.content) {
@@ -118,15 +130,16 @@ function MetadataSection({
       } else {
         setCatSuggestionError("Could not fetch category suggestions.");
       }
-    } catch (err) {
-      console.error("Category suggestion error:", err);
+    } catch (err: unknown) {
+      const error = err as AxiosError<{ error?: string }>;
+      console.error("Category suggestion error:", error);
       setCatSuggestionError(
-        err.response?.data?.error || err.message || "Failed to get suggestions."
+        error.response?.data?.error || error.message || "Failed to get suggestions."
       );
     } finally {
       setIsSuggestingCat(false);
     }
-  }, [formData.title, formData.content]);
+  }, [formData.title, formData.content, onFormChange]);
 
   // New handler for suggesting keywords/tags
   const handleSuggestKeywords = useCallback(async () => {
@@ -147,21 +160,22 @@ function MetadataSection({
       } else {
         setKeywordSuggestionError("Could not fetch keyword suggestions.");
       }
-    } catch (err) {
-      console.error("Keyword suggestion error:", err);
+    } catch (err: unknown) {
+      const error = err as AxiosError<{ error?: string }>;
+      console.error("Keyword suggestion error:", error);
       setKeywordSuggestionError(
-        err.response?.data?.error || err.message || "Failed to get suggestions."
+        error.response?.data?.error || error.message || "Failed to get suggestions."
       );
     } finally {
       setIsSuggestingKeywords(false);
     }
-  }, [formData.title, formData.content]);
+  }, [formData.title, formData.content, onFormChange]);
 
   // Function to add a suggested tag if not already present
-  const addSuggestedTag = (tagToAdd) => {
+  const addSuggestedTag = (tagToAdd: string) => {
     const currentTags = formData.tags || [];
     if (!currentTags.includes(tagToAdd)) {
-      onFormChange({ ...formData, tags: [...currentTags, tagToAdd] });
+      onFormChange({ tags: [...currentTags, tagToAdd] });
     }
   };
 
@@ -199,7 +213,7 @@ function MetadataSection({
             name="description"
             value={formData.excerpt || ""}
             onChange={(e) =>
-              onFormChange({ ...formData, excerpt: e.target.value })
+              onFormChange("excerpt", e.target.value)
             }
             className="bg-background border-input focus:border-blue-600 focus:ring-blue-600"
             placeholder="A short summary for previews and SEO (120-155 chars recommended)..."
@@ -221,7 +235,7 @@ function MetadataSection({
                   key={index}
                   type="button"
                   onClick={() =>
-                    onFormChange({ ...formData, excerpt: suggestion })
+                    onFormChange("excerpt", suggestion)
                   }
                   className="px-1.5 py-0.5 text-xs text-left bg-muted text-foreground rounded hover:bg-blue-600 hover:text-white transition-colors"
                 >
@@ -278,7 +292,7 @@ function MetadataSection({
                   key={index}
                   type="button"
                   onClick={() =>
-                    onFormChange({ ...formData, category: suggestion })
+                    onFormChange("category", suggestion)
                   }
                   className="px-1.5 py-0.5 text-xs bg-muted text-foreground rounded hover:bg-blue-600 hover:text-white transition-colors"
                 >
@@ -471,4 +485,3 @@ function MetadataSection({
 }
 
 export default MetadataSection;
-

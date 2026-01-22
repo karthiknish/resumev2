@@ -15,8 +15,32 @@ import { motion } from "framer-motion";
 import { AccordionItemSkeleton } from "@/components/ui/loading-states";
 import { EmptyState } from "@/components/ui/empty-state";
 
+interface ChatMessagePart {
+  text?: string;
+}
+
+interface ChatMessage {
+  role: "user" | "model" | "assistant" | string;
+  parts?: ChatMessagePart[];
+  text?: string;
+  content?: string;
+  timestamp?: string | Date;
+}
+
+interface ChatHistory {
+  id: string;
+  _id?: string;
+  email?: string;
+  messages: ChatMessage[];
+  timestamp?: string | Date;
+  lastUpdated?: string | Date;
+  device?: string;
+  browser?: string;
+  ip?: string;
+}
+
 // Simple date formatter
-const formatDate = (dateString) => {
+const formatDate = (dateString: string | Date | undefined) => {
   if (!dateString) return "N/A";
   return new Date(dateString).toLocaleString("en-GB", {
     year: "numeric",
@@ -29,10 +53,10 @@ const formatDate = (dateString) => {
 };
 
 export default function ChatHistoryTab() {
-  const [chatHistories, setChatHistories] = useState([]);
-  const [filteredHistories, setFilteredHistories] = useState([]);
+  const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
+  const [filteredHistories, setFilteredHistories] = useState<ChatHistory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
@@ -50,9 +74,11 @@ export default function ChatHistoryTab() {
         const data = await response.json();
         if (data.success && data.data && Array.isArray(data.data)) {
           // Sort by most recent first
-          const sortedHistories = data.data.sort((a, b) => 
-            new Date(b.timestamp || b.lastUpdated) - new Date(a.timestamp || a.lastUpdated)
-          );
+          const sortedHistories = (data.data as ChatHistory[]).sort((a, b) => {
+            const timeA = new Date(a.timestamp || a.lastUpdated || 0).getTime();
+            const timeB = new Date(b.timestamp || b.lastUpdated || 0).getTime();
+            return timeB - timeA;
+          });
           setChatHistories(sortedHistories);
           setFilteredHistories(sortedHistories);
         } else {
@@ -60,9 +86,10 @@ export default function ChatHistoryTab() {
           setFilteredHistories([]);
           setError("No chat histories found or invalid response format");
         }
-      } catch (err) {
-        setError(err.message);
-        toast.error(err.message || "Could not load chat histories.");
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
+        setError(errorMessage);
+        toast.error(errorMessage || "Could not load chat histories.");
       } finally {
         setIsLoading(false);
       }
@@ -107,13 +134,13 @@ export default function ChatHistoryTab() {
   }, [searchTerm, chatHistories]);
 
   // Helper function to render message content safely
-  const renderMessageContent = (msg) => {
+  const renderMessageContent = (msg: ChatMessage) => {
     // Handle different message formats
     let content = "";
     
     // Gemini API format
     if (Array.isArray(msg.parts) && msg.parts.length > 0) {
-      content = msg.parts.map(part => part?.text ?? "").join("");
+      content = msg.parts.map((part) => part?.text ?? "").join("");
     } 
     // Standard text formats
     else if (typeof msg.text === "string") {
@@ -129,7 +156,7 @@ export default function ChatHistoryTab() {
           {content.split("\n").map((line, i) => (
             <React.Fragment key={i}>
               {line}
-              {i < content.split("\n").length - 1 && <br />}
+              {i < content.split("\n").length - 1 ? <br /> : null}
             </React.Fragment>
           ))}
         </div>
@@ -177,8 +204,8 @@ export default function ChatHistoryTab() {
           </div>
         </div>
         
-        {isLoading && <AccordionItemSkeleton count={5} />}
-        {error && !isLoading && (
+        {isLoading ? <AccordionItemSkeleton count={5} /> : null}
+        {error && !isLoading ? (
           <motion.div 
             className="text-center py-12"
             initial={{ opacity: 0, scale: 0.9 }}
@@ -188,8 +215,8 @@ export default function ChatHistoryTab() {
               <p className="text-sm font-medium text-destructive">Unable to load conversations. {error}</p>
             </div>
           </motion.div>
-        )}
-        {!isLoading && !error && filteredHistories.length === 0 && (
+        ) : null}
+        {!isLoading && !error && filteredHistories.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -204,8 +231,8 @@ export default function ChatHistoryTab() {
               illustration="inbox"
             />
           </motion.div>
-        )}
-        {!isLoading && !error && filteredHistories.length > 0 && (
+        ) : null}
+        {!isLoading && !error && filteredHistories.length > 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -227,7 +254,7 @@ export default function ChatHistoryTab() {
             <Accordion type="single" collapsible className="w-full space-y-3">
               {filteredHistories.map((history, index) => (
                 <motion.div
-                  key={history._id || index}
+                  key={history.id || index}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
@@ -262,7 +289,7 @@ export default function ChatHistoryTab() {
                         {history.messages?.map((msg, msgIndex) => {
                           if (!msg) {
                             console.warn(
-                              `Skipping null/undefined message at index ${msgIndex} in history ${history._id}`
+                              `Skipping null/undefined message at index ${msgIndex} in history ${history.id}`
                             );
                             return null;
                           }
@@ -333,7 +360,7 @@ export default function ChatHistoryTab() {
               ))}
             </Accordion>
           </motion.div>
-        )}
+        ) : null}
         </CardContent>
       </Card>
     </motion.div>

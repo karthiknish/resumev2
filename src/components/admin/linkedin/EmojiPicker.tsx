@@ -188,6 +188,8 @@ const EMOJI_CATEGORIES = {
   },
 };
 
+type EmojiCategoryKey = keyof typeof EMOJI_CATEGORIES;
+
 /**
  * Emoji search keywords for better search results
  */
@@ -222,9 +224,15 @@ export default function EmojiPicker({
   trigger,
   open: controlledOpen,
   onOpenChange,
+}: {
+  onEmojiSelect: (emoji: string) => void;
+  triggerClassName?: string;
+  trigger?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (value: boolean) => void;
 }) {
   const [open, setOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState("frequently");
+  const [activeCategory, setActiveCategory] = useState<EmojiCategoryKey>("frequently");
   const [searchQuery, setSearchQuery] = useState("");
   const [frequentlyUsed, setFrequentlyUsed] = useState(
     EMOJI_CATEGORIES.frequently.emojis
@@ -233,7 +241,7 @@ export default function EmojiPicker({
   // Use controlled state if provided, otherwise use internal state
   const isControlled = controlledOpen !== undefined;
   const isOpen = isControlled ? controlledOpen : open;
-  const setIsOpen = (value) => {
+  const setIsOpen = (value: boolean) => {
     if (isControlled) {
       onOpenChange?.(value);
     } else {
@@ -250,17 +258,18 @@ export default function EmojiPicker({
     }
 
     const query = searchQuery.toLowerCase();
-    const results = new Set();
+    const results = new Set<string>();
 
     // Search in keyword mappings
     Object.entries(EMOJI_KEYWORDS).forEach(([keyword, emojis]) => {
       if (keyword.includes(query)) {
-        emojis.forEach((emoji) => results.add(emoji));
+        emojis.forEach((emoji: string) => results.add(emoji));
       }
     });
 
     // Search by category name
-    Object.entries(EMOJI_CATEGORIES).forEach(([key, category]) => {
+    (Object.entries(EMOJI_CATEGORIES) as Array<[EmojiCategoryKey, typeof EMOJI_CATEGORIES[EmojiCategoryKey]]>).forEach(
+      ([_, category]) => {
       if (category.name.toLowerCase().includes(query)) {
         category.emojis.forEach((emoji) => results.add(emoji));
       }
@@ -273,7 +282,7 @@ export default function EmojiPicker({
    * Handle emoji selection
    */
   const handleEmojiSelect = useCallback(
-    (emoji) => {
+    (emoji: string) => {
       onEmojiSelect?.(emoji);
 
       // Update frequently used
@@ -292,7 +301,7 @@ export default function EmojiPicker({
    * Handle keyboard navigation
    */
   const handleKeyDown = useCallback(
-    (e, emoji) => {
+    (e: React.KeyboardEvent<HTMLButtonElement>, emoji: string) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         handleEmojiSelect(emoji);
@@ -356,7 +365,8 @@ export default function EmojiPicker({
           {/* Category tabs */}
           {!searchQuery && (
             <div className="flex border-b border-border overflow-x-auto">
-              {Object.entries(EMOJI_CATEGORIES).map(([key, category]) => (
+              {(Object.entries(EMOJI_CATEGORIES) as Array<[EmojiCategoryKey, typeof EMOJI_CATEGORIES[EmojiCategoryKey]]>).map(
+                ([key, category]) => (
                 <button
                   key={key}
                   type="button"
@@ -378,7 +388,7 @@ export default function EmojiPicker({
             <div className="p-2">
               <div className="grid grid-cols-8 gap-1">
                 <AnimatePresence mode="popLayout">
-                  {filteredEmojis.map((emoji, index) => (
+                  {filteredEmojis.map((emoji: string, index: number) => (
                     <motion.button
                       key={emoji + (index || "")}
                       type="button"
@@ -420,9 +430,17 @@ export default function EmojiPicker({
  * Emoji picker button for use with textarea/inputs
  * Automatically inserts emoji at cursor position
  */
-export function EmojiPickerButton({ textareaRef, onEmojiInsert, buttonClassName }) {
+export function EmojiPickerButton({
+  textareaRef,
+  onEmojiInsert,
+  buttonClassName,
+}: {
+  textareaRef?: React.RefObject<HTMLTextAreaElement>;
+  onEmojiInsert?: (emoji: string) => void;
+  buttonClassName?: string;
+}) {
   const handleEmojiSelect = useCallback(
-    (emoji) => {
+    (emoji: string) => {
       if (onEmojiInsert) {
         onEmojiInsert(emoji);
         return;
@@ -449,4 +467,3 @@ export function EmojiPickerButton({ textareaRef, onEmojiInsert, buttonClassName 
 
   return <EmojiPicker onEmojiSelect={handleEmojiSelect} triggerClassName={buttonClassName} />;
 }
-

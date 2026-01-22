@@ -74,11 +74,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       size: uploadedFile.size,
       mimetype: uploadedFile.mimetype,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Upload error:", error);
     return res.status(500).json({
       success: false,
-      message: (error as Error).message || "Failed to upload file",
+      message: error instanceof Error ? error.message : "Failed to upload file",
     });
   }
 }

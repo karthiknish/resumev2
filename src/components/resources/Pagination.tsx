@@ -3,7 +3,16 @@ import React from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const Pagination = ({
+interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  paginate: (pageNumber: number) => void;
+  filteredResourcesLength: number;
+  indexOfFirstItem: number;
+  indexOfLastItem: number;
+}
+
+const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
   paginate,

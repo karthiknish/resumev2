@@ -16,11 +16,16 @@ import {
 } from "@/components/ui/dialog";
 import PexelsImageSearch from "@/components/admin/PexelsImageSearch";
 
-function BannerImageSection({ imageUrl, onImageUrlChange }) {
+interface BannerImageSectionProps {
+  imageUrl: string;
+  onImageUrlChange: (url: string) => void;
+}
+
+function BannerImageSection({ imageUrl, onImageUrlChange }: BannerImageSectionProps) {
   const [showPexelsSearch, setShowPexelsSearch] = useState(false);
   const [manualImageUrl, setManualImageUrl] = useState("");
 
-  const handlePexelsImageSelect = (url) => {
+  const handlePexelsImageSelect = (url: string) => {
     onImageUrlChange(url);
     setShowPexelsSearch(false); // Close the dialog
   };

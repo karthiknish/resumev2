@@ -3,8 +3,14 @@ import React from "react";
 import ResourceCard from "./ResourceCard";
 import { motion } from "framer-motion";
 import { HoverCard } from "../animations/MotionComponents";
+import { Resource } from "@/data/resources";
 
-const ResourceList = ({ resources, clearFilters }) => {
+interface ResourceListProps {
+  resources: Resource[];
+  clearFilters: () => void;
+}
+
+const ResourceList: React.FC<ResourceListProps> = ({ resources, clearFilters }) => {
   if (resources.length === 0) {
     return (
       <motion.div

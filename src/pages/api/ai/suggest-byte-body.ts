@@ -2,17 +2,18 @@
 import { callGemini } from "@/lib/gemini";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
+import { NextApiRequest, NextApiResponse } from "next";
 
-async function isAdminUser(req, res) {
+async function isAdminUser(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
   return (
-    session?.user?.role === "admin" ||
-    session?.user?.isAdmin === true ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.role === "admin" ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.isAdmin === true ||
     session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL
   );
 }
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
     return res
       .status(405)
@@ -26,7 +27,7 @@ export default async function handler(req, res) {
       .json({ success: false, message: "Forbidden: Admin access required" });
   }
 
-  const { headline = "", numSuggestions = 3 } = req.body;
+  const { headline = "", numSuggestions = 3 } = req.body as { headline?: string; numSuggestions?: number };
 
   if (!headline) {
     return res
@@ -54,12 +55,12 @@ export default async function handler(req, res) {
     const generationConfig = {
       temperature: 0.7,
       maxOutputTokens: 1024, // Allow enough tokens for multiple suggestions
+      responseMimeType: "application/json",
     };
 
     const bodyJsonString = await callGemini(
       prompt,
-      generationConfig,
-      "application/json"
+      generationConfig
     );
 
     try {
@@ -132,13 +133,13 @@ export default async function handler(req, res) {
         }
       }
     }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error calling Gemini for byte body suggestions:", error);
     res
       .status(500)
       .json({
         success: false,
-        message: error.message || "Failed to generate body suggestions.",
+        message: error instanceof Error ? error.message : "Failed to generate body suggestions.",
       });
   }
 }

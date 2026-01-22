@@ -1,7 +1,18 @@
 // Converted to TypeScript - migrated
+import type { ComponentType } from "react";
 import { FileText, BookOpen, Megaphone, Sparkles } from "lucide-react";
 
-export const POST_TEMPLATES = {
+export interface TemplateItem {
+  id: string;
+  name: string;
+  icon: ComponentType<{ className?: string }>;
+  description: string;
+  template: string;
+}
+
+export type TemplateCategory = "hook" | "story" | "cta";
+
+export const POST_TEMPLATES: Record<TemplateCategory, TemplateItem[]> = {
   hook: [
     {
       id: "hook-controversial",
@@ -317,32 +328,31 @@ Let's discuss in the comments. 🗣️`,
   ],
 };
 
-export const getTemplate = (category, templateId) => {
+export const getTemplate = (category: TemplateCategory, templateId: string): TemplateItem | undefined => {
   return POST_TEMPLATES[category]?.find(t => t.id === templateId);
 };
 
-export const formatTemplate = (template, values = {}) => {
+export const formatTemplate = (template: string, values: Record<string, string> = {}): string => {
   return Object.entries(values).reduce(
     (acc, [key, value]) => acc.replace(new RegExp(`\\{${key}\\}`, 'g'), value || `{${key}}`),
     template
   );
 };
 
-export const getTemplateCategoryLabel = (category) => {
-  const labels = {
+export const getTemplateCategoryLabel = (category: TemplateCategory): string => {
+  const labels: Record<TemplateCategory, string> = {
     hook: "Hook Templates",
     story: "Story Templates",
     cta: "CTA Templates",
   };
-  return labels[category] || category;
+  return labels[category];
 };
 
-export const getTemplateCategoryIcon = (category) => {
-  const icons = {
+export const getTemplateCategoryIcon = (category: TemplateCategory) => {
+  const icons: Record<TemplateCategory, ComponentType<{ className?: string }>> = {
     hook: FileText,
     story: BookOpen,
     cta: Megaphone,
   };
-  return icons[category] || FileText;
+  return icons[category];
 };
-

@@ -1,16 +1,17 @@
 // Converted to TypeScript - migrated
 // src/pages/api/ai/blog-summarize.js
 import { callGemini } from "@/lib/gemini"; // Import the utility function
+import type { NextApiRequest, NextApiResponse } from "next";
 // Note: No need for getServerSession/authOptions here if it's intended to be public or called server-side after auth check
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Only allow POST requests
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    const { content, title } = req.body;
+    const { content, title } = req.body as { content: string; title?: string };
 
     if (!content || typeof content !== "string" || !content.trim()) {
       return res.status(400).json({
@@ -51,7 +52,10 @@ export default async function handler(req, res) {
     console.error("Error handling blog summarization:", error);
     return res
       .status(500)
-      .json({ error: "Internal server error", message: error.message });
+      .json({ 
+        error: "Internal server error", 
+        message: error instanceof Error ? error.message : "An unknown error occurred" 
+      });
   }
 }
 

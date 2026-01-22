@@ -38,13 +38,17 @@ export interface BlogFormData {
   slug?: string;
   content: string;
   excerpt?: string;
+  description?: string;
   category?: string;
   tags?: string[];
+  imageUrl?: string;
   featuredImage?: string;
   metaTitle?: string;
   metaDescription?: string;
   keywords?: string[];
+  isPublished?: boolean;
   status?: "draft" | "published";
+  scheduledPublishAt?: string | Date | null;
 }
 
 // User Types
@@ -61,18 +65,6 @@ export interface UserFormData {
   name: string;
   email: string;
   password: string;
-}
-
-export interface SessionUser {
-  id: string;
-  name?: string | null;
-  email?: string | null;
-  image?: string | null;
-  role?: string;
-}
-
-export interface AuthSession extends Session {
-  user?: SessionUser;
 }
 
 // Comment Types
@@ -131,7 +123,7 @@ export interface SubscriberFormData {
 }
 
 // API Response Types
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   message?: string;
@@ -251,7 +243,7 @@ export interface FormField {
 
 export interface FormProps {
   fields: FormField[];
-  onSubmit: (data: Record<string, any>) => Promise<void>;
+  onSubmit: (data: Record<string, unknown>) => Promise<void>;
   submitText?: string;
   loadingText?: string;
 }
@@ -307,7 +299,7 @@ export interface CookiePreferences {
 export interface AppError extends Error {
   code?: string;
   statusCode?: number;
-  details?: any;
+  details?: unknown;
 }
 
 // Hook Types

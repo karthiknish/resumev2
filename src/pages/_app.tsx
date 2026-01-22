@@ -102,12 +102,15 @@ const toastOptions = {
   },
 };
 
-interface AppProps {
-  Component: React.ComponentType<any> & { getLayout?: (page: React.ReactNode) => React.ReactNode };
-  pageProps: any & { session?: any };
+import { AppProps as NextAppProps } from "next/app";
+import { Session } from "next-auth";
+
+interface CustomAppProps extends NextAppProps {
+  Component: NextAppProps["Component"] & { getLayout?: (page: React.ReactNode) => React.ReactNode };
+  pageProps: NextAppProps["pageProps"] & { session?: Session | null };
 }
 
-const App: React.FC<AppProps> = ({ Component, pageProps: { session, ...pageProps } }) => {
+const App: React.FC<CustomAppProps> = ({ Component, pageProps: { session, ...pageProps } }) => {
   const router = useRouter();
   const [domLoaded, setDomLoaded] = useState(false);
   const [transitionType, setTransitionType] = useState("default");

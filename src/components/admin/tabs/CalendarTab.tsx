@@ -4,6 +4,7 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { AiOutlineFileAdd } from "react-icons/ai";
 import { Calendar, CalendarDayButton } from "@/components/ui/calendar"; // Import shadcn Calendar
+import { DayButtonProps } from "react-day-picker";
 import {
   Card,
   CardHeader,
@@ -24,7 +25,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 // Helper function to check if two dates are the same day
-const isSameDay = (date1, date2) => {
+const isSameDay = (date1: Date | null | undefined, date2: Date | null | undefined) => {
   if (!date1 || !date2) return false;
   return (
     date1.getDate() === date2.getDate() &&
@@ -33,13 +34,22 @@ const isSameDay = (date1, date2) => {
   );
 };
 
+interface BlogPost {
+  _id: string;
+  title: string;
+  description?: string;
+  createdAt: string | Date;
+  isPublished: boolean;
+  slug: string;
+}
+
 function CalendarTab() {
   // Internal state for calendar data
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [blogPosts, setBlogPosts] = useState([]); // Store all fetched posts
-  const [blogDates, setBlogDates] = useState([]); // Dates with posts for dots
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]); // Store all fetched posts
+  const [blogDates, setBlogDates] = useState<Date[]>([]); // Dates with posts for dots
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch all blog posts on mount
   useEffect(() => {
@@ -54,7 +64,7 @@ function CalendarTab() {
         }
         const data = await response.json();
         if (data.success && data.data) {
-          const posts = data.data;
+          const posts = data.data as BlogPost[];
           setBlogPosts(posts);
           // Extract dates for the calendar dots
           const dates = posts.map((post) => new Date(post.createdAt));
@@ -62,8 +72,8 @@ function CalendarTab() {
         } else {
           throw new Error("Invalid data format received");
         }
-      } catch (err) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "An unknown error occurred");
         toast.error("Could not load blog posts for calendar.");
       } finally {
         setIsLoading(false);
@@ -80,14 +90,14 @@ function CalendarTab() {
   }, [blogPosts, selectedDate]);
 
   // Handler for shadcn Calendar's onSelect
-  const handleDateChange = (date) => {
+  const handleDateChange = (date: Date | undefined) => {
     // onSelect provides the date directly or undefined if deselected
     if (date) {
       setSelectedDate(date);
     }
   };
 
-  const CalendarDayWithDot = (dayButtonProps) => {
+  const CalendarDayWithDot = (dayButtonProps: DayButtonProps) => {
     const { day, modifiers, children } = dayButtonProps;
     const date = day.date;
     const hasPosts = blogDates.some((postDate) => isSameDay(postDate, date));

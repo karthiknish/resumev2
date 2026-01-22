@@ -20,7 +20,7 @@ export default function NewsletterPreferences() {
 
   const [isSaving, setIsSaving] = useState(false);
 
-  const handlePreferenceChange = (pref) => {
+  const handlePreferenceChange = (pref: keyof typeof preferences) => {
     setPreferences((prev) => ({
       ...prev,
       [pref]: !prev[pref],
@@ -90,7 +90,7 @@ export default function NewsletterPreferences() {
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
-          crossOrigin="true"
+          crossOrigin="anonymous"
         />
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
@@ -212,15 +212,15 @@ export default function NewsletterPreferences() {
                       </div>
                     </div>
                     <Button
-                      variant={preferences[pref.id] ? "default" : "outline"}
-                      onClick={() => handlePreferenceChange(pref.id)}
+                      variant={preferences[pref.id as keyof typeof preferences] ? "default" : "outline"}
+                      onClick={() => handlePreferenceChange(pref.id as keyof typeof preferences)}
                       className={
-                        preferences[pref.id]
+                        preferences[pref.id as keyof typeof preferences]
                           ? "bg-indigo-500 hover:bg-indigo-600"
                           : "border-indigo-300 text-indigo-700 hover:bg-indigo-50"
                       }
                     >
-                      {preferences[pref.id] ? "Subscribed" : "Subscribe"}
+                      {preferences[pref.id as keyof typeof preferences] ? "Subscribed" : "Subscribe"}
                     </Button>
                     </motion.div>
                   );

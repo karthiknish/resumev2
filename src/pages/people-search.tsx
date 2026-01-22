@@ -4,7 +4,7 @@ import React, { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import PeopleSearchResults from "@/components/PeopleSearchResults";
+import PeopleSearchResults, { Person } from "@/components/PeopleSearchResults";
 import FormError from "@/components/ui/FormError";
 import { FORM_ERRORS } from "@/lib/formErrors";
 
@@ -14,7 +14,7 @@ interface SearchResult {
   title: string;
   company: string;
   profileUrl: string;
-  [key: string]: any;
+  text?: string;
 }
 
 const suggestedSearches = [
@@ -28,7 +28,7 @@ const suggestedSearches = [
 
 export default function PeopleSearch(): React.ReactElement {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<SearchResult[]>([]);
+  const [results, setResults] = useState<Person[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,7 +56,15 @@ export default function PeopleSearch(): React.ReactElement {
         throw new Error(data.error || FORM_ERRORS.SUBMISSION_FAILED);
       }
 
-      setResults(data.results || []);
+      setResults((data.results || []).map((result: SearchResult) => ({
+        id: result._id,
+        name: result.name,
+        role: result.title,
+        company: result.company,
+        source: "LinkedIn" as const,
+        url: result.profileUrl,
+        text: result.text,
+      })));
     } catch (err) {
       console.error("Search error:", err);
       setError((err as Error).message || FORM_ERRORS.NETWORK_ERROR);

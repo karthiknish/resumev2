@@ -2,7 +2,11 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const HeroSection = ({ onContactClick }) => (
+interface HeroSectionProps {
+  onContactClick: () => void;
+}
+
+const HeroSection = ({ onContactClick }: HeroSectionProps) => (
   <section className="relative py-28 min-h-screen flex items-center justify-center overflow-hidden bg-white text-slate-900">
     <div className="absolute inset-0 -z-20 bg-gradient-to-br from-slate-50 via-white to-blue-50/30" />
     <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.05),_transparent_62%)]" />

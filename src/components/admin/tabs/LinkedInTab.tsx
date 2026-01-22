@@ -16,7 +16,7 @@ export default function LinkedInTab() {
   const [topicFromNews, setTopicFromNews] = useState("");
   const [activeMode, setActiveMode] = useState("post");
 
-  const handleNewsSelect = (headline, summary) => {
+  const handleNewsSelect = (headline: string, summary: string) => {
     const newTopic = `${headline}\n\nContext: ${summary}`;
     setTopicFromNews(newTopic);
     setActiveMode("post");

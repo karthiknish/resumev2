@@ -13,18 +13,29 @@ import {
   validateBody,
 } from "@/lib/apiUtils";
 
-export default async function handler(req, res) {
+import { NextApiRequest, NextApiResponse } from "next";
+
+interface IContactSubmission {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  createdAt: string | Date;
+  isRead: boolean;
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { method } = req;
 
   const allowedMethods = ["GET", "POST", "PUT"];
-  if (!allowedMethods.includes(method)) {
+  if (!method || !allowedMethods.includes(method)) {
     return ApiResponse.methodNotAllowed(res, allowedMethods);
   }
 
   // Admin check for GET and PUT
   if (method === "GET" || method === "PUT") {
     const { authorized, response } = await requireAdmin(req, res);
-    if (!authorized) return response();
+    if (!authorized && response) return response();
   }
 
   try {
@@ -32,38 +43,39 @@ export default async function handler(req, res) {
       case "GET":
         // Check for countOnly
         if (req.query.countOnly === "true") {
-          let contacts = [];
+          let contactCount = 0;
           if (req.query.isRead === "false") {
-            contacts = await runQuery(
+            const results = (await runQuery(
               "contacts",
               [fieldFilter("isRead", "EQUAL", false)]
-            );
+            )) as unknown as IContactSubmission[];
+            contactCount = results.length;
           } else {
             const result = await getCollection("contacts");
-            contacts = result.documents || [];
+            contactCount = (result.documents || []).length;
           }
-          return ApiResponse.success(res, { count: contacts.length }, "Contact count retrieved");
+          return ApiResponse.success(res, { count: contactCount }, "Contact count retrieved");
         }
 
         // Fetch all contacts
         const result = await getCollection("contacts");
-        let contacts = result.documents || [];
+        let allContacts = (result.documents || []) as unknown as IContactSubmission[];
 
         // Filter by isRead if specified
         if (req.query.isRead === "true") {
-          contacts = contacts.filter(c => c.isRead === true);
+          allContacts = allContacts.filter(c => c.isRead === true);
         } else if (req.query.isRead === "false") {
-          contacts = contacts.filter(c => c.isRead !== true);
+          allContacts = allContacts.filter(c => c.isRead !== true);
         }
 
         // Sort by createdAt descending
-        contacts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        allContacts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
         // Pagination
-        const page = parseInt(req.query.page, 10) || 1;
-        const limit = parseInt(req.query.limit, 10) || 50;
+        const page = parseInt(req.query.page as string, 10) || 1;
+        const limit = parseInt(req.query.limit as string, 10) || 50;
         const startIndex = (page - 1) * limit;
-        const paginatedContacts = contacts.slice(startIndex, startIndex + limit);
+        const paginatedContacts = allContacts.slice(startIndex, startIndex + limit);
 
         return ApiResponse.success(
           res,
@@ -72,8 +84,8 @@ export default async function handler(req, res) {
             pagination: {
               page,
               limit,
-              total: contacts.length,
-              totalPages: Math.ceil(contacts.length / limit),
+              total: allContacts.length,
+              totalPages: Math.ceil(allContacts.length / limit),
             },
           },
           "Contacts retrieved successfully"
@@ -112,7 +124,7 @@ export default async function handler(req, res) {
         }
 
         const { name, email, message } = validation.data;
-        const docId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        const docId = `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
         const newContact = await createDocument("contacts", docId, {
           name,
@@ -135,23 +147,23 @@ export default async function handler(req, res) {
           return ApiResponse.badRequest(res, "Contact ID is required for update");
         }
 
-        const contactToUpdate = await getDocument("contacts", updateId);
+        const contactToUpdate = await getDocument("contacts", updateId) as unknown as IContactSubmission | null;
         if (!contactToUpdate) {
           return res.status(404).json({ success: false, message: "Contact not found" });
         }
 
-        const updatedContact = await updateDocument("contacts", updateId, updateFields);
+        const updatedContact = await updateDocument("contacts", updateId, updateFields) as unknown as IContactSubmission;
         return ApiResponse.success(res, updatedContact, "Contact updated successfully");
 
       default:
         return ApiResponse.methodNotAllowed(res, allowedMethods);
     }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("[Contacts API] Error:", error);
     return res.status(500).json({
       success: false,
       message: "An internal server error occurred",
-      error: error.message,
+      error: error instanceof Error ? error.message : "An unknown error occurred",
     });
   }
 }

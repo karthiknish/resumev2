@@ -8,10 +8,47 @@ const FIREBASE_PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
 const FIREBASE_API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
 const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents`;
 
+export interface FirestoreValue {
+  nullValue?: null;
+  booleanValue?: boolean;
+  integerValue?: string;
+  doubleValue?: number;
+  stringValue?: string;
+  timestampValue?: string;
+  arrayValue?: { values: FirestoreValue[] };
+  mapValue?: { fields: Record<string, FirestoreValue> };
+}
+
+export interface FirestoreDocument {
+  name: string;
+  fields: Record<string, FirestoreValue>;
+  createTime: string;
+  updateTime: string;
+}
+
+export interface ParsedDocument {
+  _id: string;
+  id: string;
+  [key: string]: unknown; // Use unknown instead of any
+}
+
+export interface CollectionOptions {
+  pageSize?: number;
+  pageToken?: string;
+  orderBy?: string;
+}
+
+export interface StructuredQuery {
+  from: Array<{ collectionId: string }>;
+  where?: unknown;
+  orderBy?: Array<{ field: { fieldPath: string }; direction: "ASCENDING" | "DESCENDING" }>;
+  limit?: number;
+}
+
 /**
  * Convert JS value to Firestore format
  */
-export function toFirestoreValue(value) {
+export function toFirestoreValue(value: unknown): FirestoreValue {
   if (value === null || value === undefined) return { nullValue: null };
   if (typeof value === "boolean") return { booleanValue: value };
   if (typeof value === "number") {
@@ -23,8 +60,8 @@ export function toFirestoreValue(value) {
     return { arrayValue: { values: value.map(toFirestoreValue) } };
   }
   if (typeof value === "object") {
-    const fields = {};
-    for (const [k, v] of Object.entries(value)) {
+    const fields: Record<string, FirestoreValue> = {};
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
       fields[k] = toFirestoreValue(v);
     }
     return { mapValue: { fields } };
@@ -35,7 +72,7 @@ export function toFirestoreValue(value) {
 /**
  * Parse Firestore value to JS value
  */
-export function parseFirestoreValue(value) {
+export function parseFirestoreValue(value: FirestoreValue): unknown {
   if (!value) return null;
   if (value.stringValue !== undefined) return value.stringValue;
   if (value.integerValue !== undefined) return parseInt(value.integerValue);
@@ -44,7 +81,7 @@ export function parseFirestoreValue(value) {
   if (value.timestampValue !== undefined) return new Date(value.timestampValue);
   if (value.nullValue !== undefined) return null;
   if (value.mapValue !== undefined) {
-    const result = {};
+    const result: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(value.mapValue.fields || {})) {
       result[k] = parseFirestoreValue(v);
     }
@@ -59,9 +96,9 @@ export function parseFirestoreValue(value) {
 /**
  * Parse a Firestore document to a plain JS object
  */
-export function parseDocument(doc) {
-  if (!doc || !doc.fields) return null;
-  const result = {};
+export function parseDocument<T = ParsedDocument>(doc: FirestoreDocument): T {
+  if (!doc || !doc.fields) return null as unknown as T;
+  const result: Record<string, unknown> = {};
   // Extract document ID from the name path
   const nameParts = doc.name.split("/");
   result._id = nameParts[nameParts.length - 1];
@@ -70,13 +107,13 @@ export function parseDocument(doc) {
   for (const [key, value] of Object.entries(doc.fields)) {
     result[key] = parseFirestoreValue(value);
   }
-  return result;
+  return result as unknown as T;
 }
 
 /**
  * Get a single document by ID
  */
-export async function getDocument(collection, docId) {
+export async function getDocument<T = ParsedDocument>(collection: string, docId: string): Promise<T | null> {
   const url = `${FIRESTORE_URL}/${collection}/${encodeURIComponent(docId)}?key=${FIREBASE_API_KEY}`;
   const response = await fetch(url);
   
@@ -86,14 +123,17 @@ export async function getDocument(collection, docId) {
     throw new Error(error.error?.message || "Failed to get document");
   }
   
-  const doc = await response.json();
-  return parseDocument(doc);
+  const doc = (await response.json()) as FirestoreDocument;
+  return parseDocument<T>(doc);
 }
 
 /**
  * Get all documents from a collection
  */
-export async function getCollection(collection, options = {}) {
+export async function getCollection<T = ParsedDocument>(
+  collection: string, 
+  options: CollectionOptions = {}
+): Promise<{ documents: T[]; nextPageToken?: string }> {
   let url = `${FIRESTORE_URL}/${collection}?key=${FIREBASE_API_KEY}`;
   
   if (options.pageSize) {
@@ -114,7 +154,7 @@ export async function getCollection(collection, options = {}) {
   }
   
   const data = await response.json();
-  const documents = (data.documents || []).map(parseDocument);
+  const documents = ((data.documents as FirestoreDocument[]) || []).map(doc => parseDocument<T>(doc));
   
   return {
     documents,
@@ -125,12 +165,12 @@ export async function getCollection(collection, options = {}) {
 /**
  * Create a new document
  */
-export async function createDocument(collection, docId, data) {
+export async function createDocument<T = ParsedDocument>(collection: string, docId: string | null, data: Record<string, unknown>): Promise<T> {
   const url = docId
     ? `${FIRESTORE_URL}/${collection}?documentId=${encodeURIComponent(docId)}&key=${FIREBASE_API_KEY}`
     : `${FIRESTORE_URL}/${collection}?key=${FIREBASE_API_KEY}`;
   
-  const fields = {};
+  const fields: Record<string, FirestoreValue> = {};
   for (const [key, value] of Object.entries(data)) {
     fields[key] = toFirestoreValue(value);
   }
@@ -146,16 +186,16 @@ export async function createDocument(collection, docId, data) {
     throw new Error(error.error?.message || "Failed to create document");
   }
   
-  const doc = await response.json();
-  return parseDocument(doc);
+  const doc = (await response.json()) as FirestoreDocument;
+  return parseDocument<T>(doc);
 }
 
 /**
  * Update an existing document
  */
-export async function updateDocument(collection, docId, data) {
-  const fields = {};
-  const updateMask = [];
+export async function updateDocument<T = ParsedDocument>(collection: string, docId: string, data: Record<string, unknown>): Promise<T> {
+  const fields: Record<string, FirestoreValue> = {};
+  const updateMask: string[] = [];
   
   for (const [key, value] of Object.entries(data)) {
     fields[key] = toFirestoreValue(value);
@@ -176,14 +216,14 @@ export async function updateDocument(collection, docId, data) {
     throw new Error(error.error?.message || "Failed to update document");
   }
   
-  const doc = await response.json();
-  return parseDocument(doc);
+  const doc = (await response.json()) as FirestoreDocument;
+  return parseDocument<T>(doc);
 }
 
 /**
  * Delete a document
  */
-export async function deleteDocument(collection, docId) {
+export async function deleteDocument(collection: string, docId: string): Promise<boolean> {
   const url = `${FIRESTORE_URL}/${collection}/${encodeURIComponent(docId)}?key=${FIREBASE_API_KEY}`;
   
   const response = await fetch(url, {
@@ -201,7 +241,7 @@ export async function deleteDocument(collection, docId) {
 /**
  * Check if a document exists
  */
-export async function documentExists(collection, docId) {
+export async function documentExists(collection: string, docId: string): Promise<boolean> {
   const url = `${FIRESTORE_URL}/${collection}/${encodeURIComponent(docId)}?key=${FIREBASE_API_KEY}`;
   const response = await fetch(url);
   return response.ok;
@@ -210,10 +250,15 @@ export async function documentExists(collection, docId) {
 /**
  * Run a structured query (for filtering)
  */
-export async function runQuery(collection, filters = [], orderBy = null, limit = null) {
+export async function runQuery<T = ParsedDocument>(
+  collection: string,
+  filters: unknown[],
+  orderBy: unknown = null,
+  limit: number | null = null
+): Promise<T[]> {
   const url = `${FIRESTORE_URL}:runQuery?key=${FIREBASE_API_KEY}`;
   
-  const structuredQuery = {
+  const structuredQuery: StructuredQuery = {
     from: [{ collectionId: collection }],
   };
   
@@ -231,7 +276,7 @@ export async function runQuery(collection, filters = [], orderBy = null, limit =
   }
   
   if (orderBy) {
-    structuredQuery.orderBy = Array.isArray(orderBy) ? orderBy : [orderBy];
+    structuredQuery.orderBy = (Array.isArray(orderBy) ? orderBy : [orderBy]) as StructuredQuery["orderBy"];
   }
   
   if (limit) {
@@ -250,15 +295,15 @@ export async function runQuery(collection, filters = [], orderBy = null, limit =
   }
   
   const results = await response.json();
-  return results
-    .filter(r => r.document)
-    .map(r => parseDocument(r.document));
+  return (Array.isArray(results) ? (results as Array<{ document: FirestoreDocument }>) : [])
+    .filter((r) => r.document)
+    .map((r) => parseDocument<T>(r.document));
 }
 
 /**
  * Create a field filter for queries
  */
-export function fieldFilter(field, op, value) {
+export function fieldFilter(field: string, op: string, value: unknown): unknown {
   return {
     fieldFilter: {
       field: { fieldPath: field },

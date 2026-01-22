@@ -2,8 +2,47 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
-export const useCarouselHistory = (session) => {
-  const [history, setHistory] = useState([]);
+import { Session } from "next-auth";
+
+export interface CarouselSlide {
+  slideNumber: number;
+  heading: string;
+  body: string;
+}
+
+export interface CarouselImage {
+  slideNumber: number;
+  imageData?: string;
+  mimeType?: string;
+  error?: string;
+}
+
+export interface HistoryItem {
+  _id: string;
+  id: string;
+  topic: string;
+  slides: CarouselSlide[];
+  slideImages: CarouselImage[];
+  carouselStyle: string;
+  aspectRatio: string;
+  slideCount: number;
+  createdAt: string;
+  isFavorite: boolean;
+}
+
+interface ServerCarouselItem {
+  _id: string;
+  topic: string;
+  slides: CarouselSlide[];
+  slideImages: CarouselImage[];
+  carouselStyle: string;
+  aspectRatio: string;
+  createdAt: string;
+  isFavorite: boolean;
+}
+
+export const useCarouselHistory = (session: Session | null) => {
+  const [history, setHistory] = useState<HistoryItem[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   const fetchHistory = async () => {
@@ -13,7 +52,7 @@ export const useCarouselHistory = (session) => {
       if (response.ok) {
         const data = await response.json();
         if (data.success && data.content) {
-          const transformedHistory = data.content.map((item) => ({
+          const transformedHistory = data.content.map((item: ServerCarouselItem) => ({
             _id: item._id,
             id: item._id,
             topic: item.topic,
@@ -30,13 +69,13 @@ export const useCarouselHistory = (session) => {
           return;
         }
       }
-    } catch (error) {
-      console.error("Failed to fetch carousel history:", error);
+    } catch (error: unknown) {
+      console.error("Failed to fetch carousel history:", error instanceof Error ? error.message : error);
     }
     setIsLoadingHistory(false);
   };
 
-  const saveToHistory = async (topic, slidesData, imagesData, style, aspectRatio) => {
+  const saveToHistory = async (topic: string, slidesData: CarouselSlide[], imagesData: CarouselImage[], style: string, aspectRatio: string) => {
     try {
       const response = await fetch("/api/linkedin/content", {
         method: "POST",
@@ -58,13 +97,13 @@ export const useCarouselHistory = (session) => {
         fetchHistory();
         return true;
       }
-    } catch (error) {
-      console.error("Failed to save carousel to server:", error);
+    } catch (error: unknown) {
+      console.error("Failed to save carousel to server:", error instanceof Error ? error.message : error);
     }
     return false;
   };
 
-  const deleteHistoryItem = async (item, e) => {
+  const deleteHistoryItem = async (item: HistoryItem, e: React.MouseEvent) => {
     e.stopPropagation();
 
     if (item._id) {
@@ -82,8 +121,8 @@ export const useCarouselHistory = (session) => {
           toast.success("Deleted from history");
           return;
         }
-      } catch (err) {
-        console.error("Failed to delete from server:", err);
+      } catch (err: unknown) {
+        console.error("Failed to delete from server:", err instanceof Error ? err.message : err);
       }
     }
 
@@ -91,7 +130,7 @@ export const useCarouselHistory = (session) => {
     toast.success("Deleted from history");
   };
 
-  const toggleFavorite = async (item, e) => {
+  const toggleFavorite = async (item: HistoryItem, e: React.MouseEvent) => {
     e.stopPropagation();
 
     if (item._id) {
@@ -120,8 +159,8 @@ export const useCarouselHistory = (session) => {
             return;
           }
         }
-      } catch (err) {
-        console.error("Failed to toggle favorite:", err);
+      } catch (err: unknown) {
+        console.error("Failed to toggle favorite:", err instanceof Error ? err.message : err);
       }
     }
 
@@ -139,6 +178,7 @@ export const useCarouselHistory = (session) => {
 
   return {
     history,
+    setHistory,
     isLoadingHistory,
     fetchHistory,
     saveToHistory,

@@ -54,8 +54,16 @@ const mockNewsletterIssues = [
   },
 ];
 
+interface NewsletterIssue {
+  id: number;
+  title: string;
+  date: string;
+  description: string;
+  readTime: string;
+}
+
 export default function NewsletterArchive() {
-  const [issues, setIssues] = useState([]);
+  const [issues, setIssues] = useState<NewsletterIssue[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const issuesPerPage = 4;
@@ -90,7 +98,7 @@ export default function NewsletterArchive() {
   const currentIssues = issues.slice(indexOfFirstIssue, indexOfLastIssue);
   const totalPages = Math.ceil(issues.length / issuesPerPage);
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
@@ -113,7 +121,7 @@ export default function NewsletterArchive() {
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
-          crossOrigin="true"
+          crossOrigin="anonymous"
         />
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"

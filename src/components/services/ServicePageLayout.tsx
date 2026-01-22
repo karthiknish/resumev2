@@ -1,12 +1,76 @@
-// Converted to TypeScript - migrated
 import React from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { FaCheck } from "react-icons/fa";
 import PageContainer from "@/components/PageContainer";
 import { FadeIn } from "@/components/animations/MotionComponents";
+import { ReactNode } from "react";
 
-function Badge({ children, className = "" }) {
+interface BadgeProps {
+  children: ReactNode;
+  className?: string;
+}
+
+interface HighlightCardProps {
+  title: string;
+  description: string;
+}
+
+interface FeatureListProps {
+  heading?: string;
+  items?: string[];
+}
+
+interface ProcessSectionProps {
+  heading?: string;
+  steps?: Array<{ title: string; description: string }>;
+}
+
+interface OutcomeSectionProps {
+  heading?: string;
+  items?: string[];
+}
+
+interface ToolsetSectionProps {
+  heading?: string;
+  items?: string[];
+}
+
+interface CtaSectionProps {
+  heading?: string;
+  body?: string;
+  primaryAction?: { href: string; label: string };
+  secondaryAction?: { href: string; label: string };
+}
+
+interface ServicePageLayoutProps {
+  seo?: {
+    title: string;
+    description?: string;
+    canonical?: string;
+  };
+  hero?: {
+    icon?: ReactNode;
+    eyebrow?: string;
+    title: string;
+    description?: string;
+    primaryAction?: { href: string; label: string };
+    secondaryAction?: { href: string; label: string };
+  };
+  highlights?: Array<{ title: string; description: string }>;
+  keyFeatures?: string[];
+  process?: Array<{ title: string; description: string }>;
+  outcomes?: string[];
+  toolset?: string[];
+  cta?: {
+    heading?: string;
+    body?: string;
+    primaryAction?: { href: string; label: string };
+    secondaryAction?: { href: string; label: string };
+  };
+}
+
+function Badge({ children, className = "" }: BadgeProps) {
   return (
     <span
       className={`inline-flex items-center gap-2 rounded-full border border-border/60 bg-muted/40 px-3 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-muted-foreground ${className}`.trim()}
@@ -16,7 +80,7 @@ function Badge({ children, className = "" }) {
   );
 }
 
-function HighlightCard({ title, description }) {
+function HighlightCard({ title, description }: HighlightCardProps) {
   return (
     <div className="h-full rounded-2xl border border-border/50 bg-card/90 p-6 shadow-sm shadow-black/5">
       <h3 className="text-lg font-semibold text-foreground">{title}</h3>
@@ -25,7 +89,7 @@ function HighlightCard({ title, description }) {
   );
 }
 
-function FeatureList({ heading, items }) {
+function FeatureList({ heading, items }: FeatureListProps) {
   if (!items?.length) return null;
 
   return (
@@ -47,7 +111,7 @@ function FeatureList({ heading, items }) {
   );
 }
 
-function ProcessSection({ heading, steps }) {
+function ProcessSection({ heading, steps }: ProcessSectionProps) {
   if (!steps?.length) return null;
 
   return (
@@ -72,7 +136,7 @@ function ProcessSection({ heading, steps }) {
   );
 }
 
-function OutcomeSection({ heading, items }) {
+function OutcomeSection({ heading, items }: OutcomeSectionProps) {
   if (!items?.length) return null;
 
   return (
@@ -94,7 +158,7 @@ function OutcomeSection({ heading, items }) {
   );
 }
 
-function ToolsetSection({ heading, items }) {
+function ToolsetSection({ heading, items }: ToolsetSectionProps) {
   if (!items?.length) return null;
 
   return (
@@ -116,7 +180,7 @@ function ToolsetSection({ heading, items }) {
   );
 }
 
-function CtaSection({ heading, body, primaryAction, secondaryAction }) {
+function CtaSection({ heading, body, primaryAction, secondaryAction }: CtaSectionProps) {
   if (!heading && !body) return null;
 
   return (
@@ -161,12 +225,12 @@ export default function ServicePageLayout({
   seo,
   hero,
   highlights = [],
-  keyFeatures,
-  process,
-  outcomes,
-  toolset,
+  keyFeatures = [],
+  process = [],
+  outcomes = [],
+  toolset = [],
   cta,
-}) {
+}: ServicePageLayoutProps) {
   return (
     <>
       {seo ? (

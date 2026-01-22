@@ -2390,3 +2390,6 @@ Examples:
 - [✓] 2026-01-21 13:29 - check vercel-react-best-practices skill and update the project with it
 - [✓] 2026-01-21 13:54 - check web-design-guidelines and update the project
 - [✓] 2026-01-21 18:33 - migrate the project files to typescript
+- [✓] 2026-01-21 19:03 - run npm run typcheck and fix all the type errors
+- [✓] 2026-01-21 19:07 - Line 238: Property `extlink` does not exist on type `never`.
+- [✓] 2026-01-21 19:08 - Line 238: Property `extlink` does not exist on type `never`.

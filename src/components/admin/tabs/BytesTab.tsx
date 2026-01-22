@@ -42,6 +42,13 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Import Swiper React components
@@ -53,7 +60,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 
 // Simple date formatter
-const formatDate = (dateString) => {
+const formatDate = (dateString: string | Date | undefined) => {
   if (!dateString) return "N/A";
   return new Date(dateString).toLocaleDateString("en-GB", {
     year: "numeric",
@@ -80,13 +87,24 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
+interface Byte {
+  _id: string;
+  id?: string;
+  headline: string;
+  body: string;
+  imageUrl?: string;
+  link?: string;
+  createdAt?: string | Date;
+}
+
 export default function BytesTab() {
-  const [bytes, setBytes] = useState([]);
+  const [bytes, setBytes] = useState<Byte[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
-  const [nextPageToken, setNextPageToken] = useState(null);
-  const [error, setError] = useState(null);
+  const [nextPageToken, setNextPageToken] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(true);
 
   // Form state
   const [newHeadline, setNewHeadline] = useState("");
@@ -96,11 +114,11 @@ export default function BytesTab() {
 
   // Edit State
   const [isEditing, setIsEditing] = useState(false);
-  const [editingByteId, setEditingByteId] = useState(null);
+  const [editingByteId, setEditingByteId] = useState<string | null>(null);
 
   // AI Suggestion State
-  const [headlineSuggestions, setHeadlineSuggestions] = useState([]);
-  const [bodySuggestions, setBodySuggestions] = useState([]);
+  const [headlineSuggestions, setHeadlineSuggestions] = useState<string[]>([]);
+  const [bodySuggestions, setBodySuggestions] = useState<string[]>([]);
   const [isSuggestingHeadline, setIsSuggestingHeadline] = useState(false);
   const [isSuggestingBody, setIsSuggestingBody] = useState(false);
 
@@ -109,17 +127,17 @@ export default function BytesTab() {
 
   // AlertDialog state for deletion
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [byteToDelete, setByteToDelete] = useState(null);
+  const [byteToDelete, setByteToDelete] = useState<string | null>(null);
 
   // Ref for Swiper navigation
-  const swiperNavPrevRef = useRef(null);
-  const swiperNavNextRef = useRef(null);
+  const swiperNavPrevRef = useRef<HTMLButtonElement>(null);
+  const swiperNavNextRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     fetchBytes();
   }, []);
 
-  const fetchBytes = async (token = null) => {
+  const fetchBytes = async (token: string | null = null) => {
     if (token) {
       setIsFetchingMore(true);
     } else {
@@ -150,9 +168,10 @@ export default function BytesTab() {
         if (!token) setBytes([]);
         setError("No bytes found or invalid response format");
       }
-    } catch (err) {
-      setError(err.message);
-      toast.error(err.message || "Could not load bytes.");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
+      setError(errorMessage);
+      toast.error(errorMessage || "Could not load bytes.");
     } finally {
       setIsLoading(false);
       setIsFetchingMore(false);
@@ -160,14 +179,14 @@ export default function BytesTab() {
   };
 
   // Helper for character count color
-  const getCountColor = (count, max) => {
+  const getCountColor = (count: number, max: number) => {
     if (count > max) return "text-destructive";
     if (count > max * 0.9) return "text-orange-500";
     return "text-muted-foreground";
   };
 
   // Combined Create/Update Handler
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newHeadline.trim() || !newBody.trim()) {
       toast.error("Headline and Body are required.");
@@ -175,16 +194,12 @@ export default function BytesTab() {
     }
     setIsSubmitting(true);
 
-    const byteData = {
+    const byteData: Partial<Byte> = {
       headline: newHeadline,
       body: newBody,
       imageUrl: newImageUrl || undefined,
       link: newLink || undefined,
     };
-
-    Object.keys(byteData).forEach(
-      (key) => byteData[key] === undefined && delete byteData[key]
-    );
 
     const url = isEditing ? `/api/bytes/${editingByteId}` : "/api/bytes";
     const method = isEditing ? "PUT" : "POST";
@@ -217,16 +232,17 @@ export default function BytesTab() {
         toast.success("Byte created successfully!");
       }
       resetForm();
-    } catch (err) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
       toast.error(
-        err.message || `Failed to ${isEditing ? "update" : "create"} byte.`
+        errorMessage || `Failed to ${isEditing ? "update" : "create"} byte.`
       );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const confirmDeleteByte = (id) => {
+  const confirmDeleteByte = (id: string) => {
     setByteToDelete(id);
     setIsDeleteDialogOpen(true);
   };
@@ -242,8 +258,9 @@ export default function BytesTab() {
       }
       setBytes((prev) => prev.filter((byte) => byte._id !== byteToDelete));
       toast.success("Byte deleted successfully!");
-    } catch (err) {
-      toast.error(err.message || "Failed to delete byte.");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
+      toast.error(errorMessage || "Failed to delete byte.");
     } finally {
       setIsDeleteDialogOpen(false);
       setByteToDelete(null);
@@ -264,8 +281,9 @@ export default function BytesTab() {
       if (!response.ok || !data.success)
         throw new Error(data.message || "Failed to get suggestions");
       setHeadlineSuggestions(data.suggestions || []);
-    } catch (error) {
-      toast.error(`Headline suggestions failed: ${error.message}`);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+      toast.error(`Headline suggestions failed: ${errorMessage}`);
     } finally {
       setIsSuggestingHeadline(false);
     }
@@ -288,15 +306,16 @@ export default function BytesTab() {
       if (!response.ok || !data.success)
         throw new Error(data.message || "Failed to get suggestions");
       setBodySuggestions(data.suggestions || []);
-    } catch (error) {
-      toast.error(`Body suggestions failed: ${error.message}`);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+      toast.error(`Body suggestions failed: ${errorMessage}`);
     } finally {
       setIsSuggestingBody(false);
     }
   };
 
   // --- News Selection Handler ---
-  const handleNewsSelect = (headline, summary) => {
+  const handleNewsSelect = (headline: string, summary: string) => {
     setNewHeadline(headline);
     setNewBody(`Trending now: ${headline}\n\n${summary}\n\nMy thoughts: `);
     setNewImageUrl("");
@@ -306,13 +325,13 @@ export default function BytesTab() {
   };
 
   // --- Pexels Image Selection Handler ---
-  const handlePexelsSelect = (url, alt) => {
+  const handlePexelsSelect = (url: string, alt: string) => {
     setNewImageUrl(url);
     setIsPexelsModalOpen(false);
   };
 
   // --- Edit Handling ---
-  const handleEditClick = (byte) => {
+  const handleEditClick = (byte: Byte) => {
     setIsEditing(true);
     setEditingByteId(byte._id);
     setNewHeadline(byte.headline);
@@ -666,8 +685,10 @@ export default function BytesTab() {
               nextEl: swiperNavNextRef.current,
             }}
             onInit={(swiper) => {
-              swiper.params.navigation.prevEl = swiperNavPrevRef.current;
-              swiper.params.navigation.nextEl = swiperNavNextRef.current;
+              if (swiper.params.navigation && typeof swiper.params.navigation !== "boolean") {
+                swiper.params.navigation.prevEl = swiperNavPrevRef.current;
+                swiper.params.navigation.nextEl = swiperNavNextRef.current;
+              }
               swiper.navigation.init();
               swiper.navigation.update();
             }}

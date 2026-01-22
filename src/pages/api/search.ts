@@ -1,7 +1,18 @@
 // Converted to TypeScript - migrated
+import { NextApiRequest, NextApiResponse } from "next";
 import { getCollection } from "@/lib/firebase";
 
-export default async function handler(req, res) {
+interface SearchDoc {
+  title?: string;
+  headline?: string;
+  description?: string;
+  body?: string;
+  content?: string;
+  tags?: string[];
+  isPublished?: boolean;
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { q } = req.query;
 
   if (req.method !== "GET") {
@@ -25,8 +36,8 @@ export default async function handler(req, res) {
       getCollection("bytes"),
     ]);
 
-    const blogs = blogsResult.documents || [];
-    const bytes = bytesResult.documents || [];
+    const blogs = (blogsResult.documents || []) as SearchDoc[];
+    const bytes = (bytesResult.documents || []) as SearchDoc[];
 
     // Filter published blogs by search term
     const blogResults = blogs
@@ -64,16 +75,16 @@ export default async function handler(req, res) {
       success: true,
       results: combinedResults,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("API Search Error:", error);
     return res.status(500).json({
       success: false,
-      message: error.message || "Error performing search",
+      message: error instanceof Error ? error.message : "Error performing search",
     });
   }
 }
 
-function calculateScore(doc, searchTerm) {
+function calculateScore(doc: SearchDoc, searchTerm: string) {
   let score = 0;
   const term = searchTerm.toLowerCase();
   

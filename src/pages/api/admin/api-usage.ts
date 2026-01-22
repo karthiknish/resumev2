@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getCollection, runQuery, fieldFilter } from "@/lib/firebase";
+import { getFirestore } from "@/lib/firebaseAdmin";
 import { ApiResponse, requireAdmin, handleApiError } from "@/lib/apiUtils";
 
 function getTodayDateString(): string {
@@ -10,44 +10,45 @@ function getTodayDateString(): string {
   return `${year}-${month}-${day}`;
 }
 
+const COLLECTION = "apiUsage";
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   if (req.method !== "GET") {
     return ApiResponse.methodNotAllowed(res, ["GET"]);
   }
 
   const { authorized, response } = await requireAdmin(req, res);
-  if (!authorized) return (response as void)();
+  if (!authorized && response) return response();
 
   const { apiName } = req.query;
   const today = getTodayDateString();
 
   try {
-    let usageData;
+    const db = getFirestore();
+    let usageData: unknown;
 
     if (apiName) {
-      const results = await runQuery(
-        "apiUsage",
-        [
-          fieldFilter("apiName", "EQUAL", apiName),
-          fieldFilter("date", "EQUAL", today),
-        ]
-      );
+      const snapshot = await db.collection(COLLECTION)
+        .where("apiName", "==", apiName)
+        .where("date", "==", today)
+        .limit(1)
+        .get();
 
-      if (results.length > 0) {
-        usageData = results[0];
+      if (!snapshot.empty) {
+        const doc = snapshot.docs[0];
+        usageData = { _id: doc.id, ...doc.data() };
       } else {
         usageData = { apiName, date: today, count: 0 };
       }
     } else {
-      const results = await runQuery(
-        "apiUsage",
-        [fieldFilter("date", "EQUAL", today)]
-      );
-      usageData = results;
+      const snapshot = await db.collection(COLLECTION)
+        .where("date", "==", today)
+        .get();
+      usageData = snapshot.docs.map(doc => ({ _id: doc.id, ...doc.data() }));
     }
 
     return ApiResponse.success(res, usageData, "API usage data retrieved");
-  } catch (error) {
+  } catch (error: unknown) {
     return handleApiError(res, error, "API Usage");
   }
 }

@@ -1,10 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import dbConnect from "@/lib/dbConnect";
-import Share from "@/models/Share";
+import { getFirestore } from "@/lib/firebaseAdmin";
+import { IShare } from "@/models/Share";
+
+const COLLECTION = "shares";
 
 interface ShareRequestBody {
   url: string;
-  platform: string;
+  platform: IShare["platform"];
   title?: string;
   blogSlug?: string;
 }
@@ -21,7 +23,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: "url and platform are required" });
     }
 
-    const validPlatforms = ["twitter", "facebook", "linkedin", "whatsapp", "email", "reddit", "pinterest", "copy", "native"];
+    const validPlatforms: IShare["platform"][] = [
+      "twitter",
+      "facebook",
+      "linkedin",
+      "whatsapp",
+      "email",
+      "reddit",
+      "pinterest",
+      "copy",
+      "native",
+    ];
     if (!validPlatforms.includes(platform)) {
       return res.status(400).json({ error: `Invalid platform. Must be one of: ${validPlatforms.join(", ")}` });
     }
@@ -32,25 +44,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: "Invalid URL format" });
     }
 
-    await dbConnect();
+    const db = getFirestore();
 
     const userAgent = req.headers["user-agent"]?.toString() || "";
     const referrer = req.headers.referer?.toString() || req.headers.referrer?.toString() || "";
 
-    const share = await Share.create({
+    const newShare: Omit<IShare, 'id'> = {
       url,
       platform,
       title: title || "",
       blogSlug: blogSlug || "",
       userAgent,
       referrer,
-    });
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const docRef = await db.collection(COLLECTION).add(newShare);
 
     return res.status(200).json({
       success: true,
-      id: share._id,
+      id: docRef.id,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error tracking share:", error);
     return res.status(500).json({ error: "Failed to track share event" });
   }
@@ -64,49 +80,50 @@ export async function getShareAnalytics(req: NextApiRequest, res: NextApiRespons
   try {
     const { blogSlug, platform, startDate, endDate, limit = 100 } = req.query;
 
-    await dbConnect();
+    const db = getFirestore();
+    let query: FirebaseFirestore.Query = db.collection(COLLECTION);
 
-    const query: any = {};
     if (blogSlug) {
-      query.blogSlug = blogSlug;
+      query = query.where("blogSlug", "==", blogSlug);
     }
     if (platform) {
-      query.platform = platform;
+      query = query.where("platform", "==", platform);
     }
-    if (startDate || endDate) {
-      query.createdAt = {};
-      if (startDate) {
-        query.createdAt.$gte = new Date(startDate as string);
-      }
-      if (endDate) {
-        query.createdAt.$lte = new Date(endDate as string);
-      }
+    if (startDate) {
+      query = query.where("createdAt", ">=", new Date(startDate as string));
+    }
+    if (endDate) {
+      query = query.where("createdAt", "<=", new Date(endDate as string));
     }
 
-    const shares = await Share.find(query)
-      .sort({ createdAt: -1 })
+    const snapshot = await query
+      .orderBy("createdAt", "desc")
       .limit(parseInt(limit as string, 10))
-      .lean();
+      .get();
 
-    const total = await Share.countDocuments(query);
+    const shares = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-    const platformStats = await Share.aggregate([
-      { $match: query },
-      { $group: { _id: "$platform", count: { $sum: 1 } } },
-      { $sort: { count: -1 } },
-    ]);
+    const countSnapshot = await query.count().get();
+    const total = countSnapshot.data().count;
 
-    const byPlatform = platformStats.reduce((acc: Record<string, number>, stat: any) => {
-      acc[stat._id] = stat.count;
-      return acc;
-    }, {});
+    // Manual aggregation as Firestore doesn't support $group easily
+    // Note: This fetch all records for aggregation which might be slow
+    // For production, consider a separate collection for stats
+    const allDocs = await query.get();
+    const stats: Record<string, number> = {};
+    allDocs.forEach(doc => {
+      const p = (doc.data() as IShare).platform;
+      stats[p] = (stats[p] || 0) + 1;
+    });
+
+    const byPlatform = stats;
 
     return res.status(200).json({
       shares,
       total,
       byPlatform,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error fetching share analytics:", error);
     return res.status(500).json({ error: "Failed to fetch share analytics" });
   }

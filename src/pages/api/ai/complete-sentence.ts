@@ -1,10 +1,11 @@
 // Converted to TypeScript - migrated
+import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { callGemini } from "@/lib/gemini";
 
 // Main handler function
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // 1. Authentication
   const session = await getServerSession(req, res, authOptions);
   const isAdmin =
@@ -23,7 +24,7 @@ export default async function handler(req, res) {
 
   // 3. Get Input Context
   try {
-    const { textBeforeCursor, textAfterCursor } = req.body;
+    const { textBeforeCursor, textAfterCursor } = req.body as { textBeforeCursor: string; textAfterCursor?: string };
 
     if (
       !textBeforeCursor ||
@@ -93,11 +94,11 @@ export default async function handler(req, res) {
     return res
       .status(200)
       .json({ success: true, completion: trimmedCompletion });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error in sentence completion API:", error);
     return res.status(500).json({
       success: false,
-      message: error.message || "Error generating sentence completion",
+      message: error instanceof Error ? error.message : "Error generating sentence completion",
     });
   }
 }

@@ -21,16 +21,38 @@ import TipTapRenderer from "@/components/TipTapRenderer"; // Import TipTapRender
 import { useRouter } from "next/router";
 import { formatDistanceToNow } from "date-fns";
 import { checkAdminStatus } from "@/lib/authUtils";
-import dbConnect from "@/lib/dbConnect"; // <-- Import dbConnect
-import Blog from "@/models/Blog"; // <-- Import Blog model
+import { runQuery, fieldFilter } from "@/lib/firebase";
 import { ChevronUpIcon } from "@heroicons/react/24/solid";
 import LikeButton from "@/components/LikeButton";
 import NewsletterCTA from "@/components/NewsletterCTA";
 
-function SlugPage({ data, relatedPosts }) {
+interface BlogPostData {
+  _id: string;
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  description?: string;
+  imageUrl: string;
+  category?: string;
+  tags?: string[];
+  createdAt: string;
+  updatedAt?: string;
+  audioSummaryUrl?: string;
+  likes?: string[];
+  viewCount?: number;
+  isPublished: boolean;
+}
+
+interface SlugPageProps {
+  data: BlogPostData;
+  relatedPosts: BlogPostData[];
+}
+
+function SlugPage({ data, relatedPosts }: SlugPageProps) {
   // Add relatedPosts to props destructuring
   // Ref for the main content card
-  const contentRef = useRef(null);
+  const contentRef = useRef<HTMLElement>(null);
   const router = useRouter();
   const { slug } = router.query;
 
@@ -39,7 +61,7 @@ function SlugPage({ data, relatedPosts }) {
   const isAdmin = checkAdminStatus(session);
 
   // Calculate estimated reading time
-  const estimateReadingTime = (content) => {
+  const estimateReadingTime = (content: string) => {
     const wordsPerMinute = 200;
     const wordCount = content?.split(/\s+/).length || 0;
     return Math.ceil(wordCount / wordsPerMinute);
@@ -52,21 +74,20 @@ function SlugPage({ data, relatedPosts }) {
     if (data && typeof window.gtag === "function") {
       window.gtag("event", "view_item", {
         event_category: "blog",
-        event_label: data.title, // Use data.title
+        event_label: data.title,
         items: [
           {
-            item_id: data._id, // Use data._id
-            item_name: data.title, // Use data.title
+            item_id: data._id,
+            item_name: data.title,
             item_category: data.category || "Uncategorized",
-            // Add other relevant item parameters if available
-          },
+          } as unknown as Record<string, unknown>,
         ],
-      });
+      } as unknown as Record<string, unknown>);
     }
   }, [data]); // Trigger when data prop changes
 
   // Share functionality
-  const shareArticle = (platform) => {
+  const shareArticle = (platform: "twitter" | "facebook" | "linkedin" | "copy") => {
     const slugOrId = data?.slug || data?._id;
     if (!slugOrId) {
       toast.error("Cannot generate share link.");
@@ -251,7 +272,7 @@ function SlugPage({ data, relatedPosts }) {
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
-          crossOrigin="true"
+          crossOrigin="anonymous"
         />
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
@@ -620,34 +641,28 @@ function SlugPage({ data, relatedPosts }) {
 
 // --- Update getStaticPaths function ---
 export async function getStaticPaths() {
-  await dbConnect();
-  // Fetch slug AND _id for logging purposes
-  const posts = await Blog.find({ isPublished: true })
-    .select("slug _id")
-    .lean();
+  const docs = await runQuery<BlogPostData>(
+    "blogs",
+    [fieldFilter("isPublished", "EQUAL", true)]
+  );
 
-  const paths = posts
-    .map((post) => {
-      if (!post.slug || typeof post.slug !== "string") {
+  const paths = docs
+    .map((data) => {
+      if (!data.slug || typeof data.slug !== "string") {
         console.warn(
-          `[getStaticPaths] Post with ID ${post._id} is missing a valid slug. Skipping path generation.`
+          `[getStaticPaths] Post with ID ${data._id} is missing a valid slug. Skipping path generation.`
         );
-        return null; // Skip this post
+        return null;
       }
       return {
-        params: { slug: post.slug }, // Use the valid slug
+        params: { slug: data.slug },
       };
     })
-    .filter(Boolean); // Remove any null entries from the array
+    .filter((path): path is { params: { slug: string } } => path !== null);
 
-  // If no valid paths found after filtering, log a more specific message
-  if (paths.length === 0 && posts.length > 0) {
+  if (paths.length === 0 && docs.length > 0) {
     console.error(
       "[getStaticPaths] No valid slugs found for published posts. Check database entries."
-    );
-  } else if (paths.length === 0) {
-    console.warn(
-      "[getStaticPaths] No published posts found to generate paths."
     );
   }
 
@@ -658,39 +673,60 @@ export async function getStaticPaths() {
 }
 
 // --- Update getStaticProps function ---
-export async function getStaticProps(context) {
-  const { slug } = await context.params; // Get slug from context.params (Next.js 16: params is async)
+export async function getStaticProps(context: { params: { slug: string } }) {
+  const { slug } = context.params;
 
   try {
-    await dbConnect(); // Connect to DB
+    const docs = await runQuery<BlogPostData>(
+      "blogs",
+      [
+        fieldFilter("slug", "EQUAL", slug),
+        fieldFilter("isPublished", "EQUAL", true)
+      ],
+      null,
+      1
+    );
 
-    // Fetch the specific blog post by SLUG
-    const post = await Blog.findOne({ slug: slug }).lean(); // <-- Fetch by slug
-
-    // If no post found or it's not published, return 404
-    // (Slug uniqueness should be handled by schema index)
-    if (!post || !post.isPublished) {
+    if (!docs || docs.length === 0) {
       return {
         notFound: true,
       };
     }
 
-    // --- Fetch related posts (logic remains similar) ---
-    let relatedPosts = [];
+    const post = docs[0];
+
+    // --- Fetch related posts ---
+    let relatedPosts: BlogPostData[] = [];
     try {
-      const relatedQuery = {
-        isPublished: true,
-        _id: { $ne: post._id }, // Exclude the current post by ID
-        $or: [{ category: post.category }, { tags: { $in: post.tags || [] } }],
-      };
-      relatedPosts = await Blog.find(relatedQuery)
-        .select("title slug _id imageUrl createdAt")
-        .limit(3)
-        .sort({ createdAt: -1 })
-        .lean();
-      relatedPosts = relatedPosts.filter(
-        (p) => p._id.toString() !== post._id.toString()
+      // Fetch posts in same category, excluding current one
+      relatedPosts = await runQuery<BlogPostData>(
+        "blogs",
+        [
+          fieldFilter("isPublished", "EQUAL", true),
+          fieldFilter("category", "EQUAL", post.category || "Uncategorized")
+        ],
+        null,
+        4 // Get one more to ensure we have 3 after filtering current
       );
+
+      relatedPosts = relatedPosts
+        .filter(p => p._id !== post._id)
+        .slice(0, 3);
+
+      // If not enough related posts, fetch latest posts excluding current
+      if (relatedPosts.length < 3) {
+        const latestPosts = await runQuery<BlogPostData>(
+          "blogs",
+          [fieldFilter("isPublished", "EQUAL", true)],
+          { field: { fieldPath: "createdAt" }, direction: "DESCENDING" },
+          10
+        );
+
+        const filteredLatest = latestPosts
+          .filter(p => p._id !== post._id && !relatedPosts.some(rp => rp._id === p._id));
+
+        relatedPosts = [...relatedPosts, ...filteredLatest].slice(0, 3);
+      }
     } catch (error) {
       console.error("[Related Posts] Error fetching:", error);
       relatedPosts = [];

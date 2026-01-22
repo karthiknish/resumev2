@@ -47,24 +47,37 @@ import RecentContactsWidget from "@/components/admin/widgets/RecentContactsWidge
 import { TableRowSkeleton } from "@/components/ui/loading-states";
 
 // Simple date formatter
-const formatDate = (dateString) => {
+const formatDate = (dateString: string | Date | undefined) => {
   if (!dateString) return "N/A";
   return format(new Date(dateString), "PP"); // e.g., Sep 30, 2024
 };
 
 const POSTS_PER_PAGE = 5;
 
-export default function DashboardTab({ unreadCount }) {
-  const [blogPosts, setBlogPosts] = useState([]);
+interface BlogPost {
+  _id: string;
+  id?: string;
+  title: string;
+  slug: string;
+  isPublished: boolean;
+  createdAt: string | Date;
+}
+
+interface DashboardTabProps {
+  unreadCount?: number | null;
+}
+
+export default function DashboardTab({ unreadCount }: DashboardTabProps) {
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalPosts, setTotalPosts] = useState(0);
-  const [postToDelete, setPostToDelete] = useState(null); // State to hold ID of post to delete
+  const [postToDelete, setPostToDelete] = useState<string | null>(null); // State to hold ID of post to delete
   const [isDeleting, setIsDeleting] = useState(false); // State for delete loading
-  const [subscribersCount, setSubscribersCount] = useState(null);
-  const [visitorsCount, setVisitorsCount] = useState(null);
+  const [subscribersCount, setSubscribersCount] = useState<number | null>(null);
+  const [visitorsCount, setVisitorsCount] = useState<number | null>(null);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
 
   useEffect(() => {
@@ -87,7 +100,7 @@ export default function DashboardTab({ unreadCount }) {
       if (usageRes.ok) {
         const usageData = await usageRes.json();
         const totalUsage = Array.isArray(usageData.data) 
-          ? usageData.data.reduce((acc, curr) => acc + (curr.count || 0), 0)
+          ? usageData.data.reduce((acc: number, curr: { count?: number }) => acc + (curr.count || 0), 0)
           : (usageData.data?.count || 0);
         setVisitorsCount(totalUsage);
       }
@@ -98,7 +111,7 @@ export default function DashboardTab({ unreadCount }) {
     }
   };
 
-  const fetchPosts = async (page) => {
+  const fetchPosts = async (page: number) => {
     setIsLoading(true);
     setError(null);
     try {
@@ -125,9 +138,10 @@ export default function DashboardTab({ unreadCount }) {
       } else {
         throw new Error("Invalid data format received for blog posts");
       }
-    } catch (err) {
-      setError(err.message);
-      toast.error("Could not load blog posts.");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Could not load blog posts.";
+      setError(errorMessage);
+      toast.error(errorMessage);
       setBlogPosts([]);
       setTotalPages(1);
       setTotalPosts(0);
@@ -149,7 +163,7 @@ export default function DashboardTab({ unreadCount }) {
   };
 
   // Opens the confirmation dialog by setting the post ID
-  const handleDeleteClick = (postId) => {
+  const handleDeleteClick = (postId: string) => {
     setPostToDelete(postId);
   };
 
@@ -173,8 +187,9 @@ export default function DashboardTab({ unreadCount }) {
       } else {
         fetchPosts(currentPage); // Refetch current page
       }
-    } catch (err) {
-      toast.error(err.message || "Failed to delete blog post.");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to delete blog post.";
+      toast.error(errorMessage);
       console.error("Delete post error:", err);
     } finally {
       setIsDeleting(false);
@@ -424,8 +439,6 @@ export default function DashboardTab({ unreadCount }) {
                             </TableCell>
                             <TableCell>
                               <Badge
-                                as="button"
-                                disabled={isLoading}
                                 onClick={async (e) => {
                                   e.stopPropagation();
                                   setIsLoading(true);

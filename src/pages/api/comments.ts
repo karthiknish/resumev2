@@ -19,8 +19,16 @@ interface CommentRequestBody {
   authorName?: string;
 }
 
+interface Comment {
+  blogPostId: string;
+  text: string;
+  authorName: string;
+  createdAt: string | Date;
+  authorId?: string | null;
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
-  const { method } = req;
+  const method = req.method || "";
 
   const allowedMethods = ["GET", "POST"];
   if (!allowedMethods.includes(method)) {
@@ -36,12 +44,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           return ApiResponse.badRequest(res, "Blog post ID is required");
         }
 
-        const result = await getCollection("comments");
+        const result = await getCollection<Comment>("comments");
         const allComments = result.documents || [];
 
         const comments = allComments
-          .filter((c: any) => c.blogPostId === blogPostId)
-          .sort((a: any, b: any) => new Date(a.createdAt) - new Date(b.createdAt));
+          .filter((c) => c.blogPostId === blogPostId)
+          .sort((a, b) => {
+            const dateA = new Date(a.createdAt).getTime();
+            const dateB = new Date(b.createdAt).getTime();
+            return dateA - dateB;
+          });
 
         return ApiResponse.success(res, comments, "Comments retrieved successfully");
 
@@ -87,7 +99,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       default:
         return ApiResponse.methodNotAllowed(res, allowedMethods);
     }
-  } catch (error) {
+  } catch (error: unknown) {
     return handleApiError(res, error, "Comments API");
   }
 }

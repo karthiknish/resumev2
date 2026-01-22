@@ -66,9 +66,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    const data = await response.json();
+    const data = await response.json() as { results?: Array<{ 
+      title?: string, 
+      url?: string, 
+      id?: string, 
+      text?: string, 
+      highlights?: string[], 
+      score?: number 
+    }> };
 
-    const results: SearchResult[] = (data.results || []).map((result: any) => {
+    const results: SearchResult[] = (data.results || []).map((result) => {
       const title = result.title || "";
       const url = result.url || "";
 
@@ -116,11 +123,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       totalResults: results.length,
       query,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error handling Exa search request:", error);
     return res.status(500).json({
       error: "An unexpected error occurred",
-      details: (error as Error).message,
+      details: error instanceof Error ? error.message : "Unknown error",
     });
   }
 }

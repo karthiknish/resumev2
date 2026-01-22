@@ -46,7 +46,7 @@ function Id() {
 
   const techStackVariants = {
     hidden: { opacity: 0, scale: 0.8 },
-    visible: (i) => ({ opacity: 1, scale: 1, transition: { delay: i * 0.2 } }),
+    visible: (i: number) => ({ opacity: 1, scale: 1, transition: { delay: i * 0.2 } }),
   };
 
   useEffect(() => {
@@ -155,7 +155,7 @@ function Id() {
                             <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                               <tech.icon
                                 className="text-2xl text-slate-700"
-                                title={tech.name}
+                                aria-label={tech.name}
                               />
                               <p className="text-xs font-medium text-slate-600 text-center mt-2">
                                 {tech.name}
@@ -270,7 +270,7 @@ function Id() {
                           <Button
                             size="lg"
                             className="rounded-xl"
-                            onClick={() => window.open(project.extlink)}
+                            onClick={() => project.extlink && window.open(project.extlink)}
                           >
                             View Live Project
                           </Button>

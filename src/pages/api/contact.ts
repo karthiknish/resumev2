@@ -125,7 +125,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const docId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const docId = `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     await createDocument("contacts", docId, {
       name,
       email,
@@ -137,7 +137,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const [adminEmailResult, thankYouEmailResult] = await Promise.allSettled([
       sendEmail({
-        to: process.env.EMAIL_TO,
+        to: process.env.EMAIL_TO as string,
         toName: "Karthik Nishanth",
         subject: `New Contact Form Message from ${name}`,
         htmlContent: generateContactNotificationEmail({
@@ -170,10 +170,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json({
       message: "Message received successfully! Karthik will get back to you soon.",
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Contact form processing error:", error);
     return res.status(500).json({
       message: "An internal server error occurred. Please try again later.",
+      error: error instanceof Error ? error.message : "Unknown error"
     });
   }
 }

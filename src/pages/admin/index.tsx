@@ -82,7 +82,7 @@ function AdminDashboard() {
   }, []);
 
   // State specifically for unread count (now for Contacts)
-  const [unreadContactsCount, setUnreadContactsCount] = useState(null);
+  const [unreadContactsCount, setUnreadContactsCount] = useState<number>(0);
   const [isLoadingContactsCount, setIsLoadingContactsCount] = useState(true);
 
   // Check for admin role
@@ -163,7 +163,7 @@ function AdminDashboard() {
   }
 
   // Redirect state
-  if (!session && status !== "loading") {
+  if (status === "unauthenticated") {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
         <div className="flex items-center gap-4 rounded-2xl border border-border bg-card/90 px-8 py-6 shadow-xl">

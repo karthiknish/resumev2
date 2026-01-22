@@ -10,24 +10,26 @@ import {
   handleApiError,
 } from "@/lib/apiUtils";
 
-export default async function handler(req, res) {
+import { NextApiRequest, NextApiResponse } from "next";
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const {
     query: { id },
     method,
   } = req;
 
   const allowedMethods = ["GET", "DELETE", "PATCH"];
-  if (!allowedMethods.includes(method)) {
+  if (!method || !allowedMethods.includes(method)) {
     return ApiResponse.methodNotAllowed(res, allowedMethods);
   }
 
-  if (!id) {
-    return ApiResponse.badRequest(res, "Contact ID is required");
+  if (typeof id !== "string") {
+    return ApiResponse.badRequest(res, "Contact ID is required and must be a string");
   }
 
   // Check admin authorization
   const { authorized, response } = await requireAdmin(req, res);
-  if (!authorized) return response();
+  if (!authorized && response) return response();
 
   try {
     switch (method) {
@@ -44,7 +46,7 @@ export default async function handler(req, res) {
           return ApiResponse.notFound(res, "Contact not found");
         }
 
-        const updates = {};
+        const updates: { isRead?: boolean } = {};
         if (typeof req.body.isRead === "boolean") {
           updates.isRead = req.body.isRead;
         }
@@ -68,7 +70,7 @@ export default async function handler(req, res) {
       default:
         return ApiResponse.methodNotAllowed(res, allowedMethods);
     }
-  } catch (error) {
+  } catch (error: unknown) {
     return handleApiError(res, error, `Contacts API [${method}]`);
   }
 }

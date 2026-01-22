@@ -17,10 +17,20 @@ import { Badge } from "@/components/ui/badge";
 import { TableRowSkeleton } from "@/components/ui/loading-states";
 import { EmptyTable } from "@/components/ui/empty-state";
 
+interface User {
+  _id: string;
+  id?: string;
+  name?: string;
+  email?: string;
+  role?: string;
+  isAdmin?: boolean;
+  createdAt?: string | Date;
+}
+
 function UsersTab() {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10); // Users per page
@@ -44,9 +54,9 @@ function UsersTab() {
         setError("Failed to load users or invalid data format.");
         setUsers([]);
       }
-    } catch (e) {
+    } catch (e: unknown) {
       console.error("Error fetching users:", e);
-      setError(`Failed to fetch users: ${e.message}`);
+      setError(`Failed to fetch users: ${e instanceof Error ? e.message : "Unknown error"}`);
       setUsers([]);
     } finally {
       setIsLoading(false);
@@ -67,7 +77,7 @@ function UsersTab() {
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
 
   // Change page handler
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
     <FadeIn>

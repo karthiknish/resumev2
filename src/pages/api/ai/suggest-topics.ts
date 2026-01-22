@@ -1,10 +1,11 @@
 // Converted to TypeScript - migrated
 // src/pages/api/ai/suggest-topics.js
+import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { callGemini } from "@/lib/gemini"; // Import the utility function
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Check for authenticated session
   const session = await getServerSession(req, res, authOptions);
   if (!session) {
@@ -13,8 +14,8 @@ export default async function handler(req, res) {
 
   // Basic admin check
   const isAdmin =
-    session?.user?.role === "admin" ||
-    session?.user?.isAdmin === true ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.role === "admin" ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.isAdmin === true ||
     session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
   if (!isAdmin) {
@@ -63,11 +64,12 @@ export default async function handler(req, res) {
       success: true,
       topics: topicsArray,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Topic suggestion error:", error);
+    const message = error instanceof Error ? error.message : "Error suggesting topics";
     return res.status(500).json({
       success: false,
-      message: error.message || "Error suggesting topics",
+      message,
     });
   }
 }

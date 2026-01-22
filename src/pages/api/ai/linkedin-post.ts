@@ -3,6 +3,7 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { callGemini } from "@/lib/gemini";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 const POST_TYPES = {
   insight: "Share a professional insight or observation",
@@ -20,7 +21,7 @@ const TONES = {
   educational: "Educational and informative",
 };
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Localhost bypass for development testing
   const host = req.headers.host || "";
   const isLocalhost = host.includes("localhost") || host.includes("127.0.0.1");
@@ -35,8 +36,8 @@ export default async function handler(req, res) {
   // Basic admin check (bypass on localhost for testing)
   const isAdmin =
     isLocalhost ||
-    session?.user?.role === "admin" ||
-    session?.user?.isAdmin === true ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.role === "admin" ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.isAdmin === true ||
     session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
   if (!isAdmin) {
@@ -56,7 +57,15 @@ export default async function handler(req, res) {
       includeHashtags = true,
       includeCta = true,
       context = "",
-    } = req.body;
+    } = req.body as {
+      topic: string;
+      postType?: keyof typeof POST_TYPES;
+      tone?: keyof typeof TONES;
+      length?: "short" | "medium" | "long";
+      includeHashtags?: boolean;
+      includeCta?: boolean;
+      context?: string;
+    };
 
     if (!topic || typeof topic !== "string" || !topic.trim()) {
       return res.status(400).json({
@@ -65,7 +74,7 @@ export default async function handler(req, res) {
       });
     }
 
-    const lengthGuide = {
+    const lengthGuide: Record<string, string> = {
       short: "Keep it concise - around 100-150 words. Punchy and impactful.",
       medium: "Aim for 200-300 words. Well-developed but scannable.",
       long: "Write 400-600 words. Comprehensive with clear sections and line breaks.",
@@ -147,11 +156,11 @@ Use line breaks (double newlines) between paragraphs for proper LinkedIn formatt
         topic: topic.trim(),
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("LinkedIn post generation error:", error);
     return res.status(500).json({
       success: false,
-      message: error.message || "Error generating LinkedIn post",
+      message: error instanceof Error ? error.message : "Error generating LinkedIn post",
     });
   }
 }

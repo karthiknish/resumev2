@@ -1,4 +1,5 @@
 // Converted to TypeScript - migrated
+import { NextApiRequest, NextApiResponse } from "next";
 import {
   getCollection,
   getDocument,
@@ -9,16 +10,24 @@ import {
   fieldFilter,
 } from "@/lib/firebase";
 import { sendEmail } from "@/lib/brevoClient";
+import { IBlog } from "@/models/Blog";
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { method } = req;
+  const query = req.query as {
+    slug?: string;
+    id?: string;
+    publishedOnly?: string;
+    page?: string;
+    limit?: string;
+  };
 
   try {
     switch (method) {
       case "GET":
         // Handle fetching single blog by slug or ID
-        if (req.query.slug) {
-          const blog = await getDocument("blogs", req.query.slug);
+        if (query.slug) {
+          const blog = await getDocument("blogs", query.slug) as unknown as IBlog | null;
           if (!blog) {
             return res.status(404).json({ success: false, message: "Blog not found" });
           }
@@ -29,8 +38,8 @@ export default async function handler(req, res) {
           });
         }
 
-        if (req.query.id) {
-          const blog = await getDocument("blogs", req.query.id);
+        if (query.id) {
+          const blog = await getDocument("blogs", query.id) as unknown as IBlog | null;
           if (!blog) {
             return res.status(404).json({ success: false, message: "Blog not found" });
           }
@@ -42,25 +51,30 @@ export default async function handler(req, res) {
         }
 
         // Handle paginated list with filters
-        const publishedOnly = req.query.publishedOnly === "true";
-        let blogs = [];
+        const publishedOnly = query.publishedOnly === "true";
+        let blogs: IBlog[] = [];
 
         if (publishedOnly) {
-          blogs = await runQuery(
+          const results = await runQuery<IBlog>(
             "blogs",
             [fieldFilter("isPublished", "EQUAL", true)],
             [{ field: { fieldPath: "createdAt" }, direction: "DESCENDING" }]
           );
+          blogs = results;
         } else {
-          const result = await getCollection("blogs");
+          const result = await getCollection<IBlog>("blogs");
           blogs = result.documents || [];
           // Sort by createdAt descending
-          blogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          blogs.sort((a, b) => {
+            const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+            const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+            return dateB - dateA;
+          });
         }
 
         // Handle pagination
-        const page = parseInt(req.query.page, 10) || 1;
-        const limit = parseInt(req.query.limit, 10) || 10;
+        const page = parseInt(query.page || "1", 10);
+        const limit = parseInt(query.limit || "10", 10);
         const startIndex = (page - 1) * limit;
         const paginatedBlogs = blogs.slice(startIndex, startIndex + limit);
 
@@ -121,11 +135,12 @@ export default async function handler(req, res) {
         // Send notification to subscribers if published
         if (isPublished) {
           try {
-            const subscribersResult = await getCollection("subscribers");
+            const subscribersResult = await getCollection<{ email?: string }>("subscribers");
             const subscribers = subscribersResult.documents || [];
             
             for (const subscriber of subscribers) {
               try {
+                if (!subscriber.email) continue;
                 await sendEmail({
                   to: subscriber.email,
                   subject: `New Blog Post: ${title}`,
@@ -136,11 +151,11 @@ export default async function handler(req, res) {
                     <p>Best,<br>Karthik Nishanth</p>
                   `,
                 });
-              } catch (e) {
+              } catch (e: unknown) {
                 console.error(`Failed to notify ${subscriber.email}:`, e);
               }
             }
-          } catch (e) {
+          } catch (e: unknown) {
             console.error("Failed to send notifications:", e);
           }
         }
@@ -161,7 +176,7 @@ export default async function handler(req, res) {
           });
         }
 
-        const blogToUpdate = await getDocument("blogs", updateId);
+        const blogToUpdate = await getDocument("blogs", updateId) as unknown as IBlog | null;
         if (!blogToUpdate) {
           return res.status(404).json({
             success: false,
@@ -170,7 +185,7 @@ export default async function handler(req, res) {
         }
 
         updateFields.updatedAt = new Date();
-        const updatedBlog = await updateDocument("blogs", updateId, updateFields);
+        const updatedBlog = await updateDocument("blogs", updateId, updateFields) as unknown as IBlog;
 
         return res.status(200).json({
           success: true,
@@ -179,7 +194,7 @@ export default async function handler(req, res) {
         });
 
       case "DELETE":
-        const deleteId = req.query.id;
+        const deleteId = query.id;
         if (!deleteId) {
           return res.status(400).json({
             success: false,
@@ -187,7 +202,7 @@ export default async function handler(req, res) {
           });
         }
 
-        const blogToDelete = await getDocument("blogs", deleteId);
+        const blogToDelete = await getDocument("blogs", deleteId) as unknown as IBlog | null;
         if (!blogToDelete) {
           return res.status(404).json({
             success: false,
@@ -210,13 +225,13 @@ export default async function handler(req, res) {
           message: `Method ${method} Not Allowed`,
         });
     }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(`API Error [${method}] /api/blog:`, error);
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
     return res.status(500).json({
       success: false,
       message: "An internal server error occurred",
-      error: error.message,
+      error: errorMessage,
     });
   }
 }
-

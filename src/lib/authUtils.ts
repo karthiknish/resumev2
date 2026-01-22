@@ -1,3 +1,4 @@
+import { Session } from "next-auth";
 import AuthService, { SignInOptions } from "./AuthService";
 import { ApiResponse } from "@/types";
 
@@ -21,18 +22,18 @@ export async function resetPassword({ token, email, password }: { token: string;
   return AuthService.resetPassword({ token, email, password });
 }
 
-export function checkAdminStatus(session: any): boolean {
+export function checkAdminStatus(session: Session | null): boolean {
   return AuthService.isAdmin(session);
 }
 
-export function isAuthenticated(session: any): boolean {
+export function isAuthenticated(session: Session | null): boolean {
   return AuthService.isAuthenticated(session);
 }
 
-export function getUserRole(session: any): string | null {
+export function getUserRole(session: Session | null): string | null {
   return AuthService.getUserRole(session);
 }
 
-export function hasRole(session: any, role: string): boolean {
+export function hasRole(session: Session | null, role: string): boolean {
   return AuthService.hasRole(session, role);
 }

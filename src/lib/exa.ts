@@ -84,7 +84,7 @@ export async function webSearch(
     const exa = getExaClient();
 
     // Set default options
-    const searchOptions: any = {
+    const searchOptions = {
       numResults: options.numResults || 10,
       text: options.text !== undefined ? options.text : true,
       useAutoprompt: options.useAutoprompt !== undefined ? options.useAutoprompt : true,
@@ -95,18 +95,31 @@ export async function webSearch(
     console.log(`[Exa Search] Query: "${query}", Options:`, searchOptions);
 
     // Perform search using Exa's searchAndContents method
-    const response = await exa.searchAndContents(query, searchOptions);
+    const response = await exa.searchAndContents(query, searchOptions as unknown as Parameters<Exa["searchAndContents"]>[1]);
 
     // Transform results to our format
-    const results: SearchResult[] = (response.results || []).map((result: any) => ({
-      title: result.title || "Untitled",
-      url: result.url,
-      publishedDate: result.publishedDate,
-      author: result.author,
-      score: result.score,
-      text: result.text,
-      id: result.id || result.url,
-    }));
+    const results: SearchResult[] = ((response.results as unknown[]) || []).map((result) => {
+      // Exa results can have different shapes based on options, so we normalize here
+      const res = result as {
+        title?: string | null;
+        url: string;
+        publishedDate?: string;
+        author?: string;
+        score?: number;
+        text?: string;
+        id?: string;
+      };
+      
+      return {
+        title: res.title || "Untitled",
+        url: res.url,
+        publishedDate: res.publishedDate,
+        author: res.author,
+        score: res.score,
+        text: res.text,
+        id: res.id || res.url,
+      };
+    });
 
     console.log(`[Exa Search] Found ${results.length} results`);
 
@@ -114,15 +127,16 @@ export async function webSearch(
       results,
       query,
       totalResults: results.length,
-      autopromptString: (response as any).autopromptString,
+      autopromptString: (response as { autopromptString?: string }).autopromptString,
     };
-  } catch (error: any) {
-    console.error("[Exa Search Error]:", error);
+  } catch (error) {
+    const err = error as Error & { response?: { status: number; data?: { error?: { message: string } } } };
+    console.error("[Exa Search Error]:", err);
 
     // Handle specific Exa API errors
-    if (error.response) {
-      const status = error.response.status;
-      const message = error.response.data?.error?.message || error.message;
+    if (err.response) {
+      const status = err.response.status;
+      const message = err.response.data?.error?.message || err.message;
 
       if (status === 401) {
         throw new Error("Invalid EXA_API_KEY. Please check your environment configuration.");
@@ -137,7 +151,7 @@ export async function webSearch(
       throw new Error(`Exa API error (${status}): ${message}`);
     }
 
-    throw new Error(`Web search failed: ${error.message}`);
+    throw new Error(`Web search failed: ${err.message}`);
   }
 }
 
@@ -167,7 +181,7 @@ export async function similarSearch(
     const exa = getExaClient();
 
     // Set default options
-    const searchOptions: any = {
+    const searchOptions = {
       numResults: options.numResults || 10,
       text: options.text !== undefined ? options.text : true,
       useAutoprompt: false, // Disable autoprompt for similar search
@@ -177,18 +191,31 @@ export async function similarSearch(
     console.log(`[Exa Similar Search] URL: "${url}", Options:`, searchOptions);
 
     // Perform similar search using Exa's findSimilarAndContents method
-    const response = await exa.findSimilarAndContents(url, searchOptions);
+    const response = await exa.findSimilarAndContents(url, searchOptions as unknown as Parameters<Exa["findSimilarAndContents"]>[1]);
 
     // Transform results to our format
-    const results: SearchResult[] = (response.results || []).map((result: any) => ({
-      title: result.title || "Untitled",
-      url: result.url,
-      publishedDate: result.publishedDate,
-      author: result.author,
-      score: result.score,
-      text: result.text,
-      id: result.id || result.url,
-    }));
+    const results: SearchResult[] = ((response.results as unknown[]) || []).map((result) => {
+      // Exa results can have different shapes based on options, so we normalize here
+      const res = result as {
+        title?: string | null;
+        url: string;
+        publishedDate?: string;
+        author?: string;
+        score?: number;
+        text?: string;
+        id?: string;
+      };
+      
+      return {
+        title: res.title || "Untitled",
+        url: res.url,
+        publishedDate: res.publishedDate,
+        author: res.author,
+        score: res.score,
+        text: res.text,
+        id: res.id || res.url,
+      };
+    });
 
     console.log(`[Exa Similar Search] Found ${results.length} results`);
 
@@ -197,12 +224,13 @@ export async function similarSearch(
       query: url,
       totalResults: results.length,
     };
-  } catch (error: any) {
-    console.error("[Exa Similar Search Error]:", error);
+  } catch (error) {
+    const err = error as Error & { response?: { status: number; data?: { error?: { message: string } } } };
+    console.error("[Exa Similar Search Error]:", err);
 
-    if (error.response) {
-      const status = error.response.status;
-      const message = error.response.data?.error?.message || error.message;
+    if (err.response) {
+      const status = err.response.status;
+      const message = err.response.data?.error?.message || err.message;
 
       if (status === 401) {
         throw new Error("Invalid EXA_API_KEY. Please check your environment configuration.");
@@ -214,7 +242,7 @@ export async function similarSearch(
       throw new Error(`Exa API error (${status}): ${message}`);
     }
 
-    throw new Error(`Similar search failed: ${error.message}`);
+    throw new Error(`Similar search failed: ${err.message}`);
   }
 }
 
@@ -244,8 +272,9 @@ export async function topicResearch(
     console.log(`[Topic Research] Completed for topic: "${topic}"`);
 
     return results;
-  } catch (error: any) {
-    console.error("[Topic Research Error]:", error);
-    throw new Error(`Topic research failed: ${error.message}`);
+  } catch (error) {
+    const err = error as Error;
+    console.error("[Topic Research Error]:", err);
+    throw new Error(`Topic research failed: ${err.message}`);
   }
 }

@@ -4,7 +4,7 @@ import { authOptions } from "../auth/[...nextauth]";
 import { callGemini } from "@/lib/gemini";
 import formidable from "formidable";
 import fs from "fs/promises";
-import pdfParse from "pdf-parse";
+import * as pdfParse from "pdf-parse";
 import mammoth from "mammoth";
 
 interface FormidableFile {
@@ -62,7 +62,8 @@ async function parseFileContent(file: FormidableFile): Promise<string> {
 
     switch (true) {
       case fileType === 'application/pdf':
-        const pdfData = await pdfParse(fileBuffer);
+        // pdf-parse doesn't have great types, using unknown cast
+        const pdfData = await (pdfParse as unknown as (buffer: Buffer) => Promise<{ text: string }>)(fileBuffer);
         content = pdfData.text;
         break;
 
@@ -91,9 +92,9 @@ async function parseFileContent(file: FormidableFile): Promise<string> {
     }
 
     return content;
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('[Agent Outline] Error parsing file:', error);
-    throw new Error(`Failed to parse file: ${(error as Error).message}`);
+    throw new Error(`Failed to parse file: ${error instanceof Error ? error.message : "Unknown error"}`);
   }
 }
 
@@ -398,11 +399,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         sections: parsedResponse.sections,
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("[Agent Outline] Error:", error);
     return res.status(500).json({
       success: false,
-      message: (error as Error).message || "Error generating outline",
+      message: error instanceof Error ? error.message : "Error generating outline",
     });
   }
 }

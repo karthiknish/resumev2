@@ -1,10 +1,11 @@
 import { signIn as nextAuthSignIn, signOut as nextAuthSignOut } from "next-auth/react";
 import { toast } from "sonner";
+import { AppSession } from "./apiUtils";
 
 export interface SignInOptions {
   redirect?: boolean;
   callbackUrl?: string;
-  [key: string]: any;
+  [key: string]: unknown; // Changed from any
 }
 
 interface SignUpData {
@@ -23,7 +24,7 @@ interface ResetPasswordData {
   password: string;
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> { // Changed from any
   success: boolean;
   data?: T;
   message?: string;
@@ -49,7 +50,7 @@ class AuthService {
 
       const result = await nextAuthSignIn(provider, {
         redirect: false,
-        ...options,
+        ...(options as Record<string, string>),
       });
 
       if (!result || result.ok !== true) {
@@ -59,10 +60,11 @@ class AuthService {
 
       toast.success("Successfully signed in!");
       return { success: true, data: result };
-    } catch (error: any) {
-      console.error("Sign in error:", error);
-      toast.error(error.message || "Sign in failed. Please try again.");
-      return { success: false, error: error.message };
+    } catch (error) {
+      const err = error as Error;
+      console.error("Sign in error:", err);
+      toast.error(err.message || "Sign in failed. Please try again.");
+      return { success: false, error: err.message };
     }
   }
 
@@ -84,10 +86,11 @@ class AuthService {
 
       toast.success("Account created successfully! Please sign in.");
       return { success: true, data };
-    } catch (error: any) {
-      console.error("Sign up error:", error);
-      toast.error(error.message || "Sign up failed. Please try again.");
-      return { success: false, error: error.message };
+    } catch (error) {
+      const err = error as Error;
+      console.error("Sign up error:", err);
+      toast.error(err.message || "Sign up failed. Please try again.");
+      return { success: false, error: err.message };
     }
   }
 
@@ -106,7 +109,7 @@ class AuthService {
 
       await nextAuthSignOut({ callbackUrl });
       toast.success("Successfully signed out!");
-    } catch (error: any) {
+    } catch (error) {
       console.error("Sign out error:", error);
       toast.error("Error signing out. Please try again.");
       await nextAuthSignOut({ callbackUrl });
@@ -131,13 +134,14 @@ class AuthService {
 
       toast.success("Password reset email sent! Check your inbox.");
       return { success: true, data };
-    } catch (error: any) {
-      console.error("Forgot password error:", error);
+    } catch (error) {
+      const err = error as Error;
+      console.error("Forgot password error:", err);
       toast.error(
-        error.message ||
+        err.message ||
           "Failed to send password reset email. Please try again."
       );
-      return { success: false, error: error.message };
+      return { success: false, error: err.message };
     }
   }
 
@@ -159,28 +163,29 @@ class AuthService {
 
       toast.success("Password reset successfully!");
       return { success: true, data };
-    } catch (error: any) {
-      console.error("Reset password error:", error);
+    } catch (error) {
+      const err = error as Error;
+      console.error("Reset password error:", err);
       toast.error(
-        error.message || "Failed to reset password. Please try again."
+        err.message || "Failed to reset password. Please try again."
       );
-      return { success: false, error: error.message };
+      return { success: false, error: err.message };
     }
   }
 
-  static isAdmin(session: any): boolean {
+  static isAdmin(session: AppSession | null): boolean {
     return session?.user?.role === "admin";
   }
 
-  static isAuthenticated(session: any): boolean {
+  static isAuthenticated(session: AppSession | null): boolean {
     return !!session?.user;
   }
 
-  static getUserRole(session: any): string | null {
+  static getUserRole(session: AppSession | null): string | null {
     return session?.user?.role || null;
   }
 
-  static hasRole(session: any, role: string): boolean {
+  static hasRole(session: AppSession | null, role: string): boolean {
     return session?.user?.role === role;
   }
 }

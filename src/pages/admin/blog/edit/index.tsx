@@ -18,11 +18,26 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"; // Import Pagination components
 
+interface BlogPost {
+  id: string;
+  title: string;
+  isPublished: boolean;
+}
+
+interface PaginationInfo {
+  totalDocs: number;
+  limit: number;
+  totalPages: number;
+  page: number;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
+}
+
 function Index() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<BlogPost[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [deleteId, setDeleteId] = useState(null);
-  const [paginationData, setPaginationData] = useState(null); // State for pagination info
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [paginationData, setPaginationData] = useState<PaginationInfo | null>(null); // State for pagination info
   const [currentPage, setCurrentPage] = useState(1); // State for current page
   const [isLoading, setIsLoading] = useState(false); // Loading state for fetching
 
@@ -69,19 +84,20 @@ function Index() {
       setShowModal(false);
       // Refresh the current page after delete
       getData(currentPage);
-    } catch (error) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to delete post";
       console.error("Error deleting post:", error);
-      toast.error(`Error deleting post: ${error.message}`);
+      toast.error(`Error deleting post: ${errorMessage}`);
       setShowModal(false); // Close modal even on error
     }
   };
 
   // Handler for changing the publish status directly from the list
-  const handleStatusChange = async (postId, isChecked) => {
+  const handleStatusChange = async (postId: string, isChecked: boolean) => {
     // Optimistically update the UI
     setData((currentData) =>
       currentData.map((post) =>
-        post._id === postId ? { ...post, isPublished: isChecked } : post
+        post.id === postId ? { ...post, isPublished: isChecked } : post
       )
     );
 
@@ -99,19 +115,19 @@ function Index() {
         `Post status updated to ${isChecked ? "Published" : "Draft"}.`
       );
       // No need to call getData() again due to optimistic update
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error updating post status:", error);
       toast.error("Failed to update post status.");
       // Revert optimistic update on error
       setData((currentData) =>
         currentData.map((post) =>
-          post._id === postId ? { ...post, isPublished: !isChecked } : post
+          post.id === postId ? { ...post, isPublished: !isChecked } : post
         )
       );
     }
   };
 
-  const handlePageChange = (newPage) => {
+  const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= (paginationData?.totalPages || 1)) {
       setCurrentPage(newPage);
     }
@@ -178,7 +194,7 @@ function Index() {
                     {isLoading ? (
                       <tr>
                         <td
-                          colSpan="3"
+                          colSpan={3}
                           className="text-center py-10 text-gray-500"
                         >
                           Loading posts...
@@ -186,10 +202,10 @@ function Index() {
                       </tr>
                     ) : data?.length > 0 ? (
                       data.map((post) => (
-                        <tr key={post._id}>
+                        <tr key={post.id}>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm font-medium text-white hover:text-blue-400">
-                              <Link href={`/admin/blog/edit/${post._id}`}>
+                              <Link href={`/admin/blog/edit/${post.id}`}>
                                 {post.title}
                               </Link>
                             </div>
@@ -197,15 +213,15 @@ function Index() {
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center space-x-2">
                               <Switch
-                                id={`publish-switch-${post._id}`}
+                                id={`publish-switch-${post.id}`}
                                 checked={post.isPublished}
-                                onCheckedChange={(isChecked) =>
-                                  handleStatusChange(post._id, isChecked)
+                                onCheckedChange={(isChecked: boolean) =>
+                                  handleStatusChange(post.id, isChecked)
                                 }
                                 aria-label={`Toggle publish status for ${post.title}`}
                               />
                               <Label
-                                htmlFor={`publish-switch-${post._id}`}
+                                htmlFor={`publish-switch-${post.id}`}
                                 className="text-xs text-gray-400"
                               >
                                 {post.isPublished ? "Published" : "Draft"}
@@ -215,14 +231,14 @@ function Index() {
                           <td className="px-6 py-4 whitespace-nowrap text-sm">
                             <div className="flex gap-4">
                               <Link
-                                href={`/admin/blog/edit/${post._id}`}
+                                href={`/admin/blog/edit/${post.id}`}
                                 className="text-blue-400 hover:text-blue-300"
                               >
                                 Edit
                               </Link>
                               <button
                                 onClick={() => {
-                                  setDeleteId(post._id);
+                                  setDeleteId(post.id);
                                   setShowModal(true);
                                 }}
                                 className="text-red-400 hover:text-red-300"
@@ -236,7 +252,7 @@ function Index() {
                     ) : (
                       <tr>
                         <td
-                          colSpan="3"
+                          colSpan={3}
                           className="text-center py-10 text-gray-500"
                         >
                           No blog posts found.

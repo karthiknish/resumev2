@@ -3,6 +3,14 @@ import { getCollection, updateDocument } from "@/lib/firebase";
 import crypto from "crypto";
 import { sendEmail } from "@/lib/brevoClient";
 
+interface User {
+  _id: string;
+  email: string;
+  name?: string;
+  resetPasswordToken?: string;
+  resetPasswordExpires?: Date;
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
@@ -18,9 +26,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const emailLower = email.toLowerCase();
     const docId = emailLower.replace(/[^a-z0-9]/g, "_");
 
-    const result = await getCollection("users");
+    const result = await getCollection<User>("users");
     const users = result.documents || [];
-    const user = users.find((u: any) => u.email === emailLower);
+    const user = users.find((u) => u.email === emailLower);
 
     if (!user) {
       console.log(`Forgot password attempt for non-existent email: ${email}`);
@@ -42,10 +50,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       await sendEmail({
         to: user.email,
-        toName: (user as any).name || "User",
+        toName: user.name || "User",
         subject: "Password Reset Request - Karthik Nishanth",
         htmlContent: `
-          <p>Hi ${(user as any).name || "there"}</p>
+          <p>Hi ${user.name || "there"}</p>
           <p>You requested a password reset for your account associated with ${user.email}.</p>
           <p>Click this link within the next hour to reset your password:</p>
           <p><a href="${resetUrl}" style="color: #3b82f6; text-decoration: underline;">Reset Password</a></p>

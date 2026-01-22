@@ -1,10 +1,11 @@
 // Converted to TypeScript - migrated
-import NextAuth from "next-auth";
+import NextAuth, { AuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { getCollection } from "@/lib/firebase";
+import { runQuery, fieldFilter } from "@/lib/firebase";
+import { IUser } from "@/models/User";
 
-export const authOptions = {
+export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -12,18 +13,24 @@ export const authOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials): Promise<User | null> {
         try {
+          if (!credentials?.email || !credentials?.password) {
+            throw new Error("Email and password are required");
+          }
+
           const emailLower = credentials.email.toLowerCase();
           console.log("[NextAuth] Attempting login for:", emailLower);
           
-          // Fetch users from Firebase
-          const result = await getCollection("users");
-          const users = result.documents || [];
-          console.log("[NextAuth] Found users count:", users.length);
-          console.log("[NextAuth] User emails:", users.map(u => u.email));
-          
-          const user = users.find(u => u.email === emailLower);
+          // Query users from Firebase by email
+          const users = await runQuery(
+            "users",
+            [fieldFilter("email", "EQUAL", emailLower)],
+            null,
+            1
+          );
+
+          const user = users[0] as unknown as IUser;
 
           if (!user) {
             console.log("[NextAuth] No user found with email:", emailLower);
@@ -31,9 +38,8 @@ export const authOptions = {
           }
 
           console.log("[NextAuth] Found user:", user.email, "Role:", user.role);
-          console.log("[NextAuth] Password hash exists:", !!user.password);
 
-          const isValid = await bcrypt.compare(credentials.password, user.password);
+          const isValid = await bcrypt.compare(credentials.password, user.password || "");
           console.log("[NextAuth] Password valid:", isValid);
           
           if (!isValid) {
@@ -41,13 +47,13 @@ export const authOptions = {
           }
 
           return {
-            id: user._id,
+            id: user._id || user.id || "",
             email: user.email,
             name: user.name,
             role: user.role,
-          };
+          } as User;
         } catch (error) {
-          console.error("[NextAuth] Auth error:", error.message);
+          console.error("[NextAuth] Auth error:", (error as Error).message);
           return null;
         }
       },
@@ -62,13 +68,15 @@ export const authOptions = {
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.isAdmin = user.role === "admin";
       }
       return token;
     },
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id;
-        session.user.role = token.role;
+        session.user.id = token.id as string;
+        session.user.role = token.role as string;
+        session.user.isAdmin = (token.role === "admin") || !!token.isAdmin;
       }
       return session;
     },

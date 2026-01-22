@@ -1,9 +1,9 @@
-// Converted to TypeScript - migrated
+import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "./[...nextauth]";
 import { checkAdminStatus } from "@/lib/authUtils";
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Only allow GET requests
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);

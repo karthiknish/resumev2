@@ -8,38 +8,46 @@ import {
 } from "@/lib/firebase";
 import { sendEmail } from "@/lib/brevoClient";
 import { checkAdminStatus } from "@/lib/authUtils";
+import { IBlog } from "@/models/Blog";
+import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   const session = await getServerSession(req, res, authOptions);
   if (!session) {
-    return res.status(401).json({ message: "Unauthorized" });
+    res.status(401).json({ message: "Unauthorized" });
+    return;
   }
 
   const isAdmin = checkAdminStatus(session);
   if (!isAdmin) {
-    return res.status(403).json({ message: "Forbidden: Admin privileges required" });
+    res.status(403).json({ message: "Forbidden: Admin privileges required" });
+    return;
   }
 
   if (req.method !== "PUT") {
-    return res.status(405).json({ message: "Method not allowed" });
+    res.status(405).json({ message: "Method not allowed" });
+    return;
   }
 
   try {
-    const { id, ...updateFields } = req.body;
+    const { id, ...updateFields } = req.body as { id: string } & Partial<IBlog>;
 
     if (!id) {
-      return res.status(400).json({ success: false, message: "Blog ID is required." });
+      res.status(400).json({ success: false, message: "Blog ID is required." });
+      return;
     }
 
     // Find existing blog
-    const existingBlog = await getDocument("blogs", id);
+    const existingBlog = (await getDocument("blogs", id)) as unknown as IBlog;
     if (!existingBlog) {
       return res.status(404).json({ message: "Blog post not found" });
     }
 
     // Prepare update data
-    const updateData = { ...updateFields };
-    
+    const updateData: Partial<IBlog> & { updatedAt?: Date; slug?: string } = {
+      ...updateFields,
+    };
+
     // Handle slug generation if title changes
     if (updateFields.title && updateFields.title !== existingBlog.title) {
       updateData.slug = updateFields.title
@@ -47,21 +55,28 @@ export default async function handler(req, res) {
         .trim()
         .replace(/[^a-zA-Z0-9\s]/g, "")
         .replace(/\s+/g, "-");
-      
+
       // Check for slug conflicts
-      const conflictingBlog = await getDocument("blogs", updateData.slug);
-      if (conflictingBlog && conflictingBlog._id !== id) {
+      const conflictingBlog = (await getDocument(
+        "blogs",
+        updateData.slug
+      )) as unknown as IBlog;
+      if (conflictingBlog && conflictingBlog.id !== id) {
         return res.status(409).json({
           success: false,
           message: `Slug "${updateData.slug}" is already in use.`,
         });
       }
     }
-    
+
     updateData.updatedAt = new Date();
 
     // Update blog post
-    const updatedBlog = await updateDocument("blogs", id, updateData);
+    const updatedBlog = (await updateDocument(
+      "blogs",
+      id,
+      updateData
+    )) as unknown as IBlog;
 
     // Send notification if just published
     const wasPublished = existingBlog.isPublished;
@@ -69,18 +84,19 @@ export default async function handler(req, res) {
 
     if (!wasPublished && isNowPublished) {
       try {
-        const subscribersResult = await getCollection("subscribers");
+        const subscribersResult = await getCollection<{ email?: string }>("subscribers");
         const subscribers = subscribersResult.documents || [];
         
         for (const subscriber of subscribers) {
           try {
+            if (!subscriber.email) continue;
             await sendEmail({
               to: subscriber.email,
-              subject: `New Blog Post Published: ${updatedBlog.title || existingBlog.title}`,
+              subject: `New Blog Post Published: ${updatedBlog?.title || existingBlog.title}`,
               htmlContent: `
                 <p>Hi there!</p>
-                <p>A blog post titled <strong>${updatedBlog.title || existingBlog.title}</strong> has just been published!</p>
-                <p><a href="https://karthiknish.com/blog/${updatedBlog.slug || existingBlog.slug}">Read it here</a></p>
+                <p>A blog post titled <strong>${updatedBlog?.title || existingBlog.title}</strong> has just been published!</p>
+                <p><a href="https://karthiknish.com/blog/${updatedBlog?.slug || existingBlog.slug}">Read it here</a></p>
                 <p>Best,<br>Karthik Nishanth</p>
               `,
             });
@@ -97,12 +113,12 @@ export default async function handler(req, res) {
       success: true,
       data: updatedBlog,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Edit blog error:", error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return res.status(500).json({
       message: "Error updating blog post",
-      error: error.message,
+      error: errorMessage,
     });
   }
 }
-

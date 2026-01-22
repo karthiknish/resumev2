@@ -3,8 +3,17 @@ import { getCollection } from "@/lib/firebase";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "./auth/[...nextauth]";
 import { checkAdminStatus } from "@/lib/authUtils";
+import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(req, res) {
+interface ChatHistoryItem {
+  id: string;
+  messages: Array<{ role: string; content: string }>;
+  createdAt: string | Date;
+  userId?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
 
   const isAdmin = checkAdminStatus(session);
@@ -20,16 +29,19 @@ export default async function handler(req, res) {
 
   try {
     const result = await getCollection("chatHistory");
-    let histories = result.documents || [];
+    let histories = (result.documents || []) as unknown as ChatHistoryItem[];
     
     // Sort by createdAt descending and limit to 50
-    histories.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    histories.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     histories = histories.slice(0, 50);
 
     return res.status(200).json({ success: true, data: histories });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error fetching chat histories:", error);
-    return res.status(500).json({ success: false, error: "Internal Server Error" });
+    return res.status(500).json({ 
+      success: false, 
+      error: error instanceof Error ? error.message : "Internal Server Error" 
+    });
   }
 }
 

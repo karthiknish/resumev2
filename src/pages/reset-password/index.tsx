@@ -19,7 +19,7 @@ export default function ResetPassword() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
@@ -59,8 +59,9 @@ export default function ResetPassword() {
         router.push("/signin");
       }, 3000);
     } catch (error) {
-      setError(error.message);
-      toast.error(error.message);
+      const errorMessage = error instanceof Error ? error.message : FORM_ERRORS.GENERIC_ERROR;
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

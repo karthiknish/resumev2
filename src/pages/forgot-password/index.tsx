@@ -14,7 +14,7 @@ export default function ForgotPassword() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
@@ -37,8 +37,9 @@ export default function ForgotPassword() {
       setSuccess(true);
       toast.success("Reset link sent to your email");
     } catch (error) {
-      setError(error.message);
-      toast.error(error.message);
+      const errorMessage = error instanceof Error ? error.message : FORM_ERRORS.GENERIC_ERROR;
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

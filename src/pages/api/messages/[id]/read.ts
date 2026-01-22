@@ -3,11 +3,12 @@ import { getDocument, updateDocument } from "@/lib/firebase";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]";
 import { checkAdminStatus } from "@/lib/authUtils";
+import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
 
-  if (!id) {
+  if (!id || typeof id !== "string") {
     return res.status(400).json({ message: "Invalid message ID" });
   }
 
@@ -31,9 +32,12 @@ export default async function handler(req, res) {
 
     const updatedMessage = await updateDocument("messages", id, { isRead: true });
     return res.status(200).json({ success: true, data: updatedMessage });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error marking message as read:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ 
+      message: "Internal server error",
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
   }
 }
 

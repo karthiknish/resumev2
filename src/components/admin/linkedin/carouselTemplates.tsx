@@ -1,7 +1,17 @@
 // Converted to TypeScript - migrated
-import { Lightbulb, BookOpen, FileText, TrendingUp } from "lucide-react";
+import { Lightbulb, BookOpen, FileText, TrendingUp, LucideIcon } from "lucide-react";
 
-export const CAROUSEL_TEMPLATES = {
+export interface CarouselTemplate {
+  id: string;
+  name: string;
+  icon: LucideIcon;
+  description: string;
+  template: string;
+  slideCount: number;
+  placeholders: Record<string, string>;
+}
+
+export const CAROUSEL_TEMPLATES: Record<string, CarouselTemplate[]> = {
   educational: [
     {
       id: "edu-tips",
@@ -187,19 +197,19 @@ export const CAROUSEL_TEMPLATES = {
   ],
 };
 
-export const getTemplate = (category, templateId) => {
+export const getTemplate = (category: string, templateId: string) => {
   return CAROUSEL_TEMPLATES[category]?.find(t => t.id === templateId);
 };
 
-export const formatTemplate = (template, values = {}) => {
+export const formatTemplate = (template: string, values: Record<string, string> = {}) => {
   return Object.entries(values).reduce(
-    (acc, [key, value]) => acc.replace(new RegExp(`\\{${key}\\}`, 'g'), value || `{${key}}`),
+    (acc, [key, value]) => acc.replace(new RegExp(`\\{${key}\\}`, 'g'), String(value) || `{${key}}`),
     template
   );
 };
 
-export const getTemplateCategoryLabel = (category) => {
-  const labels = {
+export const getTemplateCategoryLabel = (category: string) => {
+  const labels: Record<string, string> = {
     educational: "Educational",
     professional: "Professional",
     engaging: "Engaging",
@@ -207,8 +217,8 @@ export const getTemplateCategoryLabel = (category) => {
   return labels[category] || category;
 };
 
-export const getTemplateCategoryIcon = (category) => {
-  const icons = {
+export const getTemplateCategoryIcon = (category: string) => {
+  const icons: Record<string, LucideIcon> = {
     educational: BookOpen,
     professional: TrendingUp,
     engaging: Lightbulb,

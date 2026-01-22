@@ -1,19 +1,20 @@
 // Converted to TypeScript - migrated
+import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { callGemini } from "@/lib/gemini";
 
 // Helper function to check admin status
-async function isAdminUser(req, res) {
+async function isAdminUser(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
   return (
-    session?.user?.role === "admin" ||
-    session?.user?.isAdmin === true ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.role === "admin" ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.isAdmin === true ||
     session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL
   );
 }
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
   if (!session) {
     return res
@@ -32,7 +33,7 @@ export default async function handler(req, res) {
       .json({ success: false, message: "Method not allowed" });
   }
 
-  const { title, contentSnippet } = req.body;
+  const { title, contentSnippet } = req.body as { title?: string; contentSnippet?: string };
 
   if (!title && !contentSnippet) {
     return res
@@ -77,12 +78,12 @@ export default async function handler(req, res) {
     const generationConfig = {
       temperature: 0.6,
       maxOutputTokens: 256,
+      responseMimeType: "application/json",
     };
 
     const keywordsJsonString = await callGemini(
       prompt,
-      generationConfig,
-      "application/json"
+      generationConfig
     );
 
     try {
@@ -158,13 +159,14 @@ export default async function handler(req, res) {
         );
       }
     }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error calling Gemini for keyword suggestions:", error);
+    const message = error instanceof Error ? error.message : "Failed to generate keyword suggestions.";
     res
       .status(500)
       .json({
         success: false,
-        message: error.message || "Failed to generate keyword suggestions.",
+        message,
       });
   }
 }

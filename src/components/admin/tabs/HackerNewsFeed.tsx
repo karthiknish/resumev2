@@ -8,16 +8,26 @@ import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
 
 // Helper to format time
-const formatTimeAgo = (timestamp) => {
+const formatTimeAgo = (timestamp: number | undefined) => {
   if (!timestamp) return "";
   return formatDistanceToNow(new Date(timestamp * 1000), { addSuffix: true });
 };
 
+interface HNStory {
+  id: number;
+  title: string;
+  url?: string;
+  score: number;
+  by: string;
+  time: number;
+  descendants: number;
+}
+
 const HackerNewsFeed = () => {
-  const [storyIds, setStoryIds] = useState([]);
-  const [stories, setStories] = useState([]);
+  const [storyIds, setStoryIds] = useState<number[]>([]);
+  const [stories, setStories] = useState<HNStory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const STORIES_TO_FETCH = 20; // Number of stories to display
 
   useEffect(() => {
@@ -34,10 +44,10 @@ const HackerNewsFeed = () => {
         }
         const ids = await response.json();
         setStoryIds(ids.slice(0, STORIES_TO_FETCH)); // Get only the top N stories
-      } catch (err) {
+      } catch (err: unknown) {
         console.error("Error fetching Hacker News story IDs:", err);
         setError(
-          "Failed to fetch Hacker News story IDs. Please try again later."
+          `Failed to fetch Hacker News story IDs: ${err instanceof Error ? err.message : "Unknown error"}`
         );
         setIsLoading(false);
       }
@@ -68,13 +78,13 @@ const HackerNewsFeed = () => {
         );
 
         const fetchedStories = (await Promise.all(storyPromises)).filter(
-          (story) => story !== null
+          (story): story is HNStory => story !== null
         ); // Filter out failed fetches
         setStories(fetchedStories);
-      } catch (err) {
+      } catch (err: unknown) {
         console.error("Error fetching Hacker News story details:", err);
         setError(
-          "Failed to load story details. Some stories might be missing."
+          `Failed to load story details: ${err instanceof Error ? err.message : "Some stories might be missing."}`
         );
         // Keep potentially partially loaded stories
       } finally {
@@ -83,7 +93,7 @@ const HackerNewsFeed = () => {
     };
 
     fetchStoryDetails();
-  }, [storyIds]); // Re-run when storyIds state changes
+  }, [storyIds, isLoading]); // Re-run when storyIds state changes
 
   return (
     <Card className="bg-card border border-border shadow-sm rounded-2xl h-[520px] flex flex-col">

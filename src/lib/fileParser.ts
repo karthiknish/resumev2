@@ -4,7 +4,7 @@
  * Supports parsing PDF, DOCX, and TXT files for content extraction
  */
 
-import pdf from 'pdf-parse';
+import * as pdf from 'pdf-parse';
 import mammoth from 'mammoth';
 
 /**
@@ -15,7 +15,7 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024;
 /**
  * Supported file types with their MIME types
  */
-const SUPPORTED_FILE_TYPES = {
+const SUPPORTED_FILE_TYPES: Record<string, { mimeTypes: string[], extensions: string[] }> = {
   pdf: {
     mimeTypes: ['application/pdf'],
     extensions: ['.pdf'],
@@ -38,7 +38,7 @@ const SUPPORTED_FILE_TYPES = {
  * @param {string} mimeType - The MIME type of the file
  * @returns {boolean} - Whether the file type is supported
  */
-export function isSupportedFileType(mimeType) {
+export function isSupportedFileType(mimeType: string): boolean {
   return Object.values(SUPPORTED_FILE_TYPES).some(type =>
     type.mimeTypes.includes(mimeType)
   );
@@ -49,7 +49,7 @@ export function isSupportedFileType(mimeType) {
  * @param {string} mimeType - The MIME type of the file
  * @returns {string|null} - The file type (pdf, docx, txt) or null
  */
-export function getFileType(mimeType) {
+export function getFileType(mimeType: string): string | null {
   for (const [type, config] of Object.entries(SUPPORTED_FILE_TYPES)) {
     if (config.mimeTypes.includes(mimeType)) {
       return type;
@@ -63,7 +63,7 @@ export function getFileType(mimeType) {
  * @param {number} size - The file size in bytes
  * @returns {object} - Validation result with isValid and error message
  */
-export function validateFileSize(size) {
+export function validateFileSize(size: number): { isValid: boolean; error?: string } {
   if (size > MAX_FILE_SIZE) {
     const sizeMB = (size / (1024 * 1024)).toFixed(2);
     const maxMB = (MAX_FILE_SIZE / (1024 * 1024)).toFixed(0);
@@ -80,12 +80,14 @@ export function validateFileSize(size) {
  * @param {Buffer} buffer - The PDF file buffer
  * @returns {Promise<string>} - The extracted text content
  */
-async function parsePdf(buffer) {
+async function parsePdf(buffer: Buffer): Promise<string> {
   try {
-    const data = await pdf(buffer);
+    // pdf-parse doesn't have a default export in some environments/versions
+    const pdfParser = (pdf as unknown as { default: (buf: Buffer) => Promise<{ text: string }> }).default || (pdf as unknown as (buf: Buffer) => Promise<{ text: string }>);
+    const data = await pdfParser(buffer);
     return data.text;
   } catch (error) {
-    throw new Error(`Failed to parse PDF: ${error.message}`);
+    throw new Error(`Failed to parse PDF: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
 
@@ -94,12 +96,12 @@ async function parsePdf(buffer) {
  * @param {Buffer} buffer - The DOCX file buffer
  * @returns {Promise<string>} - The extracted text content
  */
-async function parseDocx(buffer) {
+async function parseDocx(buffer: Buffer): Promise<string> {
   try {
     const result = await mammoth.extractRawText({ buffer });
     return result.value;
   } catch (error) {
-    throw new Error(`Failed to parse DOCX: ${error.message}`);
+    throw new Error(`Failed to parse DOCX: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
 
@@ -108,11 +110,11 @@ async function parseDocx(buffer) {
  * @param {Buffer} buffer - The TXT file buffer
  * @returns {Promise<string>} - The extracted text content
  */
-async function parseTxt(buffer) {
+async function parseTxt(buffer: Buffer): Promise<string> {
   try {
     return buffer.toString('utf-8');
   } catch (error) {
-    throw new Error(`Failed to parse TXT: ${error.message}`);
+    throw new Error(`Failed to parse TXT: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
 
@@ -122,7 +124,7 @@ async function parseTxt(buffer) {
  * @param {string} fileType - The file type (pdf, docx, txt)
  * @returns {Promise<string>} - The extracted and cleaned text content
  */
-export async function parseFile(buffer, fileType) {
+export async function parseFile(buffer: Buffer, fileType: string): Promise<string> {
   let content;
 
   switch (fileType) {
@@ -148,7 +150,7 @@ export async function parseFile(buffer, fileType) {
  * @param {string} content - The raw content
  * @returns {string} - The cleaned content
  */
-function cleanupContent(content) {
+function cleanupContent(content: string): string {
   return content
     .replace(/\s+/g, ' ')           // Normalize whitespace
     .replace(/\n{3,}/g, '\n\n')     // Remove excessive line breaks
@@ -162,7 +164,7 @@ function cleanupContent(content) {
  * @param {number} maxLength - The maximum length in characters
  * @returns {string} - The truncated content with an indicator
  */
-export function truncateContent(content, maxLength = 15000) {
+export function truncateContent(content: string, maxLength = 15000): string {
   if (content.length <= maxLength) {
     return content;
   }
@@ -175,7 +177,7 @@ export function truncateContent(content, maxLength = 15000) {
  * @param {string} mimeType - The MIME type of the file
  * @returns {Promise<string>} - The extracted and cleaned text content
  */
-export async function parseFileFromBase64(base64, mimeType) {
+export async function parseFileFromBase64(base64: string, mimeType: string): Promise<string> {
   const fileType = getFileType(mimeType);
 
   if (!fileType) {
@@ -203,7 +205,7 @@ export async function parseFileFromBase64(base64, mimeType) {
  * @param {File} file - The File object
  * @returns {object} - File validation and info
  */
-export function getFileInfo(file) {
+export function getFileInfo(file: File): { isValid: boolean; error?: string; fileType?: string | null; fileName?: string; fileSize?: number } {
   const fileType = getFileType(file.type);
 
   if (!fileType) {
@@ -215,7 +217,10 @@ export function getFileInfo(file) {
 
   const sizeValidation = validateFileSize(file.size);
   if (!sizeValidation.isValid) {
-    return sizeValidation;
+    return {
+      isValid: false,
+      error: sizeValidation.error,
+    };
   }
 
   return {

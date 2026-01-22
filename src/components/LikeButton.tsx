@@ -66,11 +66,11 @@ export default function LikeButton({ blogId, initialLikeCount = 0, initialViewCo
         setLikeCount(data.data?.likeCount || (isLiked ? likeCount - 1 : likeCount + 1));
         setIsLiked(data.data?.isLiked);
 
-        const likedPosts = JSON.parse(localStorage.getItem("likedPosts") || "[]");
+        const likedPosts = JSON.parse(localStorage.getItem("likedPosts") || "[]") as string[];
         if (data.data?.isLiked) {
           localStorage.setItem("likedPosts", JSON.stringify([...likedPosts, blogId]));
         } else {
-          localStorage.setItem("likedPosts", JSON.stringify(likedPosts.filter(id => id !== blogId)));
+          localStorage.setItem("likedPosts", JSON.stringify(likedPosts.filter((id: string) => id !== blogId)));
         }
       } else {
         throw new Error(data.message || "Failed to like post");

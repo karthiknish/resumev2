@@ -1,10 +1,11 @@
 // Converted to TypeScript - migrated
+import { NextApiRequest, NextApiResponse } from "next";
 import { getDocument, updateDocument } from "@/lib/firebase";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { ApiResponse } from "@/lib/apiUtils";
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
     return ApiResponse.methodNotAllowed(res, ["POST"]);
   }
@@ -17,21 +18,21 @@ export default async function handler(req, res) {
     }
 
     // Get session or generate anonymous ID
-    const session = await getServerSession(req, res, authOptions);
+    const session = (await getServerSession(req, res, authOptions)) as { user?: { id: string } } | null;
     const identifierId = session?.user?.id || 
       req.cookies.likeSessionId || 
       `anon_${Date.now()}_${Math.random().toString(36).slice(2)}`;
 
     // Find the blog post
-    const blog = await getDocument("blogs", blogId);
+    const blog = (await getDocument("blogs", blogId)) as { likes?: string[] } | null;
     if (!blog) {
       return ApiResponse.notFound(res, "Blog post not found");
     }
 
     // Initialize likes array if doesn't exist
-    const likes = blog.likes || [];
+    const likes = [...(blog.likes || [])];
     const likeIndex = likes.indexOf(identifierId);
-    let action;
+    let action: "liked" | "unliked";
 
     if (likeIndex > -1) {
       // Unlike - remove from array

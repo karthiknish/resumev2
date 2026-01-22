@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { getCollection, updateDocument } from "@/lib/firebase";
 import { checkAdminStatus } from "@/lib/authUtils";
+import { IBlog } from "@/models/Blog";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   const cronSecret = req.query.secret || req.headers["x-cron-secret"];
@@ -27,8 +28,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const result = await getCollection("blogs");
 
     const now = new Date();
-    const scheduledPosts = result.documents.filter(
-      (blog: any) =>
+    const scheduledPosts = (result.documents as unknown as IBlog[]).filter(
+      (blog) =>
         !blog.isPublished &&
         blog.scheduledPublishAt &&
         new Date(blog.scheduledPublishAt) <= now
@@ -47,24 +48,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     for (const post of scheduledPosts) {
       try {
-        const updatedPost = await updateDocument("blogs", post.id || post._id, {
+        const blogId = (post.id || post._id) as string;
+        await updateDocument("blogs", blogId, {
           isPublished: true,
           scheduledPublishAt: null,
           publishedAt: now,
-        });
+        } as Partial<IBlog>);
 
         publishedPosts.push({
-          id: post.id || post._id,
+          id: blogId,
           title: post.title,
           slug: post.slug,
         });
 
         try {
           const subscribersResult = await getCollection("subscribers");
-          const subscribers = subscribersResult.documents || [];
+          const subscribers = (subscribersResult.documents || []) as unknown as Array<{ email: string }>;
 
           for (const subscriber of subscribers) {
             try {
+              if (!subscriber.email) continue;
               await fetch("https://api.brevo.com/v3/smtp/email", {
                 method: "POST",
                 headers: {
@@ -90,12 +93,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         } catch (e) {
           console.error(`Failed to send notifications for ${post.title}:`, e);
         }
-      } catch (error) {
-        console.error(`Failed to publish scheduled post ${post.id || post._id}:`, error);
+      } catch (error: unknown) {
+        const blogId = (post.id || post._id) as string;
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        console.error(`Failed to publish scheduled post ${blogId}:`, error);
         errors.push({
-          id: post.id || post._id,
+          id: blogId,
           title: post.title,
-          error: (error as Error).message,
+          error: errorMessage,
         });
       }
     }

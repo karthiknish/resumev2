@@ -1,4 +1,5 @@
 // Converted to TypeScript - migrated
+import { NextApiRequest, NextApiResponse } from "next";
 import {
   getDocument,
   updateDocument,
@@ -10,11 +11,9 @@ import {
   handleApiError,
 } from "@/lib/apiUtils";
 
-export default async function handler(req, res) {
-  const {
-    query: { id },
-    method,
-  } = req;
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const method = req.method || "";
+  const { id } = req.query as { id: string };
 
   const allowedMethods = ["GET", "PUT", "DELETE"];
   if (!allowedMethods.includes(method)) {
@@ -28,8 +27,8 @@ export default async function handler(req, res) {
 
   // Check for admin privileges for write/delete operations
   if (method === "PUT" || method === "DELETE") {
-    const { authorized, response } = await requireAdmin(req, res);
-    if (!authorized) return response();
+    const adminCheck = await requireAdmin(req, res);
+    if (!adminCheck.authorized) return adminCheck.response();
   }
 
   try {

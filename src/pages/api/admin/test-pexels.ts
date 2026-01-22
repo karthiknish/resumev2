@@ -1,16 +1,16 @@
 // Converted to TypeScript - migrated
-// src/pages/api/admin/test-pexels.js
+import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import axios from "axios";
 
 const PEXELS_API_KEY = process.env.PEXELS_API_KEY;
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
   const isAdmin =
-    session?.user?.role === "admin" ||
-    session?.user?.isAdmin === true ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.role === "admin" ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.isAdmin === true ||
     session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
   if (!session || !isAdmin) {
@@ -47,7 +47,7 @@ export default async function handler(req, res) {
         page: 1,
       },
       // Add a timeout
-      signal: AbortSignal.timeout(10000), // 10 seconds
+      timeout: 10000, // 10 seconds
     });
 
     // Check for successful response (status 2xx)
@@ -66,21 +66,27 @@ export default async function handler(req, res) {
         error: `API returned status ${response.status}`,
       });
     }
-  } catch (error) {
-    console.error(
-      "Pexels API test error:",
-      error.response?.data || error.message
-    );
+  } catch (error: unknown) {
     let errorMessage = "Failed to connect";
-    if (error.code === "ECONNABORTED" || error.name === "TimeoutError") {
-      errorMessage = "Request timed out";
-    } else if (error.response) {
-      errorMessage = `API Error (${error.response.status}): ${
-        error.response.data?.error || error.response.statusText
-      }`;
-    } else {
+    
+    if (axios.isAxiosError(error)) {
+      console.error(
+        "Pexels API test error:",
+        error.response?.data || error.message
+      );
+      if (error.code === "ECONNABORTED") {
+        errorMessage = "Request timed out";
+      } else if (error.response) {
+        errorMessage = `API Error (${error.response.status}): ${
+          error.response.data?.error || error.response.statusText
+        }`;
+      } else {
+        errorMessage = error.message;
+      }
+    } else if (error instanceof Error) {
       errorMessage = error.message;
     }
+
     return res.status(200).json({
       // Return 200 OK but indicate failure in the body
       success: false,

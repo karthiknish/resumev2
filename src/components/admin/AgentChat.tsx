@@ -6,8 +6,15 @@ import { Send, Bot, User, Loader2, Copy, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
+interface Message {
+  id?: string | number;
+  role: "user" | "assistant" | "system" | string;
+  content: string;
+  timestamp?: string | number;
+}
+
 interface AgentChatProps {
-  messages?: any[];
+  messages?: Message[];
   onSendMessage?: (message: string) => void | Promise<void>;
   isLoading?: boolean;
   placeholder?: string;

@@ -20,9 +20,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const isAdmin =
-    (session as any)?.user?.role === "admin" ||
-    (session as any)?.user?.isAdmin === true ||
-    (session as any)?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+    (session?.user as { role?: string; isAdmin?: boolean })?.role === "admin" ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.isAdmin === true ||
+    session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
   if (!isAdmin) {
     return res.status(403).json({ message: "Forbidden" });
@@ -63,11 +63,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         contentLength: content.length,
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("[File Upload] Error:", error);
     return res.status(500).json({
       success: false,
-      message: (error as Error).message || "Error processing file",
+      message: error instanceof Error ? error.message : "Error processing file",
     });
   }
 }

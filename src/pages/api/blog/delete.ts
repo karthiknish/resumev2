@@ -1,9 +1,9 @@
-// Converted to TypeScript - migrated
+import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { getDocument, deleteDocument } from "@/lib/firebase";
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
   if (!session) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
   try {
     const { id } = req.query;
-    if (!id) {
+    if (!id || typeof id !== "string") {
       return res.status(400).json({ message: "Blog ID is required" });
     }
 

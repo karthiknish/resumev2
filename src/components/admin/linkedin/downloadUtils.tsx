@@ -1,7 +1,8 @@
 // Converted to TypeScript - migrated
 import { toast } from "sonner";
+import { CarouselImage, HistoryItem } from "./useCarouselHistory";
 
-export const downloadImage = (imageData, slideNumber, mimeType = "image/png") => {
+export const downloadImage = (imageData: string, slideNumber: number, mimeType = "image/png") => {
   try {
     const byteCharacters = atob(imageData);
     const byteNumbers = new Array(byteCharacters.length);
@@ -23,13 +24,13 @@ export const downloadImage = (imageData, slideNumber, mimeType = "image/png") =>
 
     setTimeout(() => URL.revokeObjectURL(url), 100);
     toast.success(`Downloaded slide ${slideNumber}`);
-  } catch (err) {
-    console.error("Download error:", err);
+  } catch (err: unknown) {
+    console.error("Download error:", err instanceof Error ? err.message : "Unknown error");
     toast.error(`Failed to download slide ${slideNumber}`);
   }
 };
 
-export const downloadAllImages = (images, history) => {
+export const downloadAllImages = (images: CarouselImage[], history: HistoryItem[]) => {
   if (history.length > 0) {
     const mostRecentItem = history[0];
     if (mostRecentItem._id) {
@@ -41,14 +42,15 @@ export const downloadAllImages = (images, history) => {
           action: "markExported",
           exportType: "images",
         }),
-      }).catch((err) => console.error("Failed to mark as exported:", err));
+      }).catch((err: unknown) => console.error("Failed to mark as exported:", err instanceof Error ? err.message : "Unknown error"));
     }
   }
 
   images.forEach((img, idx) => {
     if (img.imageData) {
+      const imageData = img.imageData; // Narrow type
       setTimeout(() => {
-        downloadImage(img.imageData, img.slideNumber, img.mimeType);
+        downloadImage(imageData, img.slideNumber, img.mimeType);
       }, idx * 300);
     }
   });

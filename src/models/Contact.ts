@@ -1,28 +1,13 @@
-// Converted to TypeScript - migrated
-import mongoose from "mongoose";
+// Converted to TypeScript - migrated to Firebase
+export interface IContact {
+  _id?: string;
+  id?: string;
+  name: string;
+  email: string;
+  message: string;
+  createdAt: Date;
+}
 
-const contactSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  message: {
-    type: String,
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+export type ContactType = IContact;
 
-// Add index for sorting by creation date
-contactSchema.index({ createdAt: -1 });
-
-export default mongoose.models.Contact ||
-  mongoose.model("Contact", contactSchema);
 

@@ -12,7 +12,16 @@ import {
 import { motion } from "framer-motion";
 import { categories } from "@/data/resources";
 
-const ResourceFilters = ({
+interface ResourceFiltersProps {
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
+  activeCategory: string;
+  setActiveCategory: (category: string) => void;
+  itemsPerPage: number;
+  setItemsPerPage: (count: number) => void;
+}
+
+const ResourceFilters: React.FC<ResourceFiltersProps> = ({
   searchTerm,
   setSearchTerm,
   activeCategory,
@@ -21,7 +30,7 @@ const ResourceFilters = ({
   setItemsPerPage,
 }) => {
   // Icon mapping for categories
-  const getIcon = (iconName) => {
+  const getIcon = (iconName: string) => {
     switch (iconName) {
       case "FaTools":
         return <FaTools />;
@@ -58,7 +67,7 @@ const ResourceFilters = ({
             type="text"
             placeholder="Search amazing resources..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
             className="bg-transparent text-slate-800 placeholder:text-slate-400 focus:outline-none w-full text-base sm:text-lg font-medium"
           />
           {searchTerm && (
@@ -162,7 +171,7 @@ const ResourceFilters = ({
           </span>
           <motion.select
             value={itemsPerPage}
-            onChange={(e) => setItemsPerPage(Number(e.target.value))}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setItemsPerPage(Number(e.target.value))}
             className="bg-white border border-slate-200 rounded-xl px-4 py-2 text-slate-700 font-semibold focus:outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-200 transition-all duration-200"
             whileFocus={{ scale: 1.02 }}
           >

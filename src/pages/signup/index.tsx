@@ -21,7 +21,7 @@ export default function SignUp() {
   const [passwordStrength, setPasswordStrength] = useState(0);
   const router = useRouter();
 
-  const checkPasswordStrength = (password) => {
+  const checkPasswordStrength = (password: string) => {
     let strength = 0;
     if (password.length >= 8) strength += 25;
     if (/[A-Z]/.test(password)) strength += 25;
@@ -30,7 +30,7 @@ export default function SignUp() {
     return strength;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
@@ -69,14 +69,15 @@ export default function SignUp() {
       toast.success("Account created successfully! Please sign in.");
       router.push("/signin");
     } catch (error) {
-      setError(error.message);
+      const errorMessage = error instanceof Error ? error.message : FORM_ERRORS.GENERIC_ERROR;
+      setError(errorMessage);
       toast.error(FORM_ERRORS.SUBMISSION_FAILED);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData({
       ...formData,

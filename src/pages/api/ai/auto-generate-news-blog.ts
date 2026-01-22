@@ -8,9 +8,9 @@ import axios from "axios";
 async function isAdminUser(req: NextApiRequest, res: NextApiResponse): Promise<boolean> {
   const session = await getServerSession(req, res, authOptions);
   return (
-    (session as any)?.user?.role === "admin" ||
-    (session as any)?.user?.isAdmin === true ||
-    (session as any)?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL
+    (session?.user as { role?: string; isAdmin?: boolean })?.role === "admin" ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.isAdmin === true ||
+    session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL
   );
 }
 
@@ -112,8 +112,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       fieldFilter("date", "EQUAL", today),
     ]);
 
-    const usage = usageResults.length > 0 ? usageResults[0] : null;
-    const currentCount = usage ? (usage.count || 0) : 0;
+    const usage = usageResults.length > 0 ? (usageResults[0] as { _id?: string; count?: number }) : null;
+    const currentCount = typeof usage?.count === "number" ? usage.count : 0;
 
     if (currentCount >= dailyLimit) {
       console.warn(`GNews API limit reached for ${today}. Count: ${currentCount}`);
@@ -129,13 +129,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const sortBy = "publishedAt";
     const gnewsUrl = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=${lang}&max=${maxArticles}&sortby=${sortBy}&apikey=${gnewsApiKey}`;
 
-    let newsArticle: any;
+    let newsArticle: { title: string; description: string; url: string };
     try {
       const newsResponse = await axios.get(gnewsUrl);
 
       const docId = `${apiName}_${today}`;
       if (usage) {
-        await updateDocument("apiUsage", usage._id, { count: currentCount + 1 });
+        await updateDocument("apiUsage", (usage as unknown as { _id: string })._id, { count: currentCount + 1 });
       } else {
         await createDocument("apiUsage", docId, { apiName, date: today, count: 1 });
       }
@@ -149,10 +149,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
       }
       newsArticle = newsResponse.data.articles[0];
-    } catch (newsError: any) {
-      console.error("GNews API fetching error:", newsError.response?.data || newsError.message);
-      const errorDetails = newsError.response?.data?.errors?.join(", ") || newsError.message;
-      throw new Error(`Failed to fetch news from GNews: ${errorDetails}`);
+    } catch (newsError: unknown) {
+      if (axios.isAxiosError(newsError)) {
+        console.error("GNews API fetching error:", newsError.response?.data || newsError.message);
+        const errorDetails = newsError.response?.data?.errors?.join(", ") || newsError.message;
+        throw new Error(`Failed to fetch news from GNews: ${errorDetails}`);
+      }
+      throw newsError;
     }
 
     const newsInputForPrompt = `Headline: ${newsArticle.title}\nSummary: ${newsArticle.description}\nSource URL: ${newsArticle.url}`;
@@ -202,9 +205,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       parsedData.body = parsedData.body.replace(/^\s*```(?:html)?\s*\n?|\s*\n?```\s*$/g, "").trim();
     }
 
-    const slug = parsedData.slug || generateSlug(parsedData.title);
+    const finalTitle = parsedData.title || "AI Generated Blog Post";
+    const slug = parsedData.slug || generateSlug(finalTitle);
     const newBlogPost = await createDocument("blogs", slug, {
-      title: parsedData.title,
+      title: finalTitle,
       slug: slug,
       description: parsedData.description,
       tags: parsedData.tags,
@@ -218,25 +222,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       updatedAt: new Date(),
     });
 
+    if (!newBlogPost) {
+      throw new Error("Failed to create blog post");
+    }
+
     res.status(201).json({
       success: true,
       message: "AI blog post generated and published successfully.",
       data: {
-        _id: newBlogPost._id,
-        title: newBlogPost.title,
-        slug: newBlogPost.slug,
+        id: (newBlogPost as unknown as { id?: string; _id?: string }).id || (newBlogPost as unknown as { _id?: string })._id,
+        title: (newBlogPost as unknown as { title: string }).title,
+        slug: (newBlogPost as unknown as { slug: string }).slug,
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error in auto-generate-news-blog API:", error);
     let errorMessage = "Failed to generate or save AI blog post draft.";
-    if ((error as Error).message.includes("parsing")) {
-      errorMessage = "AI response generated, but failed to parse structure.";
-    } else if ((error as Error).message.includes("AI failed")) {
-      errorMessage = "The AI failed to generate a response. Please try again.";
-    } else if ((error as Error).message.includes("GNews")) {
-      errorMessage = `Failed to fetch news: ${(error as Error).message}`;
+    if (error instanceof Error) {
+      if (error.message.includes("parsing")) {
+        errorMessage = "AI response generated, but failed to parse structure.";
+      } else if (error.message.includes("AI failed")) {
+        errorMessage = "The AI failed to generate a response. Please try again.";
+      } else if (error.message.includes("GNews")) {
+        errorMessage = `Failed to fetch news: ${error.message}`;
+      }
     }
-    res.status(500).json({ success: false, message: errorMessage, details: (error as Error).message });
+    res.status(500).json({ 
+      success: false, 
+      message: errorMessage, 
+      details: error instanceof Error ? error.message : String(error) 
+    });
   }
 }

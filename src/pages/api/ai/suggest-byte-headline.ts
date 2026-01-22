@@ -2,17 +2,18 @@
 import { callGemini } from "@/lib/gemini";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
+import { NextApiRequest, NextApiResponse } from "next";
 
-async function isAdminUser(req, res) {
+async function isAdminUser(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
   return (
-    session?.user?.role === "admin" ||
-    session?.user?.isAdmin === true ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.role === "admin" ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.isAdmin === true ||
     session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL
   );
 }
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
     return res
       .status(405)
@@ -26,7 +27,7 @@ export default async function handler(req, res) {
       .json({ success: false, message: "Forbidden: Admin access required" });
   }
 
-  const { context = "", numSuggestions = 3 } = req.body; // Context could be the body text
+  const { context = "", numSuggestions = 3 } = req.body as { context?: string; numSuggestions?: number }; // Context could be the body text
 
   try {
     const prompt = `
@@ -51,12 +52,12 @@ export default async function handler(req, res) {
     const generationConfig = {
       temperature: 0.75,
       maxOutputTokens: 512,
+      responseMimeType: "application/json",
     };
 
     const headlinesJsonString = await callGemini(
       prompt,
-      generationConfig,
-      "application/json"
+      generationConfig
     );
 
     try {
@@ -133,13 +134,13 @@ export default async function handler(req, res) {
         }
       }
     }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error calling Gemini for byte headline suggestions:", error);
     res
       .status(500)
       .json({
         success: false,
-        message: error.message || "Failed to generate headline suggestions.",
+        message: error instanceof Error ? error.message : "Failed to generate headline suggestions.",
       });
   }
 }

@@ -137,7 +137,7 @@ const Heatmap = () => {
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
   // Function to get color based on value (0-4 Pomodoros)
-  const getColor = (value) => {
+  const getColor = (value: number) => {
     if (value === 0) return "bg-muted";
     if (value === 1) return "bg-primary/20";
     if (value === 2) return "bg-primary/40";

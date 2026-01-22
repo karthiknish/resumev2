@@ -24,18 +24,19 @@ import VersionHistory from "@/components/admin/blog-editor/VersionHistory";
 import InternalLinkSuggestions from "@/components/admin/blog-editor/InternalLinkSuggestions";
 
 import { AiOutlineClose } from "react-icons/ai";
-import TipTapEditor from "@/components/TipTapEditor";
+import TipTapEditor, { TipTapEditorHandle } from "@/components/TipTapEditor";
 import TipTapRenderer from "@/components/TipTapRenderer";
 import useDebounce from "@/hooks/useDebounce";
 import { toast } from "sonner";
+import { BlogFormData } from "@/types";
 
 import { checkAdminStatus } from "@/lib/authUtils";
 
 // Helper function to format relative time
-function formatRelativeTime(date) {
+function formatRelativeTime(date: Date | null) {
   if (!date) return "";
   const now = new Date();
-  const diffMs = now - date;
+  const diffMs = now.getTime() - date.getTime();
   const diffSecs = Math.floor(diffMs / 1000);
   const diffMins = Math.floor(diffSecs / 60);
   const diffHours = Math.floor(diffMins / 60);
@@ -51,9 +52,9 @@ function Edit() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { id: blogId } = router.query;
-  const editorRef = useRef(null);
+  const editorRef = useRef<TipTapEditorHandle | null>(null);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<BlogFormData>({
     title: "",
     imageUrl: "",
     content: "",
@@ -63,6 +64,7 @@ function Edit() {
     tags: [],
     isPublished: false,
     scheduledPublishAt: null,
+    slug: "",
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -70,11 +72,12 @@ function Edit() {
   const [currentVersion, setCurrentVersion] = useState(1);
   const [showPreview, setShowPreview] = useState(false);
   const [isFormatting, setIsFormatting] = useState(false);
-  const [lastSavedSnapshot, setLastSavedSnapshot] = useState({ ...formData });
+  const [lastSavedSnapshot, setLastSavedSnapshot] = useState<typeof formData>({ ...formData });
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [autoSaveMessage, setAutoSaveMessage] = useState("");
-  const [lastSavedTime, setLastSavedTime] = useState(null);
+  const [lastSavedTime, setLastSavedTime] = useState<Date | null>(null);
   const [saveStatus, setSaveStatus] = useState("idle"); // idle, saving, saved, error
+  const [submitStatus, setSubmitStatus] = useState<[boolean, string] | []>([]);
 
   const debouncedFormData = useDebounce(formData, 1500);
 
@@ -100,7 +103,7 @@ function Edit() {
     }
   }, [status, session, router]);
 
-  const getPlainText = (html) => {
+  const getPlainText = (html: string) => {
     if (!html) return "";
     return html
       .replace(/<[^>]*>/g, " ")
@@ -152,13 +155,15 @@ function Edit() {
           tags: Array.isArray(b.tags) ? b.tags : [],
           isPublished: !!b.isPublished,
           scheduledPublishAt: b.scheduledPublishAt || null,
+          slug: b.slug || "",
         };
         setFormData(populated);
         setLastSavedSnapshot(populated);
         setCurrentVersion(b.currentVersion || 1);
-      } catch (e) {
-        setError(e.message || "Failed to load blog post");
-        toast.error(e.message || "Failed to load blog post");
+      } catch (e: unknown) {
+        const errorMessage = e instanceof Error ? e.message : "Failed to load blog post";
+        setError(errorMessage);
+        toast.error(errorMessage);
       } finally {
         setIsLoading(false);
       }
@@ -166,23 +171,27 @@ function Edit() {
     load();
   }, [blogId]);
 
-  const handleImageUrlChange = (url) => {
+  const handleImageUrlChange = (url: string) => {
     setFormData((prev) => ({ ...prev, imageUrl: url }));
   };
 
-  const handleContentChange = (html) => {
+  const handleContentChange = (html: string) => {
     setFormData((prev) => ({ ...prev, content: html }));
   };
 
-  const handleFormChange = (fieldOrPatch, maybeValue) => {
+  const handleFormChange = (
+    fieldOrPatch: keyof BlogFormData | Partial<BlogFormData>,
+    maybeValue?: BlogFormData[keyof BlogFormData]
+  ) => {
     if (typeof fieldOrPatch === "object" && fieldOrPatch !== null) {
       setFormData((prev) => ({ ...prev, ...fieldOrPatch }));
     } else if (typeof fieldOrPatch === "string") {
-      setFormData((prev) => ({ ...prev, [fieldOrPatch]: maybeValue }));
+      const key = fieldOrPatch as keyof BlogFormData;
+      setFormData((prev) => ({ ...prev, [key]: maybeValue }));
     }
   };
 
-  const handlePublishChange = (checked) => {
+  const handlePublishChange = (checked: boolean) => {
     setFormData((prev) => ({ ...prev, isPublished: !!checked }));
   };
 
@@ -205,9 +214,9 @@ function Edit() {
       } else {
         throw new Error(data.message || "Failed to format content.");
       }
-    } catch (err) {
-      const errorMsg = err?.message || "Error formatting content.";
-      toast.error(`Formatting failed: ${errorMsg}`);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Error formatting content.";
+      toast.error(`Formatting failed: ${errorMessage}`);
     } finally {
       setIsFormatting(false);
     }
@@ -215,7 +224,7 @@ function Edit() {
 
   useEffect(() => {
     if (!blogId) return;
-    const keys = [
+    const keys: Array<keyof BlogFormData> = [
       "title",
       "imageUrl",
       "content",
@@ -225,7 +234,10 @@ function Edit() {
       "tags",
       "isPublished",
     ];
-    const patch = {};
+    const patch: Partial<BlogFormData> = {};
+    const setPatchValue = <K extends keyof BlogFormData>(key: K, value: BlogFormData[K]) => {
+      patch[key] = value;
+    };
     let changed = false;
     keys.forEach((k) => {
       const prevVal = lastSavedSnapshot[k];
@@ -239,7 +251,8 @@ function Edit() {
         ) {
           if (!currVal || String(currVal).trim() === "") return;
         }
-        patch[k] = currVal;
+        if (typeof currVal === "undefined") return;
+        setPatchValue(k, currVal as BlogFormData[typeof k]);
         changed = true;
       }
     });
@@ -279,18 +292,18 @@ function Edit() {
   useEffect(() => {
     if (!lastSavedTime) return;
     const interval = setInterval(() => {
-      setLastSavedTime((prev) => new Date(prev));
+      setLastSavedTime((prev) => prev ? new Date(prev) : null);
     }, 60000);
     return () => clearInterval(interval);
   }, [lastSavedTime]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setIsLoading(true);
     setSubmitStatus([]);
     setError("");
 
-    const missingFields = [];
+    const missingFields: string[] = [];
     if (!formData.title) missingFields.push("Title");
     if (!formData.content) missingFields.push("Content");
     if (!formData.imageUrl) missingFields.push("Image URL");
@@ -321,7 +334,7 @@ function Edit() {
         setError(result.message || "Failed to update blog post");
         toast.error(result.message || "Failed to update blog post");
       }
-    } catch (err) {
+    } catch (err: unknown) {
       setError("An unexpected error occurred");
       toast.error("An unexpected error occurred");
     } finally {
@@ -447,13 +460,13 @@ function Edit() {
                     </SheetHeader>
                     <div className="mt-6 space-y-6">
                       <BannerImageSection
-                        imageUrl={formData.imageUrl}
+                        imageUrl={formData.imageUrl || ""}
                         onImageUrlChange={handleImageUrlChange}
                       />
                       <MetadataSection
                         formData={formData}
                         onFormChange={handleFormChange}
-                        isPublished={formData.isPublished}
+                        isPublished={!!formData.isPublished}
                         onPublishChange={handlePublishChange}
                       />
                     </div>
@@ -465,7 +478,7 @@ function Edit() {
                   Preview
                 </Button>
 
-                <VersionHistory blogId={blogId} currentVersion={currentVersion} />
+                <VersionHistory blogId={blogId as string} currentVersion={currentVersion} />
                 <Button onClick={(e) => handleSubmit(e)} disabled={isLoading}>
                   {isLoading ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -518,7 +531,7 @@ function Edit() {
                   <InternalLinkSuggestions
                     title={formData.title}
                     content={formData.content}
-                    currentSlug={formData.slug}
+                    currentSlug={formData.slug || ""}
                     onInsertLink={({ url, text }) => {
                       editorRef.current?.insertLink({ url, text });
                     }}
@@ -545,13 +558,13 @@ function Edit() {
                 <MetadataSection
                   formData={formData}
                   onFormChange={handleFormChange}
-                  isPublished={formData.isPublished}
+                  isPublished={!!formData.isPublished}
                   onPublishChange={handlePublishChange}
                 />
 
                 {/* Banner Image (Middle) */}
                 <BannerImageSection
-                  imageUrl={formData.imageUrl}
+                  imageUrl={formData.imageUrl || ""}
                   onImageUrlChange={handleImageUrlChange}
                 />
               </div>
@@ -576,4 +589,3 @@ function Edit() {
 }
 
 export default Edit;
-

@@ -20,12 +20,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const emailLower = email.toLowerCase();
 
   const result = await getCollection("users");
-  const users = result.documents || [];
-  const user = users.find((u: any) =>
+  const users = (result.documents || []) as unknown as Array<{
+    _id: string;
+    email: string;
+    resetPasswordToken?: string;
+    resetPasswordExpires?: string | Date;
+  }>;
+  const user = users.find((u) =>
     u.email === emailLower &&
-    (u as any).resetPasswordToken === token &&
-    (u as any).resetPasswordExpires &&
-    new Date((u as any).resetPasswordExpires) > new Date()
+    u.resetPasswordToken === token &&
+    u.resetPasswordExpires &&
+    new Date(u.resetPasswordExpires) > new Date()
   );
 
   if (!user) {
@@ -39,7 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   await updateDocument("users", user._id, {
     password: hashedPassword,
     resetPasswordToken: null,
-    resetPasswordExpires: null as any,
+    resetPasswordExpires: null,
   });
 
   return res.status(200).json({ message: "Password has been reset successfully" });

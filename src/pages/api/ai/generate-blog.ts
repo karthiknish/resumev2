@@ -1,10 +1,21 @@
 // Converted to TypeScript - migrated
-// src/pages/api/ai/generate-blog.js
+import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { callGemini } from "@/lib/gemini"; // Import the utility function
 
-export default async function handler(req, res) {
+interface GenerateBlogBody {
+  topic: string;
+  tone?: string;
+  length?: string;
+  keywords?: string[];
+  outline?: {
+    title?: string;
+    headings?: string[];
+  };
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Check for authenticated session
   const session = await getServerSession(req, res, authOptions);
   if (!session) {
@@ -13,8 +24,8 @@ export default async function handler(req, res) {
 
   // Basic admin check
   const isAdmin =
-    session?.user?.role === "admin" ||
-    session?.user?.isAdmin === true ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.role === "admin" ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.isAdmin === true ||
     session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
   if (!isAdmin) {
@@ -26,7 +37,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { topic, tone, length, keywords, outline } = req.body;
+    const { topic, tone, length, keywords, outline } = req.body as GenerateBlogBody;
 
     // Determine the primary topic/title source
     const effectiveTopic = outline?.title || topic;
@@ -202,11 +213,11 @@ export default async function handler(req, res) {
         content: content, // Return the generated content
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("AI generation error:", error);
     return res.status(500).json({
       success: false,
-      message: error.message || "Error generating blog content",
+      message: error instanceof Error ? error.message : "Error generating blog content",
     });
   }
 }

@@ -1,10 +1,10 @@
 // Converted to TypeScript - migrated
-// src/pages/api/ai/generate-outline.js
+import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { callGemini } from "@/lib/gemini"; // Import the utility function
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Check for authenticated session
   const session = await getServerSession(req, res, authOptions);
   if (!session) {
@@ -13,8 +13,8 @@ export default async function handler(req, res) {
 
   // Basic admin check
   const isAdmin =
-    session?.user?.role === "admin" ||
-    session?.user?.isAdmin === true ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.role === "admin" ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.isAdmin === true ||
     session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
   if (!isAdmin) {
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { topic } = req.body;
+    const { topic } = req.body as { topic: string };
 
     if (!topic || typeof topic !== "string" || !topic.trim()) {
       return res.status(400).json({
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // Construct the improved prompt for Gemini
+    // ... (rest of the prompt)
     const prompt = `
       Act as Karthik Nishanth, an experienced technical writer and educator who creates comprehensive, reader-focused content outlines. Your outlines should:
       - Follow a logical flow that builds understanding progressively
@@ -99,7 +99,7 @@ export default async function handler(req, res) {
     // Parse the structured text
     const lines = outlineText.split("\n");
     let title = topic; // Default title
-    const headings = [];
+    const headings: string[] = [];
 
     lines.forEach((line) => {
       const trimmedLine = line.trim(); // Trim each line
@@ -134,11 +134,11 @@ export default async function handler(req, res) {
       outline: outlinePayload, // original key
       data: outlinePayload, // alias for client code expecting data
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Outline generation error:", error);
     return res.status(500).json({
       success: false,
-      message: error.message || "Error generating outline",
+      message: error instanceof Error ? error.message : "Error generating outline",
     });
   }
 }

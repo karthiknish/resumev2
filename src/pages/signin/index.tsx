@@ -25,7 +25,7 @@ export default function SignIn() {
   useEffect(() => {
     if (session) {
       // Check if user is admin
-      if (session.user.role === "admin") {
+      if (session?.user && 'role' in session.user && session.user.role === "admin") {
         router.push("/admin");
       } else {
         router.push("/");
@@ -33,13 +33,13 @@ export default function SignIn() {
     }
   }, [session, router]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
 
     try {
-      const result = await signIn({
+      const result = await signIn("credentials", {
         email,
         password,
         rememberMe,
@@ -50,7 +50,7 @@ export default function SignIn() {
       } else if (result?.success) {
         // Redirect based on user role is handled by the auth utility
       }
-    } catch (error) {
+    } catch (error: unknown) {
       setError(FORM_ERRORS.NETWORK_ERROR);
       toast.error(FORM_ERRORS.SUBMISSION_FAILED);
     } finally {
@@ -60,10 +60,9 @@ export default function SignIn() {
 
   const handleSignOut = async () => {
     try {
-      await signOut({ redirect: false });
+      await signOut({ callbackUrl: "/" });
       toast.success("Successfully signed out!");
-      router.push("/");
-    } catch (error) {
+    } catch (error: unknown) {
       toast.error(FORM_ERRORS.NETWORK_ERROR);
     }
   };

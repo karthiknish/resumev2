@@ -14,11 +14,23 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 
+export interface NewsItem {
+  headline: string;
+  summary: string;
+  url: string;
+  source?: string;
+  publishedAt?: string;
+}
+
+interface TrendingNewsFeedProps {
+  onNewsSelect?: (headline: string, summary: string) => void;
+}
+
 // Accept onNewsSelect prop
-export default function TrendingNewsFeed({ onNewsSelect }) {
-  const [news, setNews] = useState([]);
+export default function TrendingNewsFeed({ onNewsSelect }: TrendingNewsFeedProps) {
+  const [news, setNews] = useState<NewsItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchNews = async () => {
     setIsLoading(true);
@@ -36,9 +48,10 @@ export default function TrendingNewsFeed({ onNewsSelect }) {
       if (!data.news || data.news.length === 0) {
         toast.info("No trending news found at the moment.");
       }
-    } catch (err) {
-      setError(err.message);
-      toast.error(err.message || "Failed to fetch trending news.");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to fetch trending news.";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -49,7 +62,7 @@ export default function TrendingNewsFeed({ onNewsSelect }) {
   }, []);
 
   // Handle clicking a news item to copy to form
-  const handleSelect = (item) => {
+  const handleSelect = (item: NewsItem) => {
     console.log("[TrendingNewsFeed] handleSelect called with:", item);
     if (onNewsSelect) {
       onNewsSelect(item.headline, item.summary); // Pass headline and summary

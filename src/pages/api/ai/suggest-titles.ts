@@ -1,14 +1,15 @@
 // Converted to TypeScript - migrated
 // src/pages/api/ai/suggest-titles.js
+import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { callGemini } from "@/lib/gemini";
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
   const isAdmin =
-    session?.user?.role === "admin" ||
-    session?.user?.isAdmin === true ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.role === "admin" ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.isAdmin === true ||
     session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
   if (!session || !isAdmin) {
@@ -20,7 +21,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { currentTitle, contentSnippet } = req.body;
+    const { currentTitle, contentSnippet } = req.body as { currentTitle: string; contentSnippet?: string };
 
     if (
       !currentTitle ||
@@ -100,12 +101,12 @@ export default async function handler(req, res) {
     return res
       .status(200)
       .json({ success: true, suggestions: suggestedTitles });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error suggesting titles:", error);
+    const message = error instanceof Error ? error.message : "Internal Server Error generating title suggestions.";
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error generating title suggestions.",
-      error: error.message,
+      message,
     });
   }
 }

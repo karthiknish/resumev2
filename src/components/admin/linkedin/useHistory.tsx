@@ -2,11 +2,37 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
+import { Session } from "next-auth";
+
+export interface HistoryItem {
+  _id?: string;
+  id?: string;
+  topic: string;
+  post: string;
+  postType: string;
+  tone: string;
+  createdAt: string | Date;
+  isFavorite: boolean;
+  hashtags?: string[];
+  length?: string;
+}
+
 const LOCAL_STORAGE_HISTORY_KEY = "linkedin-post-history";
 const MAX_LOCAL_HISTORY = 5;
 
-export const useHistory = (session) => {
-  const [history, setHistory] = useState([]);
+interface ServerHistoryItem {
+  _id: string;
+  topic: string;
+  postContent: string;
+  postType: string;
+  tone: string;
+  createdAt: string;
+  isFavorite: boolean;
+  hashtags?: string[];
+}
+
+export const useHistory = (session: Session | null) => {
+  const [history, setHistory] = useState<HistoryItem[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   const fetchHistory = async () => {
@@ -16,7 +42,7 @@ export const useHistory = (session) => {
       if (response.ok) {
         const data = await response.json();
         if (data.success && data.content) {
-          const transformedHistory = data.content.map((item) => ({
+          const transformedHistory = data.content.map((item: ServerHistoryItem) => ({
             _id: item._id,
             id: item._id,
             topic: item.topic,
@@ -31,8 +57,8 @@ export const useHistory = (session) => {
           return;
         }
       }
-    } catch (error) {
-      console.error("Failed to fetch history from server:", error);
+    } catch (error: unknown) {
+      console.error("Failed to fetch history from server:", error instanceof Error ? error.message : error);
     } finally {
       setIsLoadingHistory(false);
     }
@@ -43,13 +69,13 @@ export const useHistory = (session) => {
         const localHistory = JSON.parse(saved);
         setHistory(localHistory.slice(0, MAX_LOCAL_HISTORY));
       }
-    } catch (e) {
-      console.error("Failed to load history from localStorage:", e);
+    } catch (e: unknown) {
+      console.error("Failed to load history from localStorage:", e instanceof Error ? e.message : e);
     }
     setIsLoadingHistory(false);
   };
 
-  const saveToHistory = async (historyItem) => {
+  const saveToHistory = async (historyItem: HistoryItem) => {
     try {
       const response = await fetch("/api/linkedin/content", {
         method: "POST",
@@ -76,8 +102,8 @@ export const useHistory = (session) => {
           return true;
         }
       }
-    } catch (error) {
-      console.error("Failed to save to server:", error);
+    } catch (error: unknown) {
+      console.error("Failed to save to server:", error instanceof Error ? error.message : error);
     }
 
     try {
@@ -85,13 +111,13 @@ export const useHistory = (session) => {
       setHistory(updatedHistory);
       localStorage.setItem(LOCAL_STORAGE_HISTORY_KEY, JSON.stringify(updatedHistory));
       return true;
-    } catch (e) {
-      console.error("Failed to save to localStorage:", e);
+    } catch (e: unknown) {
+      console.error("Failed to save to localStorage:", e instanceof Error ? e.message : e);
       return false;
     }
   };
 
-  const deleteHistoryItem = async (item, e) => {
+  const deleteHistoryItem = async (item: HistoryItem, e: React.MouseEvent) => {
     e.stopPropagation();
 
     if (item._id) {
@@ -109,8 +135,8 @@ export const useHistory = (session) => {
           toast.success("Deleted from history");
           return;
         }
-      } catch (err) {
-        console.error("Failed to delete from server:", err);
+      } catch (err: unknown) {
+        console.error("Failed to delete from server:", err instanceof Error ? err.message : err);
       }
     }
 
@@ -135,8 +161,8 @@ export const useHistory = (session) => {
               })
             )
         );
-      } catch (err) {
-        console.error("Failed to clear history on server:", err);
+      } catch (err: unknown) {
+        console.error("Failed to clear history on server:", err instanceof Error ? err.message : err);
       }
     }
 
@@ -145,7 +171,7 @@ export const useHistory = (session) => {
     toast.success("History cleared");
   };
 
-  const toggleFavorite = async (item, e) => {
+  const toggleFavorite = async (item: HistoryItem, e: React.MouseEvent) => {
     e.stopPropagation();
 
     if (item._id) {
@@ -174,8 +200,8 @@ export const useHistory = (session) => {
             return;
           }
         }
-      } catch (err) {
-        console.error("Failed to toggle favorite:", err);
+      } catch (err: unknown) {
+        console.error("Failed to toggle favorite:", err instanceof Error ? err.message : err);
       }
     }
 

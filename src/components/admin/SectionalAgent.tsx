@@ -7,6 +7,30 @@ import { Loader2, Sparkles, CheckCircle, Circle, ChevronRight, Edit3, FileText, 
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
+interface Section {
+  id: string;
+  heading: string;
+  points: string[];
+}
+
+interface Outline {
+  title: string;
+  sections: Section[];
+}
+
+interface StyleConfig {
+  tone: string;
+  audience: string;
+  length: string;
+}
+
+interface SectionalAgentProps {
+  onContentComplete: (data: { title: string; content: string }) => void;
+  onCancel: () => void;
+  initialContext?: string;
+  initialUrl?: string;
+}
+
 /**
  * SectionalAgent - Conversational UI for sectional blog generation
  * Workflow:
@@ -15,31 +39,36 @@ import { toast } from "sonner";
  * 3. Generate content for each section individually
  * 4. Combine all sections into final blog post
  */
-export default function SectionalAgent({ onContentComplete, onCancel, initialContext = "", initialUrl = "" }) {
-  const [stage, setStage] = useState("input"); // input, outline, generating, complete
+export default function SectionalAgent({ 
+  onContentComplete, 
+  onCancel, 
+  initialContext = "", 
+  initialUrl = "" 
+}: SectionalAgentProps) {
+  const [stage, setStage] = useState<"input" | "outline" | "generating" | "complete">("input");
   const [context, setContext] = useState(initialContext);
   const [url, setUrl] = useState(initialUrl);
   const [isGenerating, setIsGenerating] = useState(false);
 
   // Outline state
-  const [outline, setOutline] = useState(null);
-  const [editedOutline, setEditedOutline] = useState(null);
-  const [editingSectionId, setEditingSectionId] = useState(null);
+  const [outline, setOutline] = useState<Outline | null>(null);
+  const [editedOutline, setEditedOutline] = useState<Outline | null>(null);
+  const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
   const [editedHeading, setEditedHeading] = useState("");
   const [editedPoints, setEditedPoints] = useState("");
 
   // Section generation state
-  const [generatedSections, setGeneratedSections] = useState({});
-  const [currentSectionId, setCurrentSectionId] = useState(null);
+  const [generatedSections, setGeneratedSections] = useState<Record<string, string>>({});
+  const [currentSectionId, setCurrentSectionId] = useState<string | null>(null);
 
   // Style config
-  const [styleConfig, setStyleConfig] = useState({
+  const [styleConfig, setStyleConfig] = useState<StyleConfig>({
     tone: "professional",
     audience: "developers",
     length: "medium"
   });
 
-  const messagesEndRef = useRef(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -72,16 +101,18 @@ export default function SectionalAgent({ onContentComplete, onCancel, initialCon
       } else {
         throw new Error(data.message || "Failed to generate outline.");
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Outline generation error:", err);
-      toast.error(`Failed: ${err?.message || "Unknown error"}`, { id: toastId });
+      const errorMessage = err instanceof Error ? err.message : "Unknown error";
+      toast.error(`Failed: ${errorMessage}`, { id: toastId });
     } finally {
       setIsGenerating(false);
     }
   };
 
   // Step 2: Edit outline section
-  const handleEditSection = (sectionId) => {
+  const handleEditSection = (sectionId: string) => {
+    if (!editedOutline) return;
     const section = editedOutline.sections.find(s => s.id === sectionId);
     if (section) {
       setEditingSectionId(sectionId);
@@ -106,14 +137,17 @@ export default function SectionalAgent({ onContentComplete, onCancel, initialCon
       return;
     }
 
-    setEditedOutline(prev => ({
-      ...prev,
-      sections: prev.sections.map(s =>
-        s.id === editingSectionId
-          ? { ...s, heading: editedHeading.trim(), points: pointsArray }
-          : s
-      )
-    }));
+    setEditedOutline(prev => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        sections: prev.sections.map(s =>
+          s.id === editingSectionId
+            ? { ...s, heading: editedHeading.trim(), points: pointsArray }
+            : s
+        )
+      };
+    });
 
     setEditingSectionId(null);
     setEditedHeading("");
@@ -128,6 +162,7 @@ export default function SectionalAgent({ onContentComplete, onCancel, initialCon
 
   // Step 3: Generate content for all sections
   const handleGenerateContent = async () => {
+    if (!editedOutline) return;
     setStage("generating");
     setGeneratedSections({});
 
@@ -177,7 +212,8 @@ export default function SectionalAgent({ onContentComplete, onCancel, initialCon
   };
 
   // Step 4: Regenerate a single section
-  const handleRegenerateSection = async (sectionId) => {
+  const handleRegenerateSection = async (sectionId: string) => {
+    if (!editedOutline) return;
     const section = editedOutline.sections.find(s => s.id === sectionId);
     if (!section) return;
 
@@ -208,8 +244,9 @@ export default function SectionalAgent({ onContentComplete, onCancel, initialCon
       } else {
         throw new Error(data.message || "Failed to regenerate section.");
       }
-    } catch (err) {
-      toast.error(`Failed: ${err?.message}`, { id: `regen-${sectionId}` });
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Unknown error";
+      toast.error(`Failed: ${errorMessage}`, { id: `regen-${sectionId}` });
     } finally {
       setCurrentSectionId(null);
     }
@@ -217,6 +254,7 @@ export default function SectionalAgent({ onContentComplete, onCancel, initialCon
 
   // Step 5: Complete and merge content
   const handleComplete = () => {
+    if (!editedOutline) return;
     const combinedContent = Object.values(generatedSections).join("\n\n");
     onContentComplete({
       title: editedOutline.title,
@@ -234,7 +272,7 @@ export default function SectionalAgent({ onContentComplete, onCancel, initialCon
   };
 
   // Helper: Get section status icon
-  const getSectionStatus = (sectionId) => {
+  const getSectionStatus = (sectionId: string) => {
     if (generatedSections[sectionId]) {
       return <CheckCircle className="h-4 w-4 text-emerald-500" />;
     }

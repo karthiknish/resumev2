@@ -3,7 +3,7 @@ import { useEffect, useState, useMemo } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import Image from "next/image"; // Import next/image
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,23 +14,38 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-// Removed ReactMarkdown import as we'll render plain text snippet
 import { FaSearch } from "react-icons/fa";
 import PageContainer from "@/components/PageContainer";
-import Blog from "@/models/Blog";
-import dbConnect from "@/lib/dbConnect";
+import { runQuery, fieldFilter } from "@/lib/firebase";
 
-function Index({ initialPosts = [], categories = [] }) {
+interface BlogPost {
+  _id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  category: string;
+  slug: string;
+  tags: string[];
+  createdAt: string;
+  createdAtDate: Date;
+}
+
+interface IndexProps {
+  initialPosts: BlogPost[];
+  categories: string[] | [];
+}
+
+function Index({ initialPosts = [], categories = [] }: IndexProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [sortOrder, setSortOrder] = useState("desc");
-  const [allPosts, setAllPosts] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [sortOrder, setSortOrder] = useState<"desc" | "asc">("desc");
+  const [allPosts, setAllPosts] = useState<BlogPost[]>([]);
 
   // Pagination state
   const router = useRouter();
   const initialPage =
     typeof window !== "undefined" && router.query.page
-      ? Math.max(1, parseInt(router.query.page, 10) || 1)
+      ? Math.max(1, parseInt(String(router.query.page), 10) || 1)
       : 1;
   const [currentPage, setCurrentPage] = useState(initialPage);
   const POSTS_PER_PAGE = 10;
@@ -61,8 +76,8 @@ function Index({ initialPosts = [], categories = [] }) {
     }
     filtered.sort((a, b) => {
       return sortOrder === "asc"
-        ? a.createdAtDate - b.createdAtDate
-        : b.createdAtDate - a.createdAtDate;
+        ? a.createdAtDate.getTime() - b.createdAtDate.getTime()
+        : b.createdAtDate.getTime() - a.createdAtDate.getTime();
     });
     return filtered;
   }, [allPosts, searchTerm, selectedCategory, sortOrder]);
@@ -78,7 +93,7 @@ function Index({ initialPosts = [], categories = [] }) {
 
   // Sync currentPage with ?page= param in URL
   useEffect(() => {
-    const pageParam = parseInt(router.query.page, 10);
+    const pageParam = router.query.page ? parseInt(String(router.query.page), 10) : 1;
     if (!isNaN(pageParam) && pageParam > 0 && pageParam <= totalPages) {
       setCurrentPage(pageParam);
     } else {
@@ -125,9 +140,9 @@ function Index({ initialPosts = [], categories = [] }) {
     }
   }, [currentPage, router.isReady]); // Add router.isReady dependency
 
-  const handleSearchChange = (e) => setSearchTerm(e.target.value);
-  const handleCategoryChange = (category) => setSelectedCategory(category);
-  const handleSortChange = (value) => setSortOrder(value);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value);
+  const handleCategoryChange = (category: string) => setSelectedCategory(category);
+  const handleSortChange = (value: "desc" | "asc") => setSortOrder(value);
 
   return (
     <>
@@ -164,7 +179,7 @@ function Index({ initialPosts = [], categories = [] }) {
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
-          crossOrigin="true"
+          crossOrigin="anonymous"
         />
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
@@ -300,7 +315,7 @@ function Index({ initialPosts = [], categories = [] }) {
             </motion.div>
 
             {/* Display Search/Filter Status */}
-            {(searchTerm.trim() !== "" || selectedCategory !== "All") && (
+            {(searchTerm.trim() !== "" || selectedCategory !== "All") ? (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -309,11 +324,11 @@ function Index({ initialPosts = [], categories = [] }) {
               >
                 <p className="text-slate-600 text-lg font-medium bg-white inline-flex items-center gap-2 px-6 py-3 rounded-full border border-slate-200">
                   Showing {filteredAndSortedContent.length} posts
-                  {searchTerm.trim() !== "" && ` matching "${searchTerm}"`}
-                  {selectedCategory !== "All" && ` in ${selectedCategory}`}
+                  {searchTerm.trim() !== "" ? ` matching "${searchTerm}"` : null}
+                  {selectedCategory !== "All" ? ` in ${selectedCategory}` : null}
                 </p>
               </motion.div>
-            )}
+            ) : null}
 
             {/* Post List */}
             {filteredAndSortedContent.length > 0 ? (
@@ -340,12 +355,11 @@ function Index({ initialPosts = [], categories = [] }) {
                                 className="object-cover transition-transform duration-500 group-hover:scale-110"
                               />
                               <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                              {post.category &&
-                                post.category !== "Uncategorized" && (
-                                  <span className="absolute top-4 left-4 bg-white text-primary text-sm font-bold px-3 py-1.5 rounded-full shadow-lg border border-primary/20 z-20">
-                                    {post.category}
-                                  </span>
-                                )}
+                              {post.category && post.category !== "Uncategorized" ? (
+                                <span className="absolute top-4 left-4 bg-white text-primary text-sm font-bold px-3 py-1.5 rounded-full shadow-lg border border-primary/20 z-20">
+                                  {post.category}
+                                </span>
+                              ) : null}
                             </div>
                             <div className="p-8">
                               <h2
@@ -370,7 +384,7 @@ function Index({ initialPosts = [], categories = [] }) {
                                   </span>
                                 </div>
                                 <div className="flex flex-wrap items-center gap-2">
-                                  {post.tags &&
+                                  {post.tags ? (
                                     post.tags.slice(0, 3).map((tag) => (
                                       <span
                                         key={tag}
@@ -378,7 +392,8 @@ function Index({ initialPosts = [], categories = [] }) {
                                       >
                                         #{tag}
                                       </span>
-                                    ))}
+                                    ))
+                                  ) : null}
                                 </div>
                                 <div className="mt-4 inline-flex items-center gap-2 text-gray-900 font-semibold text-lg">
                                   Read more
@@ -391,7 +406,7 @@ function Index({ initialPosts = [], categories = [] }) {
                   ))}
                 </div>
                 {/* Pagination Controls */}
-                {totalPages > 1 && (
+                {totalPages > 1 ? (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -441,7 +456,7 @@ function Index({ initialPosts = [], categories = [] }) {
                       Next
                     </button>
                   </motion.div>
-                )}
+                ) : null}
               </>
             ) : (
               <motion.div
@@ -472,18 +487,25 @@ function Index({ initialPosts = [], categories = [] }) {
 }
 
 export async function getStaticProps() {
-  console.log("[getStaticProps /blog] Running..."); // Add log
+  console.log("[getStaticProps /blog] Running...");
   try {
-    await dbConnect();
-    console.log("[getStaticProps /blog] DB Connected.");
-    // Fetch ONLY necessary fields, EXCLUDE content
-    const posts = await Blog.find({ isPublished: true })
-      .select("title slug createdAt description imageUrl tags category") // <-- EXCLUDED content
-      .sort({ createdAt: -1 })
-      .lean();
+    const posts = await runQuery<BlogPost>(
+      "blogs",
+      [fieldFilter("isPublished", "EQUAL", true)],
+      { field: { fieldPath: "createdAt" }, direction: "DESCENDING" }
+    );
+
     console.log(`[getStaticProps /blog] Fetched ${posts.length} posts.`);
 
-    const categories = await Blog.distinct("category", { isPublished: true });
+    // Extract distinct categories manually
+    const categoriesSet = new Set<string>();
+    posts.forEach(post => {
+      if (post.category && post.category !== "Uncategorized") {
+        categoriesSet.add(post.category);
+      }
+    });
+    const categories = Array.from(categoriesSet).sort();
+
     console.log(
       `[getStaticProps /blog] Fetched categories: ${categories.join(", ")}`
     );
@@ -497,7 +519,7 @@ export async function getStaticProps() {
     };
   } catch (err) {
     console.error("[getStaticProps /blog] Error fetching data:", err);
-    return { props: { initialPosts: [], categories: [] }, revalidate: 60 }; // Shorter revalidate on error
+    return { props: { initialPosts: [], categories: [] }, revalidate: 60 };
   }
 }
 

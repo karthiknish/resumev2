@@ -2,16 +2,29 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { callGemini } from "@/lib/gemini";
-import dbConnect from "@/lib/dbConnect";
-import Blog from "@/models/Blog";
+import { getFirestore } from "@/lib/firebaseAdmin";
+
+const COLLECTION = "blogs";
 
 async function isAdminUser(req: NextApiRequest, res: NextApiResponse): Promise<boolean> {
   const session = await getServerSession(req, res, authOptions);
   return (
-    (session as any)?.user?.role === "admin" ||
-    (session as any)?.user?.isAdmin === true ||
-    (session as any)?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL
+    (session?.user as { role?: string; isAdmin?: boolean })?.role === "admin" ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.isAdmin === true ||
+    session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL
   );
+}
+
+interface PostData {
+  _id: string;
+  id: string;
+  title: string;
+  slug: string;
+  description?: string;
+  category?: string;
+  tags?: string[];
+  imageUrl?: string;
+  createdAt?: string | Date;
 }
 
 interface PostSummary {
@@ -62,17 +75,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    await dbConnect();
+    const db = getFirestore();
 
-    const excludeFilter = currentSlug ? { slug: { $ne: currentSlug } } : {};
-    const publishedPosts = await Blog.find({
-      isPublished: true,
-      ...excludeFilter,
-    })
-      .select("title slug description category tags imageUrl createdAt")
-      .sort({ createdAt: -1 })
-      .limit(50)
-      .lean();
+    const snapshot = await db.collection(COLLECTION)
+      .where("isPublished", "==", true)
+      .orderBy("createdAt", "desc")
+      .limit(60)
+      .get();
+
+    let publishedPosts = snapshot.docs.map(doc => ({
+      _id: doc.id,
+      id: doc.id,
+      ...doc.data()
+    })) as PostData[];
+
+    if (currentSlug) {
+      publishedPosts = publishedPosts.filter(p => p.slug !== currentSlug);
+    }
+    
+    publishedPosts = publishedPosts.slice(0, 50);
 
     if (publishedPosts.length === 0) {
       return res.status(200).json({
@@ -82,7 +103,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    const postsSummary: PostSummary[] = publishedPosts.map((post: any, index) => ({
+    const postsSummary: PostSummary[] = publishedPosts.map((post, index) => ({
       id: index + 1,
       title: post.title,
       slug: post.slug,
@@ -148,8 +169,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const linksJsonString = await callGemini(
       prompt,
-      generationConfig,
-      "application/json"
+      generationConfig
     );
 
     try {
@@ -165,7 +185,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       cleaned = cleaned.trim();
 
-      let suggestions = JSON.parse(cleaned);
+      let suggestions = JSON.parse(cleaned) as LinkSuggestion[];
 
       if (!Array.isArray(suggestions)) {
         throw new Error(
@@ -174,9 +194,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       const validatedSuggestions = suggestions
-        .filter((s: any) => s && typeof s === "object" && s.id && s.slug)
-        .map((s: any) => {
-          const postData = publishedPosts.find((p: any) => p.slug === s.slug);
+        .filter((s) => s && typeof s === "object" && s.id && s.slug)
+        .map((s) => {
+          const postData = publishedPosts.find((p) => p.slug === s.slug);
           if (!postData) return null;
 
           return {
@@ -205,7 +225,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       const currentContent = `${title || ""} ${contentSnippet || ""}`.toLowerCase();
       const fallbackSuggestions = publishedPosts
-        .filter((post: any) => {
+        .filter((post) => {
           const postTags = (post.tags || []).map((t: string) => t.toLowerCase());
           const postCategory = post.category?.toLowerCase() || "";
           const hasMatchingTag = postTags.some((tag: string) =>
@@ -216,7 +236,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           return hasMatchingTag || hasMatchingCategory;
         })
         .slice(0, 5)
-        .map((post: any) => ({
+        .map((post) => ({
           _id: post._id,
           title: post.title,
           slug: post.slug,
@@ -235,13 +255,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         .status(200)
         .json({ success: true, suggestions: fallbackSuggestions });
     }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error calling Gemini for internal link suggestions:", error);
     res
       .status(500)
       .json({
         success: false,
-        message: (error as Error).message || "Failed to generate internal link suggestions.",
+        message: error instanceof Error ? error.message : "Failed to generate internal link suggestions.",
       });
   }
 }

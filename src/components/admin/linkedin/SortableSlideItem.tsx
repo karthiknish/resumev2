@@ -4,8 +4,16 @@ import { motion } from "framer-motion";
 import { GripVertical } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { CarouselImage } from "./useCarouselHistory";
 
-function SortableSlideItem({ id, img, index, onPreview }) {
+interface SortableSlideItemProps {
+  id: number;
+  img: CarouselImage;
+  index: number;
+  onPreview: (img: CarouselImage) => void;
+}
+
+function SortableSlideItem({ id, img, index, onPreview }: SortableSlideItemProps) {
   const {
     attributes,
     listeners,

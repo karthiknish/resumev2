@@ -19,12 +19,12 @@ export const useContactForm = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
     setFormData({ ...formData, [id]: value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -112,8 +112,9 @@ const ContactSection = () => {
                   alt="Karthik Nishanth"
                   className="object-cover w-full h-full"
                   onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "https://ui-avatars.com/api/?name=Karthik+Nishanth&background=0f172a&color=fff&size=150";
+                    const img = e.target as HTMLImageElement;
+                    img.onerror = null;
+                    img.src = "https://ui-avatars.com/api/?name=Karthik+Nishanth&background=0f172a&color=fff&size=150";
                   }}
                 />
               </div>

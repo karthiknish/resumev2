@@ -13,9 +13,9 @@ const logger = {
    * Log information messages
    * @param {string} context - The context/component where the log originated
    * @param {string} message - The message to log
-   * @param {any} data - Optional data to include
+   * @param {unknown} [data] - Optional data to include
    */
-  info: (context, message, data) => {
+  info: (context: string, message: string, data?: unknown) => {
     if (!isProduction || isVercel) {
       console.log(`[INFO][${context}] ${message}`, data ? data : "");
     }
@@ -25,9 +25,9 @@ const logger = {
    * Log warning messages
    * @param {string} context - The context/component where the warning originated
    * @param {string} message - The warning message
-   * @param {any} data - Optional data to include
+   * @param {unknown} [data] - Optional data to include
    */
-  warn: (context, message, data) => {
+  warn: (context: string, message: string, data?: unknown) => {
     console.warn(`[WARN][${context}] ${message}`, data ? data : "");
   },
 
@@ -35,9 +35,9 @@ const logger = {
    * Log error messages
    * @param {string} context - The context/component where the error originated
    * @param {string|Error} error - The error object or message
-   * @param {any} additionalData - Optional additional context
+   * @param {unknown} [additionalData] - Optional additional context
    */
-  error: (context, error, additionalData) => {
+  error: (context: string, error: string | Error, additionalData?: unknown) => {
     const errorMsg = error instanceof Error ? error.message : error;
     const stack = error instanceof Error ? error.stack : null;
 

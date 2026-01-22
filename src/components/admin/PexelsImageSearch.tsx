@@ -7,28 +7,48 @@ import { Loader2, Search, ImageOff, X, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
-function PexelsImageSearch({ onImageSelect }) {
+interface PexelsPhoto {
+  id: number;
+  width: number;
+  height: number;
+  url: string;
+  photographer: string;
+  photographer_url: string;
+  photographer_id: number;
+  avg_color: string;
+  src: {
+    original: string;
+    large2x: string;
+    large: string;
+    medium: string;
+    small: string;
+    portrait: string;
+    landscape: string;
+    tiny: string;
+  };
+  alt: string;
+}
+
+interface PexelsImageSearchProps {
+  onImageSelect: (url: string, alt: string) => void;
+}
+
+function PexelsImageSearch({ onImageSelect }: PexelsImageSearchProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [photos, setPhotos] = useState([]);
+  const [photos, setPhotos] = useState<PexelsPhoto[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
   const [hasSearched, setHasSearched] = useState(false);
 
   // Function to fetch photos (search or curated)
   const fetchPhotos = useCallback(
-    async (query, pageNum = 1) => {
+    async (query: string, pageNum = 1) => {
       setIsLoading(true);
       setError(null);
       
-      // If it's a new search (page 1), clear existing photos immediately for better UX
-      // unless we want to keep them while loading (which is often better).
-      // Let's keep them but show a loading indicator overlay or similar if needed.
-      // For now, we'll just append or replace.
-      
       try {
-        // Construct URL: if query is empty, the API now handles it as "curated"
         const url = `/api/pexels/search?query=${encodeURIComponent(
           query || ""
         )}&page=${pageNum}&per_page=12`;
@@ -40,7 +60,7 @@ function PexelsImageSearch({ onImageSelect }) {
         const data = await response.json();
 
         if (response.ok && data.success) {
-          const newPhotos = data.photos || [];
+          const newPhotos = (data.photos || []) as PexelsPhoto[];
           setPhotos((prev) =>
             pageNum === 1 ? newPhotos : [...prev, ...newPhotos]
           );
@@ -58,9 +78,10 @@ function PexelsImageSearch({ onImageSelect }) {
         } else {
           throw new Error(data.message || "Failed to fetch images");
         }
-      } catch (err) {
+      } catch (err: unknown) {
         console.error("Pexels fetch error:", err);
-        setError(err.message || "Error fetching images.");
+        const errorMessage = err instanceof Error ? err.message : "Error fetching images.";
+        setError(errorMessage);
         if (pageNum === 1) setPhotos([]);
       } finally {
         setIsLoading(false);
@@ -74,7 +95,7 @@ function PexelsImageSearch({ onImageSelect }) {
     fetchPhotos("", 1);
   }, [fetchPhotos]);
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.FormEvent) => {
     e?.preventDefault();
     if (!searchTerm.trim()) return;
     fetchPhotos(searchTerm, 1);
@@ -89,7 +110,7 @@ function PexelsImageSearch({ onImageSelect }) {
     fetchPhotos(searchTerm, page + 1);
   };
 
-  const handleImageClick = (photo) => {
+  const handleImageClick = (photo: PexelsPhoto) => {
     if (photo && photo.src && photo.src.large) {
       onImageSelect(photo.src.large, photo.alt);
     } else {

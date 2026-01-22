@@ -1,14 +1,15 @@
 // Converted to TypeScript - migrated
 // src/pages/api/ai/suggest-description.js
+import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { callGemini } from "@/lib/gemini";
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
   const isAdmin =
-    session?.user?.role === "admin" ||
-    session?.user?.isAdmin === true ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.role === "admin" ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.isAdmin === true ||
     session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
   if (!session || !isAdmin) {
@@ -20,7 +21,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { title, content } = req.body;
+    const { title, content } = req.body as { title?: string; content?: string };
 
     if (!title && !content) {
       return res.status(400).json({
@@ -99,12 +100,12 @@ export default async function handler(req, res) {
     return res
       .status(200)
       .json({ success: true, suggestions: suggestedDescriptions });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error suggesting descriptions:", error);
+    const message = error instanceof Error ? error.message : "Internal Server Error generating description suggestions.";
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error generating description suggestions.",
-      error: error.message,
+      message,
     });
   }
 }

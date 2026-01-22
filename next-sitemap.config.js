@@ -22,32 +22,62 @@ module.exports = {
   additionalPaths: async (config) => {
     const paths = [];
     try {
-      // Load DB and Blog model directly to avoid calling /api/blog (which may be protected by middleware)
-      console.log("Sitemap: Querying database for blog slugs...");
-      const dbConnect = require("./src/lib/dbConnect");
-      const Blog = require("./src/models/Blog");
+      console.log("Sitemap: Querying Firestore REST API for blog slugs...");
+      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+      const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
 
-      // Ensure DB connection
-      await dbConnect();
-
-      // Fetch all published blog slugs and updatedAt timestamps
-      const posts = await Blog.find({ isPublished: true })
-        .select("slug updatedAt")
-        .lean();
-      if (Array.isArray(posts) && posts.length > 0) {
-        posts.forEach((post) => {
-          paths.push({
-            loc: `/blog/${post.slug}`,
-            lastmod: post.updatedAt
-              ? new Date(post.updatedAt).toISOString()
-              : new Date().toISOString(),
-            changefreq: "weekly",
-            priority: 0.7,
-          });
-        });
-        console.log(`Sitemap: Added ${posts.length} blog paths.`);
+      if (!projectId || !apiKey) {
+        console.warn("Sitemap: Firebase credentials missing (NEXT_PUBLIC_FIREBASE_PROJECT_ID or NEXT_PUBLIC_FIREBASE_API_KEY). Skipping blog paths.");
       } else {
-        console.log("Sitemap: No published blog posts found.");
+        const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents:runQuery?key=${apiKey}`;
+        
+        const query = {
+          structuredQuery: {
+            from: [{ collectionId: "blogs" }],
+            where: {
+              fieldFilter: {
+                field: { fieldPath: "isPublished" },
+                op: "EQUAL",
+                value: { booleanValue: true }
+              }
+            }
+          }
+        };
+
+        const response = await fetch(firestoreUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(query)
+        });
+
+        if (response.ok) {
+          const results = await response.json();
+          const blogPaths = (Array.isArray(results) ? results : [])
+            .filter(r => r.document)
+            .map(r => {
+              const doc = r.document;
+              const fields = doc.fields || {};
+              const slug = fields.slug?.stringValue;
+              const updatedAt = fields.updatedAt?.timestampValue || fields.createdAt?.timestampValue;
+
+              if (slug) {
+                return {
+                  loc: `/blog/${slug}`,
+                  lastmod: updatedAt ? new Date(updatedAt).toISOString() : new Date().toISOString(),
+                  changefreq: "weekly",
+                  priority: 0.7,
+                };
+              }
+              return null;
+            })
+            .filter(Boolean);
+
+          paths.push(...blogPaths);
+          console.log(`Sitemap: Added ${blogPaths.length} blog paths.`);
+        } else {
+          const err = await response.json();
+          console.error("Sitemap: Firestore REST API error:", err);
+        }
       }
 
       // Add Project Paths from projectsData

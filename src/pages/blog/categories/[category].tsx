@@ -7,64 +7,60 @@ import Image from "next/image";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
 import { FaArrowLeft, FaTag, FaClock } from "react-icons/fa";
-
+import { runQuery, fieldFilter } from "@/lib/firebase";
 
 import Loader from "../../../components/Loader";
 
-export default function CategoryPage() {
-  const [router, setRouter] = useState(null);
-  const [category, setCategory] = useState(null);
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+interface Post {
+  _id: string;
+  slug: string;
+  title: string;
+  image?: string;
+  excerpt?: string;
+  content: string;
+  category: string;
+  createdAt: string;
+}
+
+interface CategoryPageProps {
+  initialPosts: Post[];
+  categoryName: string;
+}
+
+export default function CategoryPage({ initialPosts = [], categoryName }: CategoryPageProps) {
+  const router = useRouter();
+  const { category } = router.query;
+  const currentCategory = categoryName || (category as string);
+  
+  const [posts, setPosts] = useState<Post[]>(initialPosts);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Only set router in the browser
-    if (typeof window !== "undefined") {
-      const routerInstance = require("next/router").useRouter();
-      setRouter(routerInstance);
-      setCategory(routerInstance.query.category);
+    if (initialPosts.length > 0) {
+      setPosts(initialPosts);
     }
-  }, []);
+  }, [initialPosts]);
 
-  useEffect(() => {
-    if (!category) return;
-
-    async function fetchCategoryPosts() {
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/blog/categories/${category}`);
-
-        if (!res.ok) {
-          throw new Error("Failed to fetch category posts");
-        }
-
-        const data = await res.json();
-        setPosts(data.posts);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching category posts:", err);
-        setError(
-          "Failed to load posts for this category. Please try again later."
-        );
-        setLoading(false);
-      }
-    }
-
-    fetchCategoryPosts();
-  }, [category]);
-
-  if (!category) {
+  if (router.isFallback) {
     return <Loader />;
+  }
+
+  if (!currentCategory) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader />
+      </div>
+    );
   }
 
   return (
     <>
       <Head>
-        <title>{`${category} - Blog Categories`}</title>
+        <title>{`${currentCategory} - Blog Categories`}</title>
         <meta
           name="description"
-          content={`Blog posts in the ${category} category`}
+          content={`Blog posts in the ${currentCategory} category`}
         />
       </Head>
 
@@ -78,7 +74,7 @@ export default function CategoryPage() {
           </Link>
 
           <h1 className="text-3xl md:text-4xl font-bold mt-4 mb-6 text-gray-900">
-            Category: <span className="text-gray-700">{category}</span>
+            Category: <span className="text-gray-700">{currentCategory}</span>
           </h1>
 
           {loading ? (
@@ -141,5 +137,71 @@ export default function CategoryPage() {
       </main>
     </>
   );
+}
+
+export async function getStaticPaths() {
+  console.log("[getStaticPaths /blog/categories/[category]] Running...");
+  try {
+    const blogs = await runQuery<Post>(
+      "blogs",
+      [fieldFilter("isPublished", "EQUAL", true)]
+    );
+
+    const categorySet = new Set<string>();
+    blogs.forEach((blog) => {
+      if (blog.category && blog.category !== "" && blog.category !== "Uncategorized") {
+        categorySet.add(blog.category);
+      }
+    });
+
+    const paths = Array.from(categorySet).map((category) => ({
+      params: { category },
+    }));
+
+    console.log(`[getStaticPaths /blog/categories/[category]] Generated ${paths.length} paths.`);
+
+    return {
+      paths,
+      fallback: "blocking",
+    };
+  } catch (error) {
+    console.error("[getStaticPaths /blog/categories/[category]] Error:", error);
+    return { paths: [], fallback: "blocking" };
+  }
+}
+
+export async function getStaticProps({ params }: { params: { category: string } }) {
+  const { category } = params;
+  console.log(`[getStaticProps /blog/categories/${category}] Running...`);
+
+  try {
+    const blogs = await runQuery<Post>(
+      "blogs",
+      [
+        fieldFilter("isPublished", "EQUAL", true),
+        fieldFilter("category", "EQUAL", category)
+      ],
+      { field: { fieldPath: "createdAt" }, direction: "DESCENDING" }
+    );
+
+    console.log(`[getStaticProps /blog/categories/${category}] Found ${blogs.length} posts.`);
+
+    return {
+      props: {
+        initialPosts: JSON.parse(JSON.stringify(blogs)),
+        categoryName: category,
+      },
+      revalidate: 3600,
+    };
+  } catch (error) {
+    console.error(`[getStaticProps /blog/categories/${category}] Error:`, error);
+    return {
+      props: {
+        initialPosts: [],
+        categoryName: category,
+      },
+      revalidate: 60,
+    };
+  }
 }
 

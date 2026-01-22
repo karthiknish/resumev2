@@ -2,8 +2,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { checkAdminStatus } from "@/lib/authUtils";
-import Blog from "@/models/Blog";
-import dbConnect from "@/lib/dbConnect";
+import { getFirestore } from "@/lib/firebaseAdmin";
+
+const COLLECTION = "blogs";
+const USERS_COLLECTION = "users";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   const session = await getServerSession(req, res, authOptions);
@@ -18,25 +20,49 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const { blogId } = req.query;
 
-  if (!blogId) {
-    return res.status(400).json({ success: false, message: "Blog ID is required." });
+  if (!blogId || typeof blogId !== 'string') {
+    return res.status(400).json({ success: false, message: "Valid Blog ID is required." });
   }
 
   try {
-    await dbConnect();
+    const db = getFirestore();
+    const blogDoc = await db.collection(COLLECTION).doc(blogId).get();
 
-    const blog = await Blog.findById(blogId).populate("versions.author", "name email image");
-
-    if (!blog) {
+    if (!blogDoc.exists) {
       return res.status(404).json({ message: "Blog post not found" });
     }
 
+    const blogData = { id: blogDoc.id, ...blogDoc.data() } as any;
+
     if (req.method === "GET") {
+      // Manual population of authors in versions
+      const versions = (blogData.versions || []) as any[];
+      const populatedVersions = await Promise.all(
+        versions.map(async (v) => {
+          if (v.author && typeof v.author === 'string') {
+            const authorDoc = await db.collection(USERS_COLLECTION).doc(v.author).get();
+            if (authorDoc.exists) {
+              const authorData = authorDoc.data();
+              return {
+                ...v,
+                author: {
+                  _id: authorDoc.id,
+                  name: authorData?.name,
+                  email: authorData?.email,
+                  image: authorData?.image,
+                }
+              };
+            }
+          }
+          return v;
+        })
+      );
+
       return res.status(200).json({
         success: true,
         data: {
-          currentVersion: blog.currentVersion,
-          versions: blog.versions || [],
+          currentVersion: blogData.currentVersion || 1,
+          versions: populatedVersions,
         },
       });
     }
@@ -51,8 +77,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
       }
 
-      const versionToRestore = blog.versions?.find(
-        (v: any) => v.versionNumber === versionNumber
+      const versions = (blogData.versions || []) as any[];
+      const versionToRestore = versions.find(
+        (v) => v.versionNumber === versionNumber
       );
 
       if (!versionToRestore) {
@@ -62,46 +89,51 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
       }
 
-      const currentSnapshot: any = {
-        versionNumber: blog.currentVersion,
-        title: blog.title,
-        content: blog.content,
-        description: blog.description,
-        imageUrl: blog.imageUrl,
-        tags: blog.tags,
-        category: blog.category,
-        author: blog.author,
-        createdAt: blog.updatedAt,
+      const currentSnapshot = {
+        versionNumber: (blogData.currentVersion as number) || 1,
+        title: blogData.title as string,
+        content: blogData.content as string,
+        description: blogData.description as string,
+        imageUrl: (blogData.imageUrl as string) || "",
+        tags: (blogData.tags as string[]) || [],
+        category: (blogData.category as string) || "Uncategorized",
+        author: blogData.author,
+        createdAt: (blogData.updatedAt as string) || new Date().toISOString(),
         changeDescription: changeDescription || "Before restoring to version " + versionNumber,
       };
 
-      blog.title = versionToRestore.title;
-      blog.content = versionToRestore.content;
-      blog.description = versionToRestore.description;
-      blog.imageUrl = versionToRestore.imageUrl || "";
-      blog.tags = versionToRestore.tags || [];
-      blog.category = versionToRestore.category || "Uncategorized";
-      blog.currentVersion = (blog.currentVersion || 1) + 1;
-
-      blog.versions?.push(currentSnapshot);
-
-      if (blog.versions && blog.versions.length > 20) {
-        blog.versions = blog.versions.slice(-20);
+      const newVersion = ((blogData.currentVersion as number) || 1) + 1;
+      
+      let updatedVersions = [...versions, currentSnapshot];
+      if (updatedVersions.length > 20) {
+        updatedVersions = updatedVersions.slice(-20);
       }
 
-      await blog.save();
+      const updatedData = {
+        title: versionToRestore.title,
+        content: versionToRestore.content,
+        description: versionToRestore.description,
+        imageUrl: versionToRestore.imageUrl || "",
+        tags: versionToRestore.tags || [],
+        category: versionToRestore.category || "Uncategorized",
+        currentVersion: newVersion,
+        versions: updatedVersions,
+        updatedAt: new Date().toISOString(),
+      };
+
+      await db.collection(COLLECTION).doc(blogId).update(updatedData);
 
       return res.status(200).json({
         success: true,
         message: `Restored to version ${versionNumber}`,
         data: {
-          currentVersion: blog.currentVersion,
-          title: blog.title,
-          content: blog.content,
-          description: blog.description,
-          imageUrl: blog.imageUrl,
-          tags: blog.tags,
-          category: blog.category,
+          currentVersion: newVersion,
+          title: updatedData.title,
+          content: updatedData.content,
+          description: updatedData.description,
+          imageUrl: updatedData.imageUrl,
+          tags: updatedData.tags,
+          category: updatedData.category,
         },
       });
     }

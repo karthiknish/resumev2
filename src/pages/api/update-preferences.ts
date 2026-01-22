@@ -1,13 +1,13 @@
-// Converted to TypeScript - migrated
 import { getDocument, updateDocument } from "@/lib/firebase";
+import type { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "PUT") {
     res.setHeader("Allow", ["PUT"]);
     return res.status(405).json({ success: false, message: "Method Not Allowed" });
   }
 
-  const { email, preferences } = req.body;
+  const { email, preferences } = req.body as { email: string; preferences: Record<string, boolean> };
 
   if (!email || !/\S+@\S+\.\S+/.test(email)) {
     return res.status(400).json({ success: false, message: "Invalid email address provided." });
@@ -31,11 +31,12 @@ export default async function handler(req, res) {
       message: "Preferences updated successfully.",
       data: preferences,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Update Preferences API Error:", error);
     return res.status(500).json({
       success: false,
       message: "An internal server error occurred.",
+      error: error instanceof Error ? error.message : "Unknown error"
     });
   }
 }

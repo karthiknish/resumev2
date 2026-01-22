@@ -1,6 +1,6 @@
 // Converted to TypeScript - migrated
 // src/components/admin/blog-editor/ContentSection.js
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback,useRef } from "react";
 import TipTapEditor from "@/components/TipTapEditor"; // Import TipTapEditor
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -18,6 +18,15 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 
+interface ContentSectionProps {
+  content: string;
+  setContent: (content: string) => void;
+  onTogglePreview?: () => void;
+  blogTitle: string;
+  onOutlineTitle?: (title: string) => void;
+  onTitleChange?: (title: string) => void;
+}
+
 function ContentSection({
   content,
   setContent, // Renaming 'onUpdate' from TipTapEditor prop for consistency here
@@ -25,22 +34,24 @@ function ContentSection({
   blogTitle, // Keep blogTitle for Generate Content
   onOutlineTitle = () => {},
   onTitleChange = () => {}, // New prop for Agent Mode to update title
-}) {
+}: ContentSectionProps) {
   const [isGeneratingContent, setIsGeneratingContent] = useState(false);
   const [contentGenError, setContentGenError] = useState("");
   const [isFormatting, setIsFormatting] = useState(false); // State for formatting loader
   const [formatError, setFormatError] = useState(""); // State for formatting error
   const [isGeneratingOutline, setIsGeneratingOutline] = useState(false);
-  const [outlineData, setOutlineData] = useState(null);
-  const [outlineError, setOutlineError] = useState("");
   const [isOutlineOpen, setIsOutlineOpen] = useState(false);
+  const [outlineData, setOutlineData] = useState<{ headings?: string[]; title?: string } | null>(null);
+  const [outlineError, setOutlineError] = useState("");
 
   // Agent Mode state
   const [isAgentModeOpen, setIsAgentModeOpen] = useState(false);
   const [agentContext, setAgentContext] = useState("");
-  const [agentFile, setAgentFile] = useState(null);
+  const [agentFile, setAgentFile] = useState<File | null>(null);
   const [isAgentGenerating, setIsAgentGenerating] = useState(false);
   const [agentError, setAgentError] = useState("");
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Handler for generating content draft
   const handleGenerateContent = useCallback(async () => {
@@ -73,13 +84,15 @@ function ContentSection({
           response.data.message || "Failed to generate content draft."
         );
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("[ContentSection] Error generating content:", err);
-      setContentGenError(
-        (err as any).response?.data?.message ||
-          (err as any).message ||
-          "Error generating content."
-      );
+      let message = "Error generating content.";
+      if (axios.isAxiosError(err)) {
+        message = err.response?.data?.message || err.message;
+      } else if (err instanceof Error) {
+        message = err.message;
+      }
+      setContentGenError(message);
       toast.error("Error generating content. Please try again.");
     } finally {
       setIsGeneratingContent(false);
@@ -111,12 +124,14 @@ function ContentSection({
         );
         throw new Error(response.data.message || "Failed to format content");
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("[ContentSection] Error formatting content:", err);
-      const errorMsg =
-        err.response?.data?.message ||
-        err.message ||
-        "Error formatting content.";
+      let errorMsg = "Error formatting content.";
+      if (axios.isAxiosError(err)) {
+        errorMsg = err.response?.data?.message || err.message;
+      } else if (err instanceof Error) {
+        errorMsg = err.message;
+      }
       setFormatError(errorMsg);
       toast.error(`Formatting failed: ${errorMsg}`);
     } finally {
@@ -124,7 +139,7 @@ function ContentSection({
     }
   }, [content, setContent]); // Dependencies: content and setContent
 
-  const handleOutlineOpenChange = useCallback((open) => {
+  const handleOutlineOpenChange = useCallback((open: boolean) => {
     setIsOutlineOpen(open);
     if (!open) {
       setOutlineError("");
@@ -156,12 +171,14 @@ function ContentSection({
       } else {
         throw new Error(response.data.message || "Failed to generate outline.");
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("[ContentSection] Outline generation error:", err);
-      const message =
-        err.response?.data?.message ||
-        err.message ||
-        "Failed to generate outline.";
+      let message = "Failed to generate outline.";
+      if (axios.isAxiosError(err)) {
+        message = err.response?.data?.message || err.message;
+      } else if (err instanceof Error) {
+        message = err.message;
+      }
       setOutlineError(message);
       toast.error(`Outline generation failed: ${message}`, { id: toastId });
     } finally {
@@ -188,12 +205,12 @@ function ContentSection({
 
       if (agentFile) {
         const formData = new FormData();
-        formData.append('context', agentContext || '');
-        formData.append('file', agentFile);
+        formData.append("context", agentContext || "");
+        formData.append("file", agentFile);
 
         response = await axios.post("/api/ai/agent-generate-blog", formData, {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
         });
       } else {
@@ -204,11 +221,11 @@ function ContentSection({
 
       if (response.data.success && response.data.data) {
         const { title, content: generatedContent } = response.data.data;
-        
+
         if (title) {
           onTitleChange(title);
         }
-        
+
         if (generatedContent) {
           setContent(generatedContent);
         }
@@ -220,12 +237,14 @@ function ContentSection({
       } else {
         throw new Error(response.data.message || "Failed to generate blog.");
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("[ContentSection] Agent Mode error:", err);
-      const message =
-        err.response?.data?.message ||
-        err.message ||
-        "Failed to generate blog.";
+      let message = "Failed to generate blog.";
+      if (axios.isAxiosError(err)) {
+        message = err.response?.data?.message || err.message;
+      } else if (err instanceof Error) {
+        message = err.message;
+      }
       setAgentError(message);
       toast.error(`Generation failed: ${message}`, { id: toastId });
     } finally {
@@ -233,7 +252,7 @@ function ContentSection({
     }
   }, [agentContext, agentFile, onTitleChange, setContent]);
 
-  const handleAgentModeOpenChange = useCallback((open) => {
+  const handleAgentModeOpenChange = useCallback((open: boolean) => {
     setIsAgentModeOpen(open);
     if (!open) {
       setAgentError("");
@@ -242,7 +261,7 @@ function ContentSection({
   }, []);
 
   const handleApplyOutline = useCallback(
-    (mode) => {
+    (mode: "append" | "replace") => {
       if (!outlineData) {
         return;
       }
@@ -505,10 +524,11 @@ function ContentSection({
             <div className="space-y-2">
               <Label htmlFor="agent-context">Context / Instructions</Label>
               <Textarea
-                id="agent-context"
                 placeholder="E.g., Write a blog about React Server Components, explaining what they are, their benefits over client components, and how to migrate existing components. Include code examples and best practices."
                 value={agentContext}
-                onChange={(e) => setAgentContext(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                  setAgentContext(e.target.value);
+                }}
                 className="min-h-[150px] resize-y"
                 disabled={isAgentGenerating}
               />
@@ -516,17 +536,20 @@ function ContentSection({
             <div className="space-y-2">
               <Label htmlFor="agent-file">Upload Reference File (Optional)</Label>
               <div className="flex items-center gap-4">
-                <input
+                 <input
+                  ref={fileInputRef}
                   id="agent-file"
                   type="file"
                   accept=".pdf,.docx,.txt"
                   onChange={(e) => {
-                    const file = e.target.files[0];
-                    if (file) {
+                    const input = e.target as HTMLInputElement;
+                    const files = input.files;
+                    if (files && files[0]) {
+                      const file = files[0];
                       const maxSize = 10 * 1024 * 1024; // 10MB
                       if (file.size > maxSize) {
                         toast.error("File size must be less than 10MB");
-                        e.target.value = "";
+                        input.value = "";
                         setAgentFile(null);
                         return;
                       }
@@ -536,12 +559,6 @@ function ContentSection({
                     }
                   }}
                   disabled={isAgentGenerating}
-                  className="flex-1 text-sm text-slate-500
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded-full file:border-0
-                    file:text-sm file:font-semibold
-                    file:bg-violet-50 file:text-violet-700
-                    hover:file:bg-violet-100"
                 />
               </div>
               {agentFile && (
@@ -553,7 +570,8 @@ function ContentSection({
                     size="sm"
                     onClick={() => {
                       setAgentFile(null);
-                      document.getElementById('agent-file').value = "";
+                      const input = document.getElementById('agent-file') as HTMLInputElement | null;
+                      if (input) input.value = "";
                     }}
                     disabled={isAgentGenerating}
                     className="h-6 px-2 text-xs"

@@ -72,7 +72,7 @@ function containsSpamPatterns(email: string): boolean {
   return spamPatterns.some((pattern) => pattern.test(email));
 }
 
-function toFirestoreValue(value: any): FirestoreValue {
+function toFirestoreValue(value: unknown): FirestoreValue {
   if (value === null || value === undefined) {
     return { nullValue: null };
   }
@@ -93,7 +93,7 @@ function toFirestoreValue(value: any): FirestoreValue {
   }
   if (typeof value === "object") {
     const fields: Record<string, FirestoreValue> = {};
-    for (const [k, v] of Object.entries(value)) {
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
       fields[k] = toFirestoreValue(v);
     }
     return { mapValue: { fields } };
@@ -261,16 +261,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       htmlContent: generateWelcomeEmail(email.toLowerCase()),
     })
       .then(() => console.log(`Welcome email sent to ${email}`))
-      .catch((emailError) => console.error(`Failed to send welcome email to ${email}:`, emailError));
+      .catch((emailError: unknown) => console.error(`Failed to send welcome email to ${email}:`, emailError));
 
     return res
       .status(201)
       .json({ success: true, message: "Subscription successful!" });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Subscription API Error:", error);
     return res.status(500).json({
       success: false,
       message: "An internal server error occurred.",
+      error: error instanceof Error ? error.message : "Unknown error"
     });
   }
 }

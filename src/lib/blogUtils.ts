@@ -2,13 +2,13 @@
 // src/lib/blogUtils.js
 
 // Helper function to detect if content is HTML
-export function isHTML(str) {
+export function isHTML(str: string): boolean {
   // Basic check, might need refinement
   return /<[a-z][\s\S]*>/i.test(str);
 }
 
 // Simple HTML to Markdown converter
-export function htmlToMarkdown(html) {
+export function htmlToMarkdown(html: string): string {
   if (!html) return "";
   let markdown = html;
   markdown = markdown.replace(/<h1[^>]*>(.*?)<\/h1>/gi, "# $1\n\n");
@@ -32,11 +32,11 @@ export function htmlToMarkdown(html) {
   );
   markdown = markdown.replace(
     /<ol[^>]*>([\s\S]*?)<\/ol>/gi,
-    (match, content) => {
+    (match: string, content: string) => {
       let index = 1;
       return content.replace(
         /<li[^>]*>([\s\S]*?)<\/li>/gi,
-        (match, item) => `${index++}. ${item}\n`
+        (match: string, item: string) => `${index++}. ${item}\n`
       );
     }
   );
@@ -60,10 +60,12 @@ export function htmlToMarkdown(html) {
   return markdown.trim();
 }
 
-// Validator for blog data fields required for creation/update (excluding status-only updates)
-export function validateBlogData(data) {
+/**
+ * Validator for blog data fields
+ */
+export function validateBlogData(data: Record<string, any>): { isValid: boolean; message?: string } {
   if (
-    data.hasOwnProperty("title") &&
+    Object.prototype.hasOwnProperty.call(data, "title") &&
     (!data.title || typeof data.title !== "string")
   ) {
     return {
@@ -72,7 +74,7 @@ export function validateBlogData(data) {
     };
   }
   if (
-    data.hasOwnProperty("content") &&
+    Object.prototype.hasOwnProperty.call(data, "content") &&
     (!data.content || typeof data.content !== "string")
   ) {
     return {
@@ -81,7 +83,7 @@ export function validateBlogData(data) {
     };
   }
   if (
-    data.hasOwnProperty("description") &&
+    Object.prototype.hasOwnProperty.call(data, "description") &&
     (!data.description || typeof data.description !== "string")
   ) {
     return {
@@ -90,7 +92,7 @@ export function validateBlogData(data) {
     };
   }
   if (
-    data.hasOwnProperty("imageUrl") &&
+    Object.prototype.hasOwnProperty.call(data, "imageUrl") &&
     (!data.imageUrl || typeof data.imageUrl !== "string")
   ) {
     return {
@@ -103,7 +105,7 @@ export function validateBlogData(data) {
 }
 
 // Helper to generate slug from title
-export function generateSlug(title) {
+export function generateSlug(title: string): string {
   if (!title || typeof title !== "string") return "";
   return title
     .toLowerCase()

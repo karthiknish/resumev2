@@ -13,7 +13,7 @@ const PomodoroTimer = () => {
   const [isWorkSession, setIsWorkSession] = useState(true);
   const [cyclesCompleted, setCyclesCompleted] = useState(0);
 
-  const formatTime = (seconds) => {
+  const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
@@ -35,7 +35,7 @@ const PomodoroTimer = () => {
   const handleSessionEnd = useCallback(() => {
     setIsActive(false);
     // Play a sound or show notification (optional)
-    if (typeof window !== "undefined" && window.alert) {
+    if (typeof window !== "undefined") {
       alert(
         isWorkSession
           ? "Work session finished! Time for a break."
@@ -53,7 +53,7 @@ const PomodoroTimer = () => {
   }, [isWorkSession]);
 
   useEffect(() => {
-    let interval = null;
+    let interval: NodeJS.Timeout | null = null;
 
     if (isActive && timeLeft > 0) {
       interval = setInterval(() => {
@@ -62,10 +62,12 @@ const PomodoroTimer = () => {
     } else if (isActive && timeLeft === 0) {
       handleSessionEnd();
     } else {
-      clearInterval(interval);
+      if (interval) clearInterval(interval);
     }
 
-    return () => clearInterval(interval); // Cleanup interval on unmount or state change
+    return () => {
+      if (interval) clearInterval(interval);
+    };
   }, [isActive, timeLeft, handleSessionEnd]);
 
   return (

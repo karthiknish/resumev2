@@ -1,12 +1,12 @@
 // Converted to TypeScript - migrated
 import { ALL_HASHTAGS } from "./constants";
 
-export const suggestHashtags = (text, limit = 8) => {
+export const suggestHashtags = (text: string, limit: number = 8): string[] => {
   if (!text || typeof text !== "string") return [];
 
   const textLower = text.toLowerCase();
-  const suggestions = new Set();
-  const scores = new Map();
+  const suggestions = new Set<string>();
+  const scores = new Map<string, number>();
 
   ALL_HASHTAGS.forEach((hashtag) => {
     const tagLower = hashtag.toLowerCase().replace("#", "");

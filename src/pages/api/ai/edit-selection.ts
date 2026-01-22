@@ -2,8 +2,9 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { callGemini } from "@/lib/gemini";
+import { NextApiRequest, NextApiResponse } from "next";
 
-const ACTION_PROMPTS = {
+const ACTION_PROMPTS: Record<string, { prompt: string; temperature: number; maxOutputTokens: number }> = {
   rewrite: {
     prompt:
       "Rewrite the snippet to improve clarity and flow while keeping the original meaning, level of detail, and any inline formatting such as numbers or HTML tags.",
@@ -36,11 +37,11 @@ const ACTION_PROMPTS = {
   },
 };
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
   const isAdmin =
-    session?.user?.role === "admin" ||
-    session?.user?.isAdmin === true ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.role === "admin" ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.isAdmin === true ||
     session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
   if (!session || !isAdmin) {
@@ -52,7 +53,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { mode, text, context } = req.body || {};
+    const { mode, text, context } = (req.body || {}) as { mode: string; text: string; context?: string };
 
     if (typeof mode !== "string" || !(mode in ACTION_PROMPTS)) {
       return res.status(400).json({ message: "Unsupported AI edit mode." });
@@ -98,11 +99,11 @@ export default async function handler(req, res) {
     }
 
     return res.status(200).json({ success: true, replacement: cleaned });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("AI edit-selection error:", error);
     return res.status(500).json({
       success: false,
-      message: error.message || "Error processing AI edit request",
+      message: error instanceof Error ? error.message : "Error processing AI edit request",
     });
   }
 }

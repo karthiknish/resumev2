@@ -30,9 +30,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const isAdmin =
-    (session as any)?.user?.role === "admin" ||
-    (session as any)?.user?.isAdmin === true ||
-    (session as any)?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+    (session?.user as { role?: string; isAdmin?: boolean })?.role === "admin" ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.isAdmin === true ||
+    session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
   if (!isAdmin) {
     return res.status(403).json({ message: "Forbidden" });
@@ -123,10 +123,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    const sections: Section[] = [];
-
-    for (let i = 0; i < effectiveOutline.headings.length; i++) {
-      const heading = effectiveOutline.headings[i];
+    const sectionPromises = effectiveOutline.headings.map(async (heading, i) => {
       const isIntroduction = i === 0;
       const isConclusion = i === effectiveOutline.headings.length - 1;
 
@@ -136,75 +133,63 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         sectionPrompt = `
           Act as Karthik Nishanth, a seasoned full-stack developer and technical writer.
 
-          Write an engaging introduction for a blog post about: "${effectiveOutline.title}"
+          Write an engaging introduction for a blog post about: "${effectiveOutline!.title}"
 
           The main section headings will be:
-          ${effectiveOutline.headings.join("\n          ")}
+          ${effectiveOutline!.headings.join("\n          ")}
 
-          Instructions for
-          introduction:
-          - Hook
-          reader with a relatable problem or intriguing question
+          Instructions for introduction:
+          - Hook reader with a relatable problem or intriguing question
           - Briefly introduce what this post will cover
           - Make it personal and conversational
           - Build anticipation for what's coming next
           - Use a ${tone || "friendly, professional"} tone
           - Length: ${length ? Math.floor(parseInt(length) * 0.15) : 120} words
 
-          Output only
-          HTML content wrapped in <p> tags (1-2 paragraphs).
-          Do not include
-          section heading.
+          Output only HTML content wrapped in <p> tags (1-2 paragraphs).
+          Do not include section heading.
         `;
       } else if (isConclusion) {
         sectionPrompt = `
           Act as Karthik Nishanth, a seasoned full-stack developer and technical writer.
 
-          Write a thoughtful conclusion for a blog post about: "${effectiveOutline.title}"
+          Write a thoughtful conclusion for a blog post about: "${effectiveOutline!.title}"
 
           The section covered was: "${heading}"
 
-          Instructions for
-          conclusion:
-          - Summarize
-          key takeaways without repeating everything
-          - Provide actionable next steps for
-          reader
+          Instructions for conclusion:
+          - Summarize key takeaways without repeating everything
+          - Provide actionable next steps for reader
           - End with an inspiring or thought-provoking statement
           - Use a ${tone || "friendly, professional"} tone
           - Length: ${length ? Math.floor(parseInt(length) * 0.1) : 80} words
           ${keywords && keywords.length > 0 ? `- Naturally integrate keywords: ${keywords.join(", ")}` : ""}
 
-          Output only
-          HTML content wrapped in <p> tags (1 paragraph).
-          Do not include
-          section heading.
+          Output only HTML content wrapped in <p> tags (1 paragraph).
+          Do not include section heading.
         `;
       } else {
         sectionPrompt = `
           Act as Karthik Nishanth, a seasoned full-stack developer and technical writer.
 
-          Write a comprehensive section for a blog post about: "${effectiveOutline.title}"
+          Write a comprehensive section for a blog post about: "${effectiveOutline!.title}"
 
           Section heading: "${heading}"
 
           Context:
           - Tone: ${tone || "friendly, professional"}
-          - Length: ${length ? Math.floor(parseInt(length) / effectiveOutline.headings.length) : 150} words
+          - Length: ${length ? Math.floor(parseInt(length) / effectiveOutline!.headings.length) : 150} words
           ${keywords && keywords.length > 0 ? `- Keywords: ${keywords.join(", ")}` : ""}
 
           Instructions:
-          - Expand on
-          heading with detailed, informative content
+          - Expand on heading with detailed, informative content
           - Include practical examples or code snippets if relevant
           - Explain not just "how" but "why"
           - Use real-world analogies to explain complex concepts
           - Keep it engaging and conversational
           - Avoid fluff - focus on value
 
-          Output only
-          HTML content with
-          following structure:
+          Output only HTML content with following structure:
           <h2>${heading}</h2>
           <p>Your content here...</p>
           <p>Additional paragraphs as needed...</p>
@@ -223,21 +208,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           .replace(/^\s*```(?:html)?\s*\n?|\s*\n?```\s*$/g, "")
           .trim();
 
-        sections.push({
+        return {
           heading,
           content: cleanedContent,
           order: i + 1,
-        });
+        };
       } catch (error) {
         console.error(`Error generating section ${i + 1}:`, error);
-        sections.push({
+        return {
           heading,
           content: `<p><em>[Section generation failed: ${(error as Error).message}]</em></p>`,
           order: i + 1,
           error: (error as Error).message,
-        });
+        };
       }
-    }
+    });
+
+    const sections = await Promise.all(sectionPromises);
 
     const fullContent = sections
       .map((section) => section.content)
@@ -252,11 +239,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         fullContent,
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Sectional generation error:", error);
     return res.status(500).json({
       success: false,
-      message: (error as Error).message || "Error generating blog content",
+      message: error instanceof Error ? error.message : "Error generating blog content",
     });
   }
 }

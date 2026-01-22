@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { webSearch, similarSearch, topicResearch } from "@/lib/exa";
+import type { SearchOptions as ExaSearchOptions } from "@/lib/exa";
 import { ApiResponse, checkRateLimit, getClientIp } from "@/lib/apiUtils";
 import logger from "@/utils/logger";
 
@@ -34,13 +35,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return ApiResponse.badRequest(res, "Either 'query' or 'url' parameter is required.");
     }
 
-    const searchOptions = {
+    const allowedTypes = ["auto", "keyword", "neural", "magic"] as const;
+    type AllowedType = typeof allowedTypes[number];
+    const allowedTypeSet = new Set<AllowedType>(allowedTypes);
+    const isAllowedType = (value: string | undefined): value is AllowedType =>
+      typeof value === "string" && allowedTypeSet.has(value as AllowedType);
+
+    if (type && !isAllowedType(type)) {
+      return ApiResponse.badRequest(
+        res,
+        `Invalid search type. Must be one of: ${allowedTypes.join(", ")}.`
+      );
+    }
+    const normalizedType: ExaSearchOptions["type"] = isAllowedType(type) ? type : undefined;
+
+    const searchOptions: ExaSearchOptions = {
       numResults: numResults ? parseInt(numResults.toString(), 10) : 10,
       text: true,
-      type: type || "auto",
+      type: normalizedType ?? "auto",
     };
 
-    let result: any;
+    let result: unknown;
     let searchAction: string;
 
     if (url) {
@@ -51,10 +66,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       result = await similarSearch(url, searchOptions);
     } else if (searchType === "topic" || searchType === "research") {
       searchAction = "topic research";
-      result = await topicResearch(query, searchOptions);
+      result = await topicResearch(query!, searchOptions);
     } else {
       searchAction = "web search";
-      result = await webSearch(query, searchOptions);
+      result = await webSearch(query!, searchOptions);
     }
 
     logger.info(
@@ -63,22 +78,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
 
     return ApiResponse.success(res, result, "Search completed successfully");
-  } catch (error) {
-    logger.error("Web Search", `API error: ${(error as Error).message}`, { stack: (error as Error).stack });
+  } catch (error: unknown) {
+    const err = error as Error;
+    logger.error("Web Search", `API error: ${err.message}`, { stack: err.stack });
 
-    if ((error as Error).message.includes("EXA_API_KEY")) {
+    if (err.message.includes("EXA_API_KEY")) {
       return ApiResponse.serverError(
         res,
         "Search service configuration error. Please contact administrator."
       );
     }
 
-    if ((error as Error).message.includes("Rate limit")) {
-      return ApiResponse.tooManyRequests(res, (error as Error).message);
+    if (err.message.includes("Rate limit")) {
+      return ApiResponse.tooManyRequests(res, err.message);
     }
 
-    if ((error as Error).message.includes("invalid") || (error as Error).message.includes("Invalid")) {
-      return ApiResponse.badRequest(res, (error as Error).message);
+    if (err.message.includes("invalid") || err.message.includes("Invalid")) {
+      return ApiResponse.badRequest(res, err.message);
     }
 
     return ApiResponse.serverError(

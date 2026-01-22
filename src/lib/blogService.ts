@@ -1,62 +1,102 @@
-// Converted to TypeScript - migrated
-// src/lib/blogService.js
-import mongoose from "mongoose";
-import Blog from "@/models/Blog"; // Adjust path if needed
-import { isHTML, htmlToMarkdown, generateSlug } from "./blogUtils"; // Import helpers
+// Converted to TypeScript - migrated to Firebase
+import { getFirestore } from "./firebaseAdmin";
+import { IBlog } from "@/models/Blog";
+import { isHTML, htmlToMarkdown, generateSlug } from "./blogUtils";
+
+const COLLECTION = "blogs";
+
+interface BlogAuthor {
+  _id: string;
+  id: string;
+  name?: string;
+  image?: string;
+}
+
+interface EnrichedBlog extends Omit<IBlog, "author"> {
+  author?: string | BlogAuthor;
+}
 
 // --- Read Operations ---
 
-export async function getBlogBySlug(slug) {
+export async function getBlogBySlug(slug: string): Promise<EnrichedBlog | null> {
   if (!slug) throw new Error("Slug is required to fetch blog post.");
-  // Populate author details when fetching single post
-  const blog = await Blog.findOne({ slug })
-    .populate({
-      path: "author",
-      select: "name image", // Select fields you need from the author
-    })
-    .lean(); // Use lean for performance if not modifying
-  if (!blog) {
-    // Consider returning null instead of throwing for API handler
-    return null;
-    // throw new Error("Blog not found");
+  
+  const db = getFirestore();
+  const snapshot = await db.collection(COLLECTION)
+    .where("slug", "==", slug)
+    .limit(1)
+    .get();
+
+  if (snapshot.empty) return null;
+  
+  const doc = snapshot.docs[0];
+  const blog = { id: doc.id, ...doc.data() } as EnrichedBlog;
+  
+  // Manual population of author if needed
+  if (blog.author && typeof blog.author === "string") {
+    const userDoc = await db.collection("users").doc(blog.author).get();
+    if (userDoc.exists) {
+      const userData = userDoc.data();
+      blog.author = {
+        _id: userDoc.id,
+        id: userDoc.id,
+        name: userData?.name,
+        image: userData?.image
+      };
+    }
   }
+
   return blog;
 }
 
-export async function getBlogById(id) {
-  if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-    throw new Error("Valid Blog ID is required.");
+export async function getBlogById(id: string): Promise<EnrichedBlog | null> {
+  if (!id) throw new Error("Valid Blog ID is required.");
+  
+  const db = getFirestore();
+  const doc = await db.collection(COLLECTION).doc(id).get();
+  
+  if (!doc.exists) return null;
+  
+  const blog = { id: doc.id, ...doc.data() } as EnrichedBlog;
+
+  // Manual population
+  if (blog.author && typeof blog.author === "string") {
+    const userDoc = await db.collection("users").doc(blog.author).get();
+    if (userDoc.exists) {
+      const userData = userDoc.data();
+      blog.author = {
+        _id: userDoc.id,
+        id: userDoc.id,
+        name: userData?.name,
+        image: userData?.image
+      };
+    }
   }
-  // Populate author details when fetching single post
-  const blog = await Blog.findById(id)
-    .populate({
-      path: "author",
-      select: "name image",
-    })
-    .lean();
-  if (!blog) {
-    // Consider returning null instead of throwing for API handler
-    return null;
-    // throw new Error("Blog not found");
-  }
+  
   return blog;
 }
 
-export async function getPaginatedBlogs(page = 1, limit = 10, filter = {}) {
-  const startIndex = (page - 1) * limit;
-  const total = await Blog.countDocuments(filter);
-
-  // Define the fields to select for the list view
-  // IMPORTANT: Added 'content' here
-  const selection =
-    "title slug imageUrl createdAt isPublished description category tags content";
-
-  const blogs = await Blog.find(filter)
-    .select(selection)
-    .sort({ createdAt: -1 })
-    .skip(startIndex)
+export async function getPaginatedBlogs(page = 1, limit = 10, filter: Record<string, unknown> = {}): Promise<{ blogs: EnrichedBlog[], pagination: { page: number, limit: number, totalPages: number, total: number } }> {
+  const db = getFirestore();
+  let query: FirebaseFirestore.Query = db.collection(COLLECTION);
+  
+  // Apply filters
+  for (const [key, value] of Object.entries(filter)) {
+    query = query.where(key, "==", value);
+  }
+  
+  // Get total count
+  const countSnapshot = await query.count().get();
+  const total = countSnapshot.data().count;
+  
+  // Apply sorting and pagination
+  const snapshot = await query
+    .orderBy("createdAt", "desc")
+    .offset((page - 1) * limit)
     .limit(limit)
-    .lean(); // Use lean for better performance on read-only operations
+    .get();
+
+  const blogs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as EnrichedBlog));
 
   const totalPages = Math.ceil(total / limit);
   return { blogs, pagination: { page, limit, totalPages, total } };
@@ -64,84 +104,97 @@ export async function getPaginatedBlogs(page = 1, limit = 10, filter = {}) {
 
 // --- Write Operations ---
 
-export async function createBlog(blogData) {
-  // Basic validation (can be enhanced)
-  if (
-    !blogData.title ||
-    !blogData.content ||
-    !blogData.description ||
-    !blogData.imageUrl ||
-    !blogData.author // Ensure author is provided
-  ) {
-    throw new Error(
-      "Missing required fields for blog creation (title, content, description, imageUrl, author)."
-    );
+export async function createBlog(blogData: Partial<IBlog>) {
+  if (!blogData.title || !blogData.content || !blogData.description || !blogData.author) {
+    throw new Error("Missing required fields for blog creation.");
   }
 
-  // Process content and slug
   if (blogData.content && isHTML(blogData.content)) {
     blogData.content = htmlToMarkdown(blogData.content);
   }
-  blogData.slug = generateSlug(blogData.title);
+  blogData.slug = generateSlug(blogData.title!);
 
-  // Check for duplicate slug before creating
-  const existing = await Blog.findOne({ slug: blogData.slug }).lean();
-  if (existing) {
+  const db = getFirestore();
+  
+  // Check for duplicate slug
+  const existing = await db.collection(COLLECTION)
+    .where("slug", "==", blogData.slug)
+    .limit(1)
+    .get();
+    
+  if (!existing.empty) {
     throw new Error(`Blog post with slug "${blogData.slug}" already exists.`);
   }
 
-  const blog = await Blog.create(blogData);
-  return blog;
+  const now = new Date();
+  const newBlog = {
+    ...blogData,
+    createdAt: now,
+    updatedAt: now,
+    viewCount: 0,
+    likes: [],
+    isPublished: blogData.isPublished || false,
+    currentVersion: 1,
+    versions: []
+  };
+
+  const docRef = await db.collection(COLLECTION).add(newBlog);
+  return { id: docRef.id, ...newBlog };
 }
 
-export async function updateBlog(id, updateData) {
-  if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-    throw new Error("Valid Blog ID is required for update.");
-  }
+export async function updateBlog(id: string, updateData: Partial<IBlog>) {
+  if (!id) throw new Error("Valid Blog ID is required for update.");
 
-  // Process content and slug if they are being updated
   if (updateData.content && isHTML(updateData.content)) {
     updateData.content = htmlToMarkdown(updateData.content);
   }
+  
   if (updateData.title) {
     updateData.slug = generateSlug(updateData.title);
-    // Optional: Check if the new slug conflicts with another post (excluding itself)
-    const existing = await Blog.findOne({
-      slug: updateData.slug,
-      _id: { $ne: id },
-    }).lean();
-    if (existing) {
-      throw new Error(
-        `Another blog post with the slug "${updateData.slug}" already exists.`
-      );
+    
+    const db = getFirestore();
+    const existing = await db.collection(COLLECTION)
+      .where("slug", "==", updateData.slug)
+      .limit(1)
+      .get();
+      
+    if (!existing.empty && existing.docs[0].id !== id) {
+      throw new Error(`Another blog post with the slug "${updateData.slug}" already exists.`);
     }
   }
 
-  // Determine if this is just a status update based *only* on fields in updateData
-  const keys = Object.keys(updateData);
-  const isStatusUpdateOnly = keys.length === 1 && keys[0] === "isPublished";
-
-  const options = {
-    new: true, // Return the modified document
-    runValidators: !isStatusUpdateOnly, // Skip validators ONLY if just isPublished is present
-  };
-
-  const blog = await Blog.findOneAndUpdate({ _id: id }, updateData, options);
-  if (!blog) {
+  const db = getFirestore();
+  const blogRef = db.collection(COLLECTION).doc(id);
+  
+  const doc = await blogRef.get();
+  if (!doc.exists) {
     throw new Error("Blog not found during update");
   }
-  return blog;
+
+  const now = new Date();
+  const finalUpdate = {
+    ...updateData,
+    updatedAt: now
+  };
+
+  await blogRef.update(finalUpdate);
+  return { id, ...doc.data(), ...finalUpdate };
 }
 
-export async function deleteBlog(id) {
-  if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-    throw new Error("Valid Blog ID is required for deletion.");
-  }
-  const blog = await Blog.findOneAndDelete({ _id: id });
-  if (!blog) {
+export async function deleteBlog(id: string) {
+  if (!id) throw new Error("Valid Blog ID is required for deletion.");
+  
+  const db = getFirestore();
+  const blogRef = db.collection(COLLECTION).doc(id);
+  
+  const doc = await blogRef.get();
+  if (!doc.exists) {
     throw new Error("Blog not found for deletion");
   }
-  // Optionally: Add logic here to delete associated comments or other related data
-  return blog; // Return the deleted document
+  
+  const deletedData = { id: doc.id, ...doc.data() };
+  await blogRef.delete();
+  
+  return deletedData;
 }
 

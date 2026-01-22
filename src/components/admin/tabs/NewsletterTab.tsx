@@ -18,6 +18,21 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
 
+interface SentNewsletter {
+  subject: string;
+  sentCount: number;
+  failedCount: number;
+  timestamp: string;
+}
+
+interface NewsletterApiResponse {
+  success: boolean;
+  message?: string;
+  sentCount?: number;
+  failedCount?: number;
+  data?: unknown[];
+}
+
 export default function NewsletterTab() {
   const [subject, setSubject] = useState("");
   const [content, setContent] = useState("");
@@ -27,7 +42,7 @@ export default function NewsletterTab() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSendingTest, setIsSendingTest] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  const [lastSent, setLastSent] = useState(null);
+  const [lastSent, setLastSent] = useState<SentNewsletter | null>(null);
 
   // Fetch subscriber count on mount
   useEffect(() => {
@@ -38,7 +53,7 @@ export default function NewsletterTab() {
         if (data.success) {
           setSubscriberCount(data.data?.length || 0);
         }
-      } catch (error) {
+      } catch (error: unknown) {
         console.error("Failed to fetch subscriber count:", error);
       }
     };
@@ -70,7 +85,7 @@ export default function NewsletterTab() {
         throw new Error(data.message);
       }
     } catch (error) {
-      toast.error(error.message || "Failed to send test email");
+      toast.error(error instanceof Error ? error.message : "Failed to send test email");
     } finally {
       setIsSendingTest(false);
     }
@@ -98,17 +113,18 @@ export default function NewsletterTab() {
         body: JSON.stringify({ subject, content, previewText }),
       });
 
-      const data = await response.json();
+      const data: NewsletterApiResponse = await response.json();
       if (data.success) {
         toast.success(
           `Newsletter sent to ${data.sentCount} subscribers!`
         );
-        setLastSent({
+        const sentData: SentNewsletter = {
           subject,
-          sentCount: data.sentCount,
+          sentCount: data.sentCount || 0,
           failedCount: data.failedCount || 0,
           timestamp: new Date().toISOString(),
-        });
+        };
+        setLastSent(sentData);
         // Clear form
         setSubject("");
         setContent("");
@@ -116,8 +132,8 @@ export default function NewsletterTab() {
       } else {
         throw new Error(data.message);
       }
-    } catch (error) {
-      toast.error(error.message || "Failed to send newsletter");
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : "Failed to send newsletter");
     } finally {
       setIsLoading(false);
     }
@@ -146,10 +162,10 @@ export default function NewsletterTab() {
               <div className="text-right w-full sm:w-auto">
                 <p className="text-xs sm:text-sm text-muted-foreground">Last Sent</p>
                 <p className="text-xs sm:text-sm font-medium text-foreground truncate">
-                  {lastSent.subject}
+                  {lastSent?.subject}
                 </p>
                 <p className="text-[10px] sm:text-xs text-muted-foreground">
-                  {lastSent.sentCount} delivered
+                  {lastSent?.sentCount} delivered
                 </p>
               </div>
             )}

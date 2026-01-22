@@ -13,30 +13,39 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-  import {
-    Linkedin,
-    Loader2,
-    Copy,
-    Check,
-    Sparkles,
-    RefreshCw,
-    History,
-    Trash2,
-    Hash,
-    X,
-    FileText,
-    BookOpen,
-    Megaphone,
-  } from "lucide-react";
+import {
+  Linkedin,
+  Loader2,
+  Copy,
+  Check,
+  Sparkles,
+  RefreshCw,
+  History,
+  Trash2,
+  Hash,
+  X,
+  FileText,
+  BookOpen,
+  Megaphone,
+} from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { Session } from "next-auth";
 import EmojiPicker from "./EmojiPicker";
 import { POST_TYPES, TONES } from "./constants";
-import { POST_TEMPLATES, getTemplateCategoryLabel, getTemplateCategoryIcon } from "./templates";
+import { POST_TEMPLATES, getTemplateCategoryIcon } from "./templates";
+import type { TemplateCategory, TemplateItem } from "./templates";
 import { suggestHashtags } from "./hashtagUtils";
-import { useHistory } from "./useHistory";
+import { useHistory, HistoryItem } from "./useHistory";
 
-export default function LinkedInPostGenerator({ initialTopic = "", session }) {
+type Template = TemplateItem;
+
+interface LinkedInPostGeneratorProps {
+  initialTopic?: string;
+  session: Session | null;
+}
+
+export default function LinkedInPostGenerator({ initialTopic = "", session }: LinkedInPostGeneratorProps) {
   const [topic, setTopic] = useState(initialTopic);
   const [postType, setPostType] = useState("insight");
   const [tone, setTone] = useState("professional");
@@ -45,14 +54,14 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }) {
   const [includeCta, setIncludeCta] = useState(true);
   const [generatedPost, setGeneratedPost] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
-  const [selectedHashtags, setSelectedHashtags] = useState([]);
+  const [selectedHashtags, setSelectedHashtags] = useState<string[]>([]);
   const [customHashtag, setCustomHashtag] = useState("");
   const [showTemplates, setShowTemplates] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
-  const [templateCategory, setTemplateCategory] = useState("hook");
+  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
+  const [templateCategory, setTemplateCategory] = useState<TemplateCategory>("hook");
 
   const { history, isLoadingHistory, saveToHistory, deleteHistoryItem, clearHistory, toggleFavorite } = useHistory(session);
 
@@ -75,19 +84,19 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }) {
     if (initialTopic) setTopic(initialTopic);
   }, [initialTopic]);
 
-  const getLengthLabel = (value) => {
+  const getLengthLabel = (value: number) => {
     if (value < 33) return "short";
     if (value < 66) return "medium";
     return "long";
   };
 
-  const getLengthDisplayLabel = (value) => {
+  const getLengthDisplayLabel = (value: number) => {
     if (value < 33) return "Short (100-150 words)";
     if (value < 66) return "Medium (200-300 words)";
     return "Long (400-600 words)";
   };
 
-  const handleGenerate = async (e) => {
+  const handleGenerate = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!topic.trim()) {
       toast.error("Please enter a topic or idea");
@@ -120,8 +129,8 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }) {
       setGeneratedPost(data.post);
 
       const lengthLabel = getLengthLabel(length[0]);
-      const newHistoryItem = {
-        id: Date.now(),
+      const newHistoryItem: HistoryItem = {
+        id: Date.now().toString(),
         topic: topic.trim(),
         post: data.post,
         postType,
@@ -129,13 +138,15 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }) {
         length: lengthLabel,
         createdAt: new Date().toISOString(),
         hashtags: selectedHashtags.length > 0 ? selectedHashtags : undefined,
+        isFavorite: false,
       };
 
       await saveToHistory(newHistoryItem);
       toast.success("Post generated successfully!");
-    } catch (err) {
-      setError(err.message);
-      toast.error(err.message || "Failed to generate post");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to generate post";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -158,18 +169,22 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }) {
               action: "markExported",
               exportType: "copy",
             }),
-          }).catch((err) => console.error("Failed to mark as exported:", err));
+          }).catch((err: unknown) => {
+            const error = err instanceof Error ? err.message : "Unknown error";
+            console.error("Failed to mark as exported:", error);
+          });
         }
       }
 
       setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
+    } catch (err: unknown) {
+      const error = err instanceof Error ? err.message : "Unknown error";
       toast.error("Failed to copy");
-      console.error("Copy failed:", err);
+      console.error("Copy failed:", error);
     }
   };
 
-  const loadFromHistory = (item) => {
+  const loadFromHistory = (item: HistoryItem) => {
     setTopic(item.topic);
     setGeneratedPost(item.post);
     setPostType(item.postType || "insight");
@@ -181,13 +196,13 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }) {
     toast.info("Loaded from history");
   };
 
-  const addHashtag = (tag) => {
+  const addHashtag = (tag: string) => {
     if (!selectedHashtags.includes(tag)) {
       setSelectedHashtags([...selectedHashtags, tag]);
     }
   };
 
-  const removeHashtag = (tag) => {
+  const removeHashtag = (tag: string) => {
     setSelectedHashtags(selectedHashtags.filter((h) => h !== tag));
   };
 
@@ -207,7 +222,7 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }) {
     }
   };
 
-  const handleCustomHashtagKeyDown = (e) => {
+  const handleCustomHashtagKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
       addCustomHashtag();
@@ -226,7 +241,7 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }) {
     return "bg-primary";
   };
 
-  const handleTemplateSelect = (category, template) => {
+  const handleTemplateSelect = (category: TemplateCategory, template: Template) => {
     setSelectedTemplate(template);
     setTemplateCategory(category);
     setTopic(template.template);
@@ -368,7 +383,7 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }) {
                 </div>
 
                 <div className="flex gap-1 mb-3 p-1 bg-background rounded-lg">
-                  {Object.keys(POST_TEMPLATES).map((category) => {
+                  {(Object.keys(POST_TEMPLATES) as TemplateCategory[]).map((category) => {
                     const CategoryIcon = getTemplateCategoryIcon(category);
                     return (
                       <button
@@ -485,7 +500,7 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }) {
               </div>
               <Slider
                 value={length}
-                onValueChange={setLength}
+                onValueChange={(val: number[]) => setLength(val)}
                 max={100}
                 step={1}
                 disabled={isLoading}
@@ -737,4 +752,3 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }) {
     </motion.div>
   );
 }
-

@@ -1,13 +1,28 @@
 // Converted to TypeScript - migrated
-import { getServerSession } from "next-auth/next";
+import { getServerSession, Session } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import mongoose from "mongoose";
+import { NextApiRequest, NextApiResponse } from "next";
+
+/**
+ * Extended Session type
+ */
+export interface AppSession extends Session {
+  user: {
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    role?: string;
+    isAdmin?: boolean;
+    _id?: string;
+    id: string;
+  };
+}
 
 /**
  * Standard API response format
  */
 export const ApiResponse = {
-  success: (res, data, message = "Success", statusCode = 200) => {
+  success: (res: NextApiResponse, data: unknown, message = "Success", statusCode = 200) => {
     return res.status(statusCode).json({
       success: true,
       message,
@@ -16,8 +31,8 @@ export const ApiResponse = {
     });
   },
 
-  error: (res, message = "An error occurred", statusCode = 500, errors = null) => {
-    const response = {
+  error: (res: NextApiResponse, message = "An error occurred", statusCode = 500, errors: unknown = null) => {
+    const response: Record<string, unknown> = {
       success: false,
       message,
       timestamp: new Date().toISOString(),
@@ -28,40 +43,40 @@ export const ApiResponse = {
     return res.status(statusCode).json(response);
   },
 
-  created: (res, data, message = "Resource created successfully") => {
+  created: (res: NextApiResponse, data: unknown, message = "Resource created successfully") => {
     return ApiResponse.success(res, data, message, 201);
   },
 
-  notFound: (res, message = "Resource not found") => {
+  notFound: (res: NextApiResponse, message = "Resource not found") => {
     return ApiResponse.error(res, message, 404);
   },
 
-  badRequest: (res, message = "Invalid request", errors = null) => {
+  badRequest: (res: NextApiResponse, message = "Invalid request", errors: unknown = null) => {
     return ApiResponse.error(res, message, 400, errors);
   },
 
-  unauthorized: (res, message = "Authentication required") => {
+  unauthorized: (res: NextApiResponse, message = "Authentication required") => {
     return ApiResponse.error(res, message, 401);
   },
 
-  forbidden: (res, message = "Access denied") => {
+  forbidden: (res: NextApiResponse, message = "Access denied") => {
     return ApiResponse.error(res, message, 403);
   },
 
-  methodNotAllowed: (res, allowedMethods = []) => {
+  methodNotAllowed: (res: NextApiResponse, allowedMethods: string[] = []) => {
     res.setHeader("Allow", allowedMethods);
     return ApiResponse.error(res, `Method not allowed. Allowed: ${allowedMethods.join(", ")}`, 405);
   },
 
-  conflict: (res, message = "Resource already exists") => {
+  conflict: (res: NextApiResponse, message = "Resource already exists") => {
     return ApiResponse.error(res, message, 409);
   },
 
-  tooManyRequests: (res, message = "Too many requests. Please try again later.") => {
+  tooManyRequests: (res: NextApiResponse, message = "Too many requests. Please try again later.") => {
     return ApiResponse.error(res, message, 429);
   },
 
-  serverError: (res, message = "Internal server error", error = null) => {
+  serverError: (res: NextApiResponse, message = "Internal server error", error: unknown = null) => {
     // Log the actual error for debugging but don't expose to client
     if (error) {
       console.error("[API Server Error]:", error);
@@ -73,9 +88,9 @@ export const ApiResponse = {
 /**
  * Check if user is authenticated admin
  */
-export async function isAdminUser(req, res) {
+export async function isAdminUser(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const session = await getServerSession(req, res, authOptions);
+    const session = await getServerSession(req, res, authOptions) as AppSession | null;
     if (!session) return false;
     
     return (
@@ -90,10 +105,17 @@ export async function isAdminUser(req, res) {
 }
 
 /**
+ * Require admin authentication result
+ */
+export type RequireAdminResult = 
+  | { authorized: true; session: AppSession; response?: never }
+  | { authorized: false; response: () => void; session?: never };
+
+/**
  * Require admin authentication middleware
  */
-export async function requireAdmin(req, res) {
-  const session = await getServerSession(req, res, authOptions);
+export async function requireAdmin(req: NextApiRequest, res: NextApiResponse): Promise<RequireAdminResult> {
+  const session = await getServerSession(req, res, authOptions) as AppSession | null;
   
   if (!session) {
     return { authorized: false, response: () => ApiResponse.unauthorized(res) };
@@ -108,19 +130,18 @@ export async function requireAdmin(req, res) {
 }
 
 /**
- * Validate MongoDB ObjectId
+ * Validate Document ID (Firestore)
  */
-export function isValidObjectId(id) {
-  return mongoose.Types.ObjectId.isValid(id) && 
-    new mongoose.Types.ObjectId(id).toString() === id;
+export function isValidObjectId(id: string) {
+  return typeof id === "string" && id.length > 0;
 }
 
 /**
  * Validate required fields
  */
-export function validateRequiredFields(body, requiredFields) {
-  const missing = [];
-  const errors = {};
+export function validateRequiredFields(body: Record<string, unknown>, requiredFields: string[]) {
+  const missing: string[] = [];
+  const errors: Record<string, string> = {};
 
   for (const field of requiredFields) {
     const value = body[field];
@@ -141,7 +162,7 @@ export function validateRequiredFields(body, requiredFields) {
 /**
  * Validate email format
  */
-export function isValidEmail(email) {
+export function isValidEmail(email: string) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 }
@@ -149,7 +170,7 @@ export function isValidEmail(email) {
 /**
  * Sanitize string input (basic XSS prevention)
  */
-export function sanitizeString(str) {
+export function sanitizeString(str: unknown): unknown {
   if (typeof str !== "string") return str;
   return str
     .replace(/</g, "&lt;")
@@ -162,9 +183,9 @@ export function sanitizeString(str) {
 /**
  * Parse pagination parameters
  */
-export function parsePagination(query, defaults = { page: 1, limit: 10, maxLimit: 100 }) {
-  let page = parseInt(query.page, 10) || defaults.page;
-  let limit = parseInt(query.limit, 10) || defaults.limit;
+export function parsePagination(query: Partial<Record<string, string | string[]>>, defaults = { page: 1, limit: 10, maxLimit: 100 }) {
+  let page = parseInt(Array.isArray(query.page) ? query.page[0] : query.page || "", 10) || defaults.page;
+  let limit = parseInt(Array.isArray(query.limit) ? query.limit[0] : query.limit || "", 10) || defaults.limit;
 
   // Ensure positive values
   page = Math.max(1, page);
@@ -178,7 +199,7 @@ export function parsePagination(query, defaults = { page: 1, limit: 10, maxLimit
 /**
  * Create pagination metadata
  */
-export function createPaginationMeta(total, page, limit) {
+export function createPaginationMeta(total: number, page: number, limit: number) {
   const totalPages = Math.ceil(total / limit);
   return {
     total,
@@ -193,36 +214,34 @@ export function createPaginationMeta(total, page, limit) {
 /**
  * Handle common API errors
  */
-export function handleApiError(res, error, context = "API") {
+export function handleApiError(res: NextApiResponse, error: unknown, context = "API") {
   console.error(`[${context} Error]:`, error);
 
-  // Mongoose validation error
-  if (error.name === "ValidationError") {
-    const errors = Object.values(error.errors).map((e) => e.message);
-    return ApiResponse.badRequest(res, `Validation failed: ${errors.join(". ")}`, error.errors);
+  const apiError = error as { code?: string; message?: string };
+
+  // Firestore/Firebase errors
+  if (apiError.code === "permission-denied") {
+    return ApiResponse.forbidden(res, "Permission denied");
   }
 
-  // MongoDB duplicate key error
-  if (error.code === 11000) {
-    const field = Object.keys(error.keyPattern || {})[0] || "field";
-    return ApiResponse.conflict(res, `A record with this ${field} already exists`);
+  if (apiError.code === "not-found") {
+    return ApiResponse.notFound(res, "Resource not found");
   }
 
-  // MongoDB CastError (invalid ObjectId)
-  if (error.name === "CastError" && error.kind === "ObjectId") {
-    return ApiResponse.badRequest(res, "Invalid ID format");
+  if (apiError.code === "already-exists") {
+    return ApiResponse.conflict(res, "Resource already exists");
   }
 
   // Custom error messages
-  if (error.message) {
-    if (error.message.includes("not found")) {
-      return ApiResponse.notFound(res, error.message);
+  if (apiError.message) {
+    if (apiError.message.includes("not found")) {
+      return ApiResponse.notFound(res, apiError.message);
     }
-    if (error.message.includes("required") || error.message.includes("invalid")) {
-      return ApiResponse.badRequest(res, error.message);
+    if (apiError.message.includes("required") || apiError.message.includes("invalid")) {
+      return ApiResponse.badRequest(res, apiError.message);
     }
-    if (error.message.includes("already exists")) {
-      return ApiResponse.conflict(res, error.message);
+    if (apiError.message.includes("already exists")) {
+      return ApiResponse.conflict(res, apiError.message);
     }
   }
 
@@ -234,9 +253,9 @@ export function handleApiError(res, error, context = "API") {
  * Rate limiting helper (in-memory, for simple use cases)
  * For production, use Redis or a proper rate limiting solution
  */
-const rateLimitStore = new Map();
+const rateLimitStore = new Map<string, { requests: number[]; blocked: boolean }>();
 
-export function checkRateLimit(identifier, maxRequests = 100, windowMs = 60000) {
+export function checkRateLimit(identifier: string, maxRequests = 100, windowMs = 60000) {
   const now = Date.now();
   const windowStart = now - windowMs;
 
@@ -255,7 +274,7 @@ export function checkRateLimit(identifier, maxRequests = 100, windowMs = 60000) 
     return {
       allowed: false,
       remaining: 0,
-      resetTime: Math.ceil((record.requests[0] + windowMs - now) / 1000),
+      resetTime: Math.ceil(((record.requests[0] || 0) + windowMs - now) / 1000),
     };
   }
 
@@ -272,19 +291,19 @@ export function checkRateLimit(identifier, maxRequests = 100, windowMs = 60000) 
 /**
  * Get client IP address
  */
-export function getClientIp(req) {
+export function getClientIp(req: NextApiRequest) {
   const forwarded = req.headers["x-forwarded-for"];
   if (forwarded) {
-    return forwarded.split(",")[0].trim();
+    return (forwarded as string).split(",")[0]?.trim() || "unknown";
   }
-  return req.socket?.remoteAddress || req.connection?.remoteAddress || "unknown";
+  return req.socket?.remoteAddress || "unknown";
 }
 
 /**
  * Wrapper for API handlers with common error handling
  */
-export function withErrorHandler(handler) {
-  return async (req, res) => {
+export function withErrorHandler(handler: (req: NextApiRequest, res: NextApiResponse) => Promise<unknown>) {
+  return async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       await handler(req, res);
     } catch (error) {
@@ -296,10 +315,10 @@ export function withErrorHandler(handler) {
 /**
  * Create a method-based API handler
  */
-export function createApiHandler(handlers) {
-  return async (req, res) => {
+export function createApiHandler(handlers: Record<string, (req: NextApiRequest, res: NextApiResponse) => Promise<unknown>>) {
+  return async (req: NextApiRequest, res: NextApiResponse) => {
     const { method } = req;
-    const handler = handlers[method];
+    const handler = handlers[method as string];
 
     if (!handler) {
       return ApiResponse.methodNotAllowed(res, Object.keys(handlers));
@@ -313,12 +332,28 @@ export function createApiHandler(handlers) {
   };
 }
 
+export interface ValidationRule {
+  required?: boolean;
+  message?: string;
+  type?: "string" | "number" | "boolean" | "array";
+  minLength?: number;
+  maxLength?: number;
+  pattern?: RegExp;
+  email?: boolean;
+  sanitize?: boolean;
+  min?: number;
+  max?: number;
+  validate?: (value: unknown, body: Record<string, unknown>) => boolean | string;
+}
+
+export type ValidationSchema = Record<string, ValidationRule>;
+
 /**
  * Validate request body against a schema
  */
-export function validateBody(body, schema) {
-  const errors = {};
-  const sanitized = {};
+export function validateBody(body: Record<string, unknown>, schema: ValidationSchema) {
+  const errors: Record<string, string> = {};
+  const sanitized: Record<string, unknown> = {};
 
   for (const [field, rules] of Object.entries(schema)) {
     let value = body[field];
@@ -341,15 +376,16 @@ export function validateBody(body, schema) {
     }
 
     if (rules.type === "number") {
-      value = Number(value);
-      if (isNaN(value)) {
+      const numValue = Number(value);
+      if (isNaN(numValue)) {
         errors[field] = `${field} must be a number`;
         continue;
       }
+      value = numValue;
     }
 
     if (rules.type === "boolean") {
-      value = value === true || value === "true";
+      value = value === true || value === "true" || value === 1;
     }
 
     if (rules.type === "array" && !Array.isArray(value)) {
@@ -402,7 +438,7 @@ export function validateBody(body, schema) {
     if (rules.validate && typeof rules.validate === "function") {
       const result = rules.validate(value, body);
       if (result !== true) {
-        errors[field] = result || `${field} is invalid`;
+        errors[field] = (result as string) || `${field} is invalid`; // Fixed type cast
         continue;
       }
     }

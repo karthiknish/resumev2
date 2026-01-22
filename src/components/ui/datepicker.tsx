@@ -33,6 +33,15 @@ import { Label } from "@/components/ui/label";
  * @param {string} id - ID attribute for the input wrapper
  * @param {string} label - Optional label for the picker
  */
+interface DatePickerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+  value?: Date | string | null;
+  onChange: (date: Date | null) => void;
+  disabled?: boolean;
+  placeholder?: string;
+  showTime?: boolean;
+  label?: string;
+}
+
 function DatePicker({
   value,
   onChange,
@@ -43,7 +52,7 @@ function DatePicker({
   id,
   label,
   ...props
-}) {
+}: DatePickerProps) {
   // Parse the value to a Date object
   const parsedValue = React.useMemo(() => {
     if (!value) return undefined;
@@ -52,7 +61,7 @@ function DatePicker({
   }, [value]);
 
   // Handle date selection from calendar
-  const handleDateSelect = (date) => {
+  const handleDateSelect = (date: Date | undefined) => {
     if (!date) {
       onChange(null);
       return;
@@ -77,7 +86,7 @@ function DatePicker({
   };
 
   // Handle time input change
-  const handleTimeChange = (e) => {
+  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const timeValue = e.target.value;
     if (!timeValue || !parsedValue) {
       return;

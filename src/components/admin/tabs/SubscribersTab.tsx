@@ -14,8 +14,15 @@ import {
 import { TableRowSkeleton } from "@/components/ui/loading-states";
 import { EmptyTable } from "@/components/ui/empty-state";
 
+interface Subscriber {
+  id?: string;
+  _id?: string;
+  email: string;
+  subscribedAt: string | Date;
+}
+
 // Simple date formatter
-const formatDate = (dateString) => {
+const formatDate = (dateString: string | Date | null | undefined) => {
   if (!dateString) return "N/A";
   return new Date(dateString).toLocaleDateString("en-GB", {
     // Use UK format
@@ -28,9 +35,9 @@ const formatDate = (dateString) => {
 };
 
 export default function SubscribersTab() {
-  const [subscribers, setSubscribers] = useState([]);
+  const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchSubscribers = async () => {
@@ -44,9 +51,10 @@ export default function SubscribersTab() {
         }
         const data = await response.json();
         setSubscribers(data.data || []);
-      } catch (err) {
-        setError(err.message);
-        toast.error(err.message || "Could not load subscribers.");
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
+        setError(errorMessage);
+        toast.error(errorMessage);
       } finally {
         setIsLoading(false);
       }
@@ -140,7 +148,7 @@ export default function SubscribersTab() {
               <TableBody>
                 {subscribers.map((subscriber) => (
                   <TableRow
-                    key={subscriber._id}
+                    key={subscriber.id || subscriber._id}
                     className="border-border hover:bg-muted/50 transition-colors"
                   >
                     <TableCell className="font-medium text-foreground py-3">

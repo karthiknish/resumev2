@@ -4,15 +4,37 @@
 // Single model configured per product requirement
 const modelOptions = ["gemini-3-flash-preview"];
 
+export interface GeminiGenerationConfig {
+  temperature?: number;
+  topK?: number;
+  topP?: number;
+  maxOutputTokens?: number;
+  [key: string]: unknown;
+}
+
+interface GeminiResponse {
+  candidates?: Array<{
+    content?: {
+      parts?: Array<{
+        text?: string;
+      }>;
+    };
+    finishReason?: string;
+  }>;
+  error?: {
+    message?: string;
+  };
+}
+
 /**
  * Calls the Google Gemini API with a given prompt, trying multiple models sequentially.
  *
  * @param {string} prompt - The prompt to send to the Gemini API.
- * @param {object} [generationConfigOverride] - Optional generation config overrides.
+ * @param {GeminiGenerationConfig} [generationConfigOverride] - Optional generation config overrides.
  * @returns {Promise<string>} - The generated text content.
  * @throws {Error} - Throws an error if all models fail or the response structure is invalid.
  */
-export async function callGemini(prompt, generationConfigOverride = {}) {
+export async function callGemini(prompt: string, generationConfigOverride: GeminiGenerationConfig = {}): Promise<string> {
   if (!process.env.GEMINI_API_KEY) {
     throw new Error("GEMINI_API_KEY environment variable is not set.");
   }
@@ -28,7 +50,7 @@ export async function callGemini(prompt, generationConfigOverride = {}) {
     );
   }
 
-  let lastError = null;
+  let lastError: Error | null = null;
 
   for (const model of modelOptions) {
     try {
@@ -41,7 +63,7 @@ export async function callGemini(prompt, generationConfigOverride = {}) {
       ); // Log model being tried
 
       // Default generation config - merge with overrides
-      const generationConfig = {
+      const generationConfig: GeminiGenerationConfig = {
         temperature: 0.7,
         topK: 40,
         topP: 0.95,
@@ -61,7 +83,7 @@ export async function callGemini(prompt, generationConfigOverride = {}) {
         }),
       });
 
-      const data = await response.json();
+      const data = (await response.json()) as GeminiResponse;
 
       if (!response.ok) {
         console.error(
@@ -103,7 +125,7 @@ export async function callGemini(prompt, generationConfigOverride = {}) {
       }
     } catch (error) {
       console.error(`Error calling Gemini model ${model}:`, error);
-      lastError = error; // Store the error and try the next model
+      lastError = error instanceof Error ? error : new Error(String(error)); // Store the error and try the next model
     }
   }
 

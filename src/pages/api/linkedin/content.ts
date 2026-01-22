@@ -1,22 +1,37 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import dbConnect from "@/lib/dbConnect";
-import LinkedInContent from "@/models/LinkedInContent";
+import { getFirestore } from "@/lib/firebaseAdmin";
+import { ILinkedInContent } from "@/models/LinkedInContent";
+
+const COLLECTION = "linkedin_content";
 
 interface LinkedInPostData {
-  contentType: string;
+  contentType: "post" | "carousel";
   topic: string;
   postContent?: string;
-  postType?: string;
-  tone?: string;
-  length?: string;
+  postType?: "insight" | "story" | "tutorial" | "opinion" | "celebration";
+  tone?: "professional" | "casual" | "thoughtful" | "inspiring" | "educational";
+  length?: "short" | "medium" | "long";
   hashtags?: string[];
-  slides?: any[];
-  slideImages?: string[];
-  carouselStyle?: string;
-  aspectRatio?: string;
-  templateUsed?: string;
-  metrics?: Record<string, any>;
+  slides?: {
+    slideNumber: number;
+    heading: string;
+    body: string;
+    hasNumber?: boolean;
+  }[];
+  slideImages?: {
+    slideNumber: number;
+    imageData?: string;
+    mimeType?: string;
+    error?: string;
+  }[];
+  carouselStyle?: "dark_pro" | "light_pro" | "gradient";
+  aspectRatio?: "portrait" | "square";
+  templateUsed?: {
+    category?: string;
+    templateId?: string;
+  };
+  metrics?: Record<string, unknown>;
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
@@ -29,31 +44,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(401).json({ success: false, message: "Unauthorized" });
   }
 
-  await dbConnect();
-
   const userId = session?.user?.id || (isLocalhost ? "dev-user" : null);
+  const db = getFirestore();
 
   try {
     switch (req.method) {
       case "GET": {
         const { contentType, limit = 20, skip = 0 } = req.query;
 
-        const query: any = {
-          author: userId,
-          isDeleted: false,
-        };
+        let query: FirebaseFirestore.Query = db.collection(COLLECTION)
+          .where("author", "==", userId)
+          .where("isDeleted", "==", false);
 
         if (contentType) {
-          query.contentType = contentType;
+          query = query.where("contentType", "==", contentType);
         }
 
-        const content = await LinkedInContent.find(query)
-          .sort({ createdAt: -1 })
-          .limit(parseInt(limit as string, 10))
-          .skip(parseInt(skip as string, 10))
-          .lean();
+        const countSnapshot = await query.count().get();
+        const total = countSnapshot.data().count;
 
-        const total = await LinkedInContent.countDocuments(query);
+        const snapshot = await query
+          .orderBy("createdAt", "desc")
+          .offset(parseInt(skip as string, 10))
+          .limit(parseInt(limit as string, 10))
+          .get();
+
+        const content = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
         return res.status(200).json({
           success: true,
@@ -88,22 +104,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           });
         }
 
-        if (contentType === "post" && !postContent) {
-          return res.status(400).json({
-            success: false,
-            message: "Post content is required for post type",
-          });
-        }
-
-        if (contentType === "carousel" && (!slides || slides.length === 0)) {
-          return res.status(400).json({
-            success: false,
-            message: "Slides are required for carousel type",
-          });
-        }
-
-        const newContent = new LinkedInContent({
-          author: userId,
+        const now = new Date();
+        const newContent: Omit<ILinkedInContent, "id" | "_id"> = {
+          author: userId as string,
           contentType,
           topic,
           postContent: contentType === "post" ? postContent : undefined,
@@ -112,19 +115,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           length,
           hashtags: hashtags || [],
           slides: contentType === "carousel" ? slides : undefined,
-          slideImages: contentType === "carousel" ? slideImages || [] : [],
+          slideImages: contentType === "carousel" ? (slideImages || []) : [],
           carouselStyle,
           aspectRatio,
           status: "generated",
           templateUsed,
-          metrics: metrics || {},
-        });
+          metrics: {
+            characterCount: typeof metrics?.characterCount === "number" ? metrics.characterCount : undefined,
+            wordCount: typeof metrics?.wordCount === "number" ? metrics.wordCount : undefined,
+            slideCount: typeof metrics?.slideCount === "number" ? metrics.slideCount : undefined,
+          },
+          isFavorite: false,
+          isDeleted: false,
+          isExported: false,
+          exportType: "none",
+          model: "gemini-1.5-pro",
+          createdAt: now,
+          updatedAt: now,
+        };
 
-        await newContent.save();
+        const docRef = await db.collection(COLLECTION).add(newContent);
 
         return res.status(201).json({
           success: true,
-          content: newContent.toJSON(),
+          content: { id: docRef.id, ...newContent },
         });
       }
 
@@ -138,55 +152,43 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           });
         }
 
-        const content = await LinkedInContent.findOne({
-          _id: contentId,
-          author: userId,
-        });
+        const docRef = db.collection(COLLECTION).doc(contentId);
+        const doc = await docRef.get();
 
-        if (!content) {
+        if (!doc.exists || doc.data()?.author !== userId) {
           return res.status(404).json({
             success: false,
             message: "Content not found",
           });
         }
 
+        const now = new Date();
+        const finalUpdate: Partial<ILinkedInContent> & { updatedAt: Date } = { updatedAt: now };
+
         if (action === "toggleFavorite") {
-          content.isFavorite = !content.isFavorite;
-          await content.save();
-          return res.status(200).json({
-            success: true,
-            content: content.toJSON(),
+          finalUpdate.isFavorite = !doc.data()?.isFavorite;
+        } else if (action === "markExported") {
+          const { exportType } = updates as { exportType: ILinkedInContent["exportType"] };
+          finalUpdate.isExported = true;
+          finalUpdate.exportType = exportType;
+          finalUpdate.exportedAt = now;
+        } else if (action === "softDelete") {
+          finalUpdate.isDeleted = true;
+        } else {
+          const typedUpdates = updates as Record<string, unknown>;
+          Object.keys(typedUpdates).forEach((key) => {
+            if (typedUpdates[key] !== undefined) {
+              (finalUpdate as any)[key] = typedUpdates[key];
+            }
           });
         }
 
-        if (action === "markExported") {
-          const { exportType } = updates as { exportType: string };
-          content.markAsExported(exportType);
-          return res.status(200).json({
-            success: true,
-            content: content.toJSON(),
-          });
-        }
-
-        if (action === "softDelete") {
-          content.softDelete();
-          return res.status(200).json({
-            success: true,
-            message: "Content deleted",
-          });
-        }
-
-        Object.keys(updates).forEach((key) => {
-          if (updates[key] !== undefined) {
-            (content as any)[key] = updates[key];
-          }
-        });
-
-        await content.save();
+        await docRef.update(finalUpdate);
+        const updatedDoc = await docRef.get();
 
         return res.status(200).json({
           success: true,
-          content: content.toJSON(),
+          content: { id: updatedDoc.id, ...updatedDoc.data() },
         });
       }
 
@@ -200,19 +202,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           });
         }
 
-        const content = await LinkedInContent.findOne({
-          _id: contentId,
-          author: userId,
-        });
+        const docRef = db.collection(COLLECTION).doc(contentId as string);
+        const doc = await docRef.get();
 
-        if (!content) {
+        if (!doc.exists || doc.data()?.author !== userId) {
           return res.status(404).json({
             success: false,
             message: "Content not found",
           });
         }
 
-        content.softDelete();
+        await docRef.update({ isDeleted: true, updatedAt: new Date() });
 
         return res.status(200).json({
           success: true,
@@ -227,11 +227,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           message: `Method ${req.method} not allowed`,
         });
     }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("LinkedIn content API error:", error);
     return res.status(500).json({
       success: false,
-      message: (error as Error).message || "Internal server error",
+      message: error instanceof Error ? error.message : "Internal server error",
     });
   }
 }

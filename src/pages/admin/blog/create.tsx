@@ -7,6 +7,7 @@ import PageContainer from "@/components/PageContainer";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 import { Loader2, Wand2, ArrowLeft, Eye, Save, LayoutPanelLeft, Clock, Trash2, Bot, Sparkles, Check, CloudUpload, FileText, Upload, X, ChevronDown, List, Search, ExternalLink, Globe } from "lucide-react";
 import {
   Sheet,
@@ -40,35 +41,36 @@ import InternalLinkSuggestions from "@/components/admin/blog-editor/InternalLink
 import SectionalAgent from "@/components/admin/SectionalAgent";
 
 import { AiOutlineClose } from "react-icons/ai";
-import TipTapEditor from "@/components/TipTapEditor";
+import TipTapEditor, { TipTapEditorHandle } from "@/components/TipTapEditor";
 import TipTapRenderer from "@/components/TipTapRenderer";
 import useDebounce from "@/hooks/useDebounce";
-import { toast } from "sonner";
+import { BlogFormData } from "@/types";
 
 const DRAFT_STORAGE_KEY = "blog_draft_create";
 
-// Helper function to format relative time
-function formatRelativeTime(date) {
+  // Helper function to format relative time
+function formatRelativeTime(date: Date | string | null) {
   if (!date) return "";
+  const dateObj = new Date(date);
   const now = new Date();
-  const diffMs = now - date;
+  const diffMs = now.getTime() - dateObj.getTime();
   const diffSecs = Math.floor(diffMs / 1000);
   const diffMins = Math.floor(diffSecs / 60);
   const diffHours = Math.floor(diffMins / 60);
-
+  
   if (diffSecs < 10) return "Just now";
   if (diffSecs < 60) return `${diffSecs}s ago`;
   if (diffMins < 60) return `${diffMins}m ago`;
   if (diffHours < 24) return `${diffHours}h ago`;
-  return date.toLocaleDateString();
+  return diffMs;
 }
 
 function CreateBlog() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const editorRef = useRef(null);
+  const editorRef = useRef<TipTapEditorHandle | null>(null);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<BlogFormData>({
     title: "",
     imageUrl: "",
     content: "",
@@ -84,7 +86,7 @@ function CreateBlog() {
   const [error, setError] = useState("");
   const [showPreview, setShowPreview] = useState(false);
   const [isFormatting, setIsFormatting] = useState(false);
-  const [lastSaved, setLastSaved] = useState(null);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [hasDraft, setHasDraft] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState("idle"); // idle, saving, saved, error
@@ -95,7 +97,7 @@ function CreateBlog() {
   const [agentUrl, setAgentUrl] = useState("");
   const [isAgentGenerating, setIsAgentGenerating] = useState(false);
   const [agentError, setAgentError] = useState("");
-  const [agentFile, setAgentFile] = useState(null);
+  const [agentFile, setAgentFile] = useState<File | null>(null);
   const [isFileUploading, setIsFileUploading] = useState(false);
   // Style/Voice configuration state
   const [agentTone, setAgentTone] = useState("professional");
@@ -208,7 +210,7 @@ function CreateBlog() {
     if (!lastSaved) return;
     const interval = setInterval(() => {
       // Force re-render to update relative time
-      setLastSaved((prev) => new Date(prev));
+      setLastSaved((prev) => prev ? new Date(prev) : null);
     }, 60000);
     return () => clearInterval(interval);
   }, [lastSaved]);
@@ -239,7 +241,7 @@ function CreateBlog() {
     }
   }, []);
 
-  const getPlainText = (html) => {
+  const getPlainText = (html: string) => {
     if (!html) return "";
     return html
       .replace(/<[^>]*>/g, " ")
@@ -269,23 +271,27 @@ function CreateBlog() {
     return Math.max(0, Math.min(100, score));
   })();
 
-  const handleImageUrlChange = (url) => {
+  const handleImageUrlChange = (url: string) => {
     setFormData((prev) => ({ ...prev, imageUrl: url }));
   };
 
-  const handleContentChange = (html) => {
+  const handleContentChange = (html: string) => {
     setFormData((prev) => ({ ...prev, content: html }));
   };
 
-  const handleFormChange = (fieldOrPatch, maybeValue) => {
+  const handleFormChange = (
+    fieldOrPatch: keyof BlogFormData | Partial<BlogFormData>,
+    maybeValue?: BlogFormData[keyof BlogFormData]
+  ) => {
     if (typeof fieldOrPatch === "object" && fieldOrPatch !== null) {
       setFormData((prev) => ({ ...prev, ...fieldOrPatch }));
     } else if (typeof fieldOrPatch === "string") {
-      setFormData((prev) => ({ ...prev, [fieldOrPatch]: maybeValue }));
+      const key = fieldOrPatch as keyof BlogFormData;
+      setFormData((prev) => ({ ...prev, [key]: maybeValue }));
     }
   };
 
-  const handlePublishChange = (checked) => {
+  const handlePublishChange = (checked: boolean) => {
     setFormData((prev) => ({ ...prev, isPublished: !!checked }));
   };
 
@@ -308,8 +314,8 @@ function CreateBlog() {
       } else {
         throw new Error(data.message || "Failed to format content.");
       }
-    } catch (err) {
-      const errorMsg = err?.message || "Error formatting content.";
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : "Error formatting content.";
       toast.error(`Formatting failed: ${errorMsg}`);
     } finally {
       setIsFormatting(false);
@@ -375,9 +381,9 @@ function CreateBlog() {
       } else {
         throw new Error(data.message || "Failed to generate blog.");
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Agent Mode error:", err);
-      const message = err?.message || "Failed to generate blog.";
+      const message = err instanceof Error ? err.message : "Failed to generate blog.";
       setAgentError(message);
       toast.error(`Generation failed: ${message}`, { id: toastId });
     } finally {
@@ -386,7 +392,7 @@ function CreateBlog() {
   };
 
   // Handle file selection for Agent Mode
-  const handleFileChange = (e) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -421,7 +427,7 @@ function CreateBlog() {
   };
 
   // Handler for Sectional Agent content completion
-  const handleSectionalAgentComplete = (generatedContent) => {
+  const handleSectionalAgentComplete = (generatedContent: { title?: string; content?: string }) => {
     const { title, content } = generatedContent;
     setFormData((prev) => ({
       ...prev,
@@ -432,12 +438,12 @@ function CreateBlog() {
     toast.success("Blog content generated successfully!");
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setIsLoading(true);
     setError("");
 
-    const missingFields = [];
+    const missingFields: string[] = [];
     if (!formData.title) missingFields.push("Title");
     if (!formData.content) missingFields.push("Content");
     if (!formData.imageUrl) missingFields.push("Image URL");
@@ -459,8 +465,8 @@ function CreateBlog() {
       description: formData.excerpt || formData.description || "",
       excerpt: formData.excerpt,
       category: formData.category,
-      tags: formData.tags.filter((tag) => tag),
-      isPublished: formData.isPublished,
+      tags: (formData.tags || []).filter((tag) => tag),
+      isPublished: !!formData.isPublished,
       scheduledPublishAt: formData.scheduledPublishAt,
     };
 
@@ -485,10 +491,9 @@ function CreateBlog() {
         setError(apiErrorMsg);
         toast.error(apiErrorMsg);
       }
-    } catch (err) {
+    } catch (err: unknown) {
       const networkErrorMsg = "Network error occurred while saving.";
       setError(networkErrorMsg);
-      setSubmitStatus([false, networkErrorMsg]);
       toast.error(networkErrorMsg);
       console.error(err);
     } finally {
@@ -625,13 +630,13 @@ function CreateBlog() {
                     </SheetHeader>
                     <div className="mt-6 space-y-6">
                       <BannerImageSection
-                        imageUrl={formData.imageUrl}
+                        imageUrl={formData.imageUrl || ""}
                         onImageUrlChange={handleImageUrlChange}
                       />
                       <MetadataSection
                         formData={formData}
                         onFormChange={handleFormChange}
-                        isPublished={formData.isPublished}
+                        isPublished={!!formData.isPublished}
                         onPublishChange={handlePublishChange}
                       />
                     </div>
@@ -744,13 +749,13 @@ function CreateBlog() {
                 <MetadataSection
                   formData={formData}
                   onFormChange={handleFormChange}
-                  isPublished={formData.isPublished}
+                  isPublished={!!formData.isPublished}
                   onPublishChange={handlePublishChange}
                 />
 
                 {/* Banner Image (Middle) */}
                 <BannerImageSection
-                  imageUrl={formData.imageUrl}
+                  imageUrl={formData.imageUrl || ""}
                   onImageUrlChange={handleImageUrlChange}
                 />
               </div>
@@ -986,4 +991,3 @@ function CreateBlog() {
 }
 
 export default CreateBlog;
-

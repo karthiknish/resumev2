@@ -4,11 +4,23 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, CheckCircle, XCircle } from "lucide-react";
 
+interface UsageData {
+  count: number;
+  limit: number | null;
+}
+
+interface ApiStatusCardProps {
+  title: string;
+  testEndpoint: string;
+  usageEndpoint?: string;
+  method?: string;
+}
+
 // Helper component for individual API status
-const ApiStatusCard = ({ title, testEndpoint, usageEndpoint, method = "GET" }) => {
+const ApiStatusCard = ({ title, testEndpoint, usageEndpoint, method = "GET" }: ApiStatusCardProps) => {
   const [status, setStatus] = useState("pending"); // 'pending', 'success', 'error'
   const [message, setMessage] = useState("Checking...");
-  const [usage, setUsage] = useState(null); // { count: number, limit: number } | null
+  const [usage, setUsage] = useState<UsageData | null>(null); // { count: number, limit: number } | null
   const [isLoadingUsage, setIsLoadingUsage] = useState(false);
 
   const getBadgeVariant = () => {

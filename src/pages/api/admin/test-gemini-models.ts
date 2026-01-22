@@ -10,8 +10,8 @@ interface RateLimitRecord {
 async function isAdminUser(req: NextApiRequest, res: NextApiResponse): Promise<boolean> {
   const session = await getServerSession(req, res, authOptions);
   return (
-    session?.user?.role === "admin" ||
-    session?.user?.isAdmin === true ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.role === "admin" ||
+    (session?.user as { role?: string; isAdmin?: boolean })?.isAdmin === true ||
     session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL
   );
 }
@@ -75,11 +75,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       message: `${modelDisplayName} Operational`,
       model: modelToTest,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(`Error testing Gemini model (${modelDisplayName}):`, error);
     res.status(500).json({
       success: false,
-      message: `Error testing ${modelDisplayName}: ${(error as Error).message}`,
+      message: `Error testing ${modelDisplayName}: ${error instanceof Error ? error.message : "Unknown error"}`,
     });
   }
 }

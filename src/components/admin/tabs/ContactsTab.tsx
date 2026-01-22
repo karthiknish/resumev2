@@ -16,7 +16,7 @@ import { TableRowSkeleton } from "@/components/ui/loading-states";
 import { EmptyTable } from "@/components/ui/empty-state";
 
 // Simple date formatter
-const formatDate = (dateString) => {
+const formatDate = (dateString: string | Date | null | undefined) => {
   if (!dateString) return "N/A";
   return new Date(dateString).toLocaleDateString("en-GB", {
     year: "numeric",
@@ -27,10 +27,24 @@ const formatDate = (dateString) => {
   });
 };
 
-export default function ContactsTab({ onUnreadCountUpdate }) {
-  const [contacts, setContacts] = useState([]);
+interface Contact {
+  id: string;
+  _id?: string;
+  name: string;
+  email: string;
+  message: string;
+  isRead: boolean;
+  createdAt: string | Date;
+}
+
+interface ContactsTabProps {
+  onUnreadCountUpdate?: (updater: (prev: number) => number) => void;
+}
+
+export default function ContactsTab({ onUnreadCountUpdate }: ContactsTabProps) {
+  const [contacts, setContacts] = useState<Contact[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalContacts, setTotalContacts] = useState(0);
@@ -38,7 +52,7 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
 
   // Fetch contacts when page changes
   useEffect(() => {
-    const fetchContacts = async (page) => {
+    const fetchContacts = async (page: number) => {
       setIsLoading(true);
       setError(null);
       try {
@@ -58,9 +72,10 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
           setTotalContacts(0);
           setError("No contacts found or invalid response format");
         }
-      } catch (err) {
-        setError(err.message);
-        toast.error(err.message || "Could not load contacts.");
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
+        setError(errorMessage);
+        toast.error(errorMessage);
       } finally {
         setIsLoading(false);
       }
@@ -82,13 +97,13 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
   };
 
   // Placeholder for delete functionality
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this contact message?")) {
       return;
     }
     
     // Find the contact to check if it's unread
-    const contactToDelete = contacts.find(c => c._id === id);
+    const contactToDelete = contacts.find(c => (c.id || c._id) === id);
     const wasUnread = contactToDelete && !contactToDelete.isRead;
 
     try {
@@ -101,20 +116,21 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
         throw new Error(errorData.message || "Failed to delete contact");
       }
 
-      setContacts((prev) => prev.filter((c) => c._id !== id));
+      setContacts((prev) => prev.filter((c) => (c.id || c._id) !== id));
       toast.success("Contact message deleted successfully.");
 
       // Update unread count if we deleted an unread message
       if (wasUnread && typeof onUnreadCountUpdate === "function") {
         onUnreadCountUpdate((prev) => Math.max(0, prev - 1));
       }
-    } catch (err) {
-      toast.error(err.message || "Failed to delete contact.");
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to delete contact.");
     }
   };
 
-  const handleToggleRead = async (contact) => {
+  const handleToggleRead = async (contact: Contact) => {
     const newStatus = !contact.isRead;
+    const contactId = contact.id || contact._id;
     try {
       const response = await fetch("/api/contacts", {
         method: "PUT",
@@ -122,7 +138,7 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id: contact._id,
+          id: contactId,
           isRead: newStatus,
         }),
       });
@@ -133,7 +149,7 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
       }
 
       setContacts((prev) =>
-        prev.map((c) => (c._id === contact._id ? { ...c, isRead: newStatus } : c))
+        prev.map((c) => ((c.id || c._id) === contactId ? { ...c, isRead: newStatus } : c))
       );
 
       // Update unread count
@@ -144,8 +160,8 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
       }
 
       toast.success(`Message marked as ${newStatus ? "read" : "unread"}`);
-    } catch (err) {
-      toast.error(err.message || "Failed to update contact status.");
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to update contact status.");
     }
   };
 
@@ -160,7 +176,7 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {isLoading && (
+        {isLoading ? (
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -211,8 +227,8 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
               </TableBody>
             </Table>
           </div>
-        )}
-        {error && !isLoading && (
+        ) : null}
+        {error && !isLoading ? (
           <div className="flex items-center justify-center py-10">
             <div className="rounded-xl border border-destructive/20 bg-destructive/10 px-6 py-5 text-center shadow-sm">
               <div className="mb-4 flex justify-center">
@@ -224,8 +240,8 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
               <p className="font-medium text-destructive">Error: {error}</p>
             </div>
           </div>
-        )}
-        {!isLoading && !error && contacts.length === 0 && (
+        ) : null}
+        {!isLoading && !error && contacts.length === 0 ? (
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -257,8 +273,8 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
               </TableBody>
             </Table>
           </div>
-        )}
-        {!isLoading && !error && contacts.length > 0 && (
+        ) : null}
+        {!isLoading && !error && contacts.length > 0 ? (
           <>
           <div className="overflow-x-auto">
             <Table>
@@ -284,7 +300,7 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
               <TableBody>
                 {contacts.map((contact) => (
                   <TableRow
-                    key={contact._id}
+                    key={contact.id || contact._id}
                     className="align-top border-b border-border transition-colors duration-200 hover:bg-muted/50"
                   >
                     <TableCell className="text-sm sm:text-base font-semibold text-foreground">
@@ -294,13 +310,13 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
                         </div>
                         <div className="flex items-center gap-1.5 sm:gap-2">
                           <span className="truncate">{contact.name}</span>
-                          {!contact.isRead && (
+                          {!contact.isRead ? (
                             <span
                               className="flex h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-primary shrink-0"
                               title="New message"
                               aria-label="New unread message"
                             ></span>
-                          )}
+                          ) : null}
                         </div>
                       </div>
                     </TableCell>
@@ -348,7 +364,7 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
                           variant="destructive"
                           size="sm"
                           className="h-7 sm:h-8 rounded-lg px-2 sm:px-3 text-[10px] sm:text-xs font-semibold"
-                          onClick={() => handleDelete(contact._id)}
+                          onClick={() => handleDelete(contact.id || contact._id!)}
                           aria-label="Delete contact submission"
                         >
                           Delete
@@ -361,7 +377,7 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
             </Table>
           </div>
           {/* Pagination Controls */}
-          {totalPages > 1 && (
+          {totalPages > 1 ? (
             <div className="flex items-center justify-end gap-3 sm:gap-4 py-4 sm:py-6">
               <Button
                 variant="outline"
@@ -389,9 +405,9 @@ export default function ContactsTab({ onUnreadCountUpdate }) {
                 Next <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 ml-1" />
               </Button>
             </div>
-          )}
+          ) : null}
         </>
-      )}
+      ) : null}
       </CardContent>
     </Card>
   );

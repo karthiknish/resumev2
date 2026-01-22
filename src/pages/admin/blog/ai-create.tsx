@@ -57,6 +57,11 @@ const lengthOptions = [
   { value: "2000", label: "Epic (~2000 words) " },
 ];
 
+interface GeneratedOutline {
+  title: string;
+  headings: string[];
+}
+
 export default function AICreateBlog() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -68,13 +73,13 @@ export default function AICreateBlog() {
   const [tone, setTone] = useState(toneOptions[3].value);
   const [length, setLength] = useState(lengthOptions[1].value);
   const [keywords, setKeywords] = useState("");
-  const [generatedContent, setGeneratedContent] = useState(null);
+  const [generatedContent, setGeneratedContent] = useState<{ title: string; content: string } | null>(null);
   const [error, setError] = useState("");
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   const [articleUrl, setArticleUrl] = useState("");
-  const [generatedOutline, setGeneratedOutline] = useState(null);
-  const [loadingSection, setLoadingSection] = useState(null);
+  const [generatedOutline, setGeneratedOutline] = useState<GeneratedOutline | null>(null);
+  const [loadingSection, setLoadingSection] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState({ state: "idle", message: "" });
 
   useEffect(() => {
@@ -157,13 +162,13 @@ export default function AICreateBlog() {
       toast.success("Draft saved successfully! Redirecting to editor...");
 
       setTimeout(() => {
-        router.push(`/admin/blog/edit/${result.data._id}`);
+        router.push(`/admin/blog/edit/${result.data.id}`);
       }, 1500);
-    } catch (err) {
-      const errorMsg = `Save Draft Failed: ${err.message}`;
-      setError(errorMsg);
-      setSaveStatus({ state: "error", message: err.message });
-      toast.error(errorMsg);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to save draft";
+      setError(`Save Draft Failed: ${errorMessage}`);
+      setSaveStatus({ state: "error", message: errorMessage });
+      toast.error(`Save Draft Failed: ${errorMessage}`);
     } finally {
       setLoadingSection(null);
     }
@@ -197,9 +202,10 @@ export default function AICreateBlog() {
       
       toast.success("Content generated from link!");
       setStep(3); // Skip to result/preview
-    } catch (err) {
-      setError(`Link Conversion Failed: ${err.message}`);
-      toast.error(`Link Conversion Failed: ${err.message}`);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to convert from link";
+      setError(`Link Conversion Failed: ${errorMessage}`);
+      toast.error(`Link Conversion Failed: ${errorMessage}`);
     } finally {
       setLoadingSection(null);
     }
@@ -230,9 +236,10 @@ export default function AICreateBlog() {
       setTopic(outlinePayload.title);
       toast.success("Outline generated!");
       setStep(2); // Move to outline step
-    } catch (err) {
-      setError(`Outline Generation Failed: ${err.message}`);
-      toast.error(`Outline Generation Failed: ${err.message}`);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to generate outline";
+      setError(`Outline Generation Failed: ${errorMessage}`);
+      toast.error(`Outline Generation Failed: ${errorMessage}`);
     } finally {
       setLoadingSection(null);
     }
@@ -272,9 +279,10 @@ export default function AICreateBlog() {
 
       toast.success("Blog post generated!");
       setStep(3); // Move to result step
-    } catch (err) {
-      setError(`Generation Failed: ${err.message}`);
-      toast.error(`Generation Failed: ${err.message}`);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to generate blog post";
+      setError(`Generation Failed: ${errorMessage}`);
+      toast.error(`Generation Failed: ${errorMessage}`);
     } finally {
       setLoadingSection(null);
     }

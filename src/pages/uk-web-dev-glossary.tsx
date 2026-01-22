@@ -279,6 +279,7 @@ export default function UkWebDevGlossary(): React.ReactElement {
         title="UK Web Development Glossary | British Tech Terminology Guide"
         description="Comprehensive glossary of web development terms with UK-specific context, regulations, and British industry standards. Essential reference for developers working in the United Kingdom."
         keywords="UK web development terminology, British tech glossary, UK GDPR web compliance, web accessibility UK regulations, British coding terms, UK digital terminology"
+        canonical="https://karthiknish.com/uk-web-dev-glossary"
       />
 
       <JsonLd data={websiteSchema} />

@@ -2,8 +2,14 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { FaExternalLinkAlt } from "react-icons/fa";
+import { Resource } from "@/data/resources";
 
-const ResourceCard = ({ resource, featured = false }) => {
+interface ResourceCardProps {
+  resource: Resource;
+  featured?: boolean;
+}
+
+const ResourceCard: React.FC<ResourceCardProps> = ({ resource, featured = false }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

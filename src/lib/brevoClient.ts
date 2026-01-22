@@ -6,25 +6,29 @@
 
 const BREVO_API_URL = "https://api.brevo.com/v3/smtp/email";
 
+interface BrevoPayload {
+  sender: { name: string; email: string };
+  to: { email: string; name: string | undefined }[];
+  subject: string;
+  htmlContent: string;
+  textContent?: string;
+  replyTo?: { email: string };
+}
+
 /**
  * Send a transactional email using Brevo API
- * @param {Object} options - Email options
- * @param {string} options.to - Recipient email address
- * @param {string} options.toName - Recipient name (optional)
- * @param {string} options.subject - Email subject
- * @param {string} options.htmlContent - HTML content of the email
- * @param {string} options.textContent - Plain text content (optional)
- * @param {string} options.replyTo - Reply-to email address (optional)
- * @returns {Promise<{success: boolean, messageId?: string, error?: string}>}
+ * @param options - Email options
+ * @returns Promise with success status
  */
-export async function sendEmail({
-  to,
-  toName = "",
-  subject,
-  htmlContent,
-  textContent = "",
-  replyTo = null,
+export async function sendEmail(options: {
+  to: string;
+  toName?: string | undefined;
+  subject: string;
+  htmlContent: string;
+  textContent?: string;
+  replyTo?: string | null;
 }) {
+  const { to, toName, subject, htmlContent, textContent, replyTo } = options;
   const apiKey = process.env.BREVO_API_KEY;
 
   if (!apiKey) {
@@ -32,7 +36,7 @@ export async function sendEmail({
     throw new Error("Email service is not configured");
   }
 
-  const payload = {
+  const payload: BrevoPayload = {
     sender: {
       name: "Karthik Nishanth",
       email: "noreply@karthiknish.com",
@@ -87,7 +91,7 @@ export async function sendEmail({
 /**
  * Generate a professional HTML email template for contact form notifications
  */
-export function generateContactNotificationEmail({ name, email, message }) {
+export function generateContactNotificationEmail({ name, email, message }: { name: string; email: string; message: string }) {
   return `
 <!DOCTYPE html>
 <html>
@@ -160,7 +164,7 @@ export function generateContactNotificationEmail({ name, email, message }) {
 /**
  * Generate a thank you email for the person who submitted the contact form
  */
-export function generateThankYouEmail({ name }) {
+export function generateThankYouEmail({ name }: { name: string }) {
   return `
 <!DOCTYPE html>
 <html>

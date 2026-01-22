@@ -7,7 +7,7 @@ import { SearchResult } from "@/types";
 
 interface SearchOverlayProps {
   toggleSearch: () => void;
-  searchInputRef: React.RefObject<HTMLInputElement>;
+  searchInputRef: React.RefObject<HTMLInputElement | null>;
   searchQuery: string;
   handleSearchChange: (e: ChangeEvent<HTMLInputElement>) => void;
   isSearching: boolean;
@@ -27,13 +27,13 @@ const SearchOverlay = ({
   debouncedSearchQuery,
 }: SearchOverlayProps) => {
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: globalThis.KeyboardEvent) => {
       if (e.key === 'Escape') {
         toggleSearch();
       }
     };
-    document.addEventListener('keydown', handleKeyDown as any);
-    return () => document.removeEventListener('keydown', handleKeyDown as any);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, [toggleSearch]);
 
   return (

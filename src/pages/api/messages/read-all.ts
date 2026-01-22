@@ -3,8 +3,14 @@ import { getCollection, updateDocument } from "@/lib/firebase";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { checkAdminStatus } from "@/lib/authUtils";
+import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(req, res) {
+interface Message {
+  _id: string;
+  isRead: boolean;
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "PUT") {
     res.setHeader("Allow", ["PUT"]);
     return res.status(405).end(`Method ${req.method} Not Allowed`);
@@ -18,7 +24,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const result = await getCollection("messages");
+    const result = await getCollection<Message>("messages");
     const messages = result.documents || [];
     
     // Find unread messages and mark them as read
@@ -31,9 +37,11 @@ export default async function handler(req, res) {
     }
 
     return res.status(200).json({ success: true, modifiedCount });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error marking all messages as read:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ 
+      message: "Internal server error",
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
   }
 }
-

@@ -4,7 +4,7 @@ import { authOptions } from "../auth/[...nextauth]";
 import { callGemini } from "@/lib/gemini";
 import formidable from "formidable";
 import fs from "fs/promises";
-import pdfParse from "pdf-parse";
+import * as pdfParse from "pdf-parse";
 import mammoth from "mammoth";
 
 interface FormidableFile {
@@ -56,7 +56,8 @@ async function parseFileContent(file: FormidableFile): Promise<string> {
 
     switch (true) {
       case fileType === 'application/pdf':
-        const pdfData = await pdfParse(fileBuffer);
+        // pdf-parse doesn't have great types, using unknown cast
+        const pdfData = await (pdfParse as unknown as (buffer: Buffer) => Promise<{ text: string }>)(fileBuffer);
         content = pdfData.text;
         console.log(`[Agent Mode] Extracted ${content.length} characters from PDF`);
         break;
@@ -89,9 +90,9 @@ async function parseFileContent(file: FormidableFile): Promise<string> {
     }
 
     return content;
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('[Agent Mode] Error parsing file:', error);
-    throw new Error(`Failed to parse file: ${(error as Error).message}`);
+    throw new Error(`Failed to parse file: ${error instanceof Error ? error.message : "Unknown error"}`);
   }
 }
 
@@ -407,7 +408,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.error("[Agent Mode] Raw response:", rawResponse.substring(0, 500));
 
       const titleMatch = rawResponse.match(/"title"\s*:\s*"([^"]+)"/);
-      const contentMatch = rawResponse.match(/"content"\s*:\s*"(.+)"\s*\}$/s);
+      const contentMatch = rawResponse.match(/"content"\s*:\s*"([\s\S]+)"\s*\}$/);
 
       if (titleMatch && contentMatch) {
         parsedResponse = {
@@ -432,11 +433,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         content: parsedResponse.content,
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("[Agent Mode] Error:", error);
     return res.status(500).json({
       success: false,
-      message: (error as Error).message || "Error generating blog content",
+      message: error instanceof Error ? error.message : "Error generating blog content",
     });
   }
 }

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { FadeIn } from "../animations/MotionComponents";
 
-const SuggestionBox = () => {
+const SuggestionBox: React.FC = () => {
   return (
     <motion.div
       className="bg-white border border-slate-200 p-10 sm:p-12 md:p-14 rounded-3xl shadow-sm text-center"

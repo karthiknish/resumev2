@@ -20,13 +20,35 @@ import TipTapRenderer from "@/components/TipTapRenderer";
  * VersionHistory component - Displays version history for blog posts
  * Allows viewing and restoring previous versions
  */
-export default function VersionHistory({ blogId, currentVersion }) {
+interface Version {
+  _id: string;
+  versionNumber: number;
+  content: string;
+  title: string;
+  slug: string;
+  description: string;
+  imageUrl: string;
+  category: string;
+  tags: string[];
+  createdAt: string;
+  updatedAt: string;
+  author: string;
+  published: boolean;
+  changeDescription?: string;
+}
+
+interface VersionHistoryProps {
+  blogId: string;
+  currentVersion?: number;
+}
+
+export default function VersionHistory({ blogId, currentVersion }: VersionHistoryProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [versions, setVersions] = useState([]);
+  const [versions, setVersions] = useState<Version[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
-  const [selectedVersion, setSelectedVersion] = useState(null);
-  const [previewVersion, setPreviewVersion] = useState(null);
+  const [selectedVersion, setSelectedVersion] = useState<Version | null>(null);
+  const [previewVersion, setPreviewVersion] = useState<Version | null>(null);
   const [showRestoreDialog, setShowRestoreDialog] = useState(false);
   const [changeDescription, setChangeDescription] = useState("");
 
@@ -57,11 +79,11 @@ export default function VersionHistory({ blogId, currentVersion }) {
     }
   };
 
-  const handlePreview = (version) => {
+  const handlePreview = (version: Version) => {
     setPreviewVersion(version);
   };
 
-  const handleRestoreClick = (version) => {
+  const handleRestoreClick = (version: Version) => {
     setSelectedVersion(version);
     setShowRestoreDialog(true);
     setChangeDescription("");
@@ -98,11 +120,11 @@ export default function VersionHistory({ blogId, currentVersion }) {
     }
   };
 
-  const formatRelativeTime = (date) => {
+  const formatRelativeTime = (date: string | Date) => {
     if (!date) return "";
     const d = new Date(date);
     const now = new Date();
-    const diffMs = now - d;
+    const diffMs = now.getTime() - d.getTime();
     const diffSecs = Math.floor(diffMs / 1000);
     const diffMins = Math.floor(diffSecs / 60);
     const diffHours = Math.floor(diffMins / 60);
@@ -115,7 +137,7 @@ export default function VersionHistory({ blogId, currentVersion }) {
     return d.toLocaleDateString();
   };
 
-  const getWordCount = (html) => {
+  const getWordCount = (html: string) => {
     if (!html) return 0;
     const text = html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
     return text.split(" ").filter(Boolean).length;

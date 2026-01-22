@@ -1,15 +1,21 @@
 // Converted to TypeScript - migrated
 // src/pages/api/gemini.js
 import { callGemini } from "@/lib/gemini"; // Import the utility function
+import type { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(req, res) {
+interface ChatMessage {
+  role: "user" | "model" | "assistant";
+  parts: Array<{ text: string }>;
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Only allow POST requests
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    const { prompt, chatHistory = [] } = req.body;
+    const { prompt, chatHistory = [] } = req.body as { prompt: string; chatHistory?: ChatMessage[] };
 
     if (!prompt) {
       return res.status(400).json({ error: "Prompt is required" });
@@ -103,8 +109,8 @@ You are "Cline", a highly knowledgeable and professional AI assistant representi
         ...new Set(matchedRestrictions.map((r) => r.category)),
       ];
 
-      let restrictionMessage = "I'm sorry, but I cannot assist with ";
-      const messages = [];
+       let restrictionMessage = "I'm sorry, but I cannot assist with ";
+      const messages: string[] = [];
       if (categories.includes("privacy"))
         messages.push("requests for personal information");
       if (categories.includes("financial"))
@@ -127,9 +133,9 @@ You are "Cline", a highly knowledgeable and professional AI assistant representi
     let fullPrompt = websiteContext + "\n\n**Conversation History:**\n";
     // Format history for the single prompt string
     chatHistory.forEach((msg) => {
-      fullPrompt += `${msg.role === "user" ? "User" : "Assistant"}: ${
-        msg.parts[0].text
-      }\n`;
+      const role = msg.role === "user" ? "User" : "Assistant";
+      const text = msg.parts?.[0]?.text || "";
+      fullPrompt += `${role}: ${text}\n`;
     });
     fullPrompt += `\n**Current User Query:**\nUser: ${prompt}\n\n**Your Response:**\nAssistant:`; // Add the latest user prompt clearly marked
 
@@ -148,7 +154,7 @@ You are "Cline", a highly knowledgeable and professional AI assistant representi
 
     // Return the response to the client
     return res.status(200).json({ response: responseText });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error handling Gemini request:", error);
     // Provide a generic error message to the user
     let userErrorMessage =
@@ -156,7 +162,7 @@ You are "Cline", a highly knowledgeable and professional AI assistant representi
     // Log the specific error for debugging but don't expose details to the user
     return res
       .status(500)
-      .json({ error: userErrorMessage, details: error.message }); // Keep details internal
+      .json({ error: userErrorMessage, details: error instanceof Error ? error.message : String(error) }); // Keep details internal
   }
 }
 

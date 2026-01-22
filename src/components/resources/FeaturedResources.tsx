@@ -3,8 +3,13 @@ import React from "react";
 import { motion } from "framer-motion";
 import ResourceCard from "./ResourceCard";
 import { HoverCard } from "../animations/MotionComponents";
+import { Resource } from "@/data/resources";
 
-const FeaturedResources = ({ resources }) => {
+interface FeaturedResourcesProps {
+  resources: Resource[];
+}
+
+const FeaturedResources: React.FC<FeaturedResourcesProps> = ({ resources }) => {
   // Filter to only feature non-code resources
   const featuredResources = resources.filter(
     (resource) => resource.featured && resource.category !== "code"

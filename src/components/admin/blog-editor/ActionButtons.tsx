@@ -6,16 +6,27 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { ButtonLoader } from "@/components/ui/app-loader";
 
+interface ActionButtonsProps {
+  isLoading: boolean;
+  isSaveDisabled?: boolean;
+  onSubmit: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  submitStatus: [boolean, string] | [];
+  error?: string;
+  saveButtonText?: string;
+  isPublished?: boolean;
+  onPublishChange?: (checked: boolean) => void;
+}
+
 function ActionButtons({
   isLoading,
-  isSaveDisabled, // Pass combined disabled state
+  isSaveDisabled = false,
   onSubmit,
   submitStatus,
-  error, // General form error
-  saveButtonText = "Save Changes", // Add default save button text
-  isPublished, // Add isPublished prop
-  onPublishChange, // Add onPublishChange prop
-}) {
+  error,
+  saveButtonText = "Save Changes",
+  isPublished,
+  onPublishChange,
+}: ActionButtonsProps) {
   return (
     <>
       {/* Submit Status */}

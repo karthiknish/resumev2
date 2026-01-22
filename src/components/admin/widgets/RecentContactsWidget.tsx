@@ -10,20 +10,28 @@ import { ContactListItemSkeleton } from "@/components/ui/loading-states";
 import { EmptyState } from "@/components/ui/empty-state";
 
 // Helper to format date relative to now
-const formatRelativeDate = (dateString) => {
+const formatRelativeDate = (dateString: string | Date | undefined) => {
   if (!dateString) return "N/A";
   try {
     return formatDistanceToNow(new Date(dateString), { addSuffix: true });
   } catch (e) {
     console.error("Error formatting relative date:", dateString, e);
-    return dateString; // Fallback
+    return dateString as string; // Fallback
   }
 };
 
+interface Contact {
+  _id: string;
+  id?: string;
+  name: string;
+  email: string;
+  createdAt: string | Date;
+}
+
 export default function RecentContactsWidget() {
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchRecentContacts = async () => {
@@ -44,9 +52,10 @@ export default function RecentContactsWidget() {
         } else {
           throw new Error("Invalid data format received");
         }
-      } catch (err) {
-        setError(err.message);
-        toast.error(`Could not load recent contacts: ${err.message}`);
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
+        setError(errorMessage);
+        toast.error(`Could not load recent contacts: ${errorMessage}`);
         setContacts([]);
       } finally {
         setIsLoading(false);

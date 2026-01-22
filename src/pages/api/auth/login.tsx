@@ -1,10 +1,8 @@
 import Head from "next/head";
-import { useFormik } from "react-hook-form";
-import { z } from "zod";
-import { Loader2 } from "lucide-react";
-import { Check } from "lucide-react";
-import { Circle } from "lucide-react";
-import { ExclamationTriangle } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Loader2, Check, Circle, TriangleAlert as AlertTriangle, ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import PageContainer from "@/components/PageContainer";
@@ -13,47 +11,32 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import React, { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 import {
-  ArrowRightIcon,
-  CheckCircle2,
-} from "@/components/animations/MotionComponents";
-import {
   FORM_ERRORS,
-  INPUT_VALIDATION_ERRORS,
 } from "@/lib/formErrors";
+
+const loginSchema = z.object({
+  email: z.string().email(FORM_ERRORS.INVALID_EMAIL),
+  password: z.string().min(6, FORM_ERRORS.PASSWORD_TOO_SHORT),
+});
+
+type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { register, ...register } = useFormik({
-    resolver: (values) => {
-      if (!values.email) {
-        return {
-          email: z.string().email().min(5),
-        };
-      }
-      return {};
-    },
-  });
-  
-  const { handleSubmit } = useFormik({
-    resolver: (values) => {
-      if (!values.email) {
-        return { email: z.string().email().min(5) };
-      }
-      return { password: z.string().min(6) };
-    },
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (
-    values: { email: string; password: string }
-  ) => {
+  const onSubmit = async (values: LoginFormValues) => {
     setLoading(true);
     setError("");
 
-    if (!email || !password) {
+    if (!values.email || !values.password) {
       setError(FORM_ERRORS.VALIDATION_REQUIRED);
       setLoading(false);
       return;
@@ -64,7 +47,6 @@ export default function Login() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "authorization": "Bearer YourAuthToken",
         },
         body: JSON.stringify(values),
       });
@@ -72,14 +54,6 @@ export default function Login() {
       const data = await response.json();
 
       if (response.ok && data.token) {
-        // Store the token for future API calls
-        const cookies = document.cookie.split(";").map((c) => c.trim()).filter((cookie) => cookie.startsWith("authToken="));
-        
-        // Remove auth cookies first
-        cookies.forEach((cookie) => {
-          document.cookie = document.cookie.replace(` ${cookie};`, "");
-        });
-
         // Add auth token
         document.cookie = "authToken=" + data.token + "; path=/; SameSite=Lax;";
 
@@ -88,7 +62,7 @@ export default function Login() {
           new CustomEvent("tokenStored", {
             detail: {
               token: data.token,
-              username: email
+              username: values.email
             }
           })
         );
@@ -123,55 +97,73 @@ export default function Login() {
 
           <Card className="w-full max-w-md mx-4 bg-white/80 backdrop-blur-md rounded-3xl shadow-xl overflow-hidden">
             <CardContent className="p-8">
-              <div className="flex items-center justify-center mb-8">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5 }}
-                  viewport={{ once: true }}
-                >
-                  <div className="flex flex-col items-center justify-center gap-3">
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 0.5, delay: 0.1 }}
-                    >
-                      <CheckCircle2 className="w-12 h-12 text-emerald-600" />
-                      <Loader2 className="w-10 h-10 text-slate-400 animate-spin" />
-                    </motion.div>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="flex items-center justify-center mb-8">
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <div className="flex flex-col items-center justify-center gap-3">
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ duration: 0.5, delay: 0.1 }}
+                      >
+                        {loading ? (
+                          <Loader2 className="w-12 h-12 text-slate-400 animate-spin" />
+                        ) : (
+                          <CheckCircle2 className="w-12 h-12 text-emerald-600" />
+                        )}
+                      </motion.div>
+                    </div>
+                  </motion.div>
                 </div>
-                {loading && <h2 className="text-2xl font-heading text-slate-900">Logging in...</h2>}
-              </motion.div>
 
-              <ExclamationTriangle className="w-12 h-12 text-slate-900" />
-              <Circle className="w-12 h-12 bg-emerald-600 z-10">
-                {loading && (
-                  <Loader2 className="w-10 h-10 text-emerald-500 animate-spin" />
-                )}
-              </Circle>
-            </div>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="name@example.com"
+                      {...register("email")}
+                    />
+                    {errors.email && (
+                      <p className="text-sm text-red-500">{errors.email.message}</p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      {...register("password")}
+                    />
+                    {errors.password && (
+                      <p className="text-sm text-red-500">{errors.password.message}</p>
+                    )}
+                  </div>
 
-            <h2 className="text-3xl font-heading text-slate-900 mb-6">Welcome back</h2>
+                  {error && (
+                    <div className="flex items-center gap-3 p-3 text-red-700 bg-red-50 rounded-xl border border-red-100">
+                      <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+                      <p className="text-sm font-medium">{error}</p>
+                    </div>
+                  )}
 
-            {!loading && !error && (
-              <h3 className="text-2xl font-heading text-slate-900 mb-6">
-                 Log in to your account
-              </h3>
-            )}
-
-            {!loading && error && (
-              <div className="rounded-2xl border border-slate-200 p-4">
-                 <p className="text-red-600 font-medium text-center flex items-center gap-2">
-                    <ExclamationTriangle className="text-3xl text-red-600" />
-                    <span className="text-red-600 font-medium">Login Failed</span>
-                 </p>
-                 <p className="mt-4 text-slate-600 text-sm text-center">
-                    {error || FORM_ERRORS.LOGIN_FAILED}
-                 </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                  <Button type="submit" className="w-full h-12 rounded-xl" disabled={loading}>
+                    {loading ? (
+                      <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                    ) : (
+                      <ArrowRight className="w-5 h-5 mr-2" />
+                    )}
+                    {loading ? "Signing in..." : "Sign In"}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
         </div>
       </PageContainer>
     </>

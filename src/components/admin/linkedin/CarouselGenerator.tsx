@@ -54,26 +54,29 @@ import {
   formatTemplate,
   getTemplateCategoryLabel,
   getTemplateCategoryIcon,
+  CarouselTemplate,
 } from "./carouselTemplates";
 import { downloadImage, downloadAllImages } from "./downloadUtils";
-import { useCarouselHistory } from "./useCarouselHistory";
+import { useCarouselHistory, HistoryItem, CarouselImage, CarouselSlide } from "./useCarouselHistory";
 
-export default function CarouselGenerator({ session }) {
+import { Session } from "next-auth";
+
+export default function CarouselGenerator({ session }: { session: Session | null }) {
   const [topic, setTopic] = useState("");
   const [slideCount, setSlideCount] = useState("5");
   const [style, setStyle] = useState("dark_pro");
   const [aspectRatio, setAspectRatio] = useState("portrait");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [slides, setSlides] = useState([]);
-  const [images, setImages] = useState([]);
-  const [error, setError] = useState(null);
+  const [slides, setSlides] = useState<CarouselSlide[]>([]);
+  const [images, setImages] = useState<CarouselImage[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState<CarouselImage | null>(null);
 
-  const { history, isLoadingHistory, saveToHistory, deleteHistoryItem, toggleFavorite } = useCarouselHistory(session);
+  const { history, setHistory, isLoadingHistory, saveToHistory, deleteHistoryItem, toggleFavorite } = useCarouselHistory(session);
 
   const [showTemplates, setShowTemplates] = useState(false);
-  const [templateCategory, setTemplateCategory] = useState("educational");
+  const [templateCategory, setTemplateCategory] = useState<string>("educational");
   const [showHistory, setShowHistory] = useState(false);
   const [showSwipePreview, setShowSwipePreview] = useState(false);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
@@ -95,7 +98,7 @@ export default function CarouselGenerator({ session }) {
     }
   }, [history]);
 
-  const handleTemplateSelect = (category, template) => {
+  const handleTemplateSelect = (category: string, template: CarouselTemplate) => {
     const formattedTopic = formatTemplate(template.template, template.placeholders);
     setTopic(formattedTopic);
     setSlideCount(String(template.slideCount));
@@ -103,11 +106,11 @@ export default function CarouselGenerator({ session }) {
     toast.success(`Loaded "${template.name}" template. Edit the topic to customize placeholders!`);
   };
 
-  const handleDragEnd = (event) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (active.id !== over?.id) {
-      setImages((items) => {
+    if (over && active.id !== over.id) {
+      setImages((items: CarouselImage[]) => {
         const oldIndex = items.findIndex((item) => item.slideNumber === active.id);
         const newIndex = items.findIndex((item) => item.slideNumber === over.id);
 
@@ -121,7 +124,7 @@ export default function CarouselGenerator({ session }) {
         }));
       });
 
-      setSlides((items) => {
+      setSlides((items: CarouselSlide[]) => {
         const oldIndex = items.findIndex((item) => item.slideNumber === active.id);
         const newIndex = items.findIndex((item) => item.slideNumber === over.id);
 
@@ -139,7 +142,7 @@ export default function CarouselGenerator({ session }) {
     }
   };
 
-  const handleGenerate = async (e) => {
+  const handleGenerate = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!topic.trim()) {
       toast.error("Please enter a carousel topic");
@@ -179,9 +182,10 @@ export default function CarouselGenerator({ session }) {
       toast.success(`Generated ${data.slides?.length || 0} slides!`);
 
       saveToHistory(topic.trim(), data.slides || [], data.images || [], style, aspectRatio);
-    } catch (err) {
-      setError(err.message);
-      toast.error(err.message || "Failed to generate carousel");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to generate carousel";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsGenerating(false);
       setProgress(0);
@@ -284,13 +288,14 @@ export default function CarouselGenerator({ session }) {
           }).catch((err) => console.error("Failed to mark as exported:", err));
         }
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("PDF export error:", err);
-      toast.error("Failed to export PDF: " + err.message);
+      const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
+      toast.error("Failed to export PDF: " + errorMessage);
     }
   };
 
-  const loadFromHistory = (item) => {
+  const loadFromHistory = (item: HistoryItem) => {
     setTopic(item.topic);
     setSlides(item.slides || []);
     setImages(item.slideImages || []);
@@ -601,7 +606,10 @@ export default function CarouselGenerator({ session }) {
                   <p className="font-semibold text-foreground">Slide {selectedImage.slideNumber}</p>
                   <p className="text-sm text-muted-foreground">Click download to save</p>
                 </div>
-                <Button onClick={() => downloadImage(selectedImage.imageData, selectedImage.slideNumber, selectedImage.mimeType)}>
+                <Button 
+                  onClick={() => selectedImage.imageData && downloadImage(selectedImage.imageData, selectedImage.slideNumber, selectedImage.mimeType)}
+                  disabled={!selectedImage.imageData}
+                >
                   <Download className="mr-2 h-4 w-4" />Download
                 </Button>
               </div>
@@ -630,7 +638,7 @@ export default function CarouselGenerator({ session }) {
               </div>
 
               <div className="flex-1 flex items-center justify-center p-4">
-                <Swiper modules={[Navigation, Pagination, Keyboard]} navigation={{ nextEl: ".swiper-button-next-custom", prevEl: ".swiper-button-prev-custom" }} pagination={{ clickable: true, el: ".swiper-pagination-custom" }} keyboard={{ enabled: true, onlyInViewport: true }} initialSlide={currentSlideIndex} onSlideChange={(swiper) => setCurrentSlideIndex(swiper.activeIndex)} className="w-full h-full flex items-center justify-center" style={{ "--swiper-navigation-color": "#ffffff", "--swiper-pagination-color": "#ffffff" }}>
+                <Swiper modules={[Navigation, Pagination, Keyboard]} navigation={{ nextEl: ".swiper-button-next-custom", prevEl: ".swiper-button-prev-custom" }} pagination={{ clickable: true, el: ".swiper-pagination-custom" }} keyboard={{ enabled: true, onlyInViewport: true }} initialSlide={currentSlideIndex} onSlideChange={(swiper) => setCurrentSlideIndex(swiper.activeIndex)} className="w-full h-full flex items-center justify-center" style={{ "--swiper-navigation-color": "#ffffff", "--swiper-pagination-color": "#ffffff" } as React.CSSProperties}>
                   {images.map((img, idx) => (
                     <SwiperSlide key={img.slideNumber}>
                       <div className="flex items-center justify-center h-full px-8">

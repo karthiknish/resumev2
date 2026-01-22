@@ -1,5 +1,3 @@
-// Converted to TypeScript - migrated
-// src/components/admin/blog-editor/InternalLinkSuggestions.js
 import React, { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,20 +15,27 @@ import axios from "axios";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-/**
- * InternalLinkSuggestions Component
- *
- * Provides AI-powered suggestions for internal blog post links based on current content.
- * Displays suggested posts with relevance reasons and allows inserting links into the editor.
- *
- * @param {Object} props
- * @param {string} props.title - Current blog post title
- * @param {string} props.content - Current blog post content (HTML)
- * @param {string} props.currentSlug - Current blog post slug (to exclude from suggestions)
- * @param {Function} props.onInsertLink - Callback when a link is inserted: ({ url, text }) => void
- * @param {React.ReactNode} props.trigger - Optional custom trigger component
- * @param {string} props.triggerClassName - Optional className for default trigger button
- */
+interface Suggestion {
+  _id?: string;
+  slug: string;
+  title: string;
+  description?: string;
+  relevanceReason?: string;
+  category?: string;
+  createdAt?: string;
+  tags?: string[];
+  anchorText?: string;
+}
+
+interface InternalLinkSuggestionsProps {
+  title: string;
+  content: string;
+  currentSlug: string;
+  onInsertLink: (link: { url: string; text: string }) => void;
+  trigger?: React.ReactNode;
+  triggerClassName?: string;
+}
+
 function InternalLinkSuggestions({
   title = "",
   content = "",
@@ -38,14 +43,14 @@ function InternalLinkSuggestions({
   onInsertLink,
   trigger = null,
   triggerClassName = "",
-}) {
+}: InternalLinkSuggestionsProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isSuggesting, setIsSuggesting] = useState(false);
-  const [suggestions, setSuggestions] = useState([]);
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [error, setError] = useState("");
 
   // Get plain text from HTML content for better context
-  const getPlainText = (html) => {
+  const getPlainText = (html: string) => {
     if (!html) return "";
     return html
       .replace(/<[^>]*>/g, " ")
@@ -82,11 +87,15 @@ function InternalLinkSuggestions({
       } else {
         setError(response.data.message || "Could not fetch link suggestions.");
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Internal link suggestion error:", err);
-      setError(
-        err.response?.data?.message || err.message || "Failed to get suggestions."
-      );
+      let message = "Failed to get suggestions.";
+      if (axios.isAxiosError(err)) {
+        message = err.response?.data?.message || err.message;
+      } else if (err instanceof Error) {
+        message = err.message;
+      }
+      setError(message);
     } finally {
       setIsSuggesting(false);
     }
@@ -103,7 +112,7 @@ function InternalLinkSuggestions({
   }, [title, content, handleSuggestLinks]);
 
   // Handle inserting a link into the editor
-  const handleInsertLink = useCallback((suggestion) => {
+  const handleInsertLink = useCallback((suggestion: Suggestion) => {
     const linkUrl = `/blog/${suggestion.slug}`;
     const linkText = suggestion.anchorText || suggestion.title;
 
@@ -120,7 +129,7 @@ function InternalLinkSuggestions({
   }, [onInsertLink]);
 
   // Format date for display
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string) => {
     if (!dateString) return "";
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -196,7 +205,7 @@ function InternalLinkSuggestions({
             )}
 
             {/* Suggestions list */}
-            {!isSuggesting && suggestions.length > 0 && (
+            {!isSuggesting && suggestions.length > 0 ? (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-foreground">
@@ -252,13 +261,13 @@ function InternalLinkSuggestions({
                               {formatDate(suggestion.createdAt)}
                             </span>
                           )}
-                          {suggestion.tags && suggestion.tags.length > 0 && (
+                          {suggestion.tags && suggestion.tags.length > 0 ? (
                             <span className="flex items-center gap-1">
                               <Tag className="h-3 w-3" />
                               {suggestion.tags.slice(0, 2).join(", ")}
-                              {suggestion.tags.length > 2 && " + more"}
+                              {suggestion.tags.length > 2 ? " + more" : null}
                             </span>
-                          )}
+                          ) : null}
                         </div>
                       </div>
 
@@ -288,10 +297,10 @@ function InternalLinkSuggestions({
                   </div>
                 ))}
               </div>
-            )}
+            ) : null}
 
             {/* Empty state (not loading, no error, no suggestions) */}
-            {!isSuggesting && !error && suggestions.length === 0 && (
+            {!isSuggesting && !error && suggestions.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-center">
                 <Link2 className="h-12 w-12 text-muted-foreground/30 mb-4" />
                 <h3 className="text-sm font-medium text-foreground mb-1">
@@ -301,7 +310,7 @@ function InternalLinkSuggestions({
                   Add a title and some content to get AI-powered internal link suggestions.
                 </p>
               </div>
-            )}
+            ) : null}
           </div>
 
           <DialogFooter className="border-t border-border pt-4">

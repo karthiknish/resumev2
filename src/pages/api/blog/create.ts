@@ -63,11 +63,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (isPublished) {
       try {
-        const subscribersResult = await getCollection("subscribers");
+        const subscribersResult = await getCollection<{ email?: string }>("subscribers");
         const subscribers = subscribersResult.documents || [];
 
         for (const subscriber of subscribers) {
           try {
+            if (!subscriber.email) continue;
             await fetch("https://api.brevo.com/v3/smtp/email", {
               method: "POST",
               headers: {
