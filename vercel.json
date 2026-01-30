@@ -4,7 +4,6 @@
   "installCommand": "npm install --include=dev",
   "framework": "nextjs",
   "outputDirectory": ".next",
-  "nodeVersion": "24.x",
   "git": {
     "deploymentEnabled": {
       "main": true
