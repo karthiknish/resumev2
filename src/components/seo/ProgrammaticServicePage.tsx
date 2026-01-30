@@ -81,7 +81,7 @@ export function ProgrammaticServicePage({
 
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-b from-primary/10 to-background py-16 md:py-24">
-        <div className="container px-4 md:px-6">
+        <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 md:px-8">
           <nav className="mb-8 flex items-center gap-2 text-sm text-muted-foreground">
             <Link href="/" className="hover:text-foreground">
               Home
@@ -98,7 +98,7 @@ export function ProgrammaticServicePage({
             <span className="text-foreground">{segment.name}</span>
           </nav>
 
-          <div className="mx-auto max-w-4xl">
+          <div className="mx-auto max-w-3xl text-center">
             <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary mb-6">
               <Clock className="mr-2 size-4" />
               Typical timeline: {service.timeline} • From {service.startingPrice}
@@ -113,7 +113,7 @@ export function ProgrammaticServicePage({
               Get a free quote within 24 hours.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="rounded-full text-base" asChild>
                 <Link href="mailto:hello@karthiknish.com?subject=Quote for {service.name}">Get a Free Quote</Link>
               </Button>
@@ -127,10 +127,10 @@ export function ProgrammaticServicePage({
 
       {/* Intro Section */}
       <section className="py-12 md:py-16">
-        <div className="container px-4 md:px-6">
-          <div className="mx-auto max-w-4xl">
+        <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 md:px-8">
+          <div className="mx-auto max-w-3xl">
             <div className="prose prose-lg max-w-none">
-              <p className="text-xl leading-relaxed text-muted-foreground">
+              <p className="text-xl leading-relaxed text-muted-foreground text-center">
                 {content.intro}
               </p>
             </div>
@@ -146,13 +146,13 @@ export function ProgrammaticServicePage({
           key={index}
           className={`py-12 md:py-16 ${index % 2 === 1 ? 'bg-muted/30' : ''}`}
         >
-          <div className="container px-4 md:px-6">
-            <div className="mx-auto max-w-4xl">
-              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl mb-6">
+          <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 md:px-8">
+            <div className="mx-auto max-w-3xl">
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl mb-6 text-center">
                 {section.heading}
               </h2>
 
-              <p className="text-lg text-muted-foreground mb-6">
+              <p className="text-lg text-muted-foreground mb-6 text-center">
                 {section.content}
               </p>
 
@@ -186,8 +186,8 @@ export function ProgrammaticServicePage({
 
       {/* Pain Points Section */}
       <section className="py-12 md:py-16 bg-muted/30">
-        <div className="container px-4 md:px-6">
-          <div className="mx-auto max-w-4xl">
+        <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 md:px-8">
+          <div className="mx-auto max-w-3xl">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl mb-4 text-center">
               Common Challenges for {segment.name}s
             </h2>
@@ -226,8 +226,8 @@ export function ProgrammaticServicePage({
 
       {/* Priorities Section */}
       <section className="py-12 md:py-16">
-        <div className="container px-4 md:px-6">
-          <div className="mx-auto max-w-4xl">
+        <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 md:px-8">
+          <div className="mx-auto max-w-3xl">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl mb-4 text-center">
               What {segment.name}s Prioritise
             </h2>
@@ -254,7 +254,7 @@ export function ProgrammaticServicePage({
 
       {/* FAQ Section */}
       <section className="py-12 md:py-16 bg-muted/30">
-        <div className="container px-4 md:px-6">
+        <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 md:px-8">
           <div className="mx-auto max-w-3xl">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl mb-4 text-center">
               Frequently Asked Questions
@@ -302,7 +302,7 @@ export function ProgrammaticServicePage({
 
       {/* CTA Section */}
       <section className="py-16 md:py-24">
-        <div className="container px-4 md:px-6">
+        <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 md:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl mb-4">
               {content.cta.headline}
@@ -342,9 +342,9 @@ export function ProgrammaticServicePage({
 
       {/* Internal Links Section */}
       <section className="py-12 md:py-16 bg-muted/30">
-        <div className="container px-4 md:px-6">
-          <div className="mx-auto max-w-4xl">
-            <h2 className="text-xl font-bold tracking-tight mb-6">
+        <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 md:px-8">
+          <div className="mx-auto max-w-3xl">
+            <h2 className="text-xl font-bold tracking-tight mb-6 text-center">
               Related Resources for {segment.name}s
             </h2>
 
@@ -369,8 +369,8 @@ export function ProgrammaticServicePage({
 
       {/* Trust Signals */}
       <section className="border-t border-border py-8 bg-muted/20">
-        <div className="container px-4 md:px-6">
-          <div className="mx-auto max-w-4xl">
+        <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 md:px-8">
+          <div className="mx-auto max-w-3xl">
             <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 text-center">
               <div>
                 <div className="text-2xl font-bold text-foreground">4+</div>
