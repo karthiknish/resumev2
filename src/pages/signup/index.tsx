@@ -104,8 +104,33 @@ export default function SignUp() {
   return (
     <>
       <Head>
-        <title>Sign Up - Karthik Nishanth</title>
-        <meta name="description" content="Create a new account" />
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Create Account | Karthik Nishanth</title>
+        <meta
+          name="description"
+          content="Create a new account on Karthik Nishanth. Get started with your cross-platform development journey today."
+        />
+        <meta name="robots" content="noindex, nofollow" />
+
+        {/* Open Graph */}
+        <meta property="og:title" content="Create Account | Karthik Nishanth" />
+        <meta
+          property="og:description"
+          content="Create a new account on Karthik Nishanth. Get started with your cross-platform development journey today."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://karthiknish.com/signup" />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Create Account | Karthik Nishanth" />
+        <meta
+          name="twitter:description"
+          content="Create a new account on Karthik Nishanth."
+        />
+
+        <meta name="theme-color" content="#0f172a" />
       </Head>
       <div
         className="min-h-screen bg-background relative flex items-center justify-center overflow-hidden py-12 sm:py-16 md:py-24"

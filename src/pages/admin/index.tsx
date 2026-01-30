@@ -1,22 +1,21 @@
 // Converted to TypeScript - migrated
 import { useEffect, useState } from "react";
 import {
-  AiOutlineRead,
-  AiOutlineCalendar,
-  AiOutlineMail,
-  AiOutlineThunderbolt,
-  AiOutlineExperiment,
-  AiOutlineUsergroupAdd,
-  AiOutlineClockCircle, // Added Clock icon for Pomodoro
-  AiOutlineFire, // Icon for News
-  AiOutlineLinkedin, // Icon for LinkedIn
-  AiOutlineSend, // Icon for Newsletter
-} from "react-icons/ai";
+  BookOpen,
+  Calendar,
+  Mail,
+  Zap,
+  FlaskConical,
+  Users,
+  Clock,
+  Flame,
+  Linkedin,
+  Send,
+} from "lucide-react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { signIn } from "@/lib/authUtils";
-import { FaComments, FaUserCheck } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -39,7 +38,6 @@ import DigitalClock from "@/components/admin/ui/DigitalClock";
 import EmptyPage from "@/components/admin/ui/EmptyPage";
 import DashboardTab from "@/components/admin/tabs/DashboardTab";
 import CalendarTab from "@/components/admin/tabs/CalendarTab";
-import ChatHistoryTab from "@/components/admin/tabs/ChatHistoryTab";
 import ContactsTab from "@/components/admin/tabs/ContactsTab";
 import BytesTab from "@/components/admin/tabs/BytesTab";
 import ApiStatusTab from "@/components/admin/tabs/ApiStatusTab";
@@ -53,21 +51,21 @@ import { toast } from "sonner";
 
 // Define tab configuration data
 const adminTabs = [
-  { value: "dashboard", label: "Blogs", Icon: AiOutlineRead },
-  { value: "calendar", label: "Calendar", Icon: AiOutlineCalendar },
+  { value: "dashboard", label: "Blogs", Icon: BookOpen },
+  { value: "calendar", label: "Calendar", Icon: Calendar },
   {
     value: "contacts",
     label: "Contacts",
-    Icon: AiOutlineMail,
+    Icon: Mail,
     showBadge: true,
   },
-  { value: "bytes", label: "Bytes", Icon: AiOutlineThunderbolt },
-  { value: "subscribers", label: "Subscribers", Icon: FaUserCheck },
-  { value: "newsletter", label: "Newsletter", Icon: AiOutlineSend },
-  { value: "api-status", label: "API Status", Icon: AiOutlineExperiment },
-  { value: "linkedin", label: "LinkedIn", Icon: AiOutlineLinkedin },
-  { value: "pomodoro", label: "Pomodoro", Icon: AiOutlineClockCircle },
-  { value: "news", label: "News", Icon: AiOutlineFire },
+  { value: "bytes", label: "Bytes", Icon: Zap },
+  { value: "subscribers", label: "Subscribers", Icon: Users },
+  { value: "newsletter", label: "Newsletter", Icon: Send },
+  { value: "api-status", label: "API Status", Icon: FlaskConical },
+  { value: "linkedin", label: "LinkedIn", Icon: Linkedin },
+  { value: "pomodoro", label: "Pomodoro", Icon: Clock },
+  { value: "news", label: "News", Icon: Flame },
 ];
 
 function AdminDashboard() {
@@ -228,42 +226,38 @@ function AdminDashboard() {
               <SlideUp delay={0.4}>
                 {/* Desktop TabsList (Hidden below lg) */}
                 <TabsList className="hidden w-full snap-x snap-mandatory justify-center gap-1 lg:gap-2 overflow-x-auto rounded-2xl border border-border bg-card py-2.5 shadow-sm scrollbar-thin md:py-3 lg:my-5 lg:flex lg:py-3.5">
-                  {adminTabs.map((tab, index) => {
-                    const gradients = [];
-                    const gradientClass = "";
-
-                    return (
-                      <TabsTrigger
-                        key={tab.value}
-                        value={tab.value}
-                        className={`relative flex-shrink-0 snap-start min-w-[7rem] md:min-w-[8rem] lg:min-w-[9rem] rounded-xl border px-2.5 py-1.5 text-xs md:text-sm lg:px-4 lg:py-2.5 md:px-3 md:py-2 font-semibold transition-all duration-300 ${
-                          activeTab === tab.value
-                            ? "border-primary bg-primary text-primary-foreground shadow-md"
-                            : "border-transparent bg-muted text-muted-foreground hover:border-primary/20 hover:bg-card hover:text-foreground"
-                        }`}
-                      >
-                        <tab.Icon className="h-3.5 w-3.5 md:h-4 md:w-4" />{" "}
-                        <span className="ml-2">{tab.label}</span>
-                        {tab.value === "contacts" &&
-                          unreadContactsCount > 0 && (
-                            <span className="absolute -top-2 -right-2 flex h-5 w-5">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive/75 opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-5 w-5 bg-destructive text-xs items-center justify-center text-destructive-foreground font-bold">
-                                {unreadContactsCount > 9
-                                  ? "9+"
-                                  : unreadContactsCount}
-                              </span>
+                  {adminTabs.map((tab) => (
+                    <TabsTrigger
+                      key={tab.value}
+                      value={tab.value}
+                      className={`relative flex-shrink-0 snap-start min-w-[7rem] md:min-w-[8rem] lg:min-w-[9rem] rounded-xl border px-2.5 py-1.5 text-xs md:text-sm lg:px-4 lg:py-2.5 md:px-3 md:py-2 font-semibold transition-all duration-300 ${
+                        activeTab === tab.value
+                          ? "border-primary bg-primary text-primary-foreground shadow-md"
+                          : "border-transparent bg-muted text-muted-foreground hover:border-primary/20 hover:bg-card hover:text-foreground"
+                      }`}
+                      aria-label={`${tab.label} tab${tab.value === "contacts" && unreadContactsCount > 0 ? ` with ${unreadContactsCount} unread` : ""}`}
+                    >
+                      <tab.Icon className="size-3.5 md:size-4" aria-hidden="true" />{" "}
+                      <span className="ml-2">{tab.label}</span>
+                      {tab.value === "contacts" &&
+                        unreadContactsCount > 0 && (
+                          <span className="absolute -top-2 -right-2 flex size-5" aria-label={`${unreadContactsCount} unread messages`}>
+                            <span className="animate-ping absolute inline-flex size-full rounded-full bg-destructive/75 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full size-5 bg-destructive text-xs items-center justify-center text-destructive-foreground font-bold">
+                              {unreadContactsCount > 9
+                                ? "9+"
+                                : unreadContactsCount}
                             </span>
-                          )}
-                      </TabsTrigger>
-                    );
-                  })}
+                          </span>
+                        )}
+                    </TabsTrigger>
+                  ))}
                 </TabsList>
 
                 {/* Mobile/Tablet Select (Visible below lg) */}
                 <div className="mb-4 md:mb-5 block lg:hidden">
                   <Select value={activeTab} onValueChange={setActiveTab}>
-                    <SelectTrigger className="w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm md:text-base font-semibold text-foreground shadow-sm">
+                    <SelectTrigger className="w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm md:text-base font-semibold text-foreground shadow-sm" aria-label="Select admin tab">
                       <SelectValue placeholder="Select a tab" />
                     </SelectTrigger>
                     <SelectContent className="max-h-[60vh] overflow-auto rounded-2xl border border-border bg-card shadow-lg">
@@ -274,11 +268,11 @@ function AdminDashboard() {
                           className="font-semibold text-foreground text-sm"
                         >
                           <div className="flex items-center">
-                            <tab.Icon className="mr-3 h-4 w-4 md:h-5 md:w-5" />
+                            <tab.Icon className="mr-3 size-4 md:size-5" aria-hidden="true" />
                             <span>{tab.label}</span>
                             {tab.value === "contacts" &&
                               unreadContactsCount > 0 && (
-                                <span className="ml-3 inline-flex items-center justify-center rounded-full bg-destructive/10 px-2 py-0.5 md:px-2 md:py-1 text-xs font-bold text-destructive">
+                                <span className="ml-3 inline-flex items-center justify-center rounded-full bg-destructive/10 px-2 py-0.5 md:px-2 md:py-1 text-xs font-bold text-destructive" aria-label={`${unreadContactsCount} unread`}>
                                   {unreadContactsCount > 9
                                     ? "9+"
                                     : unreadContactsCount}
@@ -296,15 +290,12 @@ function AdminDashboard() {
               <div className="rounded-3xl border border-border bg-card p-4 md:p-5 lg:p-6 text-foreground shadow-md">
                 <AnimatePresence mode="wait">
                   {activeTab === "dashboard" && (
-                    <DashboardTab 
-                      key="dashboard" 
+                    <DashboardTab
+                      key="dashboard"
                       unreadCount={unreadContactsCount}
                     />
                   )}
                   {activeTab === "calendar" && <CalendarTab key="calendar" />}
-                  {activeTab === "chat-history" && (
-                    <ChatHistoryTab key="chat-history" />
-                  )}
                   {activeTab === "contacts" && (
                     <ContactsTab
                       key="contacts"

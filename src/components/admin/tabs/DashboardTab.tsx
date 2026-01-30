@@ -14,7 +14,6 @@ import {
   FilePlus,
   Bot,
   Trash2,
-  AlertTriangle, // Icon for Alert Dialog
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -43,8 +42,6 @@ import {
   StaggerContainer,
   StaggerItem,
 } from "@/components/animations/MotionComponents";
-import RecentContactsWidget from "@/components/admin/widgets/RecentContactsWidget"; // Import the new widget
-import { TableRowSkeleton } from "@/components/ui/loading-states";
 
 // Simple date formatter
 const formatDate = (dateString: string | Date | undefined) => {
@@ -345,18 +342,18 @@ export default function DashboardTab({ unreadCount }: DashboardTabProps) {
                         {[...Array(5)].map((_, i) => (
                           <TableRow key={i} className="border-b border-border">
                             <TableCell className="py-3 sm:py-4">
-                              <div className="h-4 w-32 sm:w-48 bg-slate-200 rounded animate-pulse" />
+                              <div className="h-4 w-32 sm:w-48 bg-muted rounded animate-pulse" />
                             </TableCell>
                             <TableCell className="py-3 sm:py-4">
-                              <div className="h-5 w-16 sm:w-20 bg-slate-200 rounded-full animate-pulse" />
+                              <div className="h-5 w-16 sm:w-20 bg-muted rounded-full animate-pulse" />
                             </TableCell>
                             <TableCell className="py-3 sm:py-4 hidden sm:table-cell">
-                              <div className="h-4 w-24 sm:w-28 bg-slate-200 rounded animate-pulse" />
+                              <div className="h-4 w-24 sm:w-28 bg-muted rounded animate-pulse" />
                             </TableCell>
                             <TableCell className="py-3 sm:py-4 text-right">
                               <div className="flex justify-end gap-1.5 sm:gap-2">
-                                <div className="h-7 w-7 sm:h-8 sm:w-8 bg-slate-200 rounded-lg animate-pulse" />
-                                <div className="h-7 w-7 sm:h-8 sm:w-8 bg-slate-200 rounded-lg animate-pulse" />
+                                <div className="size-7 sm:size-8 bg-muted rounded-lg animate-pulse" />
+                                <div className="size-7 sm:size-8 bg-muted rounded-lg animate-pulse" />
                               </div>
                             </TableCell>
                           </TableRow>

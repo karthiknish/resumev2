@@ -70,8 +70,33 @@ export default function ResetPassword() {
   return (
     <>
       <Head>
-        <title>Reset Password - Karthik Nishanth</title>
-        <meta name="description" content="Set a new password" />
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Reset Password | Karthik Nishanth</title>
+        <meta
+          name="description"
+          content="Set a new password for your Karthik Nishanth account. Secure your account with a new password."
+        />
+        <meta name="robots" content="noindex, nofollow" />
+
+        {/* Open Graph */}
+        <meta property="og:title" content="Reset Password | Karthik Nishanth" />
+        <meta
+          property="og:description"
+          content="Set a new password for your Karthik Nishanth account. Secure your account with a new password."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://karthiknish.com/reset-password" />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Reset Password | Karthik Nishanth" />
+        <meta
+          name="twitter:description"
+          content="Set a new password for your Karthik Nishanth account."
+        />
+
+        <meta name="theme-color" content="#0f172a" />
       </Head>
       <div
         className="min-h-screen bg-background relative flex items-center justify-center overflow-hidden py-12 sm:py-16 md:py-24"

@@ -1,7 +1,7 @@
 // Converted to TypeScript - migrated
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
-import { AiOutlineClockCircle } from "react-icons/ai";
+import { Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScaleIn } from "@/components/animations/MotionComponents";
 
@@ -29,11 +29,11 @@ function DigitalClock() {
 
   return (
     <ScaleIn>
-      <Card className="rounded-xl border border-border bg-card shadow-md">
+      <Card elevation="raised" className="rounded-xl border border-border bg-card">
         <CardContent className="p-4">
           <div className="flex flex-col items-end">
-            <div className="flex items-center rounded-lg border border-primary/20 bg-primary px-4 py-2.5 shadow">
-              <AiOutlineClockCircle className="mr-2.5 text-primary-foreground text-lg" />
+            <div className="flex items-center rounded-lg border border-primary/20 bg-primary px-4 py-2.5 shadow-sm">
+              <Clock className="mr-2.5 text-primary-foreground size-5" strokeWidth={2.5} />
               <span className="flex items-center font-mono text-xl font-bold text-primary-foreground">
                 {hours}
                 <span
