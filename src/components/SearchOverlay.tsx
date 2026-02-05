@@ -65,6 +65,8 @@ const SearchOverlay = ({
         <input
           ref={searchInputRef}
           type="text"
+          id="site-search"
+          name="q"
           placeholder="Search articles and bytes..."
           value={searchQuery}
           onChange={handleSearchChange}

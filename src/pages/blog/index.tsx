@@ -104,11 +104,24 @@ function Index({ initialPosts = [], categories = [] }: IndexProps) {
 
   // Update URL when page changes
   useEffect(() => {
-    if (router.query.page !== String(currentPage)) {
+    // Avoid pushing ?page=1 to the URL if it's already at 1 and there's no page param
+    // This keeps the URL clean on first load or when returning to page 1
+    const currentQueryPage = router.query.page ? parseInt(String(router.query.page), 10) : 1;
+    
+    if (currentPage !== currentQueryPage) {
+      if (currentPage === 1 && !router.query.page) return;
+
+      const newQuery = { ...router.query };
+      if (currentPage === 1) {
+        delete newQuery.page;
+      } else {
+        newQuery.page = String(currentPage);
+      }
+
       router.push(
         {
           pathname: router.pathname,
-          query: { ...router.query, page: currentPage },
+          query: newQuery,
         },
         undefined,
         { shallow: true }
@@ -120,14 +133,21 @@ function Index({ initialPosts = [], categories = [] }: IndexProps) {
   // Reset to page 1 when filters/search change (and update URL)
   useEffect(() => {
     setCurrentPage(1);
-    router.push(
-      {
-        pathname: router.pathname,
-        query: { ...router.query, page: 1 },
-      },
-      undefined,
-      { shallow: true }
-    );
+    
+    // Only update URL if we are currently not on page 1 or have a page param
+    if (currentPage !== 1 || router.query.page) {
+      const newQuery = { ...router.query };
+      delete newQuery.page;
+      
+      router.push(
+        {
+          pathname: router.pathname,
+          query: newQuery,
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, selectedCategory, sortOrder]);
 
@@ -274,6 +294,8 @@ function Index({ initialPosts = [], categories = [] }: IndexProps) {
                   >
                     <input
                       type="text"
+                      id="blog-search"
+                      name="search"
                       value={searchTerm}
                       onChange={handleSearchChange}
                       placeholder="Search posts..."

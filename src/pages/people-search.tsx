@@ -145,6 +145,8 @@ export default function PeopleSearch(): React.ReactElement {
                 <div className="relative flex items-center">
                   <input
                     type="text"
+                    id="people-query"
+                    name="people-query"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Describe who you're looking for..."
