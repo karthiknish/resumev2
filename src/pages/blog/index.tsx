@@ -510,9 +510,22 @@ export async function getStaticProps() {
       `[getStaticProps /blog] Fetched categories: ${categories.join(", ")}`
     );
 
+    // Trim posts to include only necessary metadata for the listing page
+    // to keep the page data size below the 128kB threshold.
+    const trimmedPosts = posts.map((post: any) => ({
+      _id: post._id,
+      title: post.title,
+      description: post.description || "",
+      imageUrl: post.imageUrl || "/Logo.png",
+      category: post.category || "Uncategorized",
+      slug: post.slug,
+      tags: post.tags || [],
+      createdAt: post.createdAt,
+    }));
+
     return {
       props: {
-        initialPosts: JSON.parse(JSON.stringify(posts)),
+        initialPosts: JSON.parse(JSON.stringify(trimmedPosts)),
         categories: JSON.parse(JSON.stringify(categories)),
       },
       revalidate: 3600,
