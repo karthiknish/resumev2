@@ -1,10 +1,12 @@
 import React from "react";
 import Head from "next/head";
 import Link from "next/link";
+import Image from "next/image";
 import { FaCheck } from "react-icons/fa";
 import PageContainer from "@/components/PageContainer";
 import { FadeIn } from "@/components/animations/MotionComponents";
 import { ReactNode } from "react";
+import { ArrowUpRight } from "lucide-react";
 
 interface BadgeProps {
   children: ReactNode;
@@ -43,6 +45,16 @@ interface CtaSectionProps {
   secondaryAction?: { href: string; label: string };
 }
 
+interface ShowcaseSectionProps {
+  heading?: string;
+  items?: Array<{
+    title: string;
+    description: string;
+    imageUrl: string;
+    link?: string;
+  }>;
+}
+
 interface ServicePageLayoutProps {
   seo?: {
     title: string;
@@ -68,6 +80,7 @@ interface ServicePageLayoutProps {
     primaryAction?: { href: string; label: string };
     secondaryAction?: { href: string; label: string };
   };
+  showcase?: ShowcaseSectionProps;
 }
 
 function Badge({ children, className = "" }: BadgeProps) {
@@ -180,6 +193,58 @@ function ToolsetSection({ heading, items }: ToolsetSectionProps) {
   );
 }
 
+function ShowcaseSection({ heading, items }: ShowcaseSectionProps) {
+  if (!items?.length) return null;
+
+  return (
+    <section className="space-y-8">
+      {heading ? (
+        <h2 className="font-heading text-2xl font-bold text-slate-900 md:text-3xl">
+          {heading}
+        </h2>
+      ) : null}
+      <div className="grid gap-8 md:grid-cols-3">
+        {items.map((item, index) => {
+          const content = (
+            <div className="group overflow-hidden rounded-3xl border border-slate-200 bg-white transition-all hover:shadow-xl hover:-translate-y-1 h-full">
+              <div className="relative aspect-video w-full overflow-hidden bg-slate-100">
+                <Image
+                  src={item.imageUrl}
+                  alt={item.title}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+              </div>
+              <div className="p-6">
+                <h3 className="font-heading text-xl font-bold text-slate-900 flex items-center gap-2">
+                  {item.title}
+                  {item.link && <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />}
+                </h3>
+                <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+                  {item.description}
+                </p>
+              </div>
+            </div>
+          );
+
+          return (
+            <FadeIn key={index} delay={index * 0.1}>
+              {item.link ? (
+                <Link href={item.link}>
+                  {content}
+                </Link>
+              ) : (
+                content
+              )}
+            </FadeIn>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
 function CtaSection({ heading, body, primaryAction, secondaryAction }: CtaSectionProps) {
   if (!heading && !body) return null;
 
@@ -200,9 +265,9 @@ function CtaSection({ heading, body, primaryAction, secondaryAction }: CtaSectio
         ) : null}
         <div className="flex flex-col gap-3 sm:flex-row">
           {primaryAction ? (
-            <Link
+            <Link style={{ color: "black" }}
               href={primaryAction.href}
-              className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-white/90"
+              className="inline-flex text-black items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold transition hover:bg-white/90"
             >
               {primaryAction.label}
             </Link>
@@ -230,6 +295,7 @@ export default function ServicePageLayout({
   outcomes = [],
   toolset = [],
   cta,
+  showcase,
 }: ServicePageLayoutProps) {
   return (
     <>
@@ -296,7 +362,8 @@ export default function ServicePageLayout({
             </section>
 
             <div className="px-6 pt-12 md:px-10">
-              <div className="mx-auto flex w-full max-w-5xl flex-col gap-12 pb-16">
+              <div className="mx-auto flex w-full max-w-5xl flex-col gap-16 pb-16">
+                <ShowcaseSection heading={showcase?.heading} items={showcase?.items} />
                 <FeatureList heading="Core capabilities" items={keyFeatures} />
                 <ProcessSection heading="How we’ll work together" steps={process} />
                 <OutcomeSection heading="What you’ll walk away with" items={outcomes} />

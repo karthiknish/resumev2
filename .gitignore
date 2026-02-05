@@ -40,3 +40,4 @@ PRD.md
 .claude/
 .opencode/
 .ralphy/progress.txt
+scripts/seed-blogs.js

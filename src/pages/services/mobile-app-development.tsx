@@ -105,6 +105,30 @@ const cta = {
   },
 };
 
+const showcase = {
+  heading: "Recent mobile projects",
+  items: [
+    {
+      title: "Matrimony Platform",
+      description: "A cross-platform mobile app for community-focused matchmaking with real-time chat and verified profiles.",
+      imageUrl: "/matrimony-app.webp",
+      link: "/projects/matrimony"
+    },
+    {
+      title: "Healthcare Marketplace",
+      description: "A modern medical supply marketplace enabling hospitals to source equipment with transparent pricing.",
+      imageUrl: "/medical-sell.webp",
+      link: "/projects/medical"
+    },
+    {
+      title: "Daily Productivity",
+      description: "A high-performance task management app focused on deep work and intuitive gesture-based navigation.",
+      imageUrl: "/productivity-app.webp",
+      link: "/projects/daily-productivity"
+    },
+  ],
+};
+
 export default function MobileAppDevelopmentService() {
   return (
     <ServicePageLayout
@@ -116,6 +140,7 @@ export default function MobileAppDevelopmentService() {
       outcomes={outcomes}
       toolset={toolset}
       cta={cta}
+      showcase={showcase}
     />
   );
 }
