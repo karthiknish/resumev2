@@ -1,4 +1,5 @@
 // Converted to TypeScript - migrated to Firebase
+import type { Query } from "firebase-admin/firestore";
 import { getFirestore } from "./firebaseAdmin";
 import { IBlog } from "@/models/Blog";
 import { isHTML, htmlToMarkdown, generateSlug } from "./blogUtils";
@@ -78,7 +79,7 @@ export async function getBlogById(id: string): Promise<EnrichedBlog | null> {
 
 export async function getPaginatedBlogs(page = 1, limit = 10, filter: Record<string, unknown> = {}): Promise<{ blogs: EnrichedBlog[], pagination: { page: number, limit: number, totalPages: number, total: number } }> {
   const db = getFirestore();
-  let query: FirebaseFirestore.Query = db.collection(COLLECTION);
+  let query: Query = db.collection(COLLECTION) as Query;
   
   // Apply filters
   for (const [key, value] of Object.entries(filter)) {

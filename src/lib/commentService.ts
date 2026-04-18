@@ -99,10 +99,23 @@ export async function createComment({
     dataToCreate.authorName = anonymousName.trim().substring(0, 50);
   }
 
-  const docRef = await db.collection(COLLECTION).add(dataToCreate);
-  const newDoc = await docRef.get();
-  
-  const createdComment = { id: docRef.id, ...newDoc.data() } as EnrichedComment;
+  const refOrId = await db.collection(COLLECTION).add(dataToCreate);
+  const hasGet =
+    refOrId &&
+    typeof refOrId === "object" &&
+    "get" in refOrId &&
+    typeof (refOrId as { get?: unknown }).get === "function";
+  const newDoc = hasGet
+    ? await (refOrId as import("firebase-admin/firestore").DocumentReference).get()
+    : await db
+        .collection(COLLECTION)
+        .doc((refOrId as { id: string }).id)
+        .get();
+  const commentId = hasGet
+    ? (refOrId as import("firebase-admin/firestore").DocumentReference).id
+    : (refOrId as { id: string }).id;
+
+  const createdComment = { id: commentId, ...newDoc.data() } as EnrichedComment;
 
   // Manual population if author exists
   if (createdComment.author && typeof createdComment.author === "string") {

@@ -1,3 +1,4 @@
+import type { Query } from "firebase-admin/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getFirestore } from "@/lib/firebaseAdmin";
 import { IShare } from "@/models/Share";
@@ -81,7 +82,7 @@ export async function getShareAnalytics(req: NextApiRequest, res: NextApiRespons
     const { blogSlug, platform, startDate, endDate, limit = 100 } = req.query;
 
     const db = getFirestore();
-    let query: FirebaseFirestore.Query = db.collection(COLLECTION);
+    let query: Query = db.collection(COLLECTION) as Query;
 
     if (blogSlug) {
       query = query.where("blogSlug", "==", blogSlug);

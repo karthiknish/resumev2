@@ -1,3 +1,4 @@
+import type { Query } from "firebase-admin/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { getFirestore } from "@/lib/firebaseAdmin";
@@ -52,9 +53,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       case "GET": {
         const { contentType, limit = 20, skip = 0 } = req.query;
 
-        let query: FirebaseFirestore.Query = db.collection(COLLECTION)
+        let query: Query = db
+          .collection(COLLECTION)
           .where("author", "==", userId)
-          .where("isDeleted", "==", false);
+          .where("isDeleted", "==", false) as Query;
 
         if (contentType) {
           query = query.where("contentType", "==", contentType);
