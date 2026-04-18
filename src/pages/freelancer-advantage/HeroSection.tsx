@@ -9,8 +9,7 @@ interface HeroSectionProps {
 const HeroSection = ({ onContactClick }: HeroSectionProps) => (
   <section className="relative py-28 min-h-screen flex items-center justify-center overflow-hidden bg-white text-slate-900">
     <div className="absolute inset-0 -z-20 bg-gradient-to-br from-slate-50 via-white to-blue-50/30" />
-    <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.05),_transparent_62%)]" />
-    <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom,_rgba(236,72,153,0.05),_transparent_58%)]" />
+    <div className="pointer-events-none absolute inset-0 -z-10 bg-mesh-brand-faint" aria-hidden />
 
     <motion.div
       className="absolute top-32 left-32 text-6xl opacity-10"

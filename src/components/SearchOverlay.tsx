@@ -38,17 +38,19 @@ const SearchOverlay = ({
 
   return (
     <motion.div
-      className="fixed inset-0 bg-white/95 backdrop-blur-xl z-[110] flex flex-col items-center justify-start pt-20 sm:pt-28 p-4 relative overflow-hidden min-h-0"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Site search"
+      className="fixed inset-0 z-[110] flex min-h-0 flex-col items-center justify-start overflow-hidden bg-background/95 p-4 pt-20 backdrop-blur-xl sm:pt-28"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.18),_transparent_60%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(30,41,59,0.6),_transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-mesh-search" aria-hidden />
       <motion.button
         onClick={toggleSearch}
-        className="absolute top-6 right-6 text-slate-600 hover:text-slate-900 transition-colors z-[111] p-2 rounded-full bg-slate-100/80 backdrop-blur-sm hover:bg-slate-200"
+        className="absolute top-6 right-6 text-muted-foreground hover:text-foreground transition-colors z-[111] p-2 rounded-full bg-muted/90 backdrop-blur-sm hover:bg-muted"
         aria-label="Close Search"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
@@ -70,7 +72,7 @@ const SearchOverlay = ({
           placeholder="Search articles and bytes..."
           value={searchQuery}
           onChange={handleSearchChange}
-          className="w-full px-6 py-4 rounded-full bg-white/95 text-slate-900 text-xl border border-slate-200 focus:outline-none focus:border-slate-400 focus:ring-4 focus:ring-slate-200 placeholder:text-slate-500 font-medium shadow-sm transition-all duration-300"
+          className="w-full px-6 py-4 rounded-full bg-card text-foreground text-xl border border-border focus:outline-none focus:border-ring focus:ring-4 focus:ring-ring/20 placeholder:text-muted-foreground font-medium shadow-sm transition-all duration-300"
           autoFocus
         />
       </motion.div>
@@ -79,14 +81,14 @@ const SearchOverlay = ({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="w-full max-w-2xl flex-1 min-h-0 overflow-y-auto pb-10 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent"
+        className="w-full max-w-2xl flex-1 min-h-0 overflow-y-auto pb-10 scrollbar-thin"
       >
         {(searchResults.length > 0 || isSearching) &&
           debouncedSearchQuery.trim().length >= 2 && (
             <div className="space-y-4">
               {isSearching && (
-                <div className="p-6 text-slate-600 text-center flex justify-center items-center gap-3 bg-white/90 rounded-2xl border border-slate-200 shadow-sm">
-                  <Loader2 className="h-6 w-6 animate-spin text-slate-500" />
+                <div className="p-6 text-muted-foreground text-center flex justify-center items-center gap-3 bg-card/95 rounded-2xl border border-border shadow-sm">
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                   <span className="font-semibold text-lg">Searching...</span>
                 </div>
               )}
@@ -100,16 +102,16 @@ const SearchOverlay = ({
                     }
                     key={result.id}
                     onClick={handleResultClick}
-                    className="block p-6 bg-white rounded-2xl border border-slate-200 hover:border-slate-400 hover:shadow-lg transition-all duration-300 group"
+                    className="block p-6 bg-card rounded-2xl border border-border hover:border-ring/40 hover:shadow-lg transition-all duration-300 group"
                   >
-                    <p className="font-heading text-lg text-slate-900 truncate group-hover:text-slate-700 transition-colors duration-300">
+                    <p className="font-heading text-lg text-foreground truncate group-hover:text-muted-foreground transition-colors duration-300">
                       {result.title}
-                      <span className="ml-2 text-xs uppercase font-semibold text-slate-600 bg-slate-100 px-2 py-1 rounded-full border border-slate-200">
+                      <span className="ml-2 text-xs uppercase font-semibold text-muted-foreground bg-muted px-2 py-1 rounded-full border border-border">
                         {result.type}
                       </span>
                     </p>
                     {result.description && (
-                      <p className="text-sm text-slate-600 truncate mt-2 leading-relaxed">
+                      <p className="text-sm text-muted-foreground truncate mt-2 leading-relaxed">
                         {result.description}
                       </p>
                     )}
@@ -118,12 +120,12 @@ const SearchOverlay = ({
               {!isSearching &&
                 searchResults.length === 0 &&
                 debouncedSearchQuery.trim().length >= 2 && (
-                  <div className="p-8 text-center bg-white rounded-2xl border border-slate-200 shadow-sm">
-                    <h3 className="font-heading text-xl text-slate-900 mb-2">
+                  <div className="p-8 text-center bg-card rounded-2xl border border-border shadow-sm">
+                    <h3 className="font-heading text-xl text-foreground mb-2">
                       No results found
                     </h3>
-                    <p className="text-slate-600">
-                      No results found for &quot;<span className="font-semibold text-slate-400">{debouncedSearchQuery}</span>&quot;.
+                    <p className="text-muted-foreground">
+                      No results found for &quot;<span className="font-semibold text-muted-foreground/80">{debouncedSearchQuery}</span>&quot;.
                     </p>
                   </div>
                 )}
@@ -132,19 +134,19 @@ const SearchOverlay = ({
         {!isSearching &&
           debouncedSearchQuery.trim().length > 0 &&
           debouncedSearchQuery.trim().length < 2 && (
-            <div className="p-6 text-center bg-white rounded-2xl border border-slate-200 shadow-sm">
+            <div className="p-6 text-center bg-card rounded-2xl border border-border shadow-sm">
               <span className="text-2xl mb-2 block">⌨️</span>
-              <p className="text-slate-600 font-medium">
+              <p className="text-muted-foreground font-medium">
                 Keep typing to search...
               </p>
             </div>
           )}
         {!isSearching && debouncedSearchQuery.trim().length === 0 && (
-          <div className="p-8 text-center bg-white rounded-2xl border border-slate-200 shadow-sm">
-            <h3 className="font-heading text-xl text-slate-900 mb-2">
+          <div className="p-8 text-center bg-card rounded-2xl border border-border shadow-sm">
+            <h3 className="font-heading text-xl text-foreground mb-2">
               Start your search
             </h3>
-            <p className="text-slate-600">
+            <p className="text-muted-foreground">
               Search for blog posts or bytes to discover content.
             </p>
           </div>

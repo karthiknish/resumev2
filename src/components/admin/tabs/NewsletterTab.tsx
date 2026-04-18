@@ -49,6 +49,11 @@ export default function NewsletterTab() {
     const fetchCount = async () => {
       try {
         const response = await fetch("/api/subscribers");
+        const ct = response.headers.get("content-type") || "";
+        if (!response.ok || !ct.includes("application/json")) {
+          setSubscriberCount(0);
+          return;
+        }
         const data = await response.json();
         if (data.success) {
           setSubscriberCount(data.data?.length || 0);

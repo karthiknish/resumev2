@@ -11,7 +11,9 @@ import {
   Flame,
   Linkedin,
   Send,
+  ArrowLeft,
 } from "lucide-react";
+import Link from "next/link";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
@@ -200,11 +202,18 @@ function AdminDashboard() {
           <PageContainer className="px-4 pt-20 md:pt-24 lg:pt-28 text-foreground md:px-6 lg:px-8">
             <SlideInLeft delay={0.2}>
               <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div>
+                <div className="space-y-3">
+                  <Link
+                    href="/"
+                    className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground shadow-sm transition hover:border-primary/25 hover:bg-muted hover:text-foreground"
+                  >
+                    <ArrowLeft className="size-3.5" aria-hidden />
+                    Back to site
+                  </Link>
                   <h1 className="text-2xl font-heading font-bold leading-tight tracking-tight text-foreground sm:text-3xl md:text-4xl">
                     Admin Dashboard
                   </h1>
-                  <p className="mt-2 text-sm text-muted-foreground sm:text-base">
+                  <p className="text-sm text-muted-foreground sm:text-base">
                     Review site activity, manage content, and monitor tools in one place.
                   </p>
                 </div>
@@ -221,35 +230,38 @@ function AdminDashboard() {
             <Tabs
               value={activeTab}
               onValueChange={setActiveTab}
-              className="mb-6 md:mb-8 mt-2 z-10"
+              className="z-10 mb-6 mt-2 min-w-0 max-w-full md:mb-8"
             >
+              <div className="sticky top-16 z-30 -mx-4 mb-4 border-b border-border/70 bg-background/90 px-2 py-3 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 md:-mx-6 lg:-mx-8">
               <SlideUp delay={0.4}>
                 {/* Desktop TabsList (Hidden below lg) */}
-                <TabsList className="hidden w-full snap-x snap-mandatory justify-center gap-1 lg:gap-2 overflow-x-auto rounded-2xl border border-border bg-card py-2.5 shadow-sm scrollbar-thin md:py-3 lg:my-5 lg:flex lg:py-3.5">
+                <TabsList className="hidden w-full flex-wrap justify-center gap-1.5 overflow-x-auto rounded-2xl border border-border bg-card p-2 shadow-sm scrollbar-thin lg:flex lg:gap-2 lg:p-2.5">
                   {adminTabs.map((tab) => (
                     <TabsTrigger
                       key={tab.value}
                       value={tab.value}
-                      className={`relative flex-shrink-0 snap-start min-w-[7rem] md:min-w-[8rem] lg:min-w-[9rem] rounded-xl border px-2.5 py-1.5 text-xs md:text-sm lg:px-4 lg:py-2.5 md:px-3 md:py-2 font-semibold transition-all duration-300 ${
+                      className={`shrink-0 rounded-xl border px-2.5 py-1.5 text-xs font-semibold transition-all duration-300 md:px-3 md:py-2 md:text-sm lg:px-3.5 lg:py-2 ${
                         activeTab === tab.value
                           ? "border-primary bg-primary text-primary-foreground shadow-md"
                           : "border-transparent bg-muted text-muted-foreground hover:border-primary/20 hover:bg-card hover:text-foreground"
                       }`}
                       aria-label={`${tab.label} tab${tab.value === "contacts" && unreadContactsCount > 0 ? ` with ${unreadContactsCount} unread` : ""}`}
                     >
-                      <tab.Icon className="size-3.5 md:size-4" aria-hidden="true" />{" "}
-                      <span className="ml-2">{tab.label}</span>
-                      {tab.value === "contacts" &&
-                        unreadContactsCount > 0 && (
-                          <span className="absolute -top-2 -right-2 flex size-5" aria-label={`${unreadContactsCount} unread messages`}>
-                            <span className="animate-ping absolute inline-flex size-full rounded-full bg-destructive/75 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full size-5 bg-destructive text-xs items-center justify-center text-destructive-foreground font-bold">
-                              {unreadContactsCount > 9
-                                ? "9+"
-                                : unreadContactsCount}
-                            </span>
+                      <span className="inline-flex items-center gap-1.5 md:gap-2">
+                        <tab.Icon className="size-3.5 shrink-0 md:size-4" aria-hidden="true" />
+                        <span className="whitespace-nowrap">{tab.label}</span>
+                        {tab.value === "contacts" &&
+                        unreadContactsCount > 0 ? (
+                          <span
+                            className="inline-flex min-h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground tabular-nums md:text-xs"
+                            aria-label={`${unreadContactsCount} unread messages`}
+                          >
+                            {unreadContactsCount > 9
+                              ? "9+"
+                              : unreadContactsCount}
                           </span>
-                        )}
+                        ) : null}
+                      </span>
                     </TabsTrigger>
                   ))}
                 </TabsList>
@@ -285,9 +297,10 @@ function AdminDashboard() {
                   </Select>
                 </div>
               </SlideUp>
+              </div>
 
               {/* Tab Content with Card-like Container */}
-              <div className="rounded-3xl border border-border bg-card p-4 md:p-5 lg:p-6 text-foreground shadow-md">
+              <div className="min-h-[min(480px,72vh)] min-w-0 max-w-full rounded-3xl border border-border bg-card p-4 text-foreground shadow-md md:p-5 lg:p-6">
                 <AnimatePresence mode="wait">
                   {activeTab === "dashboard" && (
                     <DashboardTab

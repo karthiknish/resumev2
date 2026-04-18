@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import FormError from "@/components/ui/FormError";
 import { FORM_ERRORS } from "@/lib/formErrors";
+import { THEME_META_COLOR } from "@/lib/theme";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -74,14 +75,13 @@ export default function ForgotPassword() {
           content="Reset your password for your Karthik Nishanth account."
         />
 
-        <meta name="theme-color" content="#0f172a" />
+        <meta name="theme-color" content={THEME_META_COLOR} />
       </Head>
       <div
         className="min-h-screen bg-background relative flex items-center justify-center overflow-hidden py-12 sm:py-16 md:py-24"
         style={{ fontFamily: "Inter, sans-serif" }}
       >
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.16),_transparent_65%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(226,232,240,0.25),_transparent_70%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-mesh-slate-dual" aria-hidden />
         
         <motion.div
           initial={{ opacity: 0, y: 20 }}

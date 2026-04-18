@@ -1,9 +1,24 @@
 // Converted to TypeScript - migrated
-import React, { useState, useEffect, useMemo } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { useEffect, useMemo, useState, type FormEvent, type KeyboardEvent } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Check,
+  Copy,
+  FileText,
+  Hash,
+  History,
+  Linkedin,
+  Loader2,
+  RefreshCw,
+  Sparkles,
+  Trash2,
+  X,
+} from "lucide-react";
+import type { Session } from "next-auth";
+import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -13,30 +28,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import {
-  Linkedin,
-  Loader2,
-  Copy,
-  Check,
-  Sparkles,
-  RefreshCw,
-  History,
-  Trash2,
-  Hash,
-  X,
-  FileText,
-  BookOpen,
-  Megaphone,
-} from "lucide-react";
-import { toast } from "sonner";
-import { motion, AnimatePresence } from "framer-motion";
-import { Session } from "next-auth";
+import { Textarea } from "@/components/ui/textarea";
 import EmojiPicker from "./EmojiPicker";
 import { POST_TYPES, TONES } from "./constants";
 import { POST_TEMPLATES, getTemplateCategoryIcon } from "./templates";
 import type { TemplateCategory, TemplateItem } from "./templates";
 import { suggestHashtags } from "./hashtagUtils";
-import { useHistory, HistoryItem } from "./useHistory";
+import { useHistory, type HistoryItem } from "./useHistory";
 
 type Template = TemplateItem;
 
@@ -60,7 +58,6 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }: Li
   const [selectedHashtags, setSelectedHashtags] = useState<string[]>([]);
   const [customHashtag, setCustomHashtag] = useState("");
   const [showTemplates, setShowTemplates] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
   const [templateCategory, setTemplateCategory] = useState<TemplateCategory>("hook");
 
   const { history, isLoadingHistory, saveToHistory, deleteHistoryItem, clearHistory, toggleFavorite } = useHistory(session);
@@ -96,7 +93,7 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }: Li
     return "Long (400-600 words)";
   };
 
-  const handleGenerate = async (e?: React.FormEvent) => {
+  const handleGenerate = async (e?: FormEvent) => {
     e?.preventDefault();
     if (!topic.trim()) {
       toast.error("Please enter a topic or idea");
@@ -222,7 +219,7 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }: Li
     }
   };
 
-  const handleCustomHashtagKeyDown = (e: React.KeyboardEvent) => {
+  const handleCustomHashtagKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
       addCustomHashtag();
@@ -242,7 +239,6 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }: Li
   };
 
   const handleTemplateSelect = (category: TemplateCategory, template: Template) => {
-    setSelectedTemplate(template);
     setTemplateCategory(category);
     setTopic(template.template);
     setShowTemplates(false);
@@ -327,6 +323,7 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }: Li
                         className="flex items-center gap-2 group"
                       >
                         <button
+                          type="button"
                           onClick={() => loadFromHistory(item)}
                           className="flex-1 text-left p-2 rounded-lg bg-background hover:bg-accent transition-colors text-sm"
                         >
@@ -341,6 +338,7 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }: Li
                             </div>
                             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                               <button
+                                type="button"
                                 onClick={(e) => toggleFavorite(item, e)}
                                 className={`p-1 rounded hover:bg-accent ${
                                   item.isFavorite ? "text-yellow-500" : "text-muted-foreground"
@@ -350,6 +348,7 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }: Li
                                 <Sparkles className="w-3.5 h-3.5" />
                               </button>
                               <button
+                                type="button"
                                 onClick={(e) => deleteHistoryItem(item, e)}
                                 className="p-1 rounded hover:bg-destructive/20 text-muted-foreground hover:text-destructive"
                                 title="Delete"
@@ -547,6 +546,7 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }: Li
                           Selected Hashtags ({selectedHashtags.length})
                         </span>
                         <Button
+                          type="button"
                           variant="ghost"
                           size="sm"
                           onClick={() => setSelectedHashtags([])}
@@ -659,11 +659,11 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }: Li
             exit={{ opacity: 0, y: -20 }}
           >
             <Card className="bg-card border border-border shadow-sm rounded-2xl overflow-hidden">
-              <CardHeader className="pb-3 border-b border-border bg-gradient-to-r from-[#0077B5]/5 to-transparent">
+              <CardHeader className="pb-3 border-b border-border bg-gradient-to-r from-brand-linkedin/5 to-transparent">
                 <CardTitle className="flex items-center justify-between text-lg font-heading font-semibold text-foreground">
                   <div className="flex items-center gap-2">
-                    <div className="p-2 bg-[#0077B5]/10 rounded-full">
-                      <Linkedin className="w-4 h-4 text-[#0077B5]" />
+                    <div className="p-2 bg-brand-linkedin/10 rounded-full">
+                      <Linkedin className="w-4 h-4 text-brand-linkedin" />
                     </div>
                     Post Preview
                   </div>
@@ -735,6 +735,7 @@ export default function LinkedInPostGenerator({ initialTopic = "", session }: Li
                     )}
                   </Button>
                   <Button
+                    type="button"
                     onClick={handleGenerate}
                     variant="outline"
                     disabled={isLoading}

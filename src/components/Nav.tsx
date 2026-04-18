@@ -42,8 +42,8 @@ export default function Nav() {
   const navFontClass = "font-heading";
   const iconButtonClass = "text-muted-foreground hover:text-foreground hover:bg-secondary/60";
   const navShellClasses = hasScrolled
-    ? "bg-[#ffffff] text-foreground shadow-sm border-border"
-    : "bg-[#ffffff] text-foreground border-transparent";
+    ? "bg-background text-foreground shadow-sm border-border"
+    : "bg-background text-foreground border-transparent";
   const mobileContainerClasses = "bg-background/70 backdrop-blur-lg text-foreground border-border";
   const mobileLinkBaseClass = "text-muted-foreground hover:bg-secondary/60 hover:text-foreground";
   const mobileLinkActiveClass = "text-primary bg-secondary/60";
@@ -191,15 +191,16 @@ export default function Nav() {
   return (
     <>
       <motion.nav
-        className={`fixed top-0 left-0 right-0 w-full z-[100] border-b transition-all duration-300 ${navShellClasses}`}
+        aria-label="Primary"
+        className={`fixed left-0 right-0 top-0 z-[100] w-full border-b pt-[max(0.75rem,env(safe-area-inset-top,0px))] transition-all duration-300 ${navShellClasses}`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 md:py-5">
-          <div className="flex justify-between items-center">
+        <div className="container mx-auto max-w-full px-4 pb-3 sm:px-6 sm:pb-4 lg:px-8 lg:pb-5">
+          <div className="flex min-w-0 items-center justify-between gap-2 sm:gap-3">
             <FadeIn delay={0.1}>
-              <Link href="/" className="flex items-center">
+              <Link href="/" className="flex shrink-0 items-center">
                 <motion.div className="relative">
                   <Image
                     src="/logo.svg"
@@ -215,8 +216,8 @@ export default function Nav() {
               </Link>
             </FadeIn>
 
-            {/* Desktop Menu & Search Icon */}
-            <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
+            {/* Desktop Menu & Search Icon (lg+ so tablet portrait keeps mobile controls) */}
+            <div className="hidden min-w-0 flex-1 items-center justify-end gap-4 lg:flex lg:gap-6">
               {navLinks.map((link) => (
                 <SlideInRight key={link.href} delay={link.delay}>
                   <HoverCard scale={1.05}>
@@ -275,98 +276,79 @@ export default function Nav() {
 
               {/* Search Icon */}
               <motion.button
+                type="button"
                 onClick={toggleSearch}
-                className={`${iconButtonClass} transition-colors duration-200 p-2 lg:p-3 rounded-xl group relative`}
-                aria-label="Open Search"
+                className={`${iconButtonClass} group relative inline-flex size-11 shrink-0 items-center justify-center rounded-xl transition-colors duration-200 lg:size-12`}
+                aria-label="Open search"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <FaSearch className="w-5 h-5 lg:w-6 lg:h-6" />
-                <kbd className="hidden lg:inline-flex absolute -top-1 -right-1 items-center justify-center w-5 h-5 text-[10px] font-mono rounded-full bg-[hsl(var(--color-primary))] text-[hsl(var(--color-primary-foreground))] opacity-0 group-hover:opacity-100 transition-opacity">
+                <FaSearch className="size-5 lg:size-6" aria-hidden />
+                <kbd className="hidden lg:inline-flex absolute -top-1 -right-1 items-center justify-center w-5 h-5 text-[10px] font-mono rounded-full bg-primary text-primary-foreground opacity-0 group-hover:opacity-100 transition-opacity">
                   ⌘K
                 </kbd>
               </motion.button>
             </div>
 
-            {/* Mobile Menu Button & Theme Switcher */}
-            <motion.div className="md:hidden flex items-center space-x-2 sm:space-x-3">
+            {/* Mobile / tablet: search + menu (visible below lg) */}
+            <motion.div className="flex shrink-0 items-center gap-1.5 pr-[max(0px,env(safe-area-inset-right,0px))] lg:hidden">
               <motion.button
+                type="button"
                 onClick={toggleSearch}
-                className={`${iconButtonClass} transition-colors duration-200 p-2 rounded-xl`}
-                aria-label="Open Search"
+                className={`${iconButtonClass} inline-flex size-11 touch-manipulation items-center justify-center rounded-xl border border-border/60 bg-background/85 shadow-sm backdrop-blur-sm dark:bg-background/60`}
+                aria-label="Open search"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <FaSearch className="w-5 h-5 sm:w-6 sm:h-6" />
+                <FaSearch className="size-5" aria-hidden />
               </motion.button>
               <motion.button
+                type="button"
                 onClick={toggleMenu}
-                className={`${iconButtonClass} transition-colors duration-200 p-2 rounded-xl`}
+                className={`${iconButtonClass} inline-flex size-11 touch-manipulation items-center justify-center rounded-xl border border-border/60 bg-background/85 shadow-sm backdrop-blur-sm dark:bg-background/60`}
                 aria-label={isOpen ? "Close menu" : "Open menu"}
+                aria-expanded={isOpen}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
               >
                 {isOpen ? (
-                  <FaTimes className="w-6 h-6 sm:w-7 sm:h-7" />
+                  <FaTimes className="size-6" aria-hidden />
                 ) : (
-                  <FaBars className="w-6 h-6 sm:w-7 sm:h-7" />
+                  <FaBars className="size-6" aria-hidden />
                 )}
               </motion.button>
             </motion.div>
           </div>
         </div>
-      </motion.nav>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            id="mobile-nav"
-            className={`md:hidden pt-6 sm:pt-8 pb-6 sm:pb-8 shadow-2xl z-[100] fixed top-[72px] sm:top-[80px] md:top-[88px] left-0 right-0 h-[calc(100vh-72px)] sm:h-[calc(100vh-80px)] md:h-[calc(100vh-88px)] w-full overflow-y-auto border-t ${mobileContainerClasses}`}
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="flex flex-col h-full pt-2 sm:pt-4 items-center px-4">
-              {navLinks.map((link) => {
-                const isActive =
-                  (link.href === "/" && router.pathname === "/") ||
-                  (link.href !== "/" &&
-                    (router.pathname === link.href ||
-                      (link.href === "/blog" &&
-                        router.pathname.startsWith("/blog")) ||
-                      (link.href === "/bytes" &&
-                        router.pathname.startsWith("/bytes"))));
+        {/* Mobile menu: keep inside <nav> so links sit in navigation landmark */}
+        <AnimatePresence>
+          {isOpen ? (
+            <motion.div
+              id="mobile-nav"
+              className={`fixed left-0 right-0 top-[max(4.25rem,calc(3.5rem+env(safe-area-inset-top,0px)))] z-[99] flex max-h-[calc(100dvh-max(4.25rem,calc(3.5rem+env(safe-area-inset-top,0px))))] flex-col overflow-y-auto overscroll-y-contain border-t pb-[max(1rem,env(safe-area-inset-bottom,0px))] pt-6 shadow-2xl sm:top-[4.75rem] sm:max-h-[calc(100dvh-max(4.75rem,calc(3.5rem+env(safe-area-inset-top,0px))))] sm:pt-8 lg:hidden ${mobileContainerClasses}`}
+              initial={{ opacity: 0, x: "100%" }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: "100%" }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="flex min-h-0 flex-1 flex-col items-center px-4 pb-6 pt-2 sm:pt-4">
+                {navLinks.map((link) => {
+                  const isActive =
+                    (link.href === "/" && router.pathname === "/") ||
+                    (link.href !== "/" &&
+                      (router.pathname === link.href ||
+                        (link.href === "/blog" &&
+                          router.pathname.startsWith("/blog")) ||
+                        (link.href === "/bytes" &&
+                          router.pathname.startsWith("/bytes"))));
 
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-semibold ${navFontClass} rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-colors duration-200 w-full max-w-xs ${
-                      isActive ? mobileLinkActiveClass : mobileLinkBaseClass
-                    }`}
-                    onClick={handleLinkClick}
-                  >
-                    <motion.span
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      {link.label}
-                    </motion.span>
-                  </Link>
-                );
-              })}
-              {/* Authentication Mobile Links */}
-              {session ? (
-                <>
-                  {session?.user?.role === "admin" ? (
+                  return (
                     <Link
-                      href="/admin"
-                      className={`block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-semibold ${navFontClass} rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mb-2 transition-colors duration-200 w-full max-w-xs ${
-                        router.pathname.startsWith("/admin")
-                          ? mobileLinkActiveClass
-                          : mobileLinkBaseClass
+                      key={link.href}
+                      href={link.href}
+                      className={`mx-2 mb-2 block w-full max-w-xs rounded-xl px-4 py-3 text-center text-xl font-semibold sm:mx-4 sm:rounded-2xl sm:px-6 sm:py-4 sm:text-2xl ${navFontClass} transition-colors duration-200 ${
+                        isActive ? mobileLinkActiveClass : mobileLinkBaseClass
                       }`}
                       onClick={handleLinkClick}
                     >
@@ -374,31 +356,54 @@ export default function Nav() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                       >
-                        Admin
+                        {link.label}
                       </motion.span>
                     </Link>
-                  ) : null}
+                  );
+                })}
+                {session ? (
+                  <>
+                    {session?.user?.role === "admin" ? (
+                      <Link
+                        href="/admin"
+                        className={`mx-2 mb-2 block w-full max-w-xs rounded-xl px-4 py-3 text-center text-xl font-semibold sm:mx-4 sm:rounded-2xl sm:px-6 sm:py-4 sm:text-2xl ${navFontClass} transition-colors duration-200 ${
+                          router.pathname.startsWith("/admin")
+                            ? mobileLinkActiveClass
+                            : mobileLinkBaseClass
+                        }`}
+                        onClick={handleLinkClick}
+                      >
+                        <motion.span
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          Admin
+                        </motion.span>
+                      </Link>
+                    ) : null}
 
-                  <button
-                    className={`block py-3 sm:py-4 px-4 sm:px-6 text-center text-xl sm:text-2xl font-semibold ${navFontClass} rounded-xl sm:rounded-2xl mx-2 sm:mx-4 mt-auto transition-colors duration-200 w-full max-w-xs ${mobileSignOutClass}`}
-                    onClick={() => {
-                      handleSignOut();
-                      handleLinkClick();
-                    }}
-                  >
-                    <motion.span
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
+                    <button
+                      type="button"
+                      className={`mx-2 mt-auto block w-full max-w-xs rounded-xl px-4 py-3 text-center text-xl font-semibold sm:mx-4 sm:rounded-2xl sm:px-6 sm:py-4 sm:text-2xl ${navFontClass} transition-colors duration-200 ${mobileSignOutClass}`}
+                      onClick={() => {
+                        handleSignOut();
+                        handleLinkClick();
+                      }}
                     >
-                      Sign Out
-                    </motion.span>
-                  </button>
-                </>
-              ) : null}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                      <motion.span
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        Sign Out
+                      </motion.span>
+                    </button>
+                  </>
+                ) : null}
+              </div>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
+      </motion.nav>
 
       <AnimatePresence>
         {isSearchOpen && (

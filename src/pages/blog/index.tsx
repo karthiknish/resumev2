@@ -220,8 +220,7 @@ function Index({ initialPosts = [], categories = [] }: IndexProps) {
               />
             </div>
             <div className="absolute inset-0 -z-20 bg-white/85 backdrop-blur-sm" />
-            <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.12),_transparent_62%)]" />
-            <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom,_rgba(236,72,153,0.1),_transparent_58%)]" />
+            <div className="pointer-events-none absolute inset-0 -z-10 bg-mesh-brand-standard" aria-hidden />
 
             <div className="relative max-w-6xl mx-auto px-6 sm:px-10 md:px-12 pt-24 pb-10 md:pt-32 md:pb-12">
               <motion.div

@@ -62,11 +62,11 @@ export default function NewsletterSignup() {
   };
 
   return (
-    <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
-      <h3 className="font-heading text-2xl text-slate-900 mb-3">
+    <div className="bg-card p-8 rounded-3xl border border-border shadow-sm">
+      <h3 className="font-heading text-2xl text-foreground mb-3">
         Stay in the loop
       </h3>
-      <p className="text-base text-slate-600 mb-6 leading-relaxed">
+      <p className="text-base text-muted-foreground mb-6 leading-relaxed">
         Notes on product delivery, engineering systems, and the lessons learned while shipping with founders and teams.
       </p>
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -99,7 +99,7 @@ export default function NewsletterSignup() {
             placeholder="your@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 px-5 py-4 rounded-2xl text-base focus:border-slate-400 focus:ring-4 focus:ring-slate-200 transition-all duration-300"
+            className="w-full bg-background border border-input text-foreground placeholder:text-muted-foreground px-5 py-4 rounded-2xl text-base focus:border-ring focus:ring-4 focus:ring-ring/20 transition-all duration-300"
             disabled={isLoading}
             required
             aria-label="Email for newsletter"
@@ -108,7 +108,7 @@ export default function NewsletterSignup() {
         <motion.button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-slate-900 text-slate-100 hover:bg-slate-800 font-semibold py-4 px-6 rounded-2xl text-base transition-all duration-300 shadow-sm hover:shadow-lg disabled:bg-slate-200 disabled:text-slate-500 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold py-4 px-6 rounded-2xl text-base transition-all duration-300 shadow-sm hover:shadow-lg disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed flex items-center justify-center gap-3"
           whileHover={{ scale: 1.05, y: -2 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -126,7 +126,7 @@ export default function NewsletterSignup() {
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                className="text-sm text-slate-400"
+                className="text-sm text-muted-foreground"
               >
                 {/* Removed emoji for professional tone */}
               </motion.span>
@@ -141,8 +141,8 @@ export default function NewsletterSignup() {
           animate={{ opacity: 1, y: 0 }}
           className={`mt-4 text-sm text-center font-medium ${
             message.includes("failed") || message.includes("error")
-              ? "text-red-700"
-              : "text-emerald-600"
+              ? "text-destructive"
+              : "text-success"
           }`}
         >
           {message}

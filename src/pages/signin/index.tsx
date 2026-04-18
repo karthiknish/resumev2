@@ -14,6 +14,7 @@ import { FORM_ERRORS } from "@/lib/formErrors";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { THEME_META_COLOR } from "@/lib/theme";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -111,13 +112,12 @@ export default function SignIn() {
           content="Sign in to your Karthik Nishanth account."
         />
 
-        <meta name="theme-color" content="#0f172a" />
+        <meta name="theme-color" content={THEME_META_COLOR} />
       </Head>
 
       <div className="min-h-screen bg-background relative flex items-center justify-center overflow-hidden py-12 sm:py-16 md:py-24">
         {/* Background gradients */}
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.16),_transparent_65%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(226,232,240,0.25),_transparent_70%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-mesh-slate-dual" aria-hidden />
 
         {/* Back to Home Link */}
         <motion.div

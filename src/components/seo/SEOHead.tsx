@@ -5,6 +5,7 @@
 
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { THEME_META_COLOR } from "@/lib/theme";
 
 interface SEOProps {
   title?: string;
@@ -74,8 +75,8 @@ export function SEOHead({
       <meta name="twitter:creator" content="@karthiknish" />
 
       {/* Additional Meta Tags */}
-      <meta name="theme-color" content="#0f172a" />
-      <meta name="msapplication-TileColor" content="#0f172a" />
+      <meta name="theme-color" content={THEME_META_COLOR} />
+      <meta name="msapplication-TileColor" content={THEME_META_COLOR} />
 
       {/* Favicon */}
       <link rel="icon" href="/favicon.ico" />
@@ -127,7 +128,7 @@ export function AuthPageSEO({ title, description }: AuthPageSEOProps) {
       <meta name="twitter:title" content={`${title} | Karthik Nishanth`} />
 
       {/* Theme */}
-      <meta name="theme-color" content="#0f172a" />
+      <meta name="theme-color" content={THEME_META_COLOR} />
     </Head>
   );
 }

@@ -85,8 +85,7 @@ const TechStackSection: React.FC = () => {
       transition={{ duration: 0.8 }}
       className="relative overflow-hidden py-20 md:py-24 bg-background"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.16),_transparent_60%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(226,232,240,0.3),_transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-mesh-slate-boost" aria-hidden />
 
       <div className="relative max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
         <motion.h2

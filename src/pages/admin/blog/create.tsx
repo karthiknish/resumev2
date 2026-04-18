@@ -502,8 +502,8 @@ function CreateBlog() {
   };
 
   const BlogPreview = () => (
-    <div className="fixed inset-0 z-[150] flex items-start justify-center overflow-auto bg-slate-900/80 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-4xl my-8 overflow-hidden rounded-2xl bg-background border border-border shadow-2xl animate-in fade-in zoom-in duration-200">
+    <div className="fixed inset-0 z-[150] flex items-start justify-center overflow-auto bg-background/80 p-3 backdrop-blur-sm sm:p-4">
+      <div className="my-4 w-full max-h-[min(92dvh,calc(100dvh-2rem))] max-w-4xl overflow-hidden rounded-2xl border border-border bg-card shadow-2xl animate-in fade-in zoom-in duration-200 sm:my-8">
         <div className="flex items-center justify-between border-b border-border px-6 py-4 bg-muted/30">
           <h2 className="text-lg font-heading font-semibold text-foreground">
             Preview
@@ -517,7 +517,7 @@ function CreateBlog() {
             <AiOutlineClose size={20} />
           </Button>
         </div>
-        <div className="max-h-[80vh] overflow-auto px-8 py-8">
+        <div className="max-h-[min(80dvh,720px)] overflow-y-auto overscroll-contain px-4 py-6 sm:px-8 sm:py-8">
           {formData.imageUrl && (
             <div className="mb-8 overflow-hidden rounded-xl shadow-sm border border-border">
               <img
@@ -544,11 +544,11 @@ function CreateBlog() {
         <title>Create New Post</title>
       </Head>
       <div className="min-h-screen bg-background text-foreground">
-        <PageContainer className="pt-32 pb-20 px-6 md:px-12">
-          <div className="mx-auto max-w-[1600px]">
+        <PageContainer className="px-4 pb-16 pt-28 sm:px-6 md:px-10 md:pb-20 md:pt-32">
+          <div className="mx-auto max-w-5xl">
             {/* Header */}
-            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-4">
+            <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="flex min-w-0 items-center gap-3 sm:gap-4">
                 <Button
                   variant="ghost"
                   size="icon"
@@ -573,7 +573,7 @@ function CreateBlog() {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2 sm:justify-end">
                 {/* Auto-save indicator with timestamp */}
                 {hasDraft && lastSaved && (
                   <div className="flex items-center gap-2">
@@ -658,9 +658,9 @@ function CreateBlog() {
               </div>
             </div>
 
-            <div className="max-w-5xl mx-auto space-y-8">
+            <div className="space-y-8">
               {error && (
-                <div className="mb-6 rounded-lg bg-destructive/10 p-4 text-sm text-destructive">
+                <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
                   {error}
                 </div>
               )}
@@ -672,10 +672,10 @@ function CreateBlog() {
                   value={formData.title}
                   onChange={(e) => handleFormChange("title", e.target.value)}
                   placeholder="Post Title"
-                  className="w-full border-none bg-transparent text-4xl font-heading font-bold text-foreground placeholder:text-muted focus:outline-none focus:ring-0"
+                  className="w-full border-none bg-transparent text-2xl font-heading font-bold text-foreground placeholder:text-muted focus:outline-none focus:ring-0 sm:text-3xl md:text-4xl"
                 />
 
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                   <Badge variant="secondary" className="font-normal flex items-center gap-1.5">
                     <FileText className="h-3 w-3" />
                     {wordCount.toLocaleString()} {wordCount === 1 ? 'word' : 'words'}
@@ -723,7 +723,7 @@ function CreateBlog() {
                     size="sm"
                     onClick={() => setIsAgentModeOpen(true)}
                     disabled={isAgentGenerating}
-                    className="h-6 px-2 text-xs text-violet-600 hover:bg-violet-500/10 hover:text-violet-700"
+                    className="h-6 px-2 text-xs text-primary hover:bg-primary/10"
                   >
                     {isAgentGenerating ? (
                       <Loader2 className="mr-1 h-3 w-3 animate-spin" />
@@ -736,7 +736,7 @@ function CreateBlog() {
                     variant="ghost"
                     size="sm"
                     onClick={() => setIsSectionalAgentOpen(true)}
-                    className="h-6 px-2 text-xs text-purple-600 hover:bg-purple-500/10 hover:text-purple-700"
+                    className="h-6 px-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
                   >
                     <List className="mr-1 h-3 w-3" />
                     Sectional Mode
@@ -744,7 +744,7 @@ function CreateBlog() {
                 </div>
               </div>
 
-              <div className="max-w-5xl mx-auto space-y-8 lg:block hidden">
+              <div className="hidden space-y-8 lg:block">
                 {/* Metadata Section (Top) */}
                 <MetadataSection
                   formData={formData}
@@ -761,14 +761,14 @@ function CreateBlog() {
               </div>
             </div>
 
-            {/* Main Editor Area (Bottom) - Full Width */}
-            <div className="mt-8">
+            {/* Editor */}
+            <div className="mt-8 rounded-xl border border-border bg-card p-2 shadow-sm sm:p-4">
               <TipTapEditor
                 ref={editorRef}
                 id="blog-content-editor"
                 content={formData.content}
                 onUpdate={(html) => handleContentChange(html)}
-                className="min-h-[600px] border-none shadow-none"
+                className="min-h-[min(480px,52vh)] border-none shadow-none md:min-h-[560px]"
               />
             </div>
           </div>

@@ -343,8 +343,8 @@ function Edit() {
   };
 
   const BlogPreview = () => (
-    <div className="fixed inset-0 z-[150] flex items-start justify-center overflow-auto bg-slate-900/80 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-4xl my-8 overflow-hidden rounded-2xl bg-background border border-border shadow-2xl animate-in fade-in zoom-in duration-200">
+    <div className="fixed inset-0 z-[150] flex items-start justify-center overflow-auto bg-background/80 p-3 backdrop-blur-sm sm:p-4">
+      <div className="my-4 w-full max-h-[min(92dvh,calc(100dvh-2rem))] max-w-4xl overflow-hidden rounded-2xl border border-border bg-card shadow-2xl animate-in fade-in zoom-in duration-200 sm:my-8">
         <div className="flex items-center justify-between border-b border-border px-6 py-4 bg-muted/30">
           <h2 className="text-lg font-heading font-semibold text-foreground">
             Preview
@@ -358,7 +358,7 @@ function Edit() {
             <AiOutlineClose size={20} />
           </Button>
         </div>
-        <div className="max-h-[80vh] overflow-auto px-8 py-8">
+        <div className="max-h-[min(80dvh,720px)] overflow-y-auto overscroll-contain px-4 py-6 sm:px-8 sm:py-8">
           {formData.imageUrl && (
             <div className="mb-8 overflow-hidden rounded-xl shadow-sm border border-border">
               <img
@@ -393,11 +393,11 @@ function Edit() {
         <title>Edit: {formData.title || "Blog Post"}</title>
       </Head>
       <div className="min-h-screen bg-background text-foreground">
-        <PageContainer className="pt-32 pb-20 px-6 md:px-12">
-          <div className="mx-auto max-w-[1600px]">
+        <PageContainer className="px-4 pb-16 pt-28 sm:px-6 md:px-10 md:pb-20 md:pt-32">
+          <div className="mx-auto max-w-5xl">
             {/* Header */}
-            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-4">
+            <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="flex min-w-0 items-center gap-3 sm:gap-4">
                 <Button
                   variant="ghost"
                   size="icon"
@@ -443,7 +443,7 @@ function Edit() {
                   )}
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2 sm:justify-end">
                 <Sheet>
                   <SheetTrigger asChild>
                     <Button variant="outline" className="lg:hidden">
@@ -490,13 +490,12 @@ function Edit() {
               </div>
             </div>
 
+            <div className="space-y-8">
             {error && (
-              <div className="mb-6 rounded-lg bg-destructive/10 p-4 text-sm text-destructive">
+              <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
                 {error}
               </div>
             )}
-
-            <div className="max-w-5xl mx-auto space-y-8">
               {/* Title & Badges */}
               <div className="space-y-4">
                 <input
@@ -504,10 +503,10 @@ function Edit() {
                   value={formData.title}
                   onChange={(e) => handleFormChange("title", e.target.value)}
                   placeholder="Post Title"
-                  className="w-full border-none bg-transparent text-4xl font-heading font-bold text-foreground placeholder:text-muted focus:outline-none focus:ring-0"
+                  className="w-full border-none bg-transparent text-2xl font-heading font-bold text-foreground placeholder:text-muted focus:outline-none focus:ring-0 sm:text-3xl md:text-4xl"
                 />
 
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                   <Badge variant="secondary" className="font-normal flex items-center gap-1.5">
                     <FileText className="h-3 w-3" />
                     {wordCount.toLocaleString()} {wordCount === 1 ? 'word' : 'words'}
@@ -553,7 +552,7 @@ function Edit() {
                 </div>
               </div>
 
-              <div className="lg:block hidden space-y-8">
+              <div className="hidden space-y-8 lg:block">
                 {/* Metadata Section (Top) */}
                 <MetadataSection
                   formData={formData}
@@ -570,14 +569,13 @@ function Edit() {
               </div>
             </div>
 
-            {/* Main Editor Area (Bottom) - Full Width */}
-            <div className="mt-8">
+            <div className="mt-8 rounded-xl border border-border bg-card p-2 shadow-sm sm:p-4">
               <TipTapEditor
                 ref={editorRef}
                 id="blog-content-editor"
                 content={formData.content}
                 onUpdate={(html) => handleContentChange(html)}
-                className="min-h-[600px] border-none shadow-none"
+                className="min-h-[min(480px,52vh)] border-none shadow-none md:min-h-[560px]"
               />
             </div>
           </div>

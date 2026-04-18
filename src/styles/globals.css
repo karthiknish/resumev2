@@ -4,6 +4,7 @@
 
 /* Import centralized design tokens */
 @import "./theme/tokens.css";
+@import "./theme/mesh.css";
 
 @theme inline {
   /* Custom semantic colors - using CSS variables for compatibility */
@@ -28,6 +29,20 @@
   --color-muted-foreground: hsl(var(--muted-foreground));
   --color-accent: hsl(var(--accent));
   --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
+  --color-info: hsl(var(--info));
+  --color-info-foreground: hsl(var(--info-foreground));
+  --color-surface-deep: hsl(var(--surface-deep));
+  --color-surface-deep-hover: hsl(var(--surface-deep-hover));
+  --color-surface-navy-tooltip: hsl(var(--surface-navy-tooltip));
+  --color-surface-hero-navy: hsl(var(--surface-hero-navy));
+  --color-code-canvas: hsl(var(--code-canvas));
+  --color-code-block-fg: hsl(var(--code-block-fg));
+  --color-code-block-border: hsl(var(--code-block-border));
+  --color-brand-linkedin: hsl(var(--brand-linkedin));
 }
 
 @theme {
@@ -47,8 +62,8 @@
   --font-family-heading: var(--font-instrument-serif), Georgia, "Times New Roman", serif;
 
   /* Background Images */
-  --background-image-grid-pattern: linear-gradient(to right, #80808012 1px, transparent 1px), linear-gradient(to bottom, #80808012 1px, transparent 1px);
-  --background-image-grid-pattern-light: linear-gradient(to right, #80808012 1px, transparent 1px), linear-gradient(to bottom, #80808012 1px, transparent 1px);
+  --background-image-grid-pattern: linear-gradient(to right, hsl(var(--muted-foreground) / 0.07) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--muted-foreground) / 0.07) 1px, transparent 1px);
+  --background-image-grid-pattern-light: linear-gradient(to right, hsl(var(--muted-foreground) / 0.07) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--muted-foreground) / 0.07) 1px, transparent 1px);
 
   /* Animations */
   --animate-accordion-down: accordion-down 0.2s ease-out;
@@ -74,35 +89,7 @@
 }
 
 @layer base {
-  :root {
-    /* CSS Variables for compatibility */
-    --background: 0 0% 100%;
-    --foreground: 222.2 47.4% 11.2%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 47.4% 11.2%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 47.4% 11.2%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --brand-secondary: 210 90% 55%;
-    --brand-secondary-foreground: 0 0% 100%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 47.4% 11.2%;
-    --radius: 0.75rem;
-
-    /* Standard section colors */
-    --section-bg: 0 0% 100%;
-    --section-foreground: 222.2 47.4% 11.2%;
-  }
+  /* Semantic colors: src/styles/theme/tokens.css (:root + shadcn aliases) */
 
   /* Add other base styles if necessary */
   body {
@@ -174,7 +161,7 @@
 
   /* Subtle dot pattern for mobile hero background */
   .bg-dot-pattern-mobile {
-    background-image: radial-gradient(#374151 1px, transparent 1px);
+    background-image: radial-gradient(hsl(var(--muted-foreground)) 1px, transparent 1px);
     background-size: 12px 12px; /* Adjust size for desired density */
   }
 
@@ -199,11 +186,11 @@
     border-radius: 3px;
   }
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: #4b5563;
+    background-color: hsl(var(--muted-foreground));
     border-radius: 3px;
   }
    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-     background-color: #6b7280;
+     background-color: hsl(var(--foreground) / 0.45);
    }
 
 }
@@ -225,63 +212,63 @@
 
   /* Basic Tiptap Table Styling */
   .ProseMirror table {
-    @apply w-full my-4 border-collapse border border-gray-600;
+    @apply w-full my-4 border-collapse border border-border;
   }
   .ProseMirror th,
   .ProseMirror td {
-    @apply border border-gray-600 px-3 py-2 text-left;
+    @apply border border-border px-3 py-2 text-left;
   }
   .ProseMirror th {
-    @apply bg-gray-700 font-semibold;
+    @apply bg-muted font-semibold;
   }
   /* Style for resize handle */
   .ProseMirror .column-resize-handle {
-    @apply absolute right-[-2px] top-0 w-[4px] bottom-0 bg-blue-500 cursor-col-resize pointer-events-auto;
+    @apply absolute right-[-2px] top-0 w-[4px] bottom-0 bg-brand-secondary cursor-col-resize pointer-events-auto;
   }
 
   /* Override Tailwind Typography Defaults */
   .prose :where(strong):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-    color: #000000 !important;
+    color: hsl(var(--foreground)) !important;
     font-weight: 700 !important;
   }
 
   .prose :where(h1, h2, h3, h4, h5, h6):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-    color: #000000 !important;
+    color: hsl(var(--foreground)) !important;
   }
 
   .prose :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-    color: #000000 !important;
+    color: hsl(var(--foreground)) !important;
     text-decoration: underline;
     font-weight: 500;
   }
 
   .prose :where(ul > li):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-    color: #475569 !important; /* slate-600 */
+    color: hsl(var(--muted-foreground)) !important;
   }
 
   .prose :where(ul > li):not(:where([class~="not-prose"], [class~="not-prose"] *))::marker {
-    color: #000000 !important;
+    color: hsl(var(--foreground)) !important;
   }
 
-  /* Force TipTap editor text to be black */
+  /* TipTap editor body */
   .ProseMirror {
-    color: #000000 !important;
+    color: hsl(var(--foreground)) !important;
     width: 100% !important;
     max-width: none !important;
   }
   .ProseMirror p, .ProseMirror span, .ProseMirror div, .ProseMirror li {
-    color: #000000 !important;
+    color: hsl(var(--foreground)) !important;
     max-width: none !important;
   }
 
   /* Better Code Block Styling */
   .ProseMirror pre {
-    background: #0d1117 !important;
-    color: #e6edf3 !important;
+    background: hsl(var(--code-canvas)) !important;
+    color: hsl(var(--code-block-fg)) !important;
     font-family: 'JetBrains Mono', monospace;
     padding: 0.75rem 1rem;
     border-radius: 0.5rem;
-    border: 1px solid #30363d;
+    border: 1px solid hsl(var(--code-block-border));
   }
   
   .ProseMirror code {
@@ -292,8 +279,8 @@
 
   /* Inline code styling */
   .ProseMirror :not(pre) > code {
-    background-color: #f1f5f9 !important;
-    color: #0f172a !important;
+    background-color: hsl(var(--code-inline-bg)) !important;
+    color: hsl(var(--code-inline-fg)) !important;
     padding: 0.2em 0.4em;
     border-radius: 0.25rem;
     font-size: 0.9em;

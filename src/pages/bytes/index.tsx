@@ -154,17 +154,19 @@ export default function BytesPage() {
                             {byte.headline}
                           </h2>
                           
-                          {byte.imageUrl && (
-                            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-3xl border border-slate-200 shadow-sm bg-slate-100">
-                              <Image 
+                          {byte.imageUrl ? (
+                            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 shadow-sm">
+                              <Image
                                 src={byte.imageUrl}
                                 alt={byte.headline}
                                 fill
                                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                                 sizes="(max-width: 768px) 100vw, 800px"
+                                priority={index === 0}
+                                fetchPriority={index === 0 ? "high" : undefined}
                               />
                             </div>
-                          )}
+                          ) : null}
 
                           <div className="text-slate-600 text-lg leading-relaxed whitespace-pre-wrap">
                             {byte.body}

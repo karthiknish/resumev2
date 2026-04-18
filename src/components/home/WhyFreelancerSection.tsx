@@ -55,8 +55,7 @@ const WhyFreelancerSection: React.FC = () => {
       viewport={{ once: true }}
       className="relative overflow-hidden py-20 md:py-24 bg-white"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.12),_transparent_60%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(226,232,240,0.25),_transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-mesh-slate-dual" aria-hidden />
 
       <div className="relative max-w-6xl mx-auto px-6 sm:px-10 md:px-12 space-y-14">
         <motion.h2

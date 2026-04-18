@@ -33,8 +33,8 @@ export default function LinkedInTab() {
       <Card className="bg-card border border-border shadow-sm rounded-2xl">
         <CardHeader className="pb-3 border-b border-border">
           <CardTitle className="flex items-center gap-2 text-lg font-heading font-semibold text-foreground">
-            <div className="p-2 bg-[#0077B5]/10 rounded-full">
-              <Linkedin className="w-4 h-4 text-[#0077B5]" />
+            <div className="p-2 bg-brand-linkedin/10 rounded-full">
+              <Linkedin className="w-4 h-4 text-brand-linkedin" />
             </div>
             LinkedIn Content Studio
             <Badge variant="secondary" className="ml-2 text-xs bg-primary/10 text-primary border-0">

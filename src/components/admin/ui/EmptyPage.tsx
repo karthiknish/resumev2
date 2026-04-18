@@ -13,34 +13,32 @@ interface EmptyPageProps {
 
 export function EmptyPage({ sessionDebug }: EmptyPageProps) {
   return (
-    <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 text-white">
-      <h1 className="text-2xl font-bold mb-6">Access Denied</h1>
-      <p className="mb-4">
+    <div className="flex min-h-[50vh] flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-muted/30 p-8 text-center text-foreground">
+      <h1 className="font-heading text-2xl font-semibold tracking-tight">
+        Access denied
+      </h1>
+      <p className="mt-3 max-w-md text-sm text-muted-foreground">
         You do not have administrator privileges to access this page.
       </p>
 
       {!!sessionDebug && (
-        <div className="mt-8 w-full max-w-2xl">
-          <Card className="p-6 bg-gray-800 border border-gray-700 shadow-[0_0_15px_rgba(255,0,0,0.3)]">
-            <CardHeader className="bg-black rounded-t-lg px-6 py-4">
-              <CardTitle className="text-xl font-semibold text-white">
-                Session Debug Information
+        <div className="mt-8 w-full max-w-2xl text-left">
+          <Card className="overflow-hidden border-destructive/25 shadow-sm">
+            <CardHeader className="border-b border-border bg-muted/50 px-4 py-3 sm:px-6">
+              <CardTitle className="text-base font-semibold text-foreground">
+                Session debug
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-gray-300 mb-4">
-                Your current session contains the following information:
+            <CardContent className="px-4 py-4 sm:px-6">
+              <p className="mb-3 text-sm text-muted-foreground">
+                Current session payload (share with site owner if access should be granted):
               </p>
-
-              <pre className="bg-gray-900 p-4 rounded-md overflow-x-auto text-sm text-gray-300">
+              <pre className="max-h-64 overflow-auto rounded-lg border border-border bg-code-canvas p-4 text-left text-xs text-code-block-fg">
                 {JSON.stringify(sessionDebug, null, 2)}
               </pre>
             </CardContent>
-            <CardFooter className="bg-black rounded-b-lg px-6 py-4">
-              <p className="text-gray-400 text-sm">
-                If you believe you should have admin access, please contact the
-                system administrator with this information.
-              </p>
+            <CardFooter className="border-t border-border bg-muted/30 px-4 py-3 text-sm text-muted-foreground sm:px-6">
+              If this looks wrong, sign out and sign in again with an admin account.
             </CardFooter>
           </Card>
         </div>
@@ -50,4 +48,3 @@ export function EmptyPage({ sessionDebug }: EmptyPageProps) {
 }
 
 export default EmptyPage;
-

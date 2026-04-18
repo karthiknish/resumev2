@@ -11,9 +11,6 @@
    * COLOR TOKENS
    * ============================================ */
 
-  /* Base Colors (HSL values for easy manipulation) */
-  --color-black: 222.2 47.4% 11.2%;
-
   /* Semantic Colors - Light Mode */
   --color-background: 0 0% 100%;
   --color-foreground: 222.2 47.4% 11.2%;
@@ -56,6 +53,57 @@
   /* Section Colors */
   --color-section-bg: 0 0% 100%;
   --color-section-foreground: 222.2 47.4% 11.2%;
+
+  /* PWA / browser chrome (hex). Keep in sync with src/lib/theme.ts THEME_META_COLOR */
+  --theme-meta-color: #0f172a;
+
+  /* Navy surfaces (chat FAB, service hero) — HSL triplets */
+  --surface-deep: 218 65% 14%;
+  --surface-deep-hover: 218 60% 23%;
+  --surface-navy-tooltip: 217 63% 20%;
+  --surface-hero-navy: 218 65% 13%;
+
+  /* Code / editor */
+  --code-canvas: 240 15% 4%;
+  --code-block-fg: 240 5% 96%;
+  --code-block-border: 240 4% 16%;
+  --code-inline-bg: 210 40% 96.1%;
+  --code-inline-fg: 222.2 47.4% 11.2%;
+
+  /* Third-party brand */
+  --brand-linkedin: 201 100% 35%;
+
+  /* shadcn / Tailwind — hsl(var(--name)); mirrors --color-* */
+  --background: var(--color-background);
+  --foreground: var(--color-foreground);
+  --card: var(--color-card);
+  --card-foreground: var(--color-card-foreground);
+  --popover: var(--color-popover);
+  --popover-foreground: var(--color-popover-foreground);
+  --primary: var(--color-primary);
+  --primary-foreground: var(--color-primary-foreground);
+  --secondary: var(--color-secondary);
+  --secondary-foreground: var(--color-secondary-foreground);
+  --muted: var(--color-muted);
+  --muted-foreground: var(--color-muted-foreground);
+  --accent: var(--color-accent);
+  --accent-foreground: var(--color-accent-foreground);
+  --destructive: var(--color-destructive);
+  --destructive-foreground: var(--color-destructive-foreground);
+  --border: var(--color-border);
+  --input: var(--color-input);
+  --ring: var(--color-ring);
+  --brand-secondary: var(--color-brand-secondary);
+  --brand-secondary-foreground: var(--color-brand-secondary-foreground);
+  --success: var(--color-success);
+  --success-foreground: var(--color-success-foreground);
+  --warning: var(--color-warning);
+  --warning-foreground: var(--color-warning-foreground);
+  --info: var(--color-info);
+  --info-foreground: var(--color-info-foreground);
+  --radius: 0.75rem;
+  --section-bg: var(--color-section-bg);
+  --section-foreground: var(--color-section-foreground);
 
   /* ============================================
    * TYPOGRAPHY TOKENS
@@ -161,7 +209,7 @@
 
   /* Focus Ring Shadow */
   --shadow-ring: 0 0 0 3px rgb(222 47% 11% / 0.12);
-  --shadow-ring-focus: 0 0 0 2px hsl(var(--color-ring));
+  --shadow-ring-focus: 0 0 0 2px hsl(var(--ring));
 
   /* Card Elevation Variants */
   --shadow-card-flat: none;

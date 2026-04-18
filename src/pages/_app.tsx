@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
 import "highlight.js/styles/atom-one-light.css";
 import Script from "next/script";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
@@ -57,50 +58,13 @@ const queryClient = new QueryClient({
 });
 
 const LoadingFallback: React.FC = () => (
-  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-white to-blue-50">
-    <div className="animate-pulse bg-white rounded-lg p-8 shadow-lg border border-gray-100">
-      <div className="h-8 w-32 bg-gradient-to-r from-purple-200 to-blue-200 rounded mb-4"></div>
-      <div className="h-4 w-64 bg-gradient-to-r from-gray-200 to-purple-200 rounded"></div>
+  <div className="min-h-screen flex items-center justify-center bg-background bg-mesh-brand-faint">
+    <div className="animate-pulse rounded-2xl border border-border bg-card p-8 shadow-lg">
+      <div className="mb-4 h-8 w-32 rounded bg-muted" />
+      <div className="h-4 w-64 rounded bg-muted/80" />
     </div>
   </div>
 );
-
-const toastOptions = {
-  toastOptions: {
-    style: {
-      background: "#ffffff",
-      color: "#1f2937",
-      border: "1px solid #e5e7eb",
-      boxShadow:
-        "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-    },
-    classNames: {
-      toast:
-        "group toast group-[.toaster]:bg-white group-[.toaster]:text-gray-800 group-[.toaster]:border-gray-200 group-[.toaster]:shadow-lg",
-      description: "group-[.toast]:text-gray-600",
-      actionButton:
-        "group-[.toast]:bg-blue-500 group-[.toast]:text-white group-[.toast]:hover:bg-blue-600",
-      cancelButton:
-        "group-[.toast]:bg-gray-100 group-[.toast]:text-gray-700 group-[.toast]:hover:bg-gray-200",
-      success: "group-[.toast]:text-green-600",
-      error: "group-[.toast]:text-red-600",
-    },
-  },
-  success: {
-    style: {
-      background: "#f0fdf4",
-      color: "#166534",
-      border: "1px solid #bbf7d0",
-    },
-  },
-  error: {
-    style: {
-      background: "#fef2f2",
-      color: "#991b1b",
-      border: "1px solid #fecaca",
-    },
-  },
-};
 
 import { AppProps as NextAppProps } from "next/app";
 import { Session } from "next-auth";
@@ -244,25 +208,42 @@ const App: React.FC<CustomAppProps> = ({ Component, pageProps: { session, ...pag
   return (
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
+        <Head>
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=5"
+          />
+        </Head>
         <div
-          className={`${inter.variable} ${spaceGrotesk.variable} ${instrumentSerif.variable} font-sans antialiased`}
+          className={`${inter.variable} ${spaceGrotesk.variable} ${instrumentSerif.variable} flex min-h-0 min-w-0 w-full flex-col font-sans antialiased`}
         >
           <Nav />
-          {isMounted ? (
-            <AnimatePresence mode="wait" initial={false}>
-              {isPageLoading ? (
-                <LoadingFallback key="loading" />
-              ) : (
-                <Component {...pageProps} key={router.asPath} />
-              )}
-            </AnimatePresence>
-          ) : (
-            <Component {...pageProps} key={router.asPath} />
-          )}
+          <main
+            id="main-content"
+            tabIndex={-1}
+            className="min-h-0 min-w-0 flex-1 outline-none"
+          >
+            {isMounted ? (
+              <AnimatePresence mode="wait" initial={false}>
+                {isPageLoading ? (
+                  <LoadingFallback key="loading" />
+                ) : (
+                  <Component {...pageProps} key={router.asPath} />
+                )}
+              </AnimatePresence>
+            ) : (
+              <Component {...pageProps} key={router.asPath} />
+            )}
+            {showChatbot ? <ChatBot /> : null}
+            <Toaster
+              richColors
+              closeButton
+              position="top-right"
+              containerAriaLabel="Notifications"
+            />
+            <CommandPalette />
+          </main>
           <Footer />
-          {showChatbot && <ChatBot />}
-          <CommandPalette />
-          <Toaster richColors closeButton position="top-right" />
           <Analytics />
         </div>
       </QueryClientProvider>

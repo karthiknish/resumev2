@@ -81,7 +81,7 @@ const TipTapRenderer = ({ content, className = "" }: TipTapRendererProps) => {
         lowlight: lowlightInstance,
         HTMLAttributes: {
           class:
-            "group relative rounded-xl border border-zinc-800 bg-[#09090b] text-zinc-100 p-5 my-6 overflow-x-auto font-mono text-sm leading-relaxed shadow-2xl",
+            "group relative rounded-xl border border-code-block-border bg-code-canvas text-code-block-fg p-5 my-6 overflow-x-auto font-mono text-sm leading-relaxed shadow-2xl",
         },
       }),
       Table.configure({
@@ -124,6 +124,7 @@ const TipTapRenderer = ({ content, className = "" }: TipTapRendererProps) => {
   }, [editor, content]);
 
   useEffect(() => {
+    if (!editor || !containerRef.current || typeof content !== "string") return;
     if (!containerRef.current) return;
     const preNodes = containerRef.current.querySelectorAll("pre");
     preNodes.forEach((pre) => {
@@ -168,6 +169,7 @@ const TipTapRenderer = ({ content, className = "" }: TipTapRendererProps) => {
   }, [editor, content]);
 
   useEffect(() => {
+    if (!editor || !containerRef.current || typeof content !== "string") return;
     if (!containerRef.current) return;
     const root = containerRef.current;
 

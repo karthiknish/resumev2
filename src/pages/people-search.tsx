@@ -96,7 +96,7 @@ export default function PeopleSearch(): React.ReactElement {
       </Head>
 
       <div className="min-h-screen bg-white text-slate-900">
-        <main className="relative max-w-5xl mx-auto px-6 py-20 md:py-28">
+        <div className="relative mx-auto max-w-5xl px-6 py-20 md:py-28">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -230,7 +230,7 @@ export default function PeopleSearch(): React.ReactElement {
               </motion.div>
             )}
           </AnimatePresence>
-        </main>
+        </div>
       </div>
     </>
   );

@@ -1,7 +1,7 @@
 // Converted to TypeScript - migrated
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Loader2, Mail, CalendarDays, User, MessageCircle, AlertCircle, ChevronLeft, ChevronRight, Eye, EyeOff } from "lucide-react";
+import { Mail, CalendarDays, User, MessageCircle, AlertCircle, ChevronLeft, ChevronRight, Eye, EyeOff } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -12,8 +12,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { TableRowSkeleton } from "@/components/ui/loading-states";
 import { EmptyTable } from "@/components/ui/empty-state";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 // Simple date formatter
 const formatDate = (dateString: string | Date | null | undefined) => {
@@ -43,12 +49,14 @@ interface ContactsTabProps {
 
 export default function ContactsTab({ onUnreadCountUpdate }: ContactsTabProps) {
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [detailContact, setDetailContact] = useState<Contact | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalContacts, setTotalContacts] = useState(0);
   const CONTACTS_PER_PAGE = 10;
+  const loadingRowKeys = ["loading-row-1", "loading-row-2", "loading-row-3", "loading-row-4", "loading-row-5"];
 
   // Fetch contacts when page changes
   useEffect(() => {
@@ -166,7 +174,8 @@ export default function ContactsTab({ onUnreadCountUpdate }: ContactsTabProps) {
   };
 
   return (
-    <Card className="rounded-2xl border border-border bg-card text-foreground shadow-md">
+    <>
+    <Card className="min-w-0 max-w-full rounded-2xl border border-border bg-card text-foreground shadow-md">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 sm:gap-3 text-lg sm:text-xl font-heading font-semibold text-foreground">
           <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg border border-primary/20 bg-primary/10">
@@ -175,10 +184,10 @@ export default function ContactsTab({ onUnreadCountUpdate }: ContactsTabProps) {
           Contact Form Submissions ({totalContacts})
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="min-w-0">
         {isLoading ? (
-          <div className="overflow-x-auto">
-            <Table>
+          <div className="min-w-0 overflow-x-auto overscroll-x-contain">
+            <Table className="min-w-max">
               <TableHeader>
                 <TableRow className="border-b border-border bg-muted/50">
                   <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -199,8 +208,8 @@ export default function ContactsTab({ onUnreadCountUpdate }: ContactsTabProps) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {[...Array(5)].map((_, i) => (
-                  <TableRow key={i} className="border-b border-border">
+                {loadingRowKeys.map((rowKey) => (
+                  <TableRow key={rowKey} className="border-b border-border">
                     <TableCell className="py-2.5 sm:py-3">
                       <div className="flex items-center gap-2 sm:gap-3">
                         <div className="h-8 w-8 sm:h-10 sm:w-10 bg-slate-200 rounded-lg animate-pulse" />
@@ -242,8 +251,8 @@ export default function ContactsTab({ onUnreadCountUpdate }: ContactsTabProps) {
           </div>
         ) : null}
         {!isLoading && !error && contacts.length === 0 ? (
-          <div className="overflow-x-auto">
-            <Table>
+          <div className="min-w-0 overflow-x-auto overscroll-x-contain">
+            <Table className="min-w-max">
               <TableHeader>
                 <TableRow className="border-b border-border bg-muted/50">
                   <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -276,8 +285,8 @@ export default function ContactsTab({ onUnreadCountUpdate }: ContactsTabProps) {
         ) : null}
         {!isLoading && !error && contacts.length > 0 ? (
           <>
-          <div className="overflow-x-auto">
-            <Table>
+          <div className="min-w-0 overflow-x-auto overscroll-x-contain">
+            <Table className="min-w-max">
               <TableHeader>
                 <TableRow className="border-b border-border bg-muted/50">
                   <TableHead className="text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -301,7 +310,16 @@ export default function ContactsTab({ onUnreadCountUpdate }: ContactsTabProps) {
                 {contacts.map((contact) => (
                   <TableRow
                     key={contact.id || contact._id}
-                    className="align-top border-b border-border transition-colors duration-200 hover:bg-muted/50"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setDetailContact(contact)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setDetailContact(contact);
+                      }
+                    }}
+                    className="align-top cursor-pointer border-b border-border transition-colors duration-200 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     <TableCell className="text-sm sm:text-base font-semibold text-foreground">
                       <div className="flex items-center gap-2 sm:gap-3">
@@ -311,11 +329,13 @@ export default function ContactsTab({ onUnreadCountUpdate }: ContactsTabProps) {
                         <div className="flex items-center gap-1.5 sm:gap-2">
                           <span className="truncate">{contact.name}</span>
                           {!contact.isRead ? (
-                            <span
-                              className="flex h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-primary shrink-0"
-                              title="New message"
-                              aria-label="New unread message"
-                            ></span>
+                            <>
+                              <span
+                                className="flex h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-primary shrink-0"
+                                title="New message"
+                              ></span>
+                              <span className="sr-only">New unread message</span>
+                            </>
                           ) : null}
                         </div>
                       </div>
@@ -328,7 +348,7 @@ export default function ContactsTab({ onUnreadCountUpdate }: ContactsTabProps) {
                         {contact.email}
                       </a>
                     </TableCell>
-                    <TableCell className="max-w-[200px] sm:max-w-sm whitespace-pre-wrap break-words text-xs sm:text-sm text-muted-foreground">
+                    <TableCell className="min-w-[12rem] max-w-xs whitespace-pre-wrap break-words text-xs text-muted-foreground sm:max-w-sm sm:text-sm">
                       <div className="flex items-start gap-2 sm:gap-3">
                         <div className="mt-0.5 sm:mt-1 rounded-lg border border-primary/20 bg-primary/10 p-0.5 sm:p-1 shrink-0">
                           <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0 text-primary" />
@@ -348,23 +368,47 @@ export default function ContactsTab({ onUnreadCountUpdate }: ContactsTabProps) {
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="whitespace-nowrap text-right">
                       <div className="flex justify-end gap-1 sm:gap-2">
                         <Button
+                          type="button"
                           variant="ghost"
                           size="sm"
                           className={`h-7 w-7 sm:h-8 sm:w-8 rounded-lg p-0 ${contact.isRead ? "text-muted-foreground" : "text-primary"}`}
-                          onClick={() => handleToggleRead(contact)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleToggleRead(contact);
+                          }}
                           aria-label={contact.isRead ? "Mark as unread" : "Mark as read"}
                           title={contact.isRead ? "Mark as unread" : "Mark as read"}
                         >
                           {contact.isRead ? <EyeOff className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : <Eye className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
                         </Button>
                         <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="h-7 sm:h-8 rounded-lg px-2 sm:px-3 text-[10px] sm:text-xs font-semibold"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setDetailContact(contact);
+                          }}
+                          aria-label="View full message"
+                        >
+                          View
+                        </Button>
+                        <Button
+                          type="button"
                           variant="destructive"
                           size="sm"
                           className="h-7 sm:h-8 rounded-lg px-2 sm:px-3 text-[10px] sm:text-xs font-semibold"
-                          onClick={() => handleDelete(contact.id || contact._id!)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const contactId = contact.id || contact._id;
+                            if (contactId) {
+                              handleDelete(contactId);
+                            }
+                          }}
                           aria-label="Delete contact submission"
                         >
                           Delete
@@ -410,6 +454,43 @@ export default function ContactsTab({ onUnreadCountUpdate }: ContactsTabProps) {
       ) : null}
       </CardContent>
     </Card>
+
+    <Dialog
+      open={detailContact !== null}
+      onOpenChange={(open) => {
+        if (!open) setDetailContact(null);
+      }}
+    >
+      <DialogContent className="max-w-2xl">
+        {detailContact ? (
+          <>
+            <DialogHeader>
+              <DialogTitle className="pr-8 text-left font-heading">
+                {detailContact.name}
+              </DialogTitle>
+              <DialogDescription asChild>
+                <div className="space-y-1 text-left">
+                  <a
+                    href={`mailto:${detailContact.email}`}
+                    className="break-all font-medium text-primary hover:underline"
+                  >
+                    {detailContact.email}
+                  </a>
+                  <p className="text-xs text-muted-foreground">
+                    {formatDate(detailContact.createdAt)}
+                    {!detailContact.isRead ? " · Unread" : ""}
+                  </p>
+                </div>
+              </DialogDescription>
+            </DialogHeader>
+            <div className="max-h-[min(55vh,28rem)] overflow-y-auto whitespace-pre-wrap break-words rounded-xl border border-border bg-muted/30 p-4 text-sm leading-relaxed text-foreground">
+              {detailContact.message}
+            </div>
+          </>
+        ) : null}
+      </DialogContent>
+    </Dialog>
+    </>
   );
 }
 

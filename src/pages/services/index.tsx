@@ -116,8 +116,7 @@ export default function ServicesIndex() {
               />
             </div>
             <div className="absolute inset-0 -z-20 bg-white/90 backdrop-blur-md" />
-            <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.15),_transparent_65%)]" />
-            <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom,_rgba(236,72,153,0.12),_transparent_60%)]" />
+            <div className="pointer-events-none absolute inset-0 -z-10 bg-mesh-brand-services" aria-hidden />
 
             <div className="relative max-w-6xl mx-auto px-6 sm:px-10 md:px-12 pt-36 pb-16 md:pt-44 md:pb-20">
               <motion.div
@@ -185,7 +184,7 @@ export default function ServicesIndex() {
           </section>
 
           <section className="py-24 bg-slate-950 text-slate-100 relative overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(37,99,235,0.08),_transparent_70%)]" />
+            <div className="absolute inset-0 bg-mesh-brand-center-wash" aria-hidden />
             
             <div className="relative max-w-4xl mx-auto px-6 text-center">
               <FadeIn>

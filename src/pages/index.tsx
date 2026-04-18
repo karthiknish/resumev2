@@ -383,8 +383,8 @@ const HomeScreen: React.FC = () => {
         <JsonLd data={personSchema} />
       </Head>
 
-      <div className="min-h-screen overflow-x-hidden">
-        <section className="relative overflow-hidden text-slate-100">
+      <div className="min-h-screen w-full min-w-0 overflow-x-clip">
+        <section className="relative w-full overflow-hidden text-slate-100">
           <div className="absolute inset-0 -z-30">
             <Image
               src="/hero-back.jpeg"
@@ -396,11 +396,10 @@ const HomeScreen: React.FC = () => {
             />
           </div>
           <div className="absolute inset-0 -z-20 bg-gradient-to-br from-slate-950/45 via-slate-950/30 to-slate-900/20" />
-          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_62%)]" />
-          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom,_rgba(236,72,153,0.14),_transparent_58%)]" />
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-mesh-brand-hero" aria-hidden />
 
-          <div className="relative max-w-6xl mx-auto px-6 sm:px-10 md:px-12 py-28 md:py-32">
-            <div className="grid gap-16 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] items-start">
+          <div className="relative mx-auto w-full max-w-6xl px-6 sm:px-10 md:px-12 py-28 md:py-32">
+            <div className="grid w-full min-w-0 gap-16 items-start lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
               <div className="space-y-10">
                 <motion.span
                   initial={{ opacity: 0, y: 12 }}
@@ -592,7 +591,7 @@ const HomeScreen: React.FC = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.1 }}
-                  className="group relative grid gap-8 md:grid-cols-[1fr_1.5fr] lg:gap-20"
+                  className="group relative grid w-full min-w-0 gap-8 lg:grid-cols-[1fr_1.5fr] lg:gap-20"
                 >
                   <div className="absolute -left-4 -top-20 -z-10 select-none text-[8rem] sm:text-[10rem] font-bold leading-none text-slate-100/80 md:-left-12 md:-top-24">
                     0{index + 1}
@@ -943,8 +942,7 @@ const HomeScreen: React.FC = () => {
             />
           </div>
           <div className="absolute inset-0 -z-20 bg-gradient-to-br from-slate-950/70 via-slate-950/60 to-slate-900/40" />
-          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_62%)]" />
-          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom,_rgba(236,72,153,0.14),_transparent_58%)]" />
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-mesh-brand-hero" aria-hidden />
 
           <div className="relative max-w-5xl mx-auto px-6 sm:px-10 md:px-12 text-center text-slate-100">
             <motion.h2

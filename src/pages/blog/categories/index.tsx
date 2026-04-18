@@ -41,7 +41,7 @@ export default function CategoriesPage({ initialCategories = [] }: CategoriesPag
         <meta name="description" content="Browse all blog categories" />
       </Head>
 
-      <main className="container mx-auto px-4 py-16 min-h-screen bg-white">
+      <div className="container mx-auto min-h-screen bg-white px-4 py-16">
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
@@ -100,7 +100,7 @@ export default function CategoriesPage({ initialCategories = [] }: CategoriesPag
             </div>
           )}
         </div>
-      </main>
+      </div>
     </>
   );
 }

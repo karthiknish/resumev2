@@ -77,8 +77,8 @@ export default function ResourcesPage() {
                 className="object-cover opacity-20"
               />
             </div>
-            <div className="absolute inset-0 -z-20 bg-gradient-to-b from-white via-white/80 to-transparent" />
-            <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,_rgba(56,189,248,0.1),_transparent_50%)]" />
+            <div className="absolute inset-0 -z-20 bg-gradient-to-b from-background via-background/80 to-transparent" />
+            <div className="pointer-events-none absolute inset-0 -z-10 bg-mesh-brand-corner-tr" aria-hidden />
 
             <div className="relative max-w-6xl mx-auto px-6 sm:px-10 md:px-12 text-center">
               <FadeIn>
@@ -87,8 +87,8 @@ export default function ResourcesPage() {
                   <span>Knowledge Hub</span>
                 </div>
 
-                <h1 className="font-heading text-4xl sm:text-5xl md:text-7xl leading-tight text-slate-900 mb-8">
-                  Resources for <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">modern builders</span>
+                <h1 className="font-heading text-4xl sm:text-5xl md:text-7xl leading-tight text-foreground mb-8">
+                  Resources for <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-secondary to-primary">modern builders</span>
                 </h1>
 
                 <p className="max-w-3xl mx-auto text-lg md:text-xl text-slate-600 leading-relaxed">
@@ -161,21 +161,21 @@ export default function ResourcesPage() {
           </section>
 
           {/* CTA Section */}
-          <section className="py-24 bg-slate-900 text-white overflow-hidden relative">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_rgba(56,189,248,0.1),_transparent_50%)]" />
+          <section className="py-24 bg-primary text-primary-foreground overflow-hidden relative">
+            <div className="absolute inset-0 bg-mesh-brand-corner-bl" aria-hidden />
             
             <div className="relative max-w-4xl mx-auto px-6 text-center">
               <FadeIn>
                 <h2 className="font-heading text-3xl md:text-5xl mb-8">
                   Suggest a resource
                 </h2>
-                <p className="text-lg text-slate-300 mb-12 max-w-2xl mx-auto">
+                <p className="text-lg text-primary-foreground/80 mb-12 max-w-2xl mx-auto">
                   Found something amazing that should be on this list? I'm always looking for high-quality tools and guides to share with the community.
                 </p>
                 <div className="flex justify-center">
                   <motion.a
                     href="/contact"
-                    className="px-10 py-5 bg-white text-slate-900 rounded-2xl font-bold text-lg shadow-lg hover:shadow-white/10 transition-all cursor-pointer"
+                    className="px-10 py-5 bg-background text-foreground rounded-2xl font-bold text-lg shadow-lg hover:shadow-md transition-all cursor-pointer"
                     whileHover={{ y: -4, scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >

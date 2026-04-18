@@ -9,8 +9,25 @@ const COLLECTION = "subscribers";
 interface ISubscriber {
   _id: string;
   email: string;
-  subscribedAt: string | Date;
+  subscribedAt: string | null;
   preferences: Record<string, boolean>;
+}
+
+function serializeSubscribedAt(value: unknown): string | null {
+  if (value == null) return null;
+  if (typeof (value as { toDate?: () => Date }).toDate === "function") {
+    try {
+      return (value as { toDate: () => Date }).toDate().toISOString();
+    } catch {
+      return null;
+    }
+  }
+  if (value instanceof Date) return value.toISOString();
+  if (typeof value === "string") return value;
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return new Date(value).toISOString();
+  }
+  return null;
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -31,14 +48,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const db = getFirestore();
-    const snapshot = await db.collection(COLLECTION)
-      .orderBy("subscribedAt", "desc")
-      .get();
-    
-    const subscribers = snapshot.docs.map(doc => ({
-      _id: doc.id,
-      ...doc.data()
-    })) as unknown as ISubscriber[];
+    const snapshot = await db.collection(COLLECTION).get();
+
+    const subscribers: ISubscriber[] = snapshot.docs.map((doc) => {
+      const raw = doc.data() as Record<string, unknown>;
+      const prefsRaw = raw.preferences;
+      const preferences =
+        prefsRaw &&
+        typeof prefsRaw === "object" &&
+        !Array.isArray(prefsRaw) &&
+        prefsRaw !== null
+          ? (prefsRaw as Record<string, boolean>)
+          : {};
+
+      return {
+        _id: doc.id,
+        email: String(raw.email ?? ""),
+        subscribedAt: serializeSubscribedAt(raw.subscribedAt),
+        preferences,
+      };
+    });
+
+    subscribers.sort((a, b) => {
+      const ta = a.subscribedAt ? new Date(a.subscribedAt).getTime() : 0;
+      const tb = b.subscribedAt ? new Date(b.subscribedAt).getTime() : 0;
+      return tb - ta;
+    });
 
     return res.status(200).json({
       success: true,

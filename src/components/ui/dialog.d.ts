@@ -1,38 +1,39 @@
-import * as React from "react";
-import * as DialogPrimitive from "@radix-ui/react-dialog";
+import type * as DialogPrimitive from "@radix-ui/react-dialog";
+import type * as React from "react";
 
-export const Dialog: typeof DialogPrimitive.Root;
+export declare const Dialog: typeof DialogPrimitive.Root;
 
 export interface DialogContentProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
   className?: string;
   children?: React.ReactNode;
+  showCloseButton?: boolean;
 }
 
-export const DialogContent: React.ForwardRefExoticComponent<DialogContentProps & React.RefAttributes<HTMLDivElement>>;
+export declare const DialogContent: React.ForwardRefExoticComponent<DialogContentProps & React.RefAttributes<HTMLDivElement>>;
 
 export interface DialogHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
   children?: React.ReactNode;
 }
 
-export const DialogHeader: React.ForwardRefExoticComponent<DialogHeaderProps & React.RefAttributes<HTMLDivElement>>;
+export declare const DialogHeader: React.ForwardRefExoticComponent<DialogHeaderProps & React.RefAttributes<HTMLDivElement>>;
 
 export interface DialogTitleProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title> {
   className?: string;
   children?: React.ReactNode;
 }
 
-export const DialogTitle: React.ForwardRefExoticComponent<DialogTitleProps & React.RefAttributes<HTMLHeadingElement>>;
+export declare const DialogTitle: React.ForwardRefExoticComponent<DialogTitleProps & React.RefAttributes<HTMLHeadingElement>>;
 
 export interface DialogTriggerProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Trigger> {
   className?: string;
   children?: React.ReactNode;
 }
 
-export const DialogTrigger: React.ForwardRefExoticComponent<DialogTriggerProps & React.RefAttributes<HTMLButtonElement>>;
+export declare const DialogTrigger: React.ForwardRefExoticComponent<DialogTriggerProps & React.RefAttributes<HTMLButtonElement>>;
 
-export const DialogPortal: typeof DialogPrimitive.Portal;
-export const DialogOverlay: React.ForwardRefExoticComponent<React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay> & React.RefAttributes<HTMLDivElement>>;
-export const DialogClose: React.ForwardRefExoticComponent<React.ComponentPropsWithoutRef<typeof DialogPrimitive.Close> & React.RefAttributes<HTMLButtonElement>>;
-export const DialogFooter: React.FC<React.HTMLAttributes<HTMLDivElement>>;
-export const DialogDescription: React.ForwardRefExoticComponent<React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description> & React.RefAttributes<HTMLParagraphElement>>;
+export declare const DialogPortal: typeof DialogPrimitive.Portal;
+export declare const DialogOverlay: React.ForwardRefExoticComponent<React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay> & React.RefAttributes<HTMLDivElement>>;
+export declare const DialogClose: React.ForwardRefExoticComponent<React.ComponentPropsWithoutRef<typeof DialogPrimitive.Close> & React.RefAttributes<HTMLButtonElement>>;
+export declare const DialogFooter: React.FC<React.HTMLAttributes<HTMLDivElement>>;
+export declare const DialogDescription: React.ForwardRefExoticComponent<React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description> & React.RefAttributes<HTMLParagraphElement>>;

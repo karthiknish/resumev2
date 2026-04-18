@@ -93,7 +93,7 @@ export default function AboutPage() {
         <div className="min-h-screen">
           {/* Hero Section */}
           <section className="relative pt-36 pb-20 md:pt-48 md:pb-32 overflow-hidden">
-            <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,_rgba(56,189,248,0.08),_transparent_40%)]" />
+            <div className="absolute inset-0 -z-10 bg-mesh-brand-corner-tr-subtle" aria-hidden />
             <div className="max-w-6xl mx-auto px-6 sm:px-10 md:px-12">
               <div className="grid md:grid-cols-2 gap-12 items-center">
                 <FadeIn>
@@ -102,7 +102,7 @@ export default function AboutPage() {
                       The Story So Far
                     </span>
                     <h1 className="font-heading text-4xl md:text-6xl text-slate-900 leading-tight">
-                      Crafting digital products with <span className="text-blue-600">purpose</span> and precision.
+                      Crafting digital products with <span className="text-brand-secondary">purpose</span> and precision.
                     </h1>
                     <p className="text-xl text-slate-600 leading-relaxed max-w-xl">
                       I'm Karthik Nishanth, a software engineer based in Liverpool, UK. I partner with ambitious founders to build resilient software that users love.

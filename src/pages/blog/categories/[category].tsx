@@ -64,7 +64,7 @@ export default function CategoryPage({ initialPosts = [], categoryName }: Catego
         />
       </Head>
 
-      <main className="container mx-auto px-4 py-16 min-h-screen bg-white">
+      <div className="container mx-auto min-h-screen bg-white px-4 py-16">
         <div className="mb-8">
           <Link
             href="/blog"
@@ -134,7 +134,7 @@ export default function CategoryPage({ initialPosts = [], categoryName }: Catego
             </div>
           )}
         </div>
-      </main>
+      </div>
     </>
   );
 }

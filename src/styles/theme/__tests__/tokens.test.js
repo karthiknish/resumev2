@@ -27,10 +27,7 @@ describe('Design Tokens', () => {
 
   describe('Color Tokens', () => {
     it('defines base color tokens', () => {
-      const baseColors = [
-        '--color-white',
-        '--color-black',
-      ];
+      const baseColors = ['--theme-meta-color', '--surface-deep'];
 
       baseColors.forEach(token => {
         expect(tokensContent).toContain(token);

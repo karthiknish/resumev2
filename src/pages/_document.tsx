@@ -1,4 +1,5 @@
 import { Html, Head, Main, NextScript } from "next/document";
+import { THEME_META_COLOR } from "@/lib/theme";
 
 const Document: React.FC = () => {
   return (
@@ -6,13 +7,13 @@ const Document: React.FC = () => {
       <Head>
         {/* Meta Tags */}
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+        {/* viewport: set in page-level <Head> or next/head — not here (Next.js no-document-viewport-meta) */}
 
         {/* SEO */}
         <meta name="description" content="Karthik Nishanth - Cross platform developer specializing in web and mobile applications. Building modern, scalable solutions with React, React Native, and cloud technologies based in Liverpool, UK." />
         <meta name="keywords" content="Cross Platform Developer, Mobile App Development, Web Development, React, React Native, Node.js, TypeScript, Liverpool, UK, Freelance Developer" />
         <meta name="author" content="Karthik Nishanth" />
-        <meta name="theme-color" content="#0f172a" />
+        <meta name="theme-color" content={THEME_META_COLOR} />
 
         {/* Open Graph */}
         <meta property="og:title" content="Karthik Nishanth - Cross Platform Developer" />

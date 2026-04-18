@@ -1,14 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
-import { BiSend, BiMessageSquareDots, BiX, BiUserCircle } from "react-icons/bi";
-import { FaEnvelope, FaCheck } from "react-icons/fa";
+import { Fragment, useCallback, useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Loader2, User } from "lucide-react";
+import { FaCheck, FaEnvelope } from "react-icons/fa";
+import { BiMessageSquareDots, BiSend, BiX } from "react-icons/bi";
 import Modal from "react-modal";
 import ReactMarkdown from "react-markdown";
-import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import Image from "next/image";
-import { Loader2, User } from "lucide-react";
 
 // Types
 interface Message {
@@ -76,16 +73,9 @@ function Chatbot() {
     if (chatEndRef.current) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages]);
+  });
 
-  useEffect(() => {
-    if (isOpen && messages.length === 0) {
-      handleWelcomeMessage();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
-
-  const handleWelcomeMessage = () => {
+  const handleWelcomeMessage = useCallback(() => {
     const welcomeMsg = isCollectingEmail
       ? "Hello! I'm Cline, Karthik's AI assistant. To save our chat and follow up if needed, could you please share your email?"
       : `Thanks! I've got your email. How can I help you today?`;
@@ -97,7 +87,13 @@ function Chatbot() {
         timestamp: new Date().toISOString(),
       },
     ]);
-  };
+  }, [isCollectingEmail]);
+
+  useEffect(() => {
+    if (isOpen && messages.length === 0) {
+      handleWelcomeMessage();
+    }
+  }, [handleWelcomeMessage, isOpen, messages.length]);
 
   const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -257,14 +253,14 @@ function Chatbot() {
     }
   };
 
-  const handleSubmit = (e?: React.FormEvent) => {
+  const handleSubmit = (e?: FormEvent) => {
     e?.preventDefault();
     if (!message.trim()) return;
     if (isCollectingEmail) handleEmailSubmit();
     else sendMessage(message);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();
@@ -276,11 +272,11 @@ function Chatbot() {
     if (typeof content !== "string") {
       console.warn("Received non-string message content:", msg);
       return (
-        <span className="italic text-gray-500">[Invalid message format]</span>
+        <span className="italic text-muted-foreground">[Invalid message format]</span>
       );
     }
     
-    const looksLikeMarkdown = /[*_\[#]/.test(content);
+    const looksLikeMarkdown = /[*_[#]/.test(content);
 
     if (looksLikeMarkdown && msg.role === "assistant") {
       return (
@@ -288,7 +284,7 @@ function Chatbot() {
           components={{
             a: ({ ...props }) => (
               <a
-                className="text-blue-600 underline hover:text-blue-800"
+                className="text-brand-secondary underline hover:text-brand-secondary/90"
                 target="_blank"
                 rel="noopener noreferrer"
                 {...props}
@@ -300,12 +296,19 @@ function Chatbot() {
         </ReactMarkdown>
       );
     } else {
-      return content.split("\n").map((line, i, arr) => (
-        <React.Fragment key={i}>
+      const lineCounts = new Map<string, number>();
+
+      return content.split("\n").map((line, index, arr) => {
+        const occurrence = (lineCounts.get(line) ?? 0) + 1;
+        lineCounts.set(line, occurrence);
+
+        return (
+        <Fragment key={`${msg.timestamp}-${line}-${occurrence}`}>
           {line}
-          {i < arr.length - 1 ? <br /> : null}
-        </React.Fragment>
-      ));
+          {index < arr.length - 1 ? <br /> : null}
+        </Fragment>
+        );
+      });
     }
   };
 
@@ -325,7 +328,7 @@ function Chatbot() {
   return (
     <>
       <motion.button
-        className={`fixed z-[1100] right-6 p-4 rounded-2xl bg-[#0b1f3b] text-white border border-white/20 flex items-center shadow-xl hover:shadow-2xl hover:bg-[#143061] transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-[#1d4ed8]/40 ${
+        className={`fixed z-[1100] right-6 p-4 rounded-2xl bg-surface-deep text-primary-foreground border border-white/20 flex items-center shadow-xl hover:shadow-2xl hover:bg-surface-deep-hover transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-ring/40 ${
           isOpen ? "bottom-[80px] md:bottom-6" : "bottom-6"
         }`}
         onClick={() => setIsOpen(!isOpen)}
@@ -334,9 +337,9 @@ function Chatbot() {
         whileTap={{ scale: 0.95 }}
         animate={{
           boxShadow: [
-            "0 12px 32px rgba(12, 30, 63, 0.45)",
-            "0 18px 44px rgba(24, 57, 114, 0.5)",
-            "0 12px 32px rgba(12, 30, 63, 0.45)",
+            "0 12px 32px hsl(218 65% 14% / 0.45)",
+            "0 18px 44px hsl(218 60% 23% / 0.5)",
+            "0 12px 32px hsl(218 65% 14% / 0.45)",
           ],
         }}
         transition={{
@@ -365,14 +368,14 @@ function Chatbot() {
         </AnimatePresence>
         {!isOpen ? (
           <motion.div
-            className="absolute -top-12 right-0 bg-[#132d55] text-white px-3 py-2 rounded-2xl shadow-lg text-sm font-medium border border-white/20 whitespace-nowrap"
+            className="absolute -top-12 right-0 bg-surface-navy-tooltip text-primary-foreground px-3 py-2 rounded-2xl shadow-lg text-sm font-medium border border-white/20 whitespace-nowrap"
             initial={{ opacity: 0, y: 10, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.8 }}
             transition={{ delay: 1, duration: 0.3 }}
           >
-            <span className="flex items-center text-white gap-2">Chat with me!</span>
-            <div className="absolute -bottom-2 right-4 w-4 h-4 bg-[#132d55] border-r border-b border-white/20 transform rotate-45"></div>
+            <span className="flex items-center text-primary-foreground gap-2">Chat with me!</span>
+            <div className="absolute -bottom-2 right-4 w-4 h-4 bg-surface-navy-tooltip border-r border-b border-white/20 transform rotate-45"></div>
           </motion.div>
         ) : null}
       </motion.button>
@@ -386,18 +389,18 @@ function Chatbot() {
             animate="visible"
             exit="exit"
             transition={{ type: "spring", stiffness: 400, damping: 35 }}
-            className="fixed inset-0 z-[1000] flex flex-col bg-white shadow-[0_40px_120px_rgba(0,0,0,0.15)] border border-gray-200 text-gray-900
+            className="fixed inset-0 z-[1000] flex flex-col bg-background shadow-xl border border-border text-foreground
                        md:inset-auto md:bottom-24 md:right-6 md:w-[400px] md:max-h-[70vh] md:h-auto md:rounded-3xl md:overflow-hidden"
           >
             <motion.div
-              className="flex justify-between items-center p-6 border-b border-gray-200 bg-gray-50 flex-shrink-0"
+              className="flex justify-between items-center p-6 border-b border-border bg-muted flex-shrink-0"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
               <div className="flex items-center gap-3">
                 <motion.div
-                  className="w-10 h-10 bg-blue-600 border border-blue-700 rounded-2xl flex items-center justify-center text-white"
+                  className="w-10 h-10 bg-brand-secondary border border-brand-secondary/80 rounded-2xl flex items-center justify-center text-primary-foreground"
                   animate={{ rotate: [0, 10, -10, 0] }}
                   transition={{
                     duration: 3,
@@ -405,20 +408,20 @@ function Chatbot() {
                     ease: "easeInOut",
                   }}
                 >
-                  <span className="font-semibold text-white">C</span>
+                  <span className="font-semibold text-primary-foreground">C</span>
                 </motion.div>
                 <div>
-                  <h3 className="text-gray-900 font-heading text-xl">
+                  <h3 className="text-foreground font-heading text-xl">
                     Cline AI
                   </h3>
-                  <p className="text-gray-500 text-sm font-medium">
+                  <p className="text-muted-foreground text-sm font-medium">
                     Karthik's Assistant
                   </p>
                 </div>
               </div>
               <motion.button
                 onClick={() => setIsOpen(false)}
-                className="text-gray-500 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 p-2 rounded-xl transition-all duration-300"
+                className="text-muted-foreground hover:text-foreground bg-secondary hover:bg-secondary/80 p-2 rounded-xl transition-all duration-300"
                 aria-label="Close chat"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
@@ -427,26 +430,26 @@ function Chatbot() {
               </motion.button>
             </motion.div>
 
-            <div className="flex-grow p-6 overflow-y-auto space-y-6 bg-white scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            <div className="flex-grow p-6 overflow-y-auto space-y-6 bg-background scrollbar-thin">
               {messages.map((msg, index) => (
                 <div
-                  key={index}
+                  key={`${msg.timestamp}-${msg.role}-${msg.content.slice(0, 24)}`}
                   className={`flex items-end gap-2 ${
                     msg.role === "assistant" ? "justify-start" : "justify-end"
                   }`}
                 >
                   {msg.role === "assistant" && (
                     <motion.div
-                      className="flex-shrink-0 w-10 h-10 rounded-2xl bg-blue-600 border border-blue-700 flex items-center justify-center mb-1 shadow-sm"
+                      className="flex-shrink-0 w-10 h-10 rounded-2xl bg-brand-secondary border border-brand-secondary/80 flex items-center justify-center mb-1 shadow-sm"
                       whileHover={{ scale: 1.05 }}
                     >
-                      <span className="font-semibold text-white">C</span>
+                      <span className="font-semibold text-primary-foreground">C</span>
                     </motion.div>
                   )}
 
                   {msg.role === "user" && (
                     <motion.div
-                      className="flex-shrink-0 w-10 h-10 rounded-2xl bg-gray-200 text-gray-700 border border-gray-300 flex items-center justify-center mb-1 shadow-sm"
+                      className="flex-shrink-0 w-10 h-10 rounded-2xl bg-secondary text-secondary-foreground border border-border flex items-center justify-center mb-1 shadow-sm"
                       whileHover={{ scale: 1.05 }}
                     >
                       <User className="w-5 h-5" />
@@ -465,16 +468,16 @@ function Chatbot() {
                     }}
                     className={`max-w-[85%] px-6 py-4 rounded-3xl shadow text-base border ${
                       msg.role === "assistant"
-                        ? "bg-gray-100 text-gray-900 rounded-bl-xl border-gray-200"
-                        : "bg-blue-600 text-white rounded-br-xl border-blue-700"
+                        ? "bg-muted text-foreground rounded-bl-xl border-border"
+                        : "bg-brand-secondary text-primary-foreground rounded-br-xl border-brand-secondary/80"
                     }`}
                   >
                     {renderMessageContent(msg)}
                     <motion.span
                       className={`block text-xs mt-2 text-right font-medium ${
                         msg.role === "assistant"
-                          ? "text-gray-500"
-                          : "text-blue-100"
+                          ? "text-muted-foreground"
+                          : "text-primary-foreground/80"
                       }`}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 0.7 }}
@@ -492,7 +495,7 @@ function Chatbot() {
                   animate={{ opacity: 1, y: 0 }}
                 >
                   <motion.div
-                    className="flex-shrink-0 w-10 h-10 rounded-2xl bg-blue-600 border border-blue-700 flex items-center justify-center mb-1 shadow-sm"
+                    className="flex-shrink-0 w-10 h-10 rounded-2xl bg-brand-secondary border border-brand-secondary/80 flex items-center justify-center mb-1 shadow-sm"
                     animate={{ rotate: [0, 360] }}
                     transition={{
                       duration: 2,
@@ -500,19 +503,19 @@ function Chatbot() {
                       ease: "linear",
                     }}
                   >
-                    <Loader2 className="w-5 h-5 text-white" />
+                    <Loader2 className="w-5 h-5 text-primary-foreground" />
                   </motion.div>
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-gray-100 text-gray-900 max-w-[85%] px-6 py-4 rounded-3xl rounded-bl-xl shadow border border-gray-200"
+                    className="bg-muted text-foreground max-w-[85%] px-6 py-4 rounded-3xl rounded-bl-xl shadow border border-border"
                   >
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-gray-600">Thinking...</span>
+                      <span className="font-medium text-muted-foreground">Thinking...</span>
                     </div>
                     <div className="flex space-x-2 items-center mt-2">
                       <motion.div
-                        className="w-2 h-2 rounded-full bg-blue-400"
+                        className="w-2 h-2 rounded-full bg-brand-secondary/60"
                         animate={{ scale: [1, 1.5, 1] }}
                         transition={{
                           duration: 1,
@@ -521,7 +524,7 @@ function Chatbot() {
                         }}
                       />
                       <motion.div
-                        className="w-2 h-2 rounded-full bg-blue-500"
+                        className="w-2 h-2 rounded-full bg-brand-secondary"
                         animate={{ scale: [1, 1.5, 1] }}
                         transition={{
                           duration: 1,
@@ -530,7 +533,7 @@ function Chatbot() {
                         }}
                       />
                       <motion.div
-                        className="w-2 h-2 rounded-full bg-blue-400"
+                        className="w-2 h-2 rounded-full bg-brand-secondary/60"
                         animate={{ scale: [1, 1.5, 1] }}
                         transition={{
                           duration: 1,
@@ -547,21 +550,21 @@ function Chatbot() {
 
             <motion.form
               onSubmit={handleSubmit}
-              className="border-t border-gray-200 p-6 bg-gray-50 flex-shrink-0"
+              className="border-t border-border p-6 bg-muted flex-shrink-0"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
             >
               {isCollectingEmail && (
                 <motion.div
-                  className="mb-4 p-4 bg-blue-50 rounded-2xl border border-blue-200"
+                  className="mb-4 p-4 bg-brand-secondary/10 rounded-2xl border border-brand-secondary/20"
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                 >
-                  <p className="text-sm text-gray-700 font-medium flex items-center gap-2">
+                  <p className="text-sm text-foreground font-medium flex items-center gap-2">
                     Please enter your email to continue:
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     This helps me save our conversation and follow up if needed
                   </p>
                 </motion.div>
@@ -570,13 +573,13 @@ function Chatbot() {
                 {isCollectingEmail ? (
                   <>
                     <motion.div
-                      className="flex-shrink-0 w-12 h-12 bg-blue-600 border border-blue-700 rounded-2xl flex items-center justify-center shadow-sm text-white"
+                      className="flex-shrink-0 w-12 h-12 bg-brand-secondary border border-brand-secondary/80 rounded-2xl flex items-center justify-center shadow-sm text-primary-foreground"
                       whileHover={{ scale: 1.05 }}
                     >
-                      <FaEnvelope className="text-white text-lg" />
+                      <FaEnvelope className="text-primary-foreground text-lg" />
                     </motion.div>
                     <Input
-                      className="flex-grow bg-white border border-gray-300 text-gray-900 placeholder-gray-400 font-medium rounded-2xl px-6 py-4 text-lg focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition-all duration-300"
+                      className="flex-grow bg-background border border-input text-foreground placeholder:text-muted-foreground font-medium rounded-2xl px-6 py-4 text-lg focus:ring-4 focus:ring-ring/30 focus:border-ring transition-all duration-300"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       onKeyDown={handleKeyDown}
@@ -589,7 +592,7 @@ function Chatbot() {
                 ) : (
                   <>
                     <motion.div
-                      className="flex-shrink-0 w-12 h-12 bg-blue-600 border border-blue-700 rounded-2xl flex items-center justify-center shadow-sm text-white"
+                      className="flex-shrink-0 w-12 h-12 bg-brand-secondary border border-brand-secondary/80 rounded-2xl flex items-center justify-center shadow-sm text-primary-foreground"
                       animate={{ scale: [1, 1.05, 1] }}
                       transition={{
                         duration: 2,
@@ -597,10 +600,10 @@ function Chatbot() {
                         ease: "easeInOut",
                       }}
                     >
-                      <span className="font-semibold text-white">C</span>
+                      <span className="font-semibold text-primary-foreground">C</span>
                     </motion.div>
                     <Input
-                      className="flex-grow bg-white border border-gray-300 text-gray-900 placeholder-gray-400 font-medium rounded-2xl px-6 py-4 text-lg focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition-all duration-300"
+                      className="flex-grow bg-background border border-input text-foreground placeholder:text-muted-foreground font-medium rounded-2xl px-6 py-4 text-lg focus:ring-4 focus:ring-ring/30 focus:border-ring transition-all duration-300"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       onKeyDown={handleKeyDown}
@@ -611,7 +614,7 @@ function Chatbot() {
                 )}
                 <motion.button
                   type="submit"
-                  className="flex-shrink-0 w-14 h-14 bg-blue-600 text-white hover:bg-blue-700 rounded-2xl border border-blue-700 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl disabled:bg-gray-200 disabled:border-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed"
+                  className="flex-shrink-0 w-14 h-14 bg-brand-secondary text-primary-foreground hover:bg-brand-secondary/90 rounded-2xl border border-brand-secondary/80 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl disabled:bg-muted disabled:border-border disabled:text-muted-foreground disabled:cursor-not-allowed"
                   disabled={!message.trim() || isLoading}
                   aria-label={
                     isCollectingEmail ? "Submit email" : "Send message"

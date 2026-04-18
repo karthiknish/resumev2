@@ -34,9 +34,8 @@ const socialLinks = [
 export default function Footer() {
   return (
     <FadeIn>
-      <footer className="relative overflow-hidden bg-slate-950 text-slate-100">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.22),_transparent_65%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(15,118,110,0.22),_transparent_70%)]" />
+      <footer className="relative overflow-hidden bg-primary text-primary-foreground">
+        <div className="pointer-events-none absolute inset-0 bg-mesh-footer" aria-hidden />
 
         <div className="relative max-w-6xl mx-auto px-6 sm:px-10 md:px-12 py-16 md:py-20">
           <div className="grid gap-12 md:grid-cols-3">
@@ -47,10 +46,10 @@ export default function Footer() {
               viewport={{ once: true }}
               className="space-y-6"
             >
-              <h3 className="font-heading text-3xl text-white">
+              <h3 className="font-heading text-3xl text-primary-foreground">
                 Karthik Nishanth
               </h3>
-              <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-md">
+              <p className="text-sm sm:text-base text-primary-foreground/75 leading-relaxed max-w-md">
                 Product-minded software engineer crafting resilient experiences across web and mobile. I partner with founders and teams to move fast without compromising on craft.
               </p>
               <div className="flex gap-4">
@@ -61,7 +60,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/10 text-slate-200 transition hover:border-white/30 hover:text-white"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary-foreground/15 bg-primary-foreground/10 text-primary-foreground/90 transition hover:border-primary-foreground/35 hover:text-primary-foreground"
                     whileHover={{ y: -2, scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -78,7 +77,7 @@ export default function Footer() {
               viewport={{ once: true }}
               className="space-y-5"
             >
-              <h3 className="font-heading text-2xl text-white">Browse</h3>
+              <h3 className="font-heading text-2xl text-primary-foreground">Browse</h3>
               <ul className="space-y-3">
                 {quickLinks.map((link, index) => (
                   <motion.li
@@ -90,9 +89,9 @@ export default function Footer() {
                   >
                     <Link
                       href={link.href}
-                      className="group inline-flex items-center gap-2 text-sm sm:text-base text-slate-300 transition hover:text-white"
+                      className="group inline-flex items-center gap-2 text-sm sm:text-base text-primary-foreground/75 transition hover:text-primary-foreground"
                     >
-                      <span className="h-px w-6 bg-slate-500 transition group-hover:bg-white" />
+                      <span className="h-px w-6 bg-primary-foreground/40 transition group-hover:bg-primary-foreground" />
                       {link.label}
                     </Link>
                   </motion.li>
@@ -105,7 +104,7 @@ export default function Footer() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
               viewport={{ once: true }}
-              className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur"
+              className="rounded-2xl border border-primary-foreground/15 bg-primary-foreground/5 p-6 backdrop-blur"
             >
               <NewsletterSignup />
             </motion.div>
@@ -116,13 +115,13 @@ export default function Footer() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
             viewport={{ once: true }}
-            className="mt-16 border-t border-white/10 pt-6 text-sm text-slate-400"
+            className="mt-16 border-t border-primary-foreground/15 pt-6 text-sm text-primary-foreground/60"
           >
             <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
               <p>
                 &copy; {new Date().getFullYear()} Karthik Nishanth. Crafted with care in Liverpool.
               </p>
-              <div className="flex flex-wrap justify-center gap-4 text-xs uppercase tracking-[0.25em] text-slate-500">
+              <div className="flex flex-wrap justify-center gap-4 text-xs uppercase tracking-[0.25em] text-primary-foreground/50">
                 {[
                   { href: "/terms-and-conditions", label: "Terms" },
                   { href: "/privacy-policy", label: "Privacy" },
@@ -131,7 +130,7 @@ export default function Footer() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="transition hover:text-white"
+                    className="transition hover:text-primary-foreground"
                   >
                     {link.label}
                   </Link>

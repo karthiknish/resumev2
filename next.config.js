@@ -1,6 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // firebase-admin + native deps must not be bundled by Turbopack (runtime Node require)
+  serverExternalPackages: [
+    "firebase-admin",
+    "@google-cloud/firestore",
+    "@grpc/grpc-js",
+    "google-gax",
+    "google-auth-library",
+    "protobufjs",
+  ],
   transpilePackages: ["@splinetool/react-spline", "@splinetool/runtime"],
   // Enable image optimization
   images: {

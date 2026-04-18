@@ -1,0 +1,100 @@
+/**
+ * Shared ambient mesh backgrounds — use with positioning classes
+ * (e.g. pointer-events-none absolute inset-0 -z-10).
+ */
+@layer utilities {
+  .bg-mesh-slate-dual {
+    background-image:
+      radial-gradient(circle at top, hsl(215 20% 65% / 0.16), transparent 65%),
+      radial-gradient(circle at bottom, hsl(214 32% 91% / 0.25), transparent 70%);
+  }
+
+  .bg-mesh-slate-boost {
+    background-image:
+      radial-gradient(circle at top, hsl(215 20% 65% / 0.16), transparent 60%),
+      radial-gradient(circle at bottom, hsl(214 32% 91% / 0.3), transparent 70%);
+  }
+
+  .bg-mesh-slate-strong {
+    background-image:
+      radial-gradient(circle at top, hsl(215 20% 65% / 0.18), transparent 60%),
+      radial-gradient(circle at bottom, hsl(214 32% 91% / 0.35), transparent 70%);
+  }
+
+  .bg-mesh-brand-standard {
+    background-image:
+      radial-gradient(circle at top, hsl(199 89% 48% / 0.12), transparent 62%),
+      radial-gradient(circle at bottom, hsl(330 81% 60% / 0.1), transparent 58%);
+  }
+
+  .bg-mesh-brand-hero {
+    background-image:
+      radial-gradient(circle at top, hsl(199 89% 48% / 0.18), transparent 62%),
+      radial-gradient(circle at bottom, hsl(330 81% 60% / 0.14), transparent 58%);
+  }
+
+  .bg-mesh-brand-404 {
+    background-image:
+      radial-gradient(circle at top, hsl(199 89% 48% / 0.2), transparent 60%),
+      radial-gradient(circle at bottom, hsl(330 81% 60% / 0.15), transparent 60%);
+  }
+
+  .bg-mesh-brand-services {
+    background-image:
+      radial-gradient(circle at top, hsl(199 89% 48% / 0.15), transparent 65%),
+      radial-gradient(circle at bottom, hsl(330 81% 60% / 0.12), transparent 60%);
+  }
+
+  .bg-mesh-brand-faint {
+    background-image:
+      radial-gradient(circle at top, hsl(199 89% 48% / 0.05), transparent 62%),
+      radial-gradient(circle at bottom, hsl(330 81% 60% / 0.05), transparent 58%);
+  }
+
+  /* Search overlay — cool top + deep bottom */
+  .bg-mesh-search {
+    background-image:
+      radial-gradient(circle at top, hsl(215 20% 65% / 0.18), transparent 60%),
+      radial-gradient(circle at bottom, hsl(222 47% 11% / 0.55), transparent 70%);
+  }
+
+  /* Footer — slate mist + teal lift */
+  .bg-mesh-footer {
+    background-image:
+      radial-gradient(circle at top, hsl(215 20% 65% / 0.22), transparent 65%),
+      radial-gradient(circle at bottom, hsl(173 58% 39% / 0.22), transparent 70%);
+  }
+
+  .bg-mesh-brand-corner-tr-subtle {
+    background-image: radial-gradient(
+      circle at top right,
+      hsl(199 89% 48% / 0.08),
+      transparent 40%
+    );
+  }
+
+  .bg-mesh-brand-corner-tr {
+    background-image: radial-gradient(
+      circle at top right,
+      hsl(199 89% 48% / 0.1),
+      transparent 50%
+    );
+  }
+
+  .bg-mesh-brand-corner-bl {
+    background-image: radial-gradient(
+      circle at bottom left,
+      hsl(199 89% 48% / 0.1),
+      transparent 50%
+    );
+  }
+
+  /* Services index hero wash */
+  .bg-mesh-brand-center-wash {
+    background-image: radial-gradient(
+      circle at center,
+      hsl(210 90% 55% / 0.08),
+      transparent 70%
+    );
+  }
+}

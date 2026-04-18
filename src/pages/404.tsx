@@ -31,8 +31,7 @@ const FourOhFour: React.FC = () => {
             />
           </div>
           <div className="absolute inset-0 -z-20 bg-slate-950/70" />
-          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.2),_transparent_60%)]" />
-          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom,_rgba(236,72,153,0.15),_transparent_60%)]" />
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-mesh-brand-404" aria-hidden />
 
           <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
             <FadeIn>

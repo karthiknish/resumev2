@@ -253,7 +253,7 @@ function CtaSection({ heading, body, primaryAction, secondaryAction }: CtaSectio
       className="relative overflow-hidden bg-cover bg-center p-10 text-center shadow-lg shadow-black/30"
       style={{ backgroundImage: "url('/hero-back.jpeg')" }}
     >
-      <div className="absolute inset-0 bg-[#0c1b38]/65 mix-blend-multiply" aria-hidden="true" />
+      <div className="absolute inset-0 bg-surface-hero-navy/65 mix-blend-multiply" aria-hidden="true" />
       <div className="relative mx-auto flex max-w-2xl flex-col items-center gap-6 text-white">
         {heading ? (
           <h2 className="text-3xl font-semibold md:text-4xl">
@@ -265,9 +265,9 @@ function CtaSection({ heading, body, primaryAction, secondaryAction }: CtaSectio
         ) : null}
         <div className="flex flex-col gap-3 sm:flex-row">
           {primaryAction ? (
-            <Link style={{ color: "black" }}
+            <Link
               href={primaryAction.href}
-              className="inline-flex text-black items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold transition hover:bg-white/90"
+              className="inline-flex text-primary items-center justify-center rounded-full bg-background px-6 py-3 text-sm font-semibold transition hover:bg-background/90"
             >
               {primaryAction.label}
             </Link>
@@ -314,7 +314,7 @@ export default function ServicePageLayout({
       <PageContainer>
         <div className="min-h-screen bg-gradient-to-b from-background via-background pt-14 to-muted/40">
           <FadeIn>
-            <section className="w-full overflow-hidden bg-[#0c1b38] px-6 py-16 text-primary-foreground md:px-10">
+            <section className="w-full overflow-hidden bg-surface-hero-navy px-6 py-16 text-primary-foreground md:px-10">
               <div className="mx-auto flex w-full max-w-5xl flex-col gap-10">
                 <div className="flex flex-col gap-6 md:flex-row md:items-start md:gap-8">
                   {hero?.icon ? (
